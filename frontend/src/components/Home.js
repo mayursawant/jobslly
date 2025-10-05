@@ -249,50 +249,50 @@ const Home = () => {
 
       {/* Featured Jobs Section */}
       {featuredJobs.length > 0 && (
-        <section className="py-20 px-4" data-testid="featured-jobs-section">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-5xl font-bold text-white mb-4">Trending Healthcare Opportunities</h2>
-              <p className="text-xl text-gray-300">Discover your next career milestone</p>
+        <section className="py-16 px-4 bg-gray-50" data-testid="featured-jobs-section">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Latest Jobs</h2>
+              <p className="text-lg text-gray-600">Explore the newest opportunities in healthcare</p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
               {featuredJobs.slice(0, 6).map((job) => (
-                <Card key={job.id} className="group bg-white/5 backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl cursor-pointer" data-testid={`featured-job-${job.id}`}>
+                <Card key={job.id} className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 cursor-pointer" data-testid={`featured-job-${job.id}`}>
                   <CardContent className="p-6">
-                    <div className="flex justify-between items-start mb-4">
-                      <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white">
+                    <div className="flex justify-between items-start mb-3">
+                      <Badge className="bg-blue-100 text-blue-800 text-xs">
                         {job.job_type.replace('_', ' ').toUpperCase()}
                       </Badge>
                       {job.salary_min && (
-                        <span className="text-sm font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
+                        <span className="text-sm font-semibold text-green-600">
                           ${job.salary_min.toLocaleString()}+
                         </span>
                       )}
                     </div>
                     
-                    <h3 className="text-xl font-bold mb-2 text-white group-hover:text-cyan-400 transition-colors">{job.title}</h3>
-                    <p className="text-cyan-400 font-medium mb-2">{job.company}</p>
-                    <p className="text-gray-300 mb-4 flex items-center">
-                      <span className="mr-2">📍</span>
+                    <h3 className="text-lg font-semibold mb-1 text-gray-900 hover:text-blue-600 transition-colors">{job.title}</h3>
+                    <p className="text-blue-600 font-medium mb-1 text-sm">{job.company}</p>
+                    <p className="text-gray-500 mb-3 flex items-center text-sm">
+                      <MapPin className="h-3 w-3 mr-1" />
                       {job.location}
                     </p>
                     
-                    <p className="text-gray-300 mb-4 line-clamp-3 text-sm">
-                      {job.description.substring(0, 120)}...
+                    <p className="text-gray-600 mb-4 line-clamp-2 text-sm">
+                      {job.description.substring(0, 100)}...
                     </p>
 
-                    <div className="flex flex-wrap gap-2 mb-4">
+                    <div className="flex flex-wrap gap-1 mb-4">
                       {job.requirements.slice(0, 2).map((req, index) => (
-                        <Badge key={index} variant="outline" className="text-xs border-white/20 text-gray-300">
+                        <Badge key={index} variant="outline" className="text-xs border-gray-200 text-gray-600">
                           {req}
                         </Badge>
                       ))}
                     </div>
 
                     <Link to={`/jobs/${job.id}`}>
-                      <Button className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105" data-testid={`apply-job-${job.id}`}>
-                        🎯 Explore Role
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md" data-testid={`apply-job-${job.id}`}>
+                        View Details
                       </Button>
                     </Link>
                   </CardContent>
@@ -302,8 +302,8 @@ const Home = () => {
 
             <div className="text-center">
               <Link to="/jobs">
-                <Button size="lg" className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="view-all-jobs">
-                  🚀 Discover All Opportunities
+                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3 rounded-md" data-testid="view-all-jobs">
+                  View All Jobs
                 </Button>
               </Link>
             </div>
