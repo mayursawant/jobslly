@@ -159,6 +159,18 @@ backend:
           agent: "testing"
           comment: "Job application APIs fully tested: POST /api/jobs/{id}/apply-lead for lead collection working correctly (collects name, email, phone, position, experience). POST /api/jobs/{id}/apply for authenticated job applications working correctly with JWT authentication. Duplicate application prevention working (returns 400 for duplicate attempts). Application count increments correctly after submissions."
 
+  - task: "Authentication system (job seeker and employer login)"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Authentication flow fully tested and working: POST /api/auth/register for both job_seeker and employer roles working correctly. POST /api/auth/login working correctly for both user types. JWT tokens generated and accepted properly. Authentication required endpoints properly protected and working with Bearer tokens."
+
   - task: "Employer dashboard backend APIs"
     implemented: false
     working: false
