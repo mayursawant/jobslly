@@ -23,6 +23,9 @@ const JobDetails = () => {
   const [applying, setApplying] = useState(false);
   const [coverLetter, setCoverLetter] = useState('');
   const [hasApplied, setHasApplied] = useState(false);
+  
+  // Lead collection modal state
+  const [showLeadModal, setShowLeadModal] = useState(false);
 
   useEffect(() => {
     fetchJobDetails();
