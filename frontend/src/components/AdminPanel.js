@@ -15,7 +15,45 @@ const AdminPanel = () => {
   const { user } = useContext(AuthContext);
   const [stats, setStats] = useState({});
   const [pendingJobs, setPendingJobs] = useState([]);
+  const [blogPosts, setBlogPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // Job Creation State
+  const [newJob, setNewJob] = useState({
+    title: '',
+    company: '',
+    location: '',
+    description: '',
+    salary_min: '',
+    salary_max: '',
+    job_type: 'full_time',
+    requirements: [],
+    benefits: []
+  });
+  
+  // Blog Creation State
+  const [newBlog, setNewBlog] = useState({
+    title: '',
+    excerpt: '',
+    content: '',
+    category: 'healthcare',
+    tags: [],
+    is_published: false,
+    is_featured: false,
+    seo_title: '',
+    seo_description: '',
+    seo_keywords: []
+  });
+  
+  // SEO State
+  const [seoSettings, setSeoSettings] = useState({
+    page_type: 'home',
+    title: '',
+    description: '',
+    keywords: [],
+    og_image: '',
+    canonical_url: ''
+  });
 
   useEffect(() => {
     fetchAdminData();
