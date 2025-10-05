@@ -886,7 +886,7 @@ async def get_all_leads(current_user: User = Depends(get_current_user)):
     return leads
 
 # SEO Routes - Dynamic Sitemap and Robots.txt
-@app.get("/sitemap.xml", response_class=Response)
+@api_router.get("/sitemap.xml", response_class=Response)
 async def get_sitemap():
     """
     Generate dynamic sitemap.xml for SEO
