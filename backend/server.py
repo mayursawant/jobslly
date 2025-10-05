@@ -752,6 +752,47 @@ async def update_user_profile(profile_data: UserProfileUpdate, current_user: Use
     
     return UserProfile(**updated_profile)
 
+# Job Application Endpoint
+@api_router.post("/jobs/{job_id}/apply", response_model=Dict)
+async def apply_for_job(job_id: str, application_data: dict, current_user: User = Depends(get_current_user)):
+    # Check if job exists
+    job = await db.jobs.find_one({"id": job_id})
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Check if user already applied for this job
+    existing_application = await db.applications.find_one({
+        "job_id": job_id,
+        "applicant_id": current_user.id
+    })
+    if existing_application:
+        raise HTTPException(status_code=400, detail="You have already applied for this job")
+    
+    # Create job application
+    application = JobApplication(
+        job_id=job_id,
+        applicant_id=current_user.id,
+        cover_letter=application_data.get('cover_letter', ''),
+        resume_url=application_data.get('resume_url')
+    )
+    
+    application_dict = application.dict()
+    application_dict['created_at'] = application_dict['created_at'].isoformat()
+    
+    await db.applications.insert_one(application_dict)
+    
+    # Update job application count
+    await db.jobs.update_one(
+        {"id": job_id},
+        {"$inc": {"application_count": 1}}
+    )
+    
+    return {
+        "success": True,
+        "message": "Application submitted successfully",
+        "application_id": application.id
+    }
+
 # Enhanced Job Application with Lead Collection
 @api_router.post("/jobs/{job_id}/apply-lead", response_model=Dict)
 async def apply_with_lead_collection(job_id: str, lead_data: JobLeadCreate):
