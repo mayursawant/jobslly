@@ -137,6 +137,9 @@ backend:
         - working: true
           agent: "main"
           comment: "Fixed routing issue - moved endpoints to api_router with /api prefix. Both /api/sitemap.xml and /api/robots.txt now working correctly with proper XML and content"
+        - working: true
+          agent: "testing"
+          comment: "SEO endpoints fully tested and verified: GET /api/sitemap.xml returns valid XML sitemap (1672 chars) with proper urlset structure. GET /api/robots.txt returns valid robots.txt (579 chars) with User-agent and Sitemap directives. Both endpoints working correctly for SEO optimization."
 
   - task: "Job application submission API"
     implemented: true
