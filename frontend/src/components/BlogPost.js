@@ -155,53 +155,46 @@ const BlogPost = () => {
         <div className="py-16 px-4">
           <div className="max-w-4xl mx-auto">
 
-            {/* Article Header */}
-            <Card className="glass-strong border-emerald-500/30 mb-8">
-              <CardContent className="p-8">
-                <div className="mb-6">
-                  <Badge className="bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 text-emerald-400 border-emerald-500/30 mb-4">
-                    {post.category}
-                  </Badge>
-                  <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-                    {post.title}
-                  </h1>
-                  <p className="text-xl text-gray-300 mb-6">{post.excerpt}</p>
-                  
-                  <div className="flex items-center justify-between text-sm text-gray-400">
-                    <div>
-                      Published {new Date(post.published_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
-                    </div>
-                    <div className="flex gap-2">
-                      {post.tags.map((tag, index) => (
-                        <Badge key={index} variant="outline" className="border-white/20 text-gray-400">
-                          #{tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {post.featured_image && (
-                  <div className="h-64 md:h-96 bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 rounded-xl mb-8"></div>
-                )}
+            {/* Article Content */}
+            <Card className="bg-white shadow-xl border border-gray-100 mb-16 overflow-hidden">
+              <CardContent className="p-8 md:p-12">
+                <div 
+                  className="prose prose-lg max-w-none"
+                  dangerouslySetInnerHTML={{ __html: post.content }}
+                  style={{
+                    color: '#374151',
+                    lineHeight: '1.8',
+                    fontSize: '18px'
+                  }}
+                />
               </CardContent>
             </Card>
 
-            {/* Article Content */}
-            <Card className="glass-strong border-white/10 mb-12">
-              <CardContent className="p-8">
-                <div 
-                  className="prose prose-lg prose-invert max-w-none"
-                  dangerouslySetInnerHTML={{ __html: post.content }}
-                  style={{
-                    color: '#e5e7eb',
-                    lineHeight: '1.8'
-                  }}
-                />
+            {/* Article Actions */}
+            <Card className="bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-100 mb-16">
+              <CardContent className="p-8 text-center">
+                <div className="mb-6">
+                  <span className="text-4xl mb-4 block">💼</span>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Ready to Start Your Healthcare Career?</h3>
+                  <p className="text-gray-600 mb-6">
+                    Explore thousands of healthcare opportunities matching your expertise
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button 
+                    onClick={() => navigate('/jobs')}
+                    className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white px-8 py-3 rounded-xl transform hover:scale-105 transition-all duration-300"
+                  >
+                    🔍 Browse Healthcare Jobs
+                  </Button>
+                  <Button 
+                    onClick={() => navigate('/register')}
+                    variant="outline"
+                    className="border-teal-600 text-teal-600 hover:bg-teal-50 px-8 py-3 rounded-xl transform hover:scale-105 transition-all duration-300"
+                  >
+                    📝 Create Free Account
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
