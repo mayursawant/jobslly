@@ -228,16 +228,16 @@ const Home = () => {
       </section>
 
       {/* Job Categories */}
-      <section className="py-16 px-4 bg-gray-50">
+      <section className="py-20 px-4 bg-gradient-to-br from-gray-50 to-teal-50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Job Categories</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Find your perfect healthcare role across all specializations
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Browse Jobs by Category</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Explore diverse choices. Make informed decisions.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {specializations.map((spec, index) => (
               <Link 
                 key={spec.name} 
@@ -245,19 +245,84 @@ const Home = () => {
                 className="group block"
                 data-testid={`specialization-${spec.name.toLowerCase()}`}
               >
-                <Card className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 cursor-pointer h-full">
-                  <CardContent className="p-6 text-center">
-                    <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-200">
+                <Card className="bg-white border border-teal-100 hover:border-teal-300 hover:shadow-xl transition-all duration-500 cursor-pointer h-full transform hover:scale-105 hover:-translate-y-2">
+                  <CardContent className="p-8 text-center">
+                    <div className="text-5xl mb-4 group-hover:scale-125 transition-transform duration-500 filter group-hover:drop-shadow-lg">
                       {spec.icon}
                     </div>
-                    <h3 className="font-semibold text-gray-900 mb-1 text-sm">{spec.name}</h3>
-                    <div className="text-xs text-blue-600 font-medium">
+                    <h3 className="font-bold text-gray-900 mb-2 text-base group-hover:text-teal-700 transition-colors">{spec.name}</h3>
+                    <div className="text-sm text-teal-600 font-semibold bg-teal-50 px-3 py-1 rounded-full">
                       {spec.count} Jobs
+                    </div>
+                    <div className="mt-4 w-full h-1 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700"></div>
                     </div>
                   </CardContent>
                 </Card>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Founder Section */}
+      <section className="py-20 px-4 bg-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-teal-50/50 to-emerald-50/50"></div>
+        <div className="max-w-7xl mx-auto relative">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Founder Image */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-teal-200 to-emerald-200 rounded-3xl transform rotate-2 animate-pulse"></div>
+              <div className="relative bg-white rounded-3xl shadow-2xl p-2 transform -rotate-1">
+                <img 
+                  src="https://customer-assets.emergentagent.com/job_jobslly-health/artifacts/ukxbykm5_Dr.-Akram-Ahmad_CEO-Founder_-Academically-Global_EP.jpg" 
+                  alt="Dr. Akram Ahmad - Founder & CEO" 
+                  className="w-full h-auto rounded-3xl"
+                />
+              </div>
+            </div>
+
+            {/* Founder Content */}
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <div className="inline-flex items-center px-4 py-2 bg-teal-100 rounded-full">
+                  <span className="text-teal-700 font-semibold text-sm">🎓 Meet Our Founder</span>
+                </div>
+                <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+                  Dr. Akram Ahmad
+                </h2>
+                <div className="text-xl text-teal-600 font-semibold">
+                  Founder & CEO, Jobslly.com
+                </div>
+              </div>
+
+              <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
+                <p>
+                  Jobslly.com is the brainchild of <span className="font-semibold text-teal-700">Dr. Akram Ahmad</span>, who holds a PhD from the Faculty of Medicine and Health at the University of Sydney, Australia.
+                </p>
+                <p>
+                  He is a self-motivated clinical pharmacist and committed lecturer with over <span className="font-semibold text-emerald-700">10 years of teaching and research experience</span> in various subjects of medicine at leading universities across Australia, Malaysia, and India.
+                </p>
+                <p>
+                  His vision is to bridge the gap between talented healthcare professionals and their dream careers through innovative technology and personalized support.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-4">
+                <div className="bg-teal-50 px-6 py-3 rounded-xl border border-teal-200">
+                  <div className="font-semibold text-teal-700">PhD in Medicine</div>
+                  <div className="text-sm text-gray-600">University of Sydney</div>
+                </div>
+                <div className="bg-emerald-50 px-6 py-3 rounded-xl border border-emerald-200">
+                  <div className="font-semibold text-emerald-700">10+ Years</div>
+                  <div className="text-sm text-gray-600">Teaching & Research</div>
+                </div>
+                <div className="bg-cyan-50 px-6 py-3 rounded-xl border border-cyan-200">
+                  <div className="font-semibold text-cyan-700">Clinical Pharmacist</div>
+                  <div className="text-sm text-gray-600">Healthcare Expert</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
