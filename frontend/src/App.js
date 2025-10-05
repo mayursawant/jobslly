@@ -116,26 +116,96 @@ function App() {
       <BrowserRouter>
         <div className="App min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
           <Helmet>
-            <title>Jobslly - Future of Healthcare Careers</title>
-            <meta name="description" content="Discover healthcare opportunities for Doctors, Pharmacists, Dentists, Physiotherapists, and Nurses with AI-powered matching and career advancement tools." />
-            <meta name="keywords" content="healthcare jobs, medical careers, doctor jobs, nurse jobs, pharmacy careers, dentist jobs, physiotherapy jobs, AI job matching" />
+            <title>Jobslly - Future of Healthcare Careers | AI-Powered Medical Job Platform</title>
+            <meta name="description" content="Find your dream healthcare career at Jobslly. Connect doctors, nurses, pharmacists, dentists, and physiotherapists with top medical institutions. AI-powered job matching, resume optimization, and career advancement tools." />
+            <meta name="keywords" content="healthcare jobs, medical careers, doctor jobs, nurse jobs, pharmacy careers, dentist jobs, physiotherapy jobs, AI job matching, healthcare recruitment, medical employment, hospital jobs, clinic jobs" />
+            
+            {/* Open Graph / Facebook */}
             <meta property="og:title" content="Jobslly - Future of Healthcare Careers" />
-            <meta property="og:description" content="Next-generation healthcare job platform with AI-powered career matching" />
+            <meta property="og:description" content="AI-powered healthcare job platform connecting medical professionals with leading institutions. Find your next career opportunity today." />
             <meta property="og:type" content="website" />
+            <meta property="og:url" content="https://careerheal.preview.emergentagent.com/" />
+            <meta property="og:image" content="https://careerheal.preview.emergentagent.com/og-image.jpg" />
+            <meta property="og:site_name" content="Jobslly" />
+            
+            {/* Twitter */}
             <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content="Jobslly - Future of Healthcare Careers" />
+            <meta name="twitter:description" content="AI-powered healthcare job platform for medical professionals" />
+            <meta name="twitter:image" content="https://careerheal.preview.emergentagent.com/og-image.jpg" />
+            
+            {/* Additional SEO Meta Tags */}
+            <meta name="author" content="Jobslly" />
+            <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+            <meta name="googlebot" content="index, follow" />
             <link rel="canonical" href="https://careerheal.preview.emergentagent.com/" />
+            
+            {/* Favicon and App Icons */}
+            <link rel="icon" href="/favicon.ico" />
+            <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+            
+            {/* Structured Data - Organization */}
+            <script type="application/ld+json">
+              {JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                "name": "Jobslly",
+                "description": "AI-powered healthcare career platform",
+                "url": "https://careerheal.preview.emergentagent.com",
+                "logo": "https://careerheal.preview.emergentagent.com/logo.png",
+                "sameAs": [
+                  "https://linkedin.com/company/jobslly",
+                  "https://twitter.com/jobslly"
+                ]
+              })}
+            </script>
+            
+            {/* Structured Data - WebSite */}
             <script type="application/ld+json">
               {JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "WebSite",
                 "name": "Jobslly",
-                "description": "Future of Healthcare Careers",
+                "description": "Future of Healthcare Careers - AI-Powered Job Platform",
                 "url": "https://careerheal.preview.emergentagent.com",
                 "potentialAction": {
                   "@type": "SearchAction",
                   "target": "https://careerheal.preview.emergentagent.com/jobs?search={search_term_string}",
                   "query-input": "required name=search_term_string"
+                },
+                "publisher": {
+                  "@type": "Organization",
+                  "name": "Jobslly"
                 }
+              })}
+            </script>
+            
+            {/* Structured Data - LocalBusiness */}
+            <script type="application/ld+json">
+              {JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "LocalBusiness",
+                "@id": "https://careerheal.preview.emergentagent.com",
+                "name": "Jobslly",
+                "description": "Healthcare job platform connecting medical professionals with opportunities",
+                "url": "https://careerheal.preview.emergentagent.com",
+                "telephone": "+1-800-JOBSLLY",
+                "priceRange": "Free",
+                "openingHours": "Mo-Su 00:00-24:00",
+                "serviceArea": {
+                  "@type": "Country",
+                  "name": "United States"
+                },
+                "areaServed": "Worldwide",
+                "knowsAbout": [
+                  "Healthcare Jobs",
+                  "Medical Careers", 
+                  "Nursing Jobs",
+                  "Doctor Jobs",
+                  "Pharmacy Careers",
+                  "Dental Jobs",
+                  "Physiotherapy Jobs"
+                ]
               })}
             </script>
           </Helmet>
