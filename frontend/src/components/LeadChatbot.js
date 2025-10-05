@@ -32,6 +32,18 @@ const LeadChatbot = () => {
   ];
 
   useEffect(() => {
+    // Auto-open chatbot after 5 seconds on first visit
+    if (!hasAutoOpened) {
+      const timer = setTimeout(() => {
+        setIsOpen(true);
+        setHasAutoOpened(true);
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [hasAutoOpened]);
+
+  useEffect(() => {
     if (isOpen && messages.length === 0) {
       setTimeout(() => {
         addBotMessage("Hi there! 👋 I'm your healthcare career assistant. How can I help you today?");
