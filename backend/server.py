@@ -885,6 +885,160 @@ async def get_all_leads(current_user: User = Depends(get_current_user)):
     
     return leads
 
+# SEO Routes - Dynamic Sitemap and Robots.txt
+@app.get("/sitemap.xml", response_class=Response)
+async def get_sitemap():
+    """
+    Generate dynamic sitemap.xml for SEO
+    Includes all published blog posts and job listings
+    """
+    # Create XML root element
+    urlset = ET.Element("urlset")
+    urlset.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
+    
+    base_url = os.environ.get('FRONTEND_URL', 'https://careerheal.preview.emergentagent.com')
+    
+    # Static pages
+    static_pages = [
+        ('/', '1.0', 'daily'),
+        ('/jobs', '0.9', 'daily'),
+        ('/blog', '0.8', 'daily'),
+        ('/job-seeker-login', '0.6', 'weekly'),
+        ('/employer-login', '0.6', 'weekly'),
+        ('/register', '0.6', 'weekly'),
+    ]
+    
+    for path, priority, changefreq in static_pages:
+        url_elem = ET.SubElement(urlset, "url")
+        ET.SubElement(url_elem, "loc").text = f"{base_url}{path}"
+        ET.SubElement(url_elem, "lastmod").text = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+        ET.SubElement(url_elem, "changefreq").text = changefreq
+        ET.SubElement(url_elem, "priority").text = priority
+    
+    # Dynamic job pages
+    try:
+        jobs = await db.jobs.find({"is_approved": True}).to_list(length=None)
+        for job in jobs:
+            url_elem = ET.SubElement(urlset, "url")
+            ET.SubElement(url_elem, "loc").text = f"{base_url}/jobs/{job['id']}"
+            
+            # Use job creation date or current date
+            lastmod = job.get('created_at', datetime.now(timezone.utc))
+            if isinstance(lastmod, str):
+                lastmod = datetime.fromisoformat(lastmod)
+            ET.SubElement(url_elem, "lastmod").text = lastmod.strftime('%Y-%m-%d')
+            ET.SubElement(url_elem, "changefreq").text = "weekly"
+            ET.SubElement(url_elem, "priority").text = "0.7"
+    except Exception as e:
+        logger.error(f"Error fetching jobs for sitemap: {e}")
+    
+    # Dynamic blog pages
+    try:
+        blog_posts = await db.blog_posts.find({"is_published": True}).to_list(length=None)
+        for post in blog_posts:
+            url_elem = ET.SubElement(urlset, "url")
+            ET.SubElement(url_elem, "loc").text = f"{base_url}/blog/{post['slug']}"
+            
+            # Use published date or creation date
+            lastmod = post.get('published_at') or post.get('created_at', datetime.now(timezone.utc))
+            if isinstance(lastmod, str):
+                lastmod = datetime.fromisoformat(lastmod)
+            ET.SubElement(url_elem, "lastmod").text = lastmod.strftime('%Y-%m-%d')
+            ET.SubElement(url_elem, "changefreq").text = "monthly"
+            ET.SubElement(url_elem, "priority").text = "0.6"
+    except Exception as e:
+        logger.error(f"Error fetching blog posts for sitemap: {e}")
+    
+    # Convert to string
+    xml_str = ET.tostring(urlset, encoding='unicode', method='xml')
+    xml_formatted = f'<?xml version="1.0" encoding="UTF-8"?>\n{xml_str}'
+    
+    return Response(content=xml_formatted, media_type="application/xml")
+
+@app.get("/robots.txt", response_class=PlainTextResponse)
+async def get_robots_txt():
+    """
+    Generate robots.txt for search engine crawling
+    """
+    base_url = os.environ.get('FRONTEND_URL', 'https://careerheal.preview.emergentagent.com')
+    
+    robots_content = f"""User-agent: *
+Allow: /
+Allow: /jobs
+Allow: /blog
+Allow: /job-seeker-login
+Allow: /employer-login
+Allow: /register
+
+# Disallow admin and private areas
+Disallow: /admin
+Disallow: /cms-login
+Disallow: /dashboard
+Disallow: /api/
+
+# Allow specific API endpoints for better indexing
+Allow: /api/jobs
+Allow: /api/blog
+
+# Sitemap location
+Sitemap: {base_url}/sitemap.xml
+
+# Crawl delay to be respectful
+Crawl-delay: 1
+
+# Additional directives for better SEO
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+"""
+    
+    return PlainTextResponse(content=robots_content)
+
+# SEO Meta Tags API for dynamic pages
+@app.get("/api/seo/meta/{page_type}")
+async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None):
+    """
+    Get SEO metadata for dynamic pages
+    """
+    try:
+        if page_type == "job" and job_id:
+            job = await db.jobs.find_one({"id": job_id, "is_approved": True})
+            if job:
+                return {
+                    "title": f"{job['title']} - {job['company']} | Jobslly Healthcare Jobs",
+                    "description": f"Apply for {job['title']} position at {job['company']} in {job['location']}. {job['description'][:150]}...",
+                    "keywords": [job['title'], job['company'], job['location'], "healthcare jobs", "medical careers"],
+                    "og_image": f"https://careerheal.preview.emergentagent.com/api/og-image/job/{job_id}",
+                    "canonical": f"https://careerheal.preview.emergentagent.com/jobs/{job_id}"
+                }
+        
+        elif page_type == "blog" and blog_slug:
+            post = await db.blog_posts.find_one({"slug": blog_slug, "is_published": True})
+            if post:
+                return {
+                    "title": post.get('seo_title') or f"{post['title']} | Jobslly Health Hub",
+                    "description": post.get('seo_description') or post['excerpt'],
+                    "keywords": post.get('seo_keywords', []) + [post['category'], "healthcare", "careers"],
+                    "og_image": post.get('featured_image') or f"https://careerheal.preview.emergentagent.com/api/og-image/blog/{blog_slug}",
+                    "canonical": f"https://careerheal.preview.emergentagent.com/blog/{blog_slug}"
+                }
+    
+    except Exception as e:
+        logger.error(f"Error fetching SEO meta for {page_type}: {e}")
+    
+    # Default meta tags
+    return {
+        "title": "Jobslly - Future of Healthcare Careers",
+        "description": "Discover healthcare opportunities for doctors, nurses, pharmacists, dentists, and physiotherapists with AI-powered career matching.",
+        "keywords": ["healthcare jobs", "medical careers", "doctor jobs", "nurse jobs"],
+        "og_image": "https://careerheal.preview.emergentagent.com/og-image-default.jpg",
+        "canonical": f"https://careerheal.preview.emergentagent.com"
+    }
+
 # Include the router
 app.include_router(api_router)
 
