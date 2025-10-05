@@ -83,29 +83,29 @@ const Blog = () => {
 
           {/* Featured Posts */}
           {featuredPosts.length > 0 && (
-            <section className="mb-20">
-              <h2 className="text-4xl font-bold text-white mb-8 text-center">Featured Articles</h2>
-              <div className="grid md:grid-cols-3 gap-8">
+            <section className="mb-16">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Featured Articles</h2>
+              <div className="grid md:grid-cols-3 gap-6">
                 {featuredPosts.map((post) => (
-                  <Card key={post.id} className="group bg-white/5 backdrop-blur-xl border border-emerald-500/30 hover:border-emerald-400 transition-all duration-500 hover:scale-105 cursor-pointer">
+                  <Card key={post.id} className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 cursor-pointer">
                     <CardContent className="p-0">
                       {post.featured_image && (
-                        <div className="h-48 bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 rounded-t-lg"></div>
+                        <div className="h-48 bg-blue-50 rounded-t-lg"></div>
                       )}
                       <div className="p-6">
-                        <Badge className="bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 text-emerald-400 border-emerald-500/30 mb-4">
+                        <Badge className="bg-blue-100 text-blue-800 text-xs mb-3">
                           Featured
                         </Badge>
-                        <h3 className="text-xl font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors line-clamp-2">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors line-clamp-2">
                           {post.title}
                         </h3>
-                        <p className="text-gray-300 mb-4 line-clamp-3">{post.excerpt}</p>
+                        <p className="text-gray-600 mb-4 line-clamp-3 text-sm">{post.excerpt}</p>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-400">
+                          <span className="text-xs text-gray-500">
                             {new Date(post.published_at).toLocaleDateString()}
                           </span>
                           <Link to={`/blog/${post.slug}`}>
-                            <Button size="sm" className="bg-gradient-to-r from-emerald-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 text-white">
+                            <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
                               Read More
                             </Button>
                           </Link>
