@@ -155,6 +155,9 @@ backend:
         - working: true
           agent: "main"
           comment: "Implemented /api/jobs/{job_id}/apply endpoint for authenticated users to submit job applications"
+        - working: true
+          agent: "testing"
+          comment: "Job application APIs fully tested: POST /api/jobs/{id}/apply-lead for lead collection working correctly (collects name, email, phone, position, experience). POST /api/jobs/{id}/apply for authenticated job applications working correctly with JWT authentication. Duplicate application prevention working (returns 400 for duplicate attempts). Application count increments correctly after submissions."
 
   - task: "Employer dashboard backend APIs"
     implemented: false
