@@ -697,6 +697,15 @@ const AdminPanel = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* AI Enhancement Modal */}
+      <AIJobEnhancementModal
+        isOpen={isAIModalOpen}
+        onClose={() => setIsAIModalOpen(false)}
+        jobData={newJob}
+        onApplyEnhancement={handleAIEnhancement}
+        backendUrl={BACKEND_URL}
+      />
     </div>
   );
 };
