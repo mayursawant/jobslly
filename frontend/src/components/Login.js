@@ -145,15 +145,24 @@ const Login = () => {
                 Demo Accounts for Testing:
               </p>
               <div className="text-sm text-gray-700 space-y-2">
-                <div className="flex justify-between items-center bg-white p-2 rounded border">
+                <div 
+                  className="flex justify-between items-center bg-white p-2 rounded border cursor-pointer hover:bg-teal-50 hover:border-teal-300 transition-colors duration-200"
+                  onClick={() => fillDemoCredentials('doctor@gmail.com', 'password123')}
+                >
                   <span>🩺 <strong>Doctor:</strong> doctor@gmail.com</span>
                   <span className="text-teal-600 font-mono">password123</span>
                 </div>
-                <div className="flex justify-between items-center bg-white p-2 rounded border">
+                <div 
+                  className="flex justify-between items-center bg-white p-2 rounded border cursor-pointer hover:bg-teal-50 hover:border-teal-300 transition-colors duration-200"
+                  onClick={() => fillDemoCredentials('hr@gmail.com', 'password123')}
+                >
                   <span>🏥 <strong>Employer:</strong> hr@gmail.com</span>
                   <span className="text-teal-600 font-mono">password123</span>
                 </div>
-                <div className="flex justify-between items-center bg-white p-2 rounded border">
+                <div 
+                  className="flex justify-between items-center bg-white p-2 rounded border cursor-pointer hover:bg-teal-50 hover:border-teal-300 transition-colors duration-200"
+                  onClick={() => fillDemoCredentials('admin@gmail.com', 'admin123')}
+                >
                   <span>⚡ <strong>Admin:</strong> admin@gmail.com</span>
                   <span className="text-teal-600 font-mono">admin123</span>
                 </div>
