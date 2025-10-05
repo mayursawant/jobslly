@@ -150,6 +150,42 @@ backend:
           agent: "main"
           comment: "Implemented /api/jobs/{job_id}/apply endpoint for authenticated users to submit job applications"
 
+  - task: "Employer dashboard backend APIs"
+    implemented: false
+    working: false
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Need to implement employer dashboard APIs for job management, candidate viewing, analytics"
+
+  - task: "Employer dashboard job posting interface"
+    implemented: false
+    working: false
+    file: "components/EmployerDashboard.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Need to create employer dashboard component with job posting functionality"
+
+  - task: "Candidate shortlisting and resume viewing"
+    implemented: false
+    working: false
+    file: "components/EmployerDashboard.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Need to implement candidate management features in employer dashboard"
+
 frontend:
   - task: "LeadCollectionModal integration"
     implemented: true
