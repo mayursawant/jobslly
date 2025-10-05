@@ -269,6 +269,9 @@ backend:
         - working: true
           agent: "main"
           comment: "Successfully populated 15 jobs, 20 applications, 20 leads, 10 SEO blogs, 3 users with proper roles"
+        - working: true
+          agent: "testing"
+          comment: "Sample data validation completed successfully: Found 15 jobs (including 3 external jobs with redirect URLs), 10 published blog posts, and 3 test users with correct roles (admin@gmail.com as admin, hr@gmail.com as employer, doctor@gmail.com as job_seeker). All sample data properly structured and accessible via APIs. External jobs flow tested and working correctly with lead collection and redirect functionality."
 
 frontend:
   - task: "AI Enhancement Modal integration"
