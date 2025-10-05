@@ -245,9 +245,9 @@ const JobDetails = () => {
                     </div>
                     
                     <Button
-                      onClick={handleApply}
+                      onClick={handleApplyClick}
                       disabled={applying}
-                      className="w-full btn-primary"
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3"
                       data-testid="apply-button"
                     >
                       {applying ? (
