@@ -400,27 +400,30 @@ const Home = () => {
       </section>
 
       {/* Call to Action */}
-      <section className="py-24 px-4 relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-600/20 to-purple-600/20 backdrop-blur-3xl"></div>
-        <div className="relative max-w-4xl mx-auto text-center">
-          <div className="mb-8">
-            <span className="text-6xl">🚀</span>
-          </div>
-          <h2 className="text-5xl font-bold text-white mb-6">Ready to Transform Your Healthcare Career?</h2>
-          <p className="text-xl text-gray-300 mb-12 opacity-90">
-            Join thousands of healthcare professionals who discovered their dream careers through Jobslly
+      <section className="py-16 px-4 bg-blue-600">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to Advance Your Healthcare Career?</h2>
+          <p className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
+            Join thousands of healthcare professionals who found their dream jobs through our platform
           </p>
           
           {!isAuthenticated ? (
-            <Link to="/register">
-              <Button size="lg" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold text-xl px-12 py-6 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110" data-testid="cta-join-now">
-                🌟 Join the Future - It's Free!
-              </Button>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/register">
+                <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-50 font-semibold px-8 py-3 rounded-md" data-testid="cta-join-now">
+                  Get Started Free
+                </Button>
+              </Link>
+              <Link to="/jobs">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 font-semibold px-8 py-3 rounded-md" data-testid="cta-browse-jobs">
+                  Browse Jobs
+                </Button>
+              </Link>
+            </div>
           ) : (
             <Link to="/dashboard">
-              <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold text-xl px-12 py-6 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110" data-testid="cta-explore-opportunities">
-                🎯 Explore Your Opportunities
+              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-50 font-semibold px-8 py-3 rounded-md" data-testid="cta-explore-opportunities">
+                Go to Dashboard
               </Button>
             </Link>
           )}
