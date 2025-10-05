@@ -741,6 +741,8 @@ async def initialize_default_users():
         created_users = []
         for user_data in default_users:
             # Hash password
+            from passlib.context import CryptContext
+            pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
             hashed_password = pwd_context.hash(user_data["password"])
             
             # Create user
