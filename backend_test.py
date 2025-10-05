@@ -21,6 +21,7 @@ class HealthcareJobsAPITester:
         self.base_url = BASE_URL
         self.job_seeker_token = None
         self.employer_token = None
+        self.admin_token = None
         self.test_job_id = None
         self.results = {
             "passed": 0,
