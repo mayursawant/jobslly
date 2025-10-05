@@ -75,16 +75,16 @@ const Home = () => {
             </div>
 
             <h1 className="text-6xl md:text-8xl font-bold mb-6 leading-tight">
-              <span className="block bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-transparent animate-gradient">
+              <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent animate-gradient">
                 The Future of
               </span>
-              <span className="block text-gray-800 mt-2">
+              <span className="block text-slate-900 mt-2">
                 Healthcare Careers
               </span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed">
-              Discover opportunities for <span className="text-indigo-600 font-semibold">Doctors</span>, <span className="text-emerald-600 font-semibold">Pharmacists</span>, <span className="text-blue-600 font-semibold">Dentists</span>, <span className="text-purple-600 font-semibold">Physiotherapists</span>, and <span className="text-teal-600 font-semibold">Nurses</span>
+            <p className="text-xl md:text-2xl text-slate-700 mb-12 max-w-4xl mx-auto leading-relaxed">
+              Discover opportunities for <span className="text-blue-700 font-semibold">Doctors</span>, <span className="text-emerald-700 font-semibold">Pharmacists</span>, <span className="text-indigo-700 font-semibold">Dentists</span>, <span className="text-purple-700 font-semibold">Physiotherapists</span>, and <span className="text-teal-700 font-semibold">Nurses</span>
             </p>
 
             {/* Advanced Search Bar */}
