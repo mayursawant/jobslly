@@ -123,6 +123,9 @@ class Token(BaseModel):
 
 # Helper functions
 def hash_password(password: str) -> str:
+    # Ensure password is not longer than 72 bytes for bcrypt
+    if len(password.encode('utf-8')) > 72:
+        password = password[:72]
     return pwd_context.hash(password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
