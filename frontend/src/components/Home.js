@@ -1,7 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../App';
 import { Button } from './ui/button';
+import { Input } from './ui/input';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import axios from 'axios';
@@ -11,9 +12,12 @@ const API = `${BACKEND_URL}/api`;
 
 const Home = () => {
   const { isAuthenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [featuredJobs, setFeaturedJobs] = useState([]);
-  const [stats, setStats] = useState({ jobs: 0, companies: 0, applications: 0 });
+  const [stats, setStats] = useState({ jobs: 0, companies: 0, applications: 0, professionals: 0 });
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchLocation, setSearchLocation] = useState('');
 
   useEffect(() => {
     fetchFeaturedJobs();
@@ -24,11 +28,12 @@ const Home = () => {
       const response = await axios.get(`${API}/jobs?limit=6`);
       setFeaturedJobs(response.data);
       
-      // Mock some stats for demonstration
+      // Enhanced stats for healthcare professionals
       setStats({
-        jobs: response.data.length * 10,
-        companies: Math.floor(response.data.length * 2.5),
-        applications: response.data.length * 50
+        jobs: response.data.length * 25,
+        companies: Math.floor(response.data.length * 8.5),
+        applications: response.data.length * 150,
+        professionals: response.data.length * 75
       });
     } catch (error) {
       console.error('Failed to fetch featured jobs:', error);
@@ -37,135 +42,227 @@ const Home = () => {
     }
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    navigate(`/jobs?search=${encodeURIComponent(searchTerm)}&location=${encodeURIComponent(searchLocation)}`);
+  };
+
+  const specializations = [
+    { icon: '🩺', name: 'Doctors', count: '2,340+', color: 'from-red-500 to-pink-600' },
+    { icon: '💊', name: 'Pharmacy', count: '1,890+', color: 'from-green-500 to-emerald-600' },
+    { icon: '🦷', name: 'Dentist', count: '1,245+', color: 'from-blue-500 to-cyan-600' },
+    { icon: '🏃‍♂️', name: 'Physiotherapy', count: '967+', color: 'from-purple-500 to-indigo-600' },
+    { icon: '👩‍⚕️', name: 'Nurses', count: '3,456+', color: 'from-teal-500 to-cyan-600' },
+    { icon: '🧠', name: 'Mental Health', count: '789+', color: 'from-amber-500 to-orange-600' }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-100/40 to-teal-100/40"></div>
-        
-        {/* Background decoration */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-emerald-400/20 to-teal-500/20 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-teal-400/20 to-cyan-500/20 rounded-full blur-3xl animate-float" style={{animationDelay: '1s'}}></div>
-        
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      {/* Animated Background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
+      </div>
+
+      {/* Hero Section with Search */}
+      <section className="relative py-24 px-4 overflow-hidden">
         <div className="relative max-w-6xl mx-auto text-center">
           <div className="animate-fade-in-up">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              <span className="text-gradient-primary">Healthcare</span>
-              <br />
-              <span className="text-gray-800">Career Opportunities</span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Connect talented healthcare professionals with leading medical institutions. 
-              AI-powered matching for the perfect career fit.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-              {!isAuthenticated ? (
-                <>
-                  <Link to="/register">
-                    <Button size="lg" className="btn-primary text-lg px-8 py-4 animate-pulse-glow" data-testid="hero-get-started">
-                      Get Started Today
-                    </Button>
-                  </Link>
-                  <Link to="/jobs">
-                    <Button variant="outline" size="lg" className="btn-secondary text-lg px-8 py-4" data-testid="hero-browse-jobs">
-                      Browse Jobs
-                    </Button>
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link to="/jobs">
-                    <Button size="lg" className="btn-primary text-lg px-8 py-4" data-testid="hero-find-jobs">
-                      Find Your Next Role
-                    </Button>
-                  </Link>
-                  <Link to="/dashboard">
-                    <Button variant="outline" size="lg" className="btn-secondary text-lg px-8 py-4" data-testid="hero-dashboard">
-                      Go to Dashboard
-                    </Button>
-                  </Link>
-                </>
-              )}
+            {/* Gamification Badge */}
+            <div className="inline-flex items-center px-4 py-2 mb-8 bg-gradient-to-r from-yellow-400/20 to-orange-500/20 rounded-full border border-yellow-400/30 backdrop-blur-sm">
+              <span className="w-2 h-2 bg-yellow-400 rounded-full mr-2 animate-pulse"></span>
+              <span className="text-yellow-400 font-medium text-sm">🚀 Level up your healthcare career</span>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <h1 className="text-6xl md:text-8xl font-bold mb-6 leading-tight">
+              <span className="block bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent animate-gradient">
+                The Future of
+              </span>
+              <span className="block text-white mt-2">
+                Healthcare Careers
+              </span>
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+              Discover opportunities for <span className="text-cyan-400 font-semibold">Doctors</span>, <span className="text-green-400 font-semibold">Pharmacists</span>, <span className="text-blue-400 font-semibold">Dentists</span>, <span className="text-purple-400 font-semibold">Physiotherapists</span>, and <span className="text-teal-400 font-semibold">Nurses</span>
+            </p>
+
+            {/* Advanced Search Bar */}
+            <div className="max-w-4xl mx-auto mb-12" data-testid="hero-search-section">
+              <form onSubmit={handleSearch} className="relative">
+                <div className="flex flex-col md:flex-row gap-4 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl">
+                  <div className="flex-1">
+                    <Input
+                      type="text"
+                      placeholder="Search by specialty, position, or keywords..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="bg-white/20 border-white/30 text-white placeholder-gray-300 h-14 text-lg rounded-xl focus:bg-white/30 transition-all"
+                      data-testid="hero-search-input"
+                    />
+                  </div>
+                  <div className="flex-1 md:flex-initial md:w-64">
+                    <Input
+                      type="text"
+                      placeholder="Location..."
+                      value={searchLocation}
+                      onChange={(e) => setSearchLocation(e.target.value)}
+                      className="bg-white/20 border-white/30 text-white placeholder-gray-300 h-14 text-lg rounded-xl focus:bg-white/30 transition-all"
+                      data-testid="hero-location-input"
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold h-14 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                    data-testid="hero-search-button"
+                  >
+                    🔍 Search Future
+                  </Button>
+                </div>
+              </form>
+              
+              {/* Quick Action Buttons */}
+              <div className="flex flex-wrap justify-center gap-3 mt-8">
+                {!isAuthenticated ? (
+                  <>
+                    <Link to="/register">
+                      <Button size="lg" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="hero-get-started">
+                        🚀 Start Your Journey
+                      </Button>
+                    </Link>
+                    <Link to="/jobs">
+                      <Button variant="outline" size="lg" className="border-2 border-white/30 text-white hover:bg-white/10 font-semibold px-8 py-4 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-105" data-testid="hero-browse-jobs">
+                        🎯 Explore Opportunities
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/jobs">
+                      <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="hero-find-jobs">
+                        🎯 Find Your Next Role
+                      </Button>
+                    </Link>
+                    <Link to="/dashboard">
+                      <Button variant="outline" size="lg" className="border-2 border-white/30 text-white hover:bg-white/10 font-semibold px-8 py-4 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-105" data-testid="hero-dashboard">
+                        📊 Dashboard
+                      </Button>
+                    </Link>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Gamified Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
               <div className="text-center animate-slide-in-right" style={{animationDelay: '0.2s'}}>
-                <div className="text-4xl font-bold text-emerald-600 mb-2" data-testid="stats-jobs">{stats.jobs}+</div>
-                <div className="text-gray-600">Active Jobs</div>
+                <div className="text-5xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2" data-testid="stats-jobs">
+                  {stats.jobs}+
+                </div>
+                <div className="text-gray-300 font-medium">🎯 Active Opportunities</div>
               </div>
               <div className="text-center animate-slide-in-right" style={{animationDelay: '0.4s'}}>
-                <div className="text-4xl font-bold text-emerald-600 mb-2" data-testid="stats-companies">{stats.companies}+</div>
-                <div className="text-gray-600">Healthcare Partners</div>
+                <div className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent mb-2" data-testid="stats-companies">
+                  {stats.companies}+
+                </div>
+                <div className="text-gray-300 font-medium">🏥 Healthcare Partners</div>
               </div>
               <div className="text-center animate-slide-in-right" style={{animationDelay: '0.6s'}}>
-                <div className="text-4xl font-bold text-emerald-600 mb-2" data-testid="stats-applications">{stats.applications}+</div>
-                <div className="text-gray-600">Successful Placements</div>
+                <div className="text-5xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-500 bg-clip-text text-transparent mb-2" data-testid="stats-professionals">
+                  {stats.professionals}k+
+                </div>
+                <div className="text-gray-300 font-medium">👨‍⚕️ Active Professionals</div>
+              </div>
+              <div className="text-center animate-slide-in-right" style={{animationDelay: '0.8s'}}>
+                <div className="text-5xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent mb-2" data-testid="stats-applications">
+                  {stats.applications}+
+                </div>
+                <div className="text-gray-300 font-medium">✅ Success Stories</div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-4 bg-white/30">
+      {/* Healthcare Specializations */}
+      <section className="py-20 px-4 relative">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">AI-Powered Healthcare Recruitment</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Advanced technology meets healthcare expertise to deliver unmatched career opportunities
+            <h2 className="text-5xl font-bold text-white mb-4">Choose Your Healthcare Path</h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Unlock opportunities across all healthcare specializations with AI-powered matching
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {specializations.map((spec, index) => (
+              <Card key={spec.name} className="group bg-white/5 backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl cursor-pointer" data-testid={`specialization-${spec.name.toLowerCase()}`}>
+                <CardContent className="p-8 text-center">
+                  <div className="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                    {spec.icon}
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-2">{spec.name}</h3>
+                  <div className={`text-lg font-semibold bg-gradient-to-r ${spec.color} bg-clip-text text-transparent mb-4`}>
+                    {spec.count} Opportunities
+                  </div>
+                  <div className="h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:via-white/40 transition-all duration-300"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* AI Features Section */}
+      <section className="py-20 px-4 bg-black/20 backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-bold text-white mb-4">AI-Powered Career Evolution</h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Next-generation technology to accelerate your healthcare career journey
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="card group hover:border-emerald-200" data-testid="feature-matching">
-              <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
+            <Card className="group bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/30 hover:border-cyan-400 transition-all duration-500 hover:scale-105" data-testid="feature-matching">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                  <span className="text-2xl">🤖</span>
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">Smart Job Matching</h3>
-                <p className="text-gray-600">AI analyzes your skills and preferences to find perfect healthcare roles</p>
+                <h3 className="text-xl font-semibold mb-3 text-white">Smart AI Matching</h3>
+                <p className="text-gray-300 text-sm">AI analyzes your healthcare expertise to find perfect role matches</p>
               </CardContent>
             </Card>
 
-            <Card className="card group hover:border-emerald-200" data-testid="feature-resume">
-              <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
-                    <path fillRule="evenodd" d="M4 5a2 2 0 012-2v1a1 1 0 100 2v1a1 1 0 100 2v1a1 1 0 100 2v1a1 1 0 100 2v1a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm2.5 4.5a.5.5 0 000 1h7a.5.5 0 000-1h-7z" clipRule="evenodd"/>
-                  </svg>
+            <Card className="group bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 hover:border-purple-400 transition-all duration-500 hover:scale-105" data-testid="feature-resume">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                  <span className="text-2xl">📋</span>
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">Resume Analysis</h3>
-                <p className="text-gray-600">Get AI-powered feedback to optimize your healthcare resume</p>
+                <h3 className="text-xl font-semibold mb-3 text-white">Resume Evolution</h3>
+                <p className="text-gray-300 text-sm">AI-powered analysis to optimize your healthcare resume</p>
               </CardContent>
             </Card>
 
-            <Card className="card group hover:border-emerald-200" data-testid="feature-interview">
-              <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd"/>
-                  </svg>
+            <Card className="group bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30 hover:border-emerald-400 transition-all duration-500 hover:scale-105" data-testid="feature-interview">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                  <span className="text-2xl">💬</span>
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">Interview Prep</h3>
-                <p className="text-gray-600">AI-generated questions specific to healthcare positions</p>
+                <h3 className="text-xl font-semibold mb-3 text-white">Interview Mastery</h3>
+                <p className="text-gray-300 text-sm">AI-generated questions for healthcare interview success</p>
               </CardContent>
             </Card>
 
-            <Card className="card group hover:border-emerald-200" data-testid="feature-assistant">
-              <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd"/>
-                  </svg>
+            <Card className="group bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 hover:border-yellow-400 transition-all duration-500 hover:scale-105" data-testid="feature-assistant">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                  <span className="text-2xl">🧠</span>
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-gray-800">Career Assistant</h3>
-                <p className="text-gray-600">24/7 AI chatbot for career guidance and job search support</p>
+                <h3 className="text-xl font-semibold mb-3 text-white">Career AI Assistant</h3>
+                <p className="text-gray-300 text-sm">24/7 intelligent guidance for your healthcare career</p>
               </CardContent>
             </Card>
           </div>
@@ -177,44 +274,47 @@ const Home = () => {
         <section className="py-20 px-4" data-testid="featured-jobs-section">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-gray-800 mb-4">Featured Healthcare Opportunities</h2>
-              <p className="text-xl text-gray-600">Discover your next career move in healthcare</p>
+              <h2 className="text-5xl font-bold text-white mb-4">Trending Healthcare Opportunities</h2>
+              <p className="text-xl text-gray-300">Discover your next career milestone</p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
               {featuredJobs.slice(0, 6).map((job) => (
-                <Card key={job.id} className="job-card" data-testid={`featured-job-${job.id}`}>
+                <Card key={job.id} className="group bg-white/5 backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl cursor-pointer" data-testid={`featured-job-${job.id}`}>
                   <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
-                      <Badge variant="secondary" className="bg-emerald-100 text-emerald-700">
+                      <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white">
                         {job.job_type.replace('_', ' ').toUpperCase()}
                       </Badge>
                       {job.salary_min && (
-                        <span className="text-sm font-medium text-emerald-600">
+                        <span className="text-sm font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
                           ${job.salary_min.toLocaleString()}+
                         </span>
                       )}
                     </div>
                     
-                    <h3 className="text-xl font-semibold mb-2 text-gray-800">{job.title}</h3>
-                    <p className="text-emerald-600 font-medium mb-2">{job.company}</p>
-                    <p className="text-gray-600 mb-4">{job.location}</p>
+                    <h3 className="text-xl font-bold mb-2 text-white group-hover:text-cyan-400 transition-colors">{job.title}</h3>
+                    <p className="text-cyan-400 font-medium mb-2">{job.company}</p>
+                    <p className="text-gray-300 mb-4 flex items-center">
+                      <span className="mr-2">📍</span>
+                      {job.location}
+                    </p>
                     
-                    <p className="text-gray-700 mb-4 line-clamp-3">
+                    <p className="text-gray-300 mb-4 line-clamp-3 text-sm">
                       {job.description.substring(0, 120)}...
                     </p>
 
                     <div className="flex flex-wrap gap-2 mb-4">
                       {job.requirements.slice(0, 2).map((req, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
+                        <Badge key={index} variant="outline" className="text-xs border-white/20 text-gray-300">
                           {req}
                         </Badge>
                       ))}
                     </div>
 
                     <Link to={`/jobs/${job.id}`}>
-                      <Button className="w-full btn-primary" data-testid={`apply-job-${job.id}`}>
-                        View Details
+                      <Button className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-300 hover:scale-105" data-testid={`apply-job-${job.id}`}>
+                        🎯 Explore Role
                       </Button>
                     </Link>
                   </CardContent>
@@ -224,8 +324,8 @@ const Home = () => {
 
             <div className="text-center">
               <Link to="/jobs">
-                <Button size="lg" className="btn-primary" data-testid="view-all-jobs">
-                  View All Jobs
+                <Button size="lg" className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="view-all-jobs">
+                  🚀 Discover All Opportunities
                 </Button>
               </Link>
             </div>
@@ -234,23 +334,27 @@ const Home = () => {
       )}
 
       {/* Call to Action */}
-      <section className="py-20 px-4 bg-gradient-to-r from-emerald-500 to-teal-600">
-        <div className="max-w-4xl mx-auto text-center text-white">
-          <h2 className="text-4xl font-bold mb-4">Ready to Transform Your Healthcare Career?</h2>
-          <p className="text-xl mb-8 opacity-90">
-            Join thousands of healthcare professionals who found their dream jobs through our platform
+      <section className="py-24 px-4 relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-600/20 to-purple-600/20 backdrop-blur-3xl"></div>
+        <div className="relative max-w-4xl mx-auto text-center">
+          <div className="mb-8">
+            <span className="text-6xl">🚀</span>
+          </div>
+          <h2 className="text-5xl font-bold text-white mb-6">Ready to Transform Your Healthcare Career?</h2>
+          <p className="text-xl text-gray-300 mb-12 opacity-90">
+            Join thousands of healthcare professionals who discovered their dream careers through Jobslly
           </p>
           
           {!isAuthenticated ? (
             <Link to="/register">
-              <Button size="lg" className="bg-white text-emerald-600 hover:bg-gray-100 text-lg px-8 py-4" data-testid="cta-join-now">
-                Join Now - It's Free
+              <Button size="lg" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold text-xl px-12 py-6 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110" data-testid="cta-join-now">
+                🌟 Join the Future - It's Free!
               </Button>
             </Link>
           ) : (
             <Link to="/dashboard">
-              <Button size="lg" className="bg-white text-emerald-600 hover:bg-gray-100 text-lg px-8 py-4" data-testid="cta-explore-opportunities">
-                Explore Opportunities
+              <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold text-xl px-12 py-6 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110" data-testid="cta-explore-opportunities">
+                🎯 Explore Your Opportunities
               </Button>
             </Link>
           )}
