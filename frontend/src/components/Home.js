@@ -312,32 +312,31 @@ const Home = () => {
       )}
 
       {/* Health Hub Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-emerald-600/10 to-cyan-600/10 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold text-white mb-4">🧠 Health Hub</h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Stay ahead with the latest healthcare insights, career tips, and industry trends
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Health Hub</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Stay updated with the latest healthcare insights, career tips, and industry trends
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            {/* Sample blog previews - these would be fetched from API */}
-            <Card className="group bg-white/5 backdrop-blur-xl border border-emerald-500/30 hover:border-emerald-400 transition-all duration-500 hover:scale-105 cursor-pointer">
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            <Card className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 cursor-pointer">
               <CardContent className="p-6">
-                <Badge className="bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 text-emerald-400 border-emerald-500/30 mb-4">
+                <Badge className="bg-green-100 text-green-800 text-xs mb-3">
                   Healthcare Trends
                 </Badge>
-                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-emerald-400 transition-colors">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
                   AI Revolution in Healthcare: What It Means for Your Career
                 </h3>
-                <p className="text-gray-300 mb-4 line-clamp-3">
+                <p className="text-gray-600 mb-4 text-sm line-clamp-3">
                   Discover how artificial intelligence is transforming healthcare delivery and creating new career opportunities...
                 </p>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">5 min read</span>
+                  <span className="text-xs text-gray-500">5 min read</span>
                   <Link to="/blog">
-                    <Button size="sm" className="bg-gradient-to-r from-emerald-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 text-white">
+                    <Button size="sm" variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
                       Read More
                     </Button>
                   </Link>
@@ -345,21 +344,21 @@ const Home = () => {
               </CardContent>
             </Card>
 
-            <Card className="group bg-white/5 backdrop-blur-xl border border-cyan-500/30 hover:border-cyan-400 transition-all duration-500 hover:scale-105 cursor-pointer">
+            <Card className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 cursor-pointer">
               <CardContent className="p-6">
-                <Badge className="bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-400 border-cyan-500/30 mb-4">
+                <Badge className="bg-blue-100 text-blue-800 text-xs mb-3">
                   Career Development
                 </Badge>
-                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
                   Telehealth Opportunities: The Future of Remote Healthcare
                 </h3>
-                <p className="text-gray-300 mb-4 line-clamp-3">
+                <p className="text-gray-600 mb-4 text-sm line-clamp-3">
                   Explore the growing field of telehealth and how healthcare professionals can transition to remote work...
                 </p>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">7 min read</span>
+                  <span className="text-xs text-gray-500">7 min read</span>
                   <Link to="/blog">
-                    <Button size="sm" className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white">
+                    <Button size="sm" variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
                       Read More
                     </Button>
                   </Link>
@@ -367,21 +366,21 @@ const Home = () => {
               </CardContent>
             </Card>
 
-            <Card className="group bg-white/5 backdrop-blur-xl border border-purple-500/30 hover:border-purple-400 transition-all duration-500 hover:scale-105 cursor-pointer">
+            <Card className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 cursor-pointer">
               <CardContent className="p-6">
-                <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-400 border-purple-500/30 mb-4">
+                <Badge className="bg-purple-100 text-purple-800 text-xs mb-3">
                   Industry News
                 </Badge>
-                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-purple-400 transition-colors">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
                   Mental Health Careers: Meeting Growing Demand
                 </h3>
-                <p className="text-gray-300 mb-4 line-clamp-3">
+                <p className="text-gray-600 mb-4 text-sm line-clamp-3">
                   Understanding the surge in mental health awareness and the career opportunities it creates...
                 </p>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">6 min read</span>
+                  <span className="text-xs text-gray-500">6 min read</span>
                   <Link to="/blog">
-                    <Button size="sm" className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white">
+                    <Button size="sm" variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
                       Read More
                     </Button>
                   </Link>
@@ -392,8 +391,8 @@ const Home = () => {
 
           <div className="text-center">
             <Link to="/blog">
-              <Button size="lg" className="bg-gradient-to-r from-emerald-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-                🧠 Explore Health Hub
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3 rounded-md">
+                Explore Health Hub
               </Button>
             </Link>
           </div>
