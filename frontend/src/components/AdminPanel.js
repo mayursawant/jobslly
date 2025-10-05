@@ -100,6 +100,27 @@ const AdminPanel = () => {
     }
   };
 
+  const handleAIEnhancement = (field, enhancedContent) => {
+    if (field === 'description') {
+      setNewJob(prev => ({ ...prev, description: enhancedContent }));
+    } else if (field === 'requirements') {
+      // Parse AI response into array format
+      const requirementsArray = enhancedContent.split('\n')
+        .filter(line => line.trim())
+        .map(line => line.replace(/^\d+\.\s*|\-\s*|\*\s*/, '').trim())
+        .filter(req => req.length > 0);
+      setNewJob(prev => ({ ...prev, requirements: requirementsArray }));
+    } else if (field === 'benefits') {
+      // Parse AI response into array format
+      const benefitsArray = enhancedContent.split('\n')
+        .filter(line => line.trim())
+        .map(line => line.replace(/^\d+\.\s*|\-\s*|\*\s*/, '').trim())
+        .filter(benefit => benefit.length > 0);
+      setNewJob(prev => ({ ...prev, benefits: benefitsArray }));
+    }
+    toast.success(`${field} enhanced with AI suggestions!`);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-teal-100">
