@@ -365,6 +365,39 @@ const AdminPanel = () => {
                     />
                   </div>
                 </div>
+                
+                {/* External Job Configuration */}
+                <div className="border-t pt-6 space-y-4">
+                  <h3 className="text-lg font-semibold text-gray-800">🔗 External Job Configuration</h3>
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="checkbox"
+                      id="is_external"
+                      checked={newJob.is_external}
+                      onChange={(e) => setNewJob(prev => ({...prev, is_external: e.target.checked, external_url: e.target.checked ? prev.external_url : ''}))}
+                      className="w-4 h-4 text-emerald-600 bg-gray-100 border-gray-300 rounded focus:ring-emerald-500 focus:ring-2"
+                    />
+                    <label htmlFor="is_external" className="text-sm font-medium text-gray-700">
+                      External/Third-party Job (redirects to external application site)
+                    </label>
+                  </div>
+                  {newJob.is_external && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">External Application URL</label>
+                      <input
+                        type="url"
+                        value={newJob.external_url}
+                        onChange={(e) => setNewJob(prev => ({...prev, external_url: e.target.value}))}
+                        placeholder="https://example.com/jobs/apply-here"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        required={newJob.is_external}
+                      />
+                      <p className="text-sm text-gray-500 mt-1">
+                        📋 Users will still fill out lead information before being redirected to this external application site.
+                      </p>
+                    </div>
+                  )}
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Job Description</label>
                   <textarea
