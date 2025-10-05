@@ -12,8 +12,8 @@ import time
 
 # Configuration
 BASE_URL = "https://healthjobs.preview.emergentagent.com/api"
-TEST_USER_EMAIL = f"testuser_{uuid.uuid4().hex[:8]}@healthjobs.test"
-TEST_EMPLOYER_EMAIL = f"testemployer_{uuid.uuid4().hex[:8]}@healthjobs.test"
+TEST_USER_EMAIL = f"testuser_{uuid.uuid4().hex[:8]}@example.com"
+TEST_EMPLOYER_EMAIL = f"testemployer_{uuid.uuid4().hex[:8]}@example.com"
 TEST_PASSWORD = "TestPassword123!"
 
 class HealthcareJobsAPITester:
