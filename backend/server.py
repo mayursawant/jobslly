@@ -701,6 +701,188 @@ async def update_seo_settings(seo_data: SEOSettings, current_user: User = Depend
     
     return {"message": "SEO settings updated successfully"}
 
+# Enhanced User Profile Routes
+@api_router.get("/profile", response_model=UserProfile)
+async def get_user_profile(current_user: User = Depends(get_current_user)):
+    profile = await db.user_profiles.find_one({"user_id": current_user.id})
+    
+    if not profile:
+        # Create default profile
+        default_profile = UserProfile(user_id=current_user.id)
+        profile_dict = default_profile.dict()
+        profile_dict['created_at'] = profile_dict['created_at'].isoformat()
+        if profile_dict.get('updated_at'):
+            profile_dict['updated_at'] = profile_dict['updated_at'].isoformat()
+        
+        await db.user_profiles.insert_one(profile_dict)
+        return default_profile
+    
+    # Convert datetime strings back to datetime objects
+    if isinstance(profile.get('created_at'), str):
+        profile['created_at'] = datetime.fromisoformat(profile['created_at'])
+    if profile.get('updated_at') and isinstance(profile.get('updated_at'), str):
+        profile['updated_at'] = datetime.fromisoformat(profile['updated_at'])
+    
+    return UserProfile(**profile)
+
+@api_router.put("/profile", response_model=UserProfile)
+async def update_user_profile(profile_data: UserProfileUpdate, current_user: User = Depends(get_current_user)):
+    # Calculate profile completion percentage
+    completion_fields = ['phone', 'address', 'specialization', 'experience_years', 'education', 'skills']
+    filled_fields = sum(1 for field in completion_fields if getattr(profile_data, field, None))
+    completion_percentage = int((filled_fields / len(completion_fields)) * 100)
+    
+    update_data = profile_data.dict(exclude_unset=True)
+    update_data['profile_completion'] = completion_percentage
+    update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+    
+    await db.user_profiles.update_one(
+        {"user_id": current_user.id},
+        {"$set": update_data},
+        upsert=True
+    )
+    
+    updated_profile = await db.user_profiles.find_one({"user_id": current_user.id})
+    if isinstance(updated_profile.get('created_at'), str):
+        updated_profile['created_at'] = datetime.fromisoformat(updated_profile['created_at'])
+    if updated_profile.get('updated_at') and isinstance(updated_profile.get('updated_at'), str):
+        updated_profile['updated_at'] = datetime.fromisoformat(updated_profile['updated_at'])
+    
+    return UserProfile(**updated_profile)
+
+# Enhanced Job Application with Lead Collection
+@api_router.post("/jobs/{job_id}/apply-lead", response_model=Dict)
+async def apply_with_lead_collection(job_id: str, lead_data: JobLeadCreate):
+    # Check if job exists
+    job = await db.jobs.find_one({"id": job_id})
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Store lead information
+    lead = JobLead(**lead_data.dict(), job_id=job_id)
+    lead_dict = lead.dict()
+    lead_dict['created_at'] = lead_dict['created_at'].isoformat()
+    
+    await db.job_leads.insert_one(lead_dict)
+    
+    # Update job application count
+    await db.jobs.update_one(
+        {"id": job_id},
+        {"$inc": {"application_count": 1}}
+    )
+    
+    # If it's an external job, return redirect URL
+    if job.get('is_external') and job.get('external_url'):
+        return {
+            "success": True,
+            "message": "Lead collected successfully",
+            "redirect_url": job['external_url'],
+            "is_external": True
+        }
+    
+    return {
+        "success": True,
+        "message": "Application submitted successfully",
+        "is_external": False
+    }
+
+# Job Seeker Dashboard Routes
+@api_router.get("/job-seeker/dashboard")
+async def get_job_seeker_dashboard(current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.JOB_SEEKER:
+        raise HTTPException(status_code=403, detail="Job seeker access required")
+    
+    # Get applications
+    applications = await db.applications.find({"applicant_id": current_user.id}).to_list(length=None)
+    
+    # Get job leads (applications through lead collection)
+    leads = await db.job_leads.find({"email": current_user.email}).to_list(length=None)
+    
+    # Get saved jobs (if any)
+    saved_jobs = await db.saved_jobs.find({"user_id": current_user.id}).to_list(length=None) or []
+    
+    # Get profile completion
+    profile = await db.user_profiles.find_one({"user_id": current_user.id})
+    profile_completion = profile.get('profile_completion', 0) if profile else 0
+    
+    return {
+        "applications_count": len(applications),
+        "leads_count": len(leads),
+        "saved_jobs_count": len(saved_jobs),
+        "profile_completion": profile_completion,
+        "recent_applications": applications[-5:] if applications else [],
+        "recent_leads": leads[-5:] if leads else []
+    }
+
+# Employer Dashboard Routes
+@api_router.get("/employer/dashboard")
+async def get_employer_dashboard(current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.EMPLOYER:
+        raise HTTPException(status_code=403, detail="Employer access required")
+    
+    # Get employer's jobs
+    jobs = await db.jobs.find({"employer_id": current_user.id}).to_list(length=None)
+    
+    # Get applications for employer's jobs
+    job_ids = [job['id'] for job in jobs]
+    applications = await db.applications.find({"job_id": {"$in": job_ids}}).to_list(length=None)
+    
+    # Get leads for employer's jobs
+    leads = await db.job_leads.find({"job_id": {"$in": job_ids}}).to_list(length=None)
+    
+    # Calculate stats
+    total_views = sum(job.get('view_count', 0) for job in jobs)
+    total_applications = sum(job.get('application_count', 0) for job in jobs)
+    
+    return {
+        "total_jobs": len(jobs),
+        "active_jobs": len([j for j in jobs if j.get('is_approved', False)]),
+        "pending_jobs": len([j for j in jobs if not j.get('is_approved', False)]),
+        "total_applications": total_applications,
+        "total_leads": len(leads),
+        "total_views": total_views,
+        "recent_jobs": jobs[-5:] if jobs else [],
+        "recent_applications": applications[-10:] if applications else [],
+        "recent_leads": leads[-10:] if leads else []
+    }
+
+# Enhanced Job Routes with View Tracking
+@api_router.get("/jobs/{job_id}/details", response_model=Job)
+async def get_job_with_tracking(job_id: str):
+    job = await db.jobs.find_one({"id": job_id})
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Increment view count
+    await db.jobs.update_one(
+        {"id": job_id},
+        {"$inc": {"view_count": 1}}
+    )
+    
+    # Convert datetime strings
+    if isinstance(job.get('created_at'), str):
+        job['created_at'] = datetime.fromisoformat(job['created_at'])
+    if job.get('expires_at') and isinstance(job.get('expires_at'), str):
+        job['expires_at'] = datetime.fromisoformat(job['expires_at'])
+    if job.get('application_deadline') and isinstance(job.get('application_deadline'), str):
+        job['application_deadline'] = datetime.fromisoformat(job['application_deadline'])
+    
+    return Job(**job)
+
+# Admin Lead Management
+@api_router.get("/admin/leads")
+async def get_all_leads(current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    leads = await db.job_leads.find().sort("created_at", -1).to_list(length=None)
+    
+    for lead in leads:
+        if isinstance(lead.get('created_at'), str):
+            lead['created_at'] = datetime.fromisoformat(lead['created_at'])
+    
+    return leads
+
 # Include the router
 app.include_router(api_router)
 
