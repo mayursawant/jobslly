@@ -223,7 +223,6 @@ const Home = () => {
               <div className="text-sm text-gray-600 font-medium">Talented Candidates</div>
             </div>
           </div>
-          </div>
         </div>
       </section>
 
