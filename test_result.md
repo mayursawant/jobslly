@@ -282,9 +282,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Employer dashboard backend APIs"
-    - "Employer dashboard job posting interface"
-    - "Candidate shortlisting and resume viewing"
+    - "External job redirection links"
+    - "Third-party job listings toggle"
+    - "External job lead collection flow"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
