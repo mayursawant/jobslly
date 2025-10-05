@@ -125,21 +125,21 @@ function App() {
             <meta property="og:title" content="Jobslly - Future of Healthcare Careers" />
             <meta property="og:description" content="AI-powered healthcare job platform connecting medical professionals with leading institutions. Find your next career opportunity today." />
             <meta property="og:type" content="website" />
-            <meta property="og:url" content="https://healthjobs.preview.emergentagent.com/" />
-            <meta property="og:image" content="https://healthjobs.preview.emergentagent.com/og-image.jpg" />
+            <meta property="og:url" content="https://jobslly-health.preview.emergentagent.com/" />
+            <meta property="og:image" content="https://jobslly-health.preview.emergentagent.com/og-image.jpg" />
             <meta property="og:site_name" content="Jobslly" />
             
             {/* Twitter */}
             <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:title" content="Jobslly - Future of Healthcare Careers" />
             <meta name="twitter:description" content="AI-powered healthcare job platform for medical professionals" />
-            <meta name="twitter:image" content="https://healthjobs.preview.emergentagent.com/og-image.jpg" />
+            <meta name="twitter:image" content="https://jobslly-health.preview.emergentagent.com/og-image.jpg" />
             
             {/* Additional SEO Meta Tags */}
             <meta name="author" content="Jobslly" />
             <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
             <meta name="googlebot" content="index, follow" />
-            <link rel="canonical" href="https://healthjobs.preview.emergentagent.com/" />
+            <link rel="canonical" href="https://jobslly-health.preview.emergentagent.com/" />
             
             {/* Favicon and App Icons */}
             <link rel="icon" href="/favicon.ico" />
@@ -152,8 +152,8 @@ function App() {
                 "@type": "Organization",
                 "name": "Jobslly",
                 "description": "AI-powered healthcare career platform",
-                "url": "https://healthjobs.preview.emergentagent.com",
-                "logo": "https://healthjobs.preview.emergentagent.com/logo.png",
+                "url": "https://jobslly-health.preview.emergentagent.com",
+                "logo": "https://jobslly-health.preview.emergentagent.com/logo.png",
                 "sameAs": [
                   "https://linkedin.com/company/jobslly",
                   "https://twitter.com/jobslly"
@@ -168,10 +168,10 @@ function App() {
                 "@type": "WebSite",
                 "name": "Jobslly",
                 "description": "Future of Healthcare Careers - AI-Powered Job Platform",
-                "url": "https://healthjobs.preview.emergentagent.com",
+                "url": "https://jobslly-health.preview.emergentagent.com",
                 "potentialAction": {
                   "@type": "SearchAction",
-                  "target": "https://healthjobs.preview.emergentagent.com/jobs?search={search_term_string}",
+                  "target": "https://jobslly-health.preview.emergentagent.com/jobs?search={search_term_string}",
                   "query-input": "required name=search_term_string"
                 },
                 "publisher": {
@@ -186,10 +186,10 @@ function App() {
               {JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "LocalBusiness",
-                "@id": "https://healthjobs.preview.emergentagent.com",
+                "@id": "https://jobslly-health.preview.emergentagent.com",
                 "name": "Jobslly",
                 "description": "Healthcare job platform connecting medical professionals with opportunities",
-                "url": "https://healthjobs.preview.emergentagent.com",
+                "url": "https://jobslly-health.preview.emergentagent.com",
                 "telephone": "+1-800-JOBSLLY",
                 "priceRange": "Free",
                 "openingHours": "Mo-Su 00:00-24:00",
