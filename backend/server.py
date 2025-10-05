@@ -156,7 +156,7 @@ class JobLeadCreate(BaseModel):
     email: str
     phone: Optional[str] = None
     current_position: Optional[str] = None
-    experience_years: Optional[int] = None
+    experience_years: Optional[str] = None
     message: Optional[str] = None
 
 class JobCreate(BaseModel):
