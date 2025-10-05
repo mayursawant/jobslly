@@ -75,7 +75,7 @@ const Login = () => {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                <Label htmlFor="email" className="text-sm font-medium text-gray-900">
                   Email Address
                 </Label>
                 <Input
