@@ -136,8 +136,8 @@ backend:
           comment: "Fixed routing issue - moved endpoints to api_router with /api prefix. Both /api/sitemap.xml and /api/robots.txt now working correctly with proper XML and content"
 
   - task: "Job application submission API"
-    implemented: false
-    working: false
+    implemented: true
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "high"
@@ -146,6 +146,9 @@ backend:
         - working: false
           agent: "main"
           comment: "Need to implement job application submission endpoint for LeadCollectionModal"
+        - working: true
+          agent: "main"
+          comment: "Implemented /api/jobs/{job_id}/apply endpoint for authenticated users to submit job applications"
 
 frontend:
   - task: "LeadCollectionModal integration"
