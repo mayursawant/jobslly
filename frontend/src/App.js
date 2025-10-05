@@ -236,6 +236,7 @@ function App() {
           </main>
           <Footer />
           <ChatBot />
+          <LeadChatbot />
           <Toaster />
         </div>
       </BrowserRouter>
