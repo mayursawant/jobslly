@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, MessageCircle, Send } from 'lucide-react';
+import { X, MessageCircle, Send, Bot, User } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 
 const LeadChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
