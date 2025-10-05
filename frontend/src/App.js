@@ -111,7 +111,31 @@ function App() {
   return (
     <AuthContext.Provider value={authValue}>
       <BrowserRouter>
-        <div className="App min-h-screen bg-gradient-to-br from-emerald-50 to-teal-100">
+        <div className="App min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+          <Helmet>
+            <title>Jobslly - Future of Healthcare Careers</title>
+            <meta name="description" content="Discover healthcare opportunities for Doctors, Pharmacists, Dentists, Physiotherapists, and Nurses with AI-powered matching and career advancement tools." />
+            <meta name="keywords" content="healthcare jobs, medical careers, doctor jobs, nurse jobs, pharmacy careers, dentist jobs, physiotherapy jobs, AI job matching" />
+            <meta property="og:title" content="Jobslly - Future of Healthcare Careers" />
+            <meta property="og:description" content="Next-generation healthcare job platform with AI-powered career matching" />
+            <meta property="og:type" content="website" />
+            <meta name="twitter:card" content="summary_large_image" />
+            <link rel="canonical" href="https://careerheal.preview.emergentagent.com/" />
+            <script type="application/ld+json">
+              {JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "name": "Jobslly",
+                "description": "Future of Healthcare Careers",
+                "url": "https://careerheal.preview.emergentagent.com",
+                "potentialAction": {
+                  "@type": "SearchAction",
+                  "target": "https://careerheal.preview.emergentagent.com/jobs?search={search_term_string}",
+                  "query-input": "required name=search_term_string"
+                }
+              })}
+            </script>
+          </Helmet>
           <Navbar />
           <main className="pt-16">
             <Routes>
