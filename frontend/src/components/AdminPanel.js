@@ -425,7 +425,17 @@ const AdminPanel = () => {
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Job Description</label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-medium text-gray-700">Job Description</label>
+                    <button
+                      type="button"
+                      onClick={() => setIsAIModalOpen(true)}
+                      className="flex items-center space-x-2 px-3 py-1 text-sm bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-md hover:from-purple-600 hover:to-blue-600 transition-all transform hover:scale-105 shadow-sm"
+                    >
+                      <Wand2 className="w-4 h-4" />
+                      <span>AI Enhance</span>
+                    </button>
+                  </div>
                   <textarea
                     value={newJob.description}
                     onChange={(e) => setNewJob(prev => ({...prev, description: e.target.value}))}
