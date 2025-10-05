@@ -37,11 +37,21 @@ const LeadChatbot = () => {
       const timer = setTimeout(() => {
         setIsOpen(true);
         setHasAutoOpened(true);
+        // Store in localStorage to prevent auto-open on subsequent visits
+        localStorage.setItem('jobslly_chatbot_opened', 'true');
       }, 5000);
       
       return () => clearTimeout(timer);
     }
-  }, [hasAutoOpened]);
+  }, []);
+
+  useEffect(() => {
+    // Check if chatbot was already opened before
+    const wasOpened = localStorage.getItem('jobslly_chatbot_opened');
+    if (wasOpened) {
+      setHasAutoOpened(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (isOpen && messages.length === 0) {
