@@ -12,6 +12,7 @@ import Dashboard from './components/Dashboard';
 import AdminPanel from './components/AdminPanel';
 import Login from './components/Login';
 import Register from './components/Register';
+import CMSLogin from './components/CMSLogin';
 import ChatBot from './components/ChatBot';
 import { Toaster } from './components/ui/sonner';
 
