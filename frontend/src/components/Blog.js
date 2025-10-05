@@ -58,28 +58,52 @@ const Blog = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="py-16 px-4">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="mb-12">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Health Hub</h1>
-            <p className="text-lg text-gray-600 mb-8 max-w-3xl">
-              Stay updated with the latest healthcare trends, career insights, and professional development tips
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-emerald-50">
+      {/* Hero Section */}
+      <section className="relative py-20 px-4 bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 text-white overflow-hidden">
+        {/* Background animation elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full animate-bounce"></div>
+          <div className="absolute top-32 right-20 w-16 h-16 bg-white/20 rounded-full animate-pulse"></div>
+          <div className="absolute bottom-20 left-40 w-12 h-12 bg-white/15 rounded-full animate-ping"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto text-center relative">
+          <div className="inline-flex items-center px-4 py-2 mb-6 bg-white/20 rounded-full border border-white/30">
+            <span className="text-white font-semibold text-sm">🧠 Healthcare Knowledge Hub</span>
+          </div>
+          
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+            Health Hub
+          </h1>
+          
+          <p className="text-xl text-teal-100 mb-8 max-w-3xl mx-auto">
+            Stay ahead with the latest healthcare insights, career guidance, and industry trends
+          </p>
 
-            {/* Search Bar */}
-            <div className="max-w-xl">
+          {/* Enhanced Search Bar */}
+          <div className="max-w-2xl mx-auto">
+            <div className="relative">
               <Input
                 type="text"
-                placeholder="Search articles, topics, or keywords..."
+                placeholder="🔍 Search articles, trends, or topics..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="h-12"
+                className="h-14 pl-12 pr-4 bg-white/95 border-0 text-gray-900 placeholder-gray-500 rounded-2xl shadow-lg focus:ring-0 focus:outline-none"
                 data-testid="blog-search-input"
               />
+              <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <div className="py-16 px-4">
+        <div className="max-w-7xl mx-auto">
 
           {/* Featured Posts */}
           {featuredPosts.length > 0 && (
