@@ -81,8 +81,81 @@ class Job(BaseModel):
     benefits: List[str] = []
     employer_id: str
     is_approved: bool = False
+    # Third-party job redirection features
+    is_external: bool = False
+    external_url: Optional[str] = None
+    application_deadline: Optional[datetime] = None
+    # Enhanced tracking
+    view_count: int = 0
+    application_count: int = 0
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     expires_at: Optional[datetime] = None
+
+# Enhanced User Profile Model
+class UserProfile(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    # Personal Information
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    date_of_birth: Optional[str] = None
+    # Professional Information
+    specialization: Optional[str] = None
+    experience_years: Optional[int] = None
+    education: List[Dict[str, str]] = []
+    certifications: List[str] = []
+    skills: List[str] = []
+    # Resume and Portfolio
+    resume_url: Optional[str] = None
+    portfolio_url: Optional[str] = None
+    linkedin_url: Optional[str] = None
+    # Preferences
+    preferred_job_type: List[str] = []
+    preferred_locations: List[str] = []
+    salary_expectation_min: Optional[int] = None
+    salary_expectation_max: Optional[int] = None
+    # Tracking
+    profile_completion: int = 0  # Percentage
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: Optional[datetime] = None
+
+class UserProfileUpdate(BaseModel):
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    date_of_birth: Optional[str] = None
+    specialization: Optional[str] = None
+    experience_years: Optional[int] = None
+    education: List[Dict[str, str]] = []
+    certifications: List[str] = []
+    skills: List[str] = []
+    portfolio_url: Optional[str] = None
+    linkedin_url: Optional[str] = None
+    preferred_job_type: List[str] = []
+    preferred_locations: List[str] = []
+    salary_expectation_min: Optional[int] = None
+    salary_expectation_max: Optional[int] = None
+
+# Lead Collection Model
+class JobLead(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    job_id: str
+    name: str
+    email: str
+    phone: Optional[str] = None
+    current_position: Optional[str] = None
+    experience_years: Optional[int] = None
+    message: Optional[str] = None
+    source: str = "job_application"  # job_application, chatbot, newsletter
+    status: str = "new"  # new, contacted, converted, closed
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class JobLeadCreate(BaseModel):
+    name: str
+    email: str
+    phone: Optional[str] = None
+    current_position: Optional[str] = None
+    experience_years: Optional[int] = None
+    message: Optional[str] = None
 
 class JobCreate(BaseModel):
     title: str
