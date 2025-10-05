@@ -33,8 +33,8 @@ const LeadChatbot = () => {
   useEffect(() => {
     if (isOpen && messages.length === 0) {
       setTimeout(() => {
-        addBotMessage(chatFlow[0].message);
-      }, 500);
+        addBotMessage("Hi there! 👋 I'm your healthcare career assistant. How can I help you today?");
+      }, 800);
     }
   }, [isOpen]);
 
@@ -50,12 +50,12 @@ const LeadChatbot = () => {
     setIsTyping(true);
     setTimeout(() => {
       setMessages(prev => [...prev, { 
-        text: message.replace('{name}', leadData.name || ''), 
+        text: message, 
         type: 'bot', 
         timestamp: new Date() 
       }]);
       setIsTyping(false);
-    }, 1000 + Math.random() * 1000);
+    }, 800 + Math.random() * 600);
   };
 
   const addUserMessage = (message) => {
@@ -66,56 +66,75 @@ const LeadChatbot = () => {
     }]);
   };
 
-  const handleSend = () => {
+  const getAIResponse = async (userMessage) => {
+    try {
+      // Call the AI assistant endpoint
+      const response = await axios.post(`${API}/ai/job-posting-assistant`, {
+        question: `User says: "${userMessage}". Respond as a helpful healthcare career chatbot with short, friendly answers (max 2 sentences). Focus on job search, career advice, or healthcare opportunities.`
+      });
+      
+      return response.data.answer || "I'm here to help with healthcare career questions! Ask me about jobs, career advice, or opportunities.";
+    } catch (error) {
+      console.error('AI response error:', error);
+      return getDefaultResponse(userMessage);
+    }
+  };
+
+  const getDefaultResponse = (message) => {
+    const lowerMessage = message.toLowerCase();
+    
+    if (lowerMessage.includes('job') || lowerMessage.includes('position')) {
+      return "Great! We have 11K+ healthcare jobs available. What type of role are you looking for? 🏥";
+    }
+    if (lowerMessage.includes('doctor') || lowerMessage.includes('physician')) {
+      return "Excellent! We have many doctor positions available. Would you like me to show you our latest openings? 👨‍⚕️";
+    }
+    if (lowerMessage.includes('nurse') || lowerMessage.includes('nursing')) {
+      return "Perfect! Nursing is in high demand. We have great opportunities waiting for you! 👩‍⚕️";
+    }
+    if (lowerMessage.includes('pharmacist') || lowerMessage.includes('pharmacy')) {
+      return "Awesome! Pharmacist roles are booming. Let me help you find the perfect match! 💊";
+    }
+    if (lowerMessage.includes('salary') || lowerMessage.includes('pay')) {
+      return "Healthcare salaries are competitive! It depends on your specialty and experience. What field are you in? 💰";
+    }
+    if (lowerMessage.includes('experience') || lowerMessage.includes('years')) {
+      return "Experience is valuable! We have opportunities for all levels - from fresh graduates to seasoned professionals. 🎓";
+    }
+    if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+      return "Hello! I'm excited to help you with your healthcare career. What can I assist you with today? 😊";
+    }
+    
+    return "That's interesting! I'm here to help with healthcare careers, job searches, and professional advice. What would you like to know? 🤔";
+  };
+
+  const handleSend = async () => {
     if (!currentInput.trim()) return;
 
     const userMessage = currentInput.trim();
     addUserMessage(userMessage);
-
-    // Store lead data
-    const currentStepData = chatFlow[currentStep];
-    if (currentStepData.field) {
-      setLeadData(prev => ({
-        ...prev,
-        [currentStepData.field]: userMessage
-      }));
-    }
-
     setCurrentInput('');
-
-    // Move to next step
-    if (currentStep < chatFlow.length - 1) {
-      setTimeout(() => {
-        const nextStep = currentStep + 1;
-        setCurrentStep(nextStep);
-        addBotMessage(chatFlow[nextStep].message);
-      }, 1000);
-    } else {
-      // Final step - save lead
-      saveLead({
-        ...leadData,
-        [currentStepData.field]: userMessage
-      });
-    }
-  };
-
-  const saveLead = async (data) => {
+    
+    // Get AI response
+    setIsTyping(true);
     try {
-      // Here you would typically send to your backend
-      console.log('Lead data collected:', data);
-      
-      // Show success message
+      const response = await getAIResponse(userMessage);
       setTimeout(() => {
-        addBotMessage("Thanks! I've saved your details. You'll hear from us soon! 🎯");
-      }, 1000);
+        addBotMessage(response);
+      }, 1000 + Math.random() * 800);
     } catch (error) {
-      console.error('Error saving lead:', error);
+      setTimeout(() => {
+        addBotMessage("I'm having trouble connecting right now. Try asking about healthcare jobs, career advice, or opportunities! 🔄");
+      }, 1000);
     }
   };
 
-  const handleOptionClick = (option) => {
-    setCurrentInput(option);
-    setTimeout(() => handleSend(), 100);
+  const handleQuickReply = (reply) => {
+    addUserMessage(reply);
+    setTimeout(async () => {
+      const response = await getAIResponse(reply);
+      addBotMessage(response);
+    }, 600);
   };
 
   const handleKeyPress = (e) => {
