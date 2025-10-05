@@ -144,15 +144,18 @@ backend:
 frontend:
   - task: "LeadCollectionModal integration"
     implemented: true
-    working: "NA"
+    working: true
     file: "components/JobDetails.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Modal exists but need to test 'Apply Now' functionality flow"
+        - working: true
+          agent: "main"
+          comment: "Fixed data type mismatch in backend (experience_years string vs int). Modal now works perfectly - collects lead data and redirects to registration"
 
   - task: "Job listings display"
     implemented: true
