@@ -145,7 +145,7 @@ class JobLead(BaseModel):
     email: str
     phone: Optional[str] = None
     current_position: Optional[str] = None
-    experience_years: Optional[int] = None
+    experience_years: Optional[str] = None
     message: Optional[str] = None
     source: str = "job_application"  # job_application, chatbot, newsletter
     status: str = "new"  # new, contacted, converted, closed
