@@ -48,50 +48,34 @@ const Blog = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600 mx-auto mb-4"></div>
-          <p className="text-gray-300">Loading Health Hub...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading Health Hub...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
-      </div>
-
-      <div className="relative py-24 px-4">
+    <div className="min-h-screen bg-white">
+      <div className="py-16 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center px-4 py-2 mb-8 bg-gradient-to-r from-emerald-400/20 to-teal-500/20 rounded-full border border-emerald-400/30 backdrop-blur-sm">
-              <span className="w-2 h-2 bg-emerald-400 rounded-full mr-2 animate-pulse"></span>
-              <span className="text-emerald-400 font-medium text-sm">🧠 Healthcare Knowledge Hub</span>
-            </div>
-
-            <h1 className="text-6xl md:text-7xl font-bold mb-6 leading-tight">
-              <span className="block bg-gradient-to-r from-emerald-400 via-cyan-500 to-blue-600 bg-clip-text text-transparent animate-gradient">
-                Health Hub
-              </span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+          <div className="mb-12">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Health Hub</h1>
+            <p className="text-lg text-gray-600 mb-8 max-w-3xl">
               Stay updated with the latest healthcare trends, career insights, and professional development tips
             </p>
 
             {/* Search Bar */}
-            <div className="max-w-2xl mx-auto mb-12">
+            <div className="max-w-xl">
               <Input
                 type="text"
                 placeholder="Search articles, topics, or keywords..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-white/10 border-white/20 text-white placeholder-gray-400 focus:border-emerald-500/50 focus:ring-emerald-500/20 h-14 text-lg rounded-xl"
+                className="h-12"
                 data-testid="blog-search-input"
               />
             </div>
