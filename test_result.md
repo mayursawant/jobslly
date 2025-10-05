@@ -391,11 +391,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "AI Enhancement Modal integration"
-    - "Complete Footer with sitemap"
-  stuck_tasks: []
-  test_all: true
-  test_priority: "frontend_validation"
+    - "Chatbot auto-open functionality"
+  stuck_tasks: 
+    - "Chatbot auto-open functionality"
+  test_all: false
+  test_priority: "critical_issues_first"
 
 agent_communication:
     - agent: "main"
