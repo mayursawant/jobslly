@@ -132,16 +132,28 @@ const Login = () => {
             </div>
 
             {/* Demo credentials */}
-            <div className="mt-6 p-4 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-xl border border-cyan-500/20 backdrop-blur-sm">
-              <p className="text-sm text-cyan-400 font-medium mb-2 flex items-center">
+            <div className="mt-6 p-4 bg-teal-50 rounded-xl border border-teal-200">
+              <p className="text-sm text-teal-700 font-semibold mb-3 flex items-center">
                 <span className="mr-2">🎮</span>
-                Demo Accounts:
+                Demo Accounts for Testing:
               </p>
-              <div className="text-xs text-cyan-300 space-y-1 font-mono">
-                <p>🩺 Doctor: test@nurse.com / password123</p>
-                <p>🏥 Employer: hr@hospital.com / password123</p>
-                <p>⚡ Admin: admin@healthcare.com / admin123</p>
+              <div className="text-sm text-gray-700 space-y-2">
+                <div className="flex justify-between items-center bg-white p-2 rounded border">
+                  <span>🩺 <strong>Doctor:</strong> doctor@gmail.com</span>
+                  <span className="text-teal-600 font-mono">password123</span>
+                </div>
+                <div className="flex justify-between items-center bg-white p-2 rounded border">
+                  <span>🏥 <strong>Employer:</strong> hr@gmail.com</span>
+                  <span className="text-teal-600 font-mono">password123</span>
+                </div>
+                <div className="flex justify-between items-center bg-white p-2 rounded border">
+                  <span>⚡ <strong>Admin:</strong> admin@gmail.com</span>
+                  <span className="text-teal-600 font-mono">admin123</span>
+                </div>
               </div>
+              <p className="text-xs text-gray-500 mt-3 text-center">
+                Click any credential to auto-fill the form
+              </p>
             </div>
             
             <div className="mt-4 text-center">
