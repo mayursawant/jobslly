@@ -446,13 +446,183 @@ async def get_admin_stats(current_user: User = Depends(get_current_user)):
     total_jobs = await db.jobs.count_documents({})
     pending_jobs = await db.jobs.count_documents({"is_approved": False})
     total_applications = await db.applications.count_documents({})
+    total_blogs = await db.blog_posts.count_documents({})
+    published_blogs = await db.blog_posts.count_documents({"is_published": True})
     
     return {
         "total_users": total_users,
         "total_jobs": total_jobs,
         "pending_jobs": pending_jobs,
-        "total_applications": total_applications
+        "total_applications": total_applications,
+        "total_blogs": total_blogs,
+        "published_blogs": published_blogs
     }
+
+# Admin Job Creation
+@api_router.post("/admin/jobs", response_model=Job)
+async def admin_create_job(job_data: JobCreate, current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    job = Job(**job_data.dict(), employer_id=current_user.id, is_approved=True)
+    job_dict = job.dict()
+    job_dict['created_at'] = job_dict['created_at'].isoformat()
+    if job_dict.get('expires_at'):
+        job_dict['expires_at'] = job_dict['expires_at'].isoformat()
+    
+    await db.jobs.insert_one(job_dict)
+    return job
+
+# Blog Management Routes
+@api_router.post("/admin/blog", response_model=BlogPost)
+async def create_blog_post(blog_data: BlogPostCreate, current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Generate slug from title
+    slug = blog_data.title.lower().replace(' ', '-').replace('/', '-')
+    slug = ''.join(c for c in slug if c.isalnum() or c == '-')
+    
+    blog_post = BlogPost(**blog_data.dict(), author_id=current_user.id, slug=slug)
+    if blog_data.is_published:
+        blog_post.published_at = datetime.now(timezone.utc)
+    
+    blog_dict = blog_post.dict()
+    blog_dict['created_at'] = blog_dict['created_at'].isoformat()
+    if blog_dict.get('updated_at'):
+        blog_dict['updated_at'] = blog_dict['updated_at'].isoformat()
+    if blog_dict.get('published_at'):
+        blog_dict['published_at'] = blog_dict['published_at'].isoformat()
+    
+    await db.blog_posts.insert_one(blog_dict)
+    return blog_post
+
+@api_router.get("/admin/blog", response_model=List[BlogPost])
+async def get_admin_blog_posts(current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    posts = await db.blog_posts.find().sort("created_at", -1).to_list(length=None)
+    
+    for post in posts:
+        if isinstance(post.get('created_at'), str):
+            post['created_at'] = datetime.fromisoformat(post['created_at'])
+        if post.get('updated_at') and isinstance(post.get('updated_at'), str):
+            post['updated_at'] = datetime.fromisoformat(post['updated_at'])
+        if post.get('published_at') and isinstance(post.get('published_at'), str):
+            post['published_at'] = datetime.fromisoformat(post['published_at'])
+    
+    return [BlogPost(**post) for post in posts]
+
+@api_router.put("/admin/blog/{post_id}", response_model=BlogPost)
+async def update_blog_post(post_id: str, blog_data: BlogPostCreate, current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    existing_post = await db.blog_posts.find_one({"id": post_id})
+    if not existing_post:
+        raise HTTPException(status_code=404, detail="Blog post not found")
+    
+    # Update slug if title changed
+    slug = blog_data.title.lower().replace(' ', '-').replace('/', '-')
+    slug = ''.join(c for c in slug if c.isalnum() or c == '-')
+    
+    update_data = blog_data.dict()
+    update_data['slug'] = slug
+    update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+    
+    if blog_data.is_published and not existing_post.get('is_published'):
+        update_data['published_at'] = datetime.now(timezone.utc).isoformat()
+    
+    await db.blog_posts.update_one({"id": post_id}, {"$set": update_data})
+    
+    updated_post = await db.blog_posts.find_one({"id": post_id})
+    if isinstance(updated_post.get('created_at'), str):
+        updated_post['created_at'] = datetime.fromisoformat(updated_post['created_at'])
+    if updated_post.get('updated_at') and isinstance(updated_post.get('updated_at'), str):
+        updated_post['updated_at'] = datetime.fromisoformat(updated_post['updated_at'])
+    if updated_post.get('published_at') and isinstance(updated_post.get('published_at'), str):
+        updated_post['published_at'] = datetime.fromisoformat(updated_post['published_at'])
+    
+    return BlogPost(**updated_post)
+
+@api_router.delete("/admin/blog/{post_id}")
+async def delete_blog_post(post_id: str, current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.blog_posts.delete_one({"id": post_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Blog post not found")
+    
+    return {"message": "Blog post deleted successfully"}
+
+# Public Blog Routes
+@api_router.get("/blog", response_model=List[BlogPost])
+async def get_blog_posts(featured_only: bool = False, limit: int = 10, skip: int = 0):
+    query = {"is_published": True}
+    if featured_only:
+        query["is_featured"] = True
+    
+    posts = await db.blog_posts.find(query).sort("published_at", -1).skip(skip).limit(limit).to_list(length=None)
+    
+    for post in posts:
+        if isinstance(post.get('created_at'), str):
+            post['created_at'] = datetime.fromisoformat(post['created_at'])
+        if post.get('updated_at') and isinstance(post.get('updated_at'), str):
+            post['updated_at'] = datetime.fromisoformat(post['updated_at'])
+        if post.get('published_at') and isinstance(post.get('published_at'), str):
+            post['published_at'] = datetime.fromisoformat(post['published_at'])
+    
+    return [BlogPost(**post) for post in posts]
+
+@api_router.get("/blog/{slug}", response_model=BlogPost)
+async def get_blog_post_by_slug(slug: str):
+    post = await db.blog_posts.find_one({"slug": slug, "is_published": True})
+    if not post:
+        raise HTTPException(status_code=404, detail="Blog post not found")
+    
+    if isinstance(post.get('created_at'), str):
+        post['created_at'] = datetime.fromisoformat(post['created_at'])
+    if post.get('updated_at') and isinstance(post.get('updated_at'), str):
+        post['updated_at'] = datetime.fromisoformat(post['updated_at'])
+    if post.get('published_at') and isinstance(post.get('published_at'), str):
+        post['published_at'] = datetime.fromisoformat(post['published_at'])
+    
+    return BlogPost(**post)
+
+# SEO Management Routes
+@api_router.get("/admin/seo/{page_type}")
+async def get_seo_settings(page_type: str, current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    seo_data = await db.seo_settings.find_one({"page_type": page_type})
+    if not seo_data:
+        # Return default SEO settings
+        return {
+            "page_type": page_type,
+            "title": "Jobslly - Future of Healthcare Careers",
+            "description": "Discover healthcare opportunities for Doctors, Pharmacists, Dentists, Physiotherapists, and Nurses with AI-powered matching.",
+            "keywords": ["healthcare jobs", "medical careers", "doctor jobs", "nurse jobs", "pharmacy jobs"],
+            "og_image": None,
+            "canonical_url": None
+        }
+    
+    return seo_data
+
+@api_router.post("/admin/seo")
+async def update_seo_settings(seo_data: SEOSettings, current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    await db.seo_settings.update_one(
+        {"page_type": seo_data.page_type},
+        {"$set": seo_data.dict()},
+        upsert=True
+    )
+    
+    return {"message": "SEO settings updated successfully"}
 
 # Include the router
 app.include_router(api_router)
