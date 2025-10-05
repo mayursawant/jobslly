@@ -14,6 +14,7 @@ const LeadChatbot = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [leadData, setLeadData] = useState({});
   const [conversationMode, setConversationMode] = useState('lead'); // 'lead' or 'chat'
+  const [hasAutoOpened, setHasAutoOpened] = useState(false);
   const messagesEndRef = useRef(null);
 
   const welcomeMessages = [
