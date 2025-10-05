@@ -167,6 +167,10 @@ class JobCreate(BaseModel):
     job_type: str = "full_time"
     requirements: List[str] = []
     benefits: List[str] = []
+    # Third-party job features
+    is_external: bool = False
+    external_url: Optional[str] = None
+    application_deadline: Optional[datetime] = None
 
 class JobApplication(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
