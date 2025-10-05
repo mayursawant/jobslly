@@ -117,11 +117,12 @@ function App() {
               <Route path="/jobs/:jobId" element={<JobDetails />} />
               <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
               <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
+              <Route path="/cms-login" element={!user ? <CMSLogin /> : <Navigate to="/admin" />} />
               
               {/* Protected Routes */}
               <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
               <Route path="/admin" element={
-                user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/" />
+                user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/cms-login" />
               } />
             </Routes>
           </main>
