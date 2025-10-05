@@ -233,6 +233,7 @@ function App() {
               } />
             </Routes>
           </main>
+          <Footer />
           <ChatBot />
           <Toaster />
         </div>
