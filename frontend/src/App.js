@@ -13,8 +13,11 @@ import AdminPanel from './components/AdminPanel';
 import Login from './components/Login';
 import Register from './components/Register';
 import CMSLogin from './components/CMSLogin';
+import Blog from './components/Blog';
+import BlogPost from './components/BlogPost';
 import ChatBot from './components/ChatBot';
 import { Toaster } from './components/ui/sonner';
+import { Helmet } from 'react-helmet';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
