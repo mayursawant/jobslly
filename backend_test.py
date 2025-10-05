@@ -703,11 +703,12 @@ class HealthcareJobsAPITester:
     
     def run_all_tests(self):
         """Run all test suites"""
-        print("🚀 Starting Healthcare Jobs API Testing Suite")
+        print("🚀 Starting Comprehensive Healthcare Jobs API Testing Suite")
         print(f"🌐 Testing against: {self.base_url}")
-        print("=" * 60)
+        print("=" * 80)
         
-        # Run tests in order
+        # Run tests in priority order
+        # Priority 1: Core Authentication & Basic APIs
         self.test_authentication_flow()
         self.test_job_listings_api()
         self.test_job_details_api()
@@ -716,17 +717,31 @@ class HealthcareJobsAPITester:
         self.test_seo_endpoints()
         self.test_application_count_increment()
         
+        # Priority 2: Admin Authentication & AI Enhancement (NEW)
+        self.test_admin_authentication()
+        self.test_ai_enhancement_endpoints()
+        
+        # Priority 3: Data Validation & Advanced Features
+        self.test_sample_data_validation()
+        self.test_user_roles_validation()
+        self.test_external_jobs_flow()
+        self.test_blog_management()
+        
         # Print summary
-        print("=" * 60)
-        print("📊 TEST SUMMARY")
+        print("=" * 80)
+        print("📊 COMPREHENSIVE TEST SUMMARY")
         print(f"✅ Passed: {self.results['passed']}")
         print(f"❌ Failed: {self.results['failed']}")
-        print(f"📈 Success Rate: {(self.results['passed'] / (self.results['passed'] + self.results['failed']) * 100):.1f}%")
+        total_tests = self.results['passed'] + self.results['failed']
+        if total_tests > 0:
+            print(f"📈 Success Rate: {(self.results['passed'] / total_tests * 100):.1f}%")
         
         if self.results['errors']:
             print("\n🚨 FAILED TESTS:")
             for error in self.results['errors']:
                 print(f"   • {error}")
+        else:
+            print("\n🎉 All tests passed! Backend is production-ready.")
         
         return self.results['failed'] == 0
 
