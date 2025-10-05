@@ -122,15 +122,18 @@ backend:
 
   - task: "SEO endpoints (sitemap.xml, robots.txt)"
     implemented: true
-    working: "NA"
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Need to verify sitemap.xml and robots.txt endpoints are working correctly"
+        - working: true
+          agent: "main"
+          comment: "Fixed routing issue - moved endpoints to api_router with /api prefix. Both /api/sitemap.xml and /api/robots.txt now working correctly with proper XML and content"
 
   - task: "Job application submission API"
     implemented: false
