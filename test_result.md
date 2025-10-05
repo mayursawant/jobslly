@@ -207,6 +207,42 @@ backend:
           agent: "main"
           comment: "Need to implement candidate management features in employer dashboard"
 
+  - task: "External job redirection links"
+    implemented: true
+    working: true
+    file: "AdminPanel.js, server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Successfully implemented external job support in CMS with is_external checkbox and external_url field"
+
+  - task: "Third-party job listings toggle"
+    implemented: true
+    working: true
+    file: "AdminPanel.js, server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Toggle implemented in CMS - external jobs collect leads then redirect to external URLs"
+
+  - task: "External job lead collection flow"
+    implemented: true
+    working: true
+    file: "LeadCollectionModal.js, server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Full external job flow working - LeadCollectionModal collects data, shows redirect notification, opens external URL in new tab"
+
 frontend:
   - task: "LeadCollectionModal integration"
     implemented: true
