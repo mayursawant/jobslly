@@ -45,19 +45,27 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-emerald-50 to-teal-100">
-      {/* Background decoration */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-emerald-300/30 to-teal-400/30 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-teal-300/30 to-cyan-400/30 rounded-full blur-3xl"></div>
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      {/* Animated Background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+      </div>
       
       <div className="relative w-full max-w-md">
-        <Card className="glass shadow-2xl border-white/30" data-testid="login-form">
+        <Card className="glass-strong shadow-2xl border-cyan-500/30 relative overflow-hidden" data-testid="login-form">
+          {/* Neon accent */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-cyan-400 animate-gradient"></div>
+          
           <CardHeader className="text-center pb-6">
-            <CardTitle className="text-2xl font-bold text-gray-800">
-              Welcome Back
+            <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg animate-pulse-glow">
+              <span className="text-2xl">🚀</span>
+            </div>
+            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+              Welcome to the Future
             </CardTitle>
-            <p className="text-gray-600 mt-2">
-              Sign in to your healthcare career account
+            <p className="text-gray-300 mt-2">
+              Access your Jobslly healthcare career portal
             </p>
           </CardHeader>
           
