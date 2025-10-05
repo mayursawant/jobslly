@@ -5,6 +5,7 @@ import './App.css';
 
 // Components
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Home from './components/Home';
 import JobListing from './components/JobListing';
 import JobDetails from './components/JobDetails';
