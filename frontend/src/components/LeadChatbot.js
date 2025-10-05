@@ -12,53 +12,22 @@ const LeadChatbot = () => {
   const [messages, setMessages] = useState([]);
   const [currentInput, setCurrentInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
   const [leadData, setLeadData] = useState({});
+  const [conversationMode, setConversationMode] = useState('lead'); // 'lead' or 'chat'
   const messagesEndRef = useRef(null);
 
-  const chatFlow = [
-    {
-      id: 0,
-      message: "Hi! 👋 I'm here to help you find your dream healthcare job. What's your name?",
-      type: 'bot',
-      expectsInput: true,
-      field: 'name'
-    },
-    {
-      id: 1,
-      message: "Nice to meet you, {name}! 😊 What's your profession?",
-      type: 'bot',
-      expectsInput: true,
-      field: 'profession',
-      options: ['Doctor', 'Nurse', 'Pharmacist', 'Dentist', 'Physiotherapist', 'Other']
-    },
-    {
-      id: 2,
-      message: "Great! How many years of experience do you have?",
-      type: 'bot',
-      expectsInput: true,
-      field: 'experience'
-    },
-    {
-      id: 3,
-      message: "Perfect! What's your email? I'll send you personalized job matches 📧",
-      type: 'bot',
-      expectsInput: true,
-      field: 'email'
-    },
-    {
-      id: 4,
-      message: "Awesome! 🎉 I've got everything I need. Check your email for amazing job opportunities. Want to browse jobs now?",
-      type: 'bot',
-      expectsInput: false,
-      final: true
-    }
+  const welcomeMessages = [
+    "Need help finding healthcare jobs? 🔍",
+    "Looking for career guidance? 💼", 
+    "Want to advance your healthcare career? 🚀"
   ];
 
-  const welcomeMessages = [
-    "Looking for your dream healthcare job? 🔍",
-    "Ready to take your career to the next level? 🚀",
-    "Need help finding the perfect healthcare role? 💼"
+  const quickReplies = [
+    "Find jobs for doctors",
+    "Nurse opportunities", 
+    "Pharmacist positions",
+    "Career advice",
+    "Salary guidance"
   ];
 
   useEffect(() => {
