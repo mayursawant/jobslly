@@ -14,7 +14,6 @@ const LeadChatbot = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [leadData, setLeadData] = useState({});
   const [conversationMode, setConversationMode] = useState('lead'); // 'lead' or 'chat'
-  const [hasAutoOpened, setHasAutoOpened] = useState(false);
   const messagesEndRef = useRef(null);
 
   const welcomeMessages = [
@@ -32,26 +31,18 @@ const LeadChatbot = () => {
   ];
 
   useEffect(() => {
-    // Auto-open chatbot after 5 seconds on first visit
-    if (!hasAutoOpened) {
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-        setHasAutoOpened(true);
-        // Store in localStorage to prevent auto-open on subsequent visits
-        localStorage.setItem('jobslly_chatbot_opened', 'true');
-      }, 5000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, []);
-
-  useEffect(() => {
-    // Check if chatbot was already opened before
-    const wasOpened = localStorage.getItem('jobslly_chatbot_opened');
-    if (wasOpened) {
-      setHasAutoOpened(true);
-    }
-  }, []);
+    // Auto-open chatbot after 5 seconds - ALWAYS on fresh page load
+    console.log('Setting up chatbot auto-open timer...');
+    const timer = setTimeout(() => {
+      console.log('Auto-opening chatbot now!');
+      setIsOpen(true);
+    }, 5000);
+    
+    return () => {
+      console.log('Clearing chatbot timer');
+      clearTimeout(timer);
+    };
+  }, []); // Empty dependency array ensures this runs once on mount
 
   useEffect(() => {
     if (isOpen && messages.length === 0) {
