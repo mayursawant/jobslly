@@ -20,6 +20,7 @@ import JobSeekerDashboard from './components/JobSeekerDashboard';
 import Blog from './components/Blog';
 import BlogPost from './components/BlogPost';
 import ChatBot from './components/ChatBot';
+import LeadChatbot from './components/LeadChatbot';
 import { Toaster } from './components/ui/sonner';
 import { Helmet } from 'react-helmet';
 
