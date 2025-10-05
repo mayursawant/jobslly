@@ -207,7 +207,7 @@ class HealthcareJobsAPITester:
         try:
             lead_data = {
                 "name": "John Healthcare Professional",
-                "email": f"lead_{uuid.uuid4().hex[:8]}@healthjobs.test",
+                "email": f"lead_{uuid.uuid4().hex[:8]}@example.com",
                 "phone": "+1-555-0123",
                 "current_position": "Registered Nurse",
                 "experience_years": "5",
