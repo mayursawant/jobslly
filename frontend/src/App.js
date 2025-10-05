@@ -118,6 +118,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/jobs" element={<JobListing />} />
               <Route path="/jobs/:jobId" element={<JobDetails />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
               <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
               <Route path="/cms-login" element={!user ? <CMSLogin /> : <Navigate to="/admin" />} />
