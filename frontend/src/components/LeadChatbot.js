@@ -146,15 +146,19 @@ const LeadChatbot = () => {
   if (!isOpen) {
     return (
       <div className="fixed bottom-6 right-6 z-50">
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-full w-16 h-16 shadow-2xl animate-medical-pulse hover:scale-110 transition-all duration-300"
-        >
-          <MessageCircle className="w-6 h-6" />
-        </Button>
-        <div className="absolute -top-12 right-0 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg opacity-90 animate-bounce">
-          {welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)]}
-          <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900"></div>
+        <div className="relative">
+          <Button
+            onClick={() => setIsOpen(true)}
+            className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-full w-16 h-16 shadow-2xl animate-medical-pulse hover:scale-110 transition-all duration-300"
+          >
+            <MessageCircle className="w-6 h-6" />
+          </Button>
+          
+          {/* Floating message bubble */}
+          <div className="absolute -top-14 -left-32 bg-white text-gray-800 text-sm px-4 py-3 rounded-2xl shadow-xl border border-gray-100 opacity-95 animate-bounce max-w-xs">
+            {welcomeMessages[Math.floor(Date.now() / 3000) % welcomeMessages.length]}
+            <div className="absolute top-full right-8 w-0 h-0 border-l-4 border-r-4 border-t-8 border-l-transparent border-r-transparent border-t-white"></div>
+          </div>
         </div>
       </div>
     );
