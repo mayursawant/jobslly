@@ -49,6 +49,9 @@ const AdminPanel = () => {
     seo_keywords: []
   });
   
+  // AI Enhancement State
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  
   // SEO State
   const [seoSettings, setSeoSettings] = useState({
     page_type: 'home',
