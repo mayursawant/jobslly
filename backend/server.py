@@ -122,13 +122,11 @@ class Token(BaseModel):
 
 # Helper functions
 def hash_password(password: str) -> str:
-    # Ensure password is not longer than 72 bytes for bcrypt
-    if len(password.encode('utf-8')) > 72:
-        password = password[:72]
-    return pwd_context.hash(password)
+    # Use SHA256 for simplicity in MVP
+    return hashlib.sha256(password.encode()).hexdigest()
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    return hashlib.sha256(plain_password.encode()).hexdigest() == hashed_password
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
