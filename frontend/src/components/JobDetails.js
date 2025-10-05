@@ -212,23 +212,20 @@ const JobDetails = () => {
                   </div>
                 ) : !isAuthenticated ? (
                   <div className="text-center py-6">
-                    <p className="text-gray-600 mb-4">Please login to apply for this position</p>
-                    <div className="space-y-2">
-                      <Button 
-                        onClick={() => navigate('/login')} 
-                        className="w-full btn-primary"
-                        data-testid="login-to-apply"
-                      >
-                        Login to Apply
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        onClick={() => navigate('/register')} 
-                        className="w-full"
-                      >
-                        Create Account
-                      </Button>
+                    <div className="mb-4">
+                      <h4 className="font-semibold text-gray-800 mb-2">Interested in this position?</h4>
+                      <p className="text-gray-600 text-sm">Let us know you're interested and we'll help you apply!</p>
                     </div>
+                    <Button 
+                      onClick={handleApplyClick}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3"
+                      data-testid="apply-now-button"
+                    >
+                      🚀 Apply Now
+                    </Button>
+                    <p className="text-xs text-gray-500 mt-2">
+                      Quick registration required • Takes less than 2 minutes
+                    </p>
                   </div>
                 ) : user?.role === 'job_seeker' ? (
                   <div className="space-y-4">
