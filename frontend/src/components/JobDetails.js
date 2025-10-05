@@ -33,7 +33,8 @@ const JobDetails = () => {
 
   const fetchJobDetails = async () => {
     try {
-      const response = await axios.get(`${API}/jobs/${jobId}`);
+      // Use the tracking endpoint to increment view count
+      const response = await axios.get(`${API}/jobs/${jobId}/details`);
       setJob(response.data);
     } catch (error) {
       console.error('Failed to fetch job details:', error);
