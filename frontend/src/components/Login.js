@@ -85,8 +85,8 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="bg-white/10 border-white/20 text-white placeholder-gray-400 focus:border-cyan-500/50 focus:ring-cyan-500/20 h-12"
-                  placeholder="doctor@hospital.com"
+                  className="bg-white border border-gray-300 text-gray-900 placeholder-gray-500 focus:border-teal-500 focus:ring-teal-500 h-12 rounded-lg"
+                  placeholder="Enter your email"
                   data-testid="email-input"
                 />
               </div>
