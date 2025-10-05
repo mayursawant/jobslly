@@ -366,29 +366,7 @@ async def get_job(job_id: str):
     return Job(**job)
 
 # Job Application Routes
-@api_router.post("/jobs/{job_id}/apply", response_model=JobApplication)
-async def apply_to_job(job_id: str, cover_letter: Optional[str] = None, current_user: User = Depends(get_current_user)):
-    # Check if job exists
-    job = await db.jobs.find_one({"id": job_id})
-    if not job:
-        raise HTTPException(status_code=404, detail="Job not found")
-    
-    # Check if already applied
-    existing_application = await db.applications.find_one({"job_id": job_id, "applicant_id": current_user.id})
-    if existing_application:
-        raise HTTPException(status_code=400, detail="Already applied to this job")
-    
-    application = JobApplication(
-        job_id=job_id,
-        applicant_id=current_user.id,
-        cover_letter=cover_letter
-    )
-    
-    app_dict = application.dict()
-    app_dict['created_at'] = app_dict['created_at'].isoformat()
-    
-    await db.applications.insert_one(app_dict)
-    return application
+# (Job application endpoint is implemented further below with enhanced functionality)
 
 # AI Routes
 @api_router.post("/ai/enhance-job-description")
