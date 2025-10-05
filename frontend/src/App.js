@@ -212,6 +212,7 @@ function App() {
               })}
             </script>
           </Helmet>
+          <ScrollToTop />
           <Navbar />
           <main className="pt-16">
             <Routes>
