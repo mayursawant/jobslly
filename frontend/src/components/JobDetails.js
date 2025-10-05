@@ -45,13 +45,26 @@ const JobDetails = () => {
     }
   };
 
-  const handleApply = async () => {
+  /**
+   * Handles the apply button click
+   * If user is not authenticated, shows lead collection modal
+   * If authenticated, proceeds with application
+   */
+  const handleApplyClick = () => {
     if (!isAuthenticated) {
-      toast.error('Please login to apply for jobs');
-      navigate('/login');
+      // Show lead collection modal for unauthenticated users
+      setShowLeadModal(true);
       return;
     }
+    
+    // For authenticated users, proceed with application
+    handleDirectApply();
+  };
 
+  /**
+   * Handles direct application for authenticated users
+   */
+  const handleDirectApply = async () => {
     setApplying(true);
     try {
       await axios.post(`${API}/jobs/${jobId}/apply`, {
