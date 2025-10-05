@@ -168,11 +168,12 @@ const LeadChatbot = () => {
 
   if (!isOpen) {
     return (
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-6 right-6" style={{zIndex: 9999}}>
         <div className="relative">
           <Button
             onClick={() => setIsOpen(true)}
             className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-full w-16 h-16 shadow-2xl animate-medical-pulse hover:scale-110 transition-all duration-300"
+            style={{position: 'relative', zIndex: 10000}}
           >
             <MessageCircle className="w-6 h-6" />
           </Button>
