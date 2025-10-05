@@ -58,96 +58,76 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-blue-50">
-      {/* Subtle Background Effects */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-blue-100/30 to-indigo-100/30 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-emerald-100/30 to-teal-100/30 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
-      </div>
-
+    <div className="min-h-screen bg-white">
       {/* Hero Section with Search */}
-      <section className="relative py-24 px-4 overflow-hidden">
-        <div className="relative max-w-6xl mx-auto text-center">
-          <div className="animate-fade-in-up">
-            {/* Gamification Badge */}
-            <div className="inline-flex items-center px-4 py-2 mb-8 bg-gradient-to-r from-yellow-400/20 to-orange-500/20 rounded-full border border-yellow-400/30 backdrop-blur-sm">
-              <span className="w-2 h-2 bg-yellow-400 rounded-full mr-2 animate-pulse"></span>
-              <span className="text-yellow-400 font-medium text-sm">🚀 Level up your healthcare career</span>
+      <section className="relative py-16 px-4 bg-gradient-to-br from-blue-50 via-white to-green-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            {/* Trust Badge */}
+            <div className="inline-flex items-center px-4 py-2 mb-6 bg-green-100 rounded-full border border-green-200">
+              <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+              <span className="text-green-700 font-medium text-sm">Trusted by 75k+ Healthcare Professionals</span>
             </div>
 
-            <h1 className="text-6xl md:text-8xl font-bold mb-6 leading-tight">
-              <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent animate-gradient">
-                The Future of
-              </span>
-              <span className="block text-slate-900 mt-2">
-                Healthcare Careers
-              </span>
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              India's Largest <br />
+              <span className="text-blue-600">Healthcare Community</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-slate-700 mb-12 max-w-4xl mx-auto leading-relaxed">
-              Discover opportunities for <span className="text-blue-700 font-semibold">Doctors</span>, <span className="text-emerald-700 font-semibold">Pharmacists</span>, <span className="text-indigo-700 font-semibold">Dentists</span>, <span className="text-purple-700 font-semibold">Physiotherapists</span>, and <span className="text-teal-700 font-semibold">Nurses</span>
+            <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+              Connect with 2,000+ top healthcare companies. Discover jobs, courses, and career support in one trusted platform.
             </p>
 
-            {/* Advanced Search Bar */}
-            <div className="max-w-4xl mx-auto mb-12" data-testid="hero-search-section">
+            {/* Clean Search Bar */}
+            <div className="max-w-2xl mx-auto mb-8" data-testid="hero-search-section">
               <form onSubmit={handleSearch} className="relative">
-                <div className="flex flex-col md:flex-row gap-4 p-4 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl">
+                <div className="flex flex-col md:flex-row gap-2 p-2 bg-white rounded-lg border border-gray-200 shadow-lg">
                   <div className="flex-1">
                     <Input
                       type="text"
-                      placeholder="Search by specialty, position, or keywords..."
+                      placeholder="Search job title or location"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="bg-white/20 border-white/30 text-white placeholder-gray-300 h-14 text-lg rounded-xl focus:bg-white/30 transition-all"
+                      className="border-0 h-12 text-base focus:ring-0 focus:outline-none"
                       data-testid="hero-search-input"
-                    />
-                  </div>
-                  <div className="flex-1 md:flex-initial md:w-64">
-                    <Input
-                      type="text"
-                      placeholder="Location..."
-                      value={searchLocation}
-                      onChange={(e) => setSearchLocation(e.target.value)}
-                      className="bg-white/20 border-white/30 text-white placeholder-gray-300 h-14 text-lg rounded-xl focus:bg-white/30 transition-all"
-                      data-testid="hero-location-input"
                     />
                   </div>
                   <Button
                     type="submit"
                     size="lg"
-                    className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold h-14 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium h-12 px-8 rounded-md"
                     data-testid="hero-search-button"
                   >
-                    🔍 Search Future
+                    Find Jobs
                   </Button>
                 </div>
               </form>
               
-              {/* Quick Action Buttons */}
-              <div className="flex flex-wrap justify-center gap-3 mt-8">
+              {/* Action Buttons */}
+              <div className="flex flex-wrap justify-center gap-4 mt-6">
                 {!isAuthenticated ? (
                   <>
                     <Link to="/register">
-                      <Button size="lg" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="hero-get-started">
-                        🚀 Start Your Journey
+                      <Button className="bg-green-600 hover:bg-green-700 text-white font-medium px-6 py-3 rounded-md" data-testid="hero-get-started">
+                        Get Started Free
                       </Button>
                     </Link>
                     <Link to="/jobs">
-                      <Button variant="outline" size="lg" className="border-2 border-white/30 text-white hover:bg-white/10 font-semibold px-8 py-4 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-105" data-testid="hero-browse-jobs">
-                        🎯 Explore Opportunities
+                      <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50 font-medium px-6 py-3 rounded-md" data-testid="hero-browse-jobs">
+                        Browse Jobs
                       </Button>
                     </Link>
                   </>
                 ) : (
                   <>
                     <Link to="/jobs">
-                      <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="hero-find-jobs">
-                        🎯 Find Your Next Role
+                      <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-md" data-testid="hero-find-jobs">
+                        Find Jobs
                       </Button>
                     </Link>
                     <Link to="/dashboard">
-                      <Button variant="outline" size="lg" className="border-2 border-white/30 text-white hover:bg-white/10 font-semibold px-8 py-4 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-105" data-testid="hero-dashboard">
-                        📊 Dashboard
+                      <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 font-medium px-6 py-3 rounded-md" data-testid="hero-dashboard">
+                        Dashboard
                       </Button>
                     </Link>
                   </>
@@ -155,31 +135,31 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Gamified Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
-              <div className="text-center animate-slide-in-right" style={{animationDelay: '0.2s'}}>
-                <div className="text-5xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-2" data-testid="stats-jobs">
+            {/* Trust Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto pt-8 border-t border-gray-100">
+              <div className="text-center">
+                <div className="text-2xl md:text-3xl font-bold text-blue-600 mb-1" data-testid="stats-jobs">
                   {stats.jobs}+
                 </div>
-                <div className="text-gray-300 font-medium">🎯 Active Opportunities</div>
+                <div className="text-sm text-gray-600">Active Jobs</div>
               </div>
-              <div className="text-center animate-slide-in-right" style={{animationDelay: '0.4s'}}>
-                <div className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent mb-2" data-testid="stats-companies">
+              <div className="text-center">
+                <div className="text-2xl md:text-3xl font-bold text-blue-600 mb-1" data-testid="stats-companies">
                   {stats.companies}+
                 </div>
-                <div className="text-gray-300 font-medium">🏥 Healthcare Partners</div>
+                <div className="text-sm text-gray-600">Healthcare Companies</div>
               </div>
-              <div className="text-center animate-slide-in-right" style={{animationDelay: '0.6s'}}>
-                <div className="text-5xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-500 bg-clip-text text-transparent mb-2" data-testid="stats-professionals">
+              <div className="text-center">
+                <div className="text-2xl md:text-3xl font-bold text-blue-600 mb-1" data-testid="stats-professionals">
                   {stats.professionals}k+
                 </div>
-                <div className="text-gray-300 font-medium">👨‍⚕️ Active Professionals</div>
+                <div className="text-sm text-gray-600">Professionals</div>
               </div>
-              <div className="text-center animate-slide-in-right" style={{animationDelay: '0.8s'}}>
-                <div className="text-5xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent mb-2" data-testid="stats-applications">
+              <div className="text-center">
+                <div className="text-2xl md:text-3xl font-bold text-blue-600 mb-1" data-testid="stats-applications">
                   {stats.applications}+
                 </div>
-                <div className="text-gray-300 font-medium">✅ Success Stories</div>
+                <div className="text-sm text-gray-600">Applications</div>
               </div>
             </div>
           </div>
