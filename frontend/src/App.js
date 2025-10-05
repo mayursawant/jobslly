@@ -21,6 +21,7 @@ import Blog from './components/Blog';
 import BlogPost from './components/BlogPost';
 import ChatBot from './components/ChatBot';
 import LeadChatbot from './components/LeadChatbot';
+import ScrollToTop from './components/ScrollToTop';
 import { Toaster } from './components/ui/sonner';
 import { Helmet } from 'react-helmet';
 
