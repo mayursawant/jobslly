@@ -98,62 +98,103 @@ const Home = () => {
                 AI-Powered Job Recommendations • Customised Search Filters • Dedicated Portal for Healthcare Professionals
               </p>
 
-            {/* Clean Search Bar */}
-            <div className="max-w-2xl mx-auto mb-8" data-testid="hero-search-section">
-              <form onSubmit={handleSearch} className="relative">
-                <div className="flex flex-col md:flex-row gap-2 p-2 bg-white rounded-lg border border-gray-200 shadow-lg">
-                  <div className="flex-1">
-                    <Input
-                      type="text"
-                      placeholder="Search job title or location"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="border-0 h-12 text-base focus:ring-0 focus:outline-none"
-                      data-testid="hero-search-input"
-                    />
+              {/* Advanced Search Bar with Animation */}
+              <div className="max-w-2xl animate-slide-up" data-testid="hero-search-section" style={{animationDelay: '0.8s'}}>
+                <form onSubmit={handleSearch} className="relative">
+                  <div className="bg-white rounded-2xl shadow-xl border border-teal-100 p-2 hover:shadow-2xl transition-all duration-500">
+                    <div className="flex flex-col md:flex-row gap-2">
+                      <div className="flex-1 relative">
+                        <Input
+                          type="text"
+                          placeholder="🔍 Search job title, specialty, or keywords..."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          className="border-0 h-14 text-base focus:ring-0 focus:outline-none pl-4 pr-12"
+                          data-testid="hero-search-input"
+                        />
+                      </div>
+                      <div className="md:w-48">
+                        <Input
+                          type="text"
+                          placeholder="📍 Location..."
+                          value={searchLocation}
+                          onChange={(e) => setSearchLocation(e.target.value)}
+                          className="border-0 h-14 text-base focus:ring-0 focus:outline-none"
+                          data-testid="hero-location-input"
+                        />
+                      </div>
+                      <Button
+                        type="submit"
+                        size="lg"
+                        className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-semibold h-14 px-8 rounded-xl transform hover:scale-105 transition-all duration-300 shadow-lg"
+                        data-testid="hero-search-button"
+                      >
+                        Search My Job
+                      </Button>
+                    </div>
                   </div>
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium h-12 px-8 rounded-md"
-                    data-testid="hero-search-button"
-                  >
-                    Find Jobs
-                  </Button>
+                  
+                  {/* Quick suggestions */}
+                  <div className="mt-3 text-sm text-gray-600">
+                    <span className="mr-2">Popular Searches:</span>
+                    <span className="text-teal-600 hover:text-teal-700 cursor-pointer mr-3 hover:underline">Dentists</span>
+                    <span className="text-teal-600 hover:text-teal-700 cursor-pointer mr-3 hover:underline">Pharmacists</span>
+                    <span className="text-teal-600 hover:text-teal-700 cursor-pointer hover:underline">Nurses</span>
+                  </div>
+                </form>
+                
+                {/* Action Buttons with Staggered Animation */}
+                <div className="flex flex-wrap gap-4 mt-8">
+                  {!isAuthenticated ? (
+                    <>
+                      <Link to="/register">
+                        <Button className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 animate-slide-up" data-testid="hero-get-started" style={{animationDelay: '1s'}}>
+                          🚀 Get Started Free
+                        </Button>
+                      </Link>
+                      <Link to="/jobs">
+                        <Button variant="outline" className="border-2 border-teal-600 text-teal-600 hover:bg-teal-50 font-semibold px-8 py-4 rounded-xl transform hover:scale-105 transition-all duration-300 animate-slide-up" data-testid="hero-browse-jobs" style={{animationDelay: '1.2s'}}>
+                          Browse 11K+ Jobs
+                        </Button>
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link to="/jobs">
+                        <Button className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300" data-testid="hero-find-jobs">
+                          Find Your Dream Job
+                        </Button>
+                      </Link>
+                      <Link to="/dashboard">
+                        <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold px-8 py-4 rounded-xl transform hover:scale-105 transition-all duration-300" data-testid="hero-dashboard">
+                          Dashboard
+                        </Button>
+                      </Link>
+                    </>
+                  )}
                 </div>
-              </form>
-              
-              {/* Action Buttons */}
-              <div className="flex flex-wrap justify-center gap-4 mt-6">
-                {!isAuthenticated ? (
-                  <>
-                    <Link to="/register">
-                      <Button className="bg-green-600 hover:bg-green-700 text-white font-medium px-6 py-3 rounded-md" data-testid="hero-get-started">
-                        Get Started Free
-                      </Button>
-                    </Link>
-                    <Link to="/jobs">
-                      <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50 font-medium px-6 py-3 rounded-md" data-testid="hero-browse-jobs">
-                        Browse Jobs
-                      </Button>
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link to="/jobs">
-                      <Button className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-md" data-testid="hero-find-jobs">
-                        Find Jobs
-                      </Button>
-                    </Link>
-                    <Link to="/dashboard">
-                      <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 font-medium px-6 py-3 rounded-md" data-testid="hero-dashboard">
-                        Dashboard
-                      </Button>
-                    </Link>
-                  </>
-                )}
               </div>
             </div>
+
+            {/* Right Column - Founder Image */}
+            <div className="relative animate-slide-up" style={{animationDelay: '1.4s'}}>
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-emerald-400 rounded-3xl transform rotate-3 animate-pulse"></div>
+                <div className="relative bg-white rounded-3xl shadow-2xl p-1 transform -rotate-1 hover:rotate-0 transition-transform duration-700">
+                  <img 
+                    src="https://customer-assets.emergentagent.com/job_jobslly-health/artifacts/ukxbykm5_Dr.-Akram-Ahmad_CEO-Founder_-Academically-Global_EP.jpg" 
+                    alt="Dr. Akram Ahmad - Founder & CEO" 
+                    className="w-full h-auto rounded-3xl"
+                  />
+                  <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-sm rounded-2xl p-4 transform translate-y-2 hover:translate-y-0 transition-transform duration-300">
+                    <p className="text-sm font-semibold text-gray-900">Dr. Akram Ahmad</p>
+                    <p className="text-xs text-teal-600">Founder & CEO, Jobslly</p>
+                    <p className="text-xs text-gray-600 mt-1">PhD in Medicine, University of Sydney</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
             {/* Trust Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto pt-8 border-t border-gray-100">
