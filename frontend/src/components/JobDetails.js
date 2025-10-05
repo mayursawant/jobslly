@@ -7,6 +7,7 @@ import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
+import LeadCollectionModal from './LeadCollectionModal';
 import axios from 'axios';
 import { toast } from 'sonner';
 
