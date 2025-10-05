@@ -166,30 +166,36 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Healthcare Specializations */}
-      <section className="py-20 px-4 relative">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold text-white mb-4">Choose Your Healthcare Path</h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Unlock opportunities across all healthcare specializations with AI-powered matching
+      {/* Job Categories */}
+      <section className="py-16 px-4 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Job Categories</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Find your perfect healthcare role across all specializations
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {specializations.map((spec, index) => (
-              <Card key={spec.name} className="group bg-white/5 backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 hover:shadow-2xl cursor-pointer" data-testid={`specialization-${spec.name.toLowerCase()}`}>
-                <CardContent className="p-8 text-center">
-                  <div className="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                    {spec.icon}
-                  </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">{spec.name}</h3>
-                  <div className={`text-lg font-semibold bg-gradient-to-r ${spec.color} bg-clip-text text-transparent mb-4`}>
-                    {spec.count} Opportunities
-                  </div>
-                  <div className="h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:via-white/40 transition-all duration-300"></div>
-                </CardContent>
-              </Card>
+              <Link 
+                key={spec.name} 
+                to={`/jobs?category=${spec.name.toLowerCase()}`}
+                className="group block"
+                data-testid={`specialization-${spec.name.toLowerCase()}`}
+              >
+                <Card className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 cursor-pointer h-full">
+                  <CardContent className="p-6 text-center">
+                    <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-200">
+                      {spec.icon}
+                    </div>
+                    <h3 className="font-semibold text-gray-900 mb-1 text-sm">{spec.name}</h3>
+                    <div className="text-xs text-blue-600 font-medium">
+                      {spec.count} Jobs
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
