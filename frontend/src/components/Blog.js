@@ -245,21 +245,30 @@ const Blog = () => {
           </section>
 
           {/* Newsletter Signup */}
-          <section className="mt-16">
-            <Card className="max-w-2xl mx-auto bg-blue-50 border border-blue-200">
-              <CardContent className="p-8 text-center">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">Stay Updated</h3>
-                <p className="text-gray-600 mb-6">Get the latest healthcare career insights delivered to your inbox</p>
-                <div className="flex flex-col sm:flex-row gap-3">
+          <section className="mt-20">
+            <Card className="max-w-4xl mx-auto bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 border-0 text-white overflow-hidden relative">
+              <div className="absolute inset-0 bg-black/10"></div>
+              <CardContent className="p-12 text-center relative">
+                <div className="mb-6">
+                  <span className="text-5xl">📧</span>
+                </div>
+                <h3 className="text-3xl font-bold mb-4">Stay Ahead in Healthcare</h3>
+                <p className="text-teal-100 mb-8 text-lg max-w-2xl mx-auto">
+                  Join 75,000+ healthcare professionals getting weekly insights, career tips, and exclusive job opportunities
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
                   <Input
                     type="email"
-                    placeholder="Enter your email..."
-                    className="flex-1"
+                    placeholder="Enter your email address..."
+                    className="flex-1 h-12 bg-white/95 border-0 text-gray-900 placeholder-gray-500 rounded-xl"
                   />
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8">
-                    Subscribe
+                  <Button className="bg-white text-teal-600 hover:bg-gray-50 font-semibold px-8 h-12 rounded-xl transform hover:scale-105 transition-all duration-300">
+                    🚀 Subscribe Free
                   </Button>
                 </div>
+                <p className="text-xs text-teal-100 mt-4 opacity-80">
+                  No spam. Unsubscribe anytime. Join the healthcare community.
+                </p>
               </CardContent>
             </Card>
           </section>
