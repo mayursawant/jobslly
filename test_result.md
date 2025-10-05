@@ -331,12 +331,13 @@ metadata:
 
 test_plan:
   current_focus:
-    - "External job redirection links"
-    - "Third-party job listings toggle"
-    - "External job lead collection flow"
+    - "AI job enhancement endpoints"
+    - "AI Enhancement Modal integration"
+    - "Complete Footer with sitemap"
+    - "Comprehensive user flow validation"
   stuck_tasks: []
-  test_all: false
-  test_priority: "high_first"
+  test_all: true
+  test_priority: "comprehensive_validation"
 
 agent_communication:
     - agent: "main"
