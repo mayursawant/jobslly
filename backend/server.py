@@ -424,6 +424,109 @@ async def generate_interview_questions(request: AIRequest, current_user: User = 
     response = await chat.send_message(message)
     return {"questions": response}
 
+# AI Job Enhancement Routes for Admin CMS
+@api_router.post("/ai/enhance-job-description")
+async def enhance_job_description(request: AIRequest, current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    chat = await get_ai_chat()
+    
+    message = UserMessage(
+        text=f"""Please rewrite and enhance this healthcare job description to be more engaging, professional, and comprehensive. 
+        Make it attractive to healthcare professionals while maintaining accuracy and clarity:
+        
+        Current Job Description: {request.text}
+        
+        Please provide an enhanced version that includes:
+        - Compelling opening statement
+        - Clear role responsibilities 
+        - Growth opportunities
+        - Professional development aspects
+        - Impact on patient care/healthcare outcomes
+        
+        Keep it professional but engaging, around 150-300 words."""
+    )
+    
+    response = await chat.send_message(message)
+    return {"enhanced_description": response}
+
+@api_router.post("/ai/suggest-job-requirements")
+async def suggest_job_requirements(request: AIRequest, current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    chat = await get_ai_chat()
+    
+    message = UserMessage(
+        text=f"""Based on this healthcare job title and description, suggest comprehensive job requirements including:
+        - Educational qualifications
+        - Professional certifications
+        - Years of experience needed
+        - Technical skills
+        - Soft skills
+        - Any specialty-specific requirements
+        
+        Job Details: {request.text}
+        
+        Please provide a list of 5-8 specific, realistic requirements for this healthcare position."""
+    )
+    
+    response = await chat.send_message(message)
+    return {"suggested_requirements": response}
+
+@api_router.post("/ai/suggest-job-benefits")
+async def suggest_job_benefits(request: AIRequest, current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    chat = await get_ai_chat()
+    
+    message = UserMessage(
+        text=f"""Suggest attractive and competitive benefits for this healthcare position. Consider the role level, location, and industry standards:
+        
+        Job Details: {request.text}
+        
+        Please suggest 6-10 benefits that would be attractive to healthcare professionals, including:
+        - Healthcare and insurance benefits
+        - Professional development opportunities
+        - Financial benefits
+        - Work-life balance perks
+        - Career advancement opportunities
+        
+        Make them specific and appealing to healthcare workers."""
+    )
+    
+    response = await chat.send_message(message)
+    return {"suggested_benefits": response}
+
+@api_router.post("/ai/job-posting-assistant")
+async def job_posting_assistant(request: AIRequest, current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    chat = await get_ai_chat()
+    
+    message = UserMessage(
+        text=f"""You are an expert healthcare recruitment assistant. Please help with this job posting question or request:
+        
+        Question/Request: {request.text}
+        
+        Please provide helpful, professional advice about:
+        - Job posting best practices
+        - Healthcare industry standards
+        - Salary recommendations
+        - Job description writing tips
+        - Requirement suggestions
+        - Benefits recommendations
+        - Any other relevant recruiting guidance
+        
+        Be specific, actionable, and focused on healthcare roles."""
+    )
+    
+    response = await chat.send_message(message)
+    return {"assistant_response": response}
+
 # Chatbot Routes
 @api_router.post("/chat")
 async def chat_with_bot(request: AIRequest):
