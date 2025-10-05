@@ -90,14 +90,14 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="form-input"
-                  placeholder="nurse@hospital.com"
+                  className="bg-white/10 border-white/20 text-white placeholder-gray-400 focus:border-cyan-500/50 focus:ring-cyan-500/20 h-12"
+                  placeholder="doctor@hospital.com"
                   data-testid="email-input"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                <Label htmlFor="password" className="text-sm font-medium text-gray-200">
                   Password
                 </Label>
                 <Input
@@ -107,7 +107,7 @@ const Login = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className="form-input"
+                  className="bg-white/10 border-white/20 text-white placeholder-gray-400 focus:border-cyan-500/50 focus:ring-cyan-500/20 h-12"
                   placeholder="Enter your password"
                   data-testid="password-input"
                 />
@@ -116,7 +116,7 @@ const Login = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full btn-primary text-lg py-3"
+                className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-bold text-lg py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                 data-testid="login-submit-btn"
               >
                 {loading ? (
