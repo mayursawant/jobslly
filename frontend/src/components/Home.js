@@ -196,33 +196,33 @@ const Home = () => {
             </div>
           </div>
 
-            {/* Trust Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto pt-8 border-t border-gray-100">
-              <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-blue-600 mb-1" data-testid="stats-jobs">
-                  {stats.jobs}+
-                </div>
-                <div className="text-sm text-gray-600">Active Jobs</div>
+          {/* Trust Stats with Animation */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto mt-20 pt-12 border-t border-teal-100">
+            <div className="text-center animate-slide-up" style={{animationDelay: '1.6s'}}>
+              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-2" data-testid="stats-jobs">
+                11K+
               </div>
-              <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-blue-600 mb-1" data-testid="stats-companies">
-                  {stats.companies}+
-                </div>
-                <div className="text-sm text-gray-600">Healthcare Companies</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-blue-600 mb-1" data-testid="stats-professionals">
-                  {stats.professionals}k+
-                </div>
-                <div className="text-sm text-gray-600">Professionals</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-blue-600 mb-1" data-testid="stats-applications">
-                  {stats.applications}+
-                </div>
-                <div className="text-sm text-gray-600">Applications</div>
-              </div>
+              <div className="text-sm text-gray-600 font-medium">Job Vacancy</div>
             </div>
+            <div className="text-center animate-slide-up" style={{animationDelay: '1.8s'}}>
+              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-cyan-600 bg-clip-text text-transparent mb-2" data-testid="stats-companies">
+                2,000+
+              </div>
+              <div className="text-sm text-gray-600 font-medium">Healthcare Companies</div>
+            </div>
+            <div className="text-center animate-slide-up" style={{animationDelay: '2s'}}>
+              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent mb-2" data-testid="stats-professionals">
+                75K+
+              </div>
+              <div className="text-sm text-gray-600 font-medium">Active Professionals</div>
+            </div>
+            <div className="text-center animate-slide-up" style={{animationDelay: '2.2s'}}>
+              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-2" data-testid="stats-applications">
+                40K+
+              </div>
+              <div className="text-sm text-gray-600 font-medium">Talented Candidates</div>
+            </div>
+          </div>
           </div>
         </div>
       </section>
