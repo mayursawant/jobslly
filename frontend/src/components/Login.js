@@ -111,7 +111,7 @@ const Login = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-bold text-lg py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-semibold text-lg py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                 data-testid="login-submit-btn"
               >
                 {loading ? (
