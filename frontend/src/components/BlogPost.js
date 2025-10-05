@@ -201,32 +201,83 @@ const BlogPost = () => {
             {/* Related Posts */}
             {relatedPosts.length > 0 && (
               <section>
-                <h3 className="text-2xl font-bold text-white mb-6">Related Articles</h3>
-                <div className="grid md:grid-cols-3 gap-6">
-                  {relatedPosts.slice(0, 3).map((relatedPost) => (
-                    <Card key={relatedPost.id} className="group bg-white/5 backdrop-blur-xl border border-white/10 hover:border-emerald-400/50 transition-all duration-300 hover:scale-105 cursor-pointer">
-                      <CardContent className="p-6">
-                        <Badge variant="outline" className="border-white/20 text-gray-300 mb-3">
-                          {relatedPost.category}
-                        </Badge>
-                        <h4 className="font-semibold text-white mb-2 group-hover:text-emerald-400 transition-colors line-clamp-2">
-                          {relatedPost.title}
-                        </h4>
-                        <p className="text-gray-300 text-sm line-clamp-3 mb-4">{relatedPost.excerpt}</p>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => navigate(`/blog/${relatedPost.slug}`)}
-                          className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
-                        >
-                          Read More
-                        </Button>
+                <div className="text-center mb-12">
+                  <h3 className="text-3xl font-bold text-gray-900 mb-4">You Might Also Like</h3>
+                  <div className="w-20 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 mx-auto rounded-full"></div>
+                </div>
+                <div className="grid md:grid-cols-3 gap-8">
+                  {relatedPosts.slice(0, 3).map((relatedPost, index) => (
+                    <Card key={relatedPost.id} className="group bg-white border border-teal-100 hover:border-teal-300 hover:shadow-xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2">
+                      <CardContent className="p-0 overflow-hidden rounded-lg">
+                        <div className="h-40 bg-gradient-to-br from-teal-100 to-emerald-100 relative overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-br from-teal-400/20 to-emerald-400/20"></div>
+                          <div className="absolute bottom-4 right-4">
+                            <div className="text-3xl filter drop-shadow-lg">
+                              {relatedPost.category === 'Healthcare Trends' ? '📈' : 
+                               relatedPost.category === 'Career Development' ? '🚀' : 
+                               relatedPost.category === 'Industry News' ? '📰' : '🏥'}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="p-6">
+                          <Badge 
+                            variant="outline" 
+                            className={`text-xs mb-3 border ${
+                              relatedPost.category === 'Healthcare Trends' ? 'border-emerald-200 text-emerald-700 bg-emerald-50' :
+                              relatedPost.category === 'Career Development' ? 'border-blue-200 text-blue-700 bg-blue-50' :
+                              relatedPost.category === 'Industry News' ? 'border-purple-200 text-purple-700 bg-purple-50' :
+                              'border-teal-200 text-teal-700 bg-teal-50'
+                            }`}
+                          >
+                            {relatedPost.category}
+                          </Badge>
+                          <h4 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-teal-700 transition-colors line-clamp-2 leading-tight">
+                            {relatedPost.title}
+                          </h4>
+                          <p className="text-gray-600 text-sm line-clamp-3 mb-4">{relatedPost.excerpt}</p>
+                          <Button 
+                            size="sm" 
+                            onClick={() => navigate(`/blog/${relatedPost.slug}`)}
+                            className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-xl transform hover:scale-105 transition-all duration-300"
+                          >
+                            📖 Read Article →
+                          </Button>
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
                 </div>
               </section>
             )}
+
+            {/* Newsletter CTA */}
+            <section className="mt-20">
+              <Card className="bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 border-0 text-white overflow-hidden relative">
+                <div className="absolute inset-0 bg-black/10"></div>
+                <CardContent className="p-12 text-center relative">
+                  <div className="mb-6">
+                    <span className="text-5xl">📧</span>
+                  </div>
+                  <h3 className="text-3xl font-bold mb-4">Get More Healthcare Insights</h3>
+                  <p className="text-teal-100 mb-8 text-lg max-w-2xl mx-auto">
+                    Join 75,000+ healthcare professionals receiving weekly career tips and job opportunities
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                    <input
+                      type="email"
+                      placeholder="Enter your email address..."
+                      className="flex-1 h-12 px-4 bg-white/95 border-0 text-gray-900 placeholder-gray-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/50"
+                    />
+                    <Button className="bg-white text-teal-600 hover:bg-gray-50 font-semibold px-8 h-12 rounded-xl transform hover:scale-105 transition-all duration-300">
+                      🚀 Subscribe Free
+                    </Button>
+                  </div>
+                  <p className="text-xs text-teal-100 mt-4 opacity-80">
+                    No spam. Unsubscribe anytime. Join the healthcare community.
+                  </p>
+                </CardContent>
+              </Card>
+            </section>
           </div>
         </div>
       </div>
