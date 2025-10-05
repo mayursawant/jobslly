@@ -249,46 +249,46 @@ const LeadChatbot = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input */}
-        {currentStep < chatFlow.length && chatFlow[currentStep].expectsInput && (
-          <div className="p-4 border-t border-gray-100">
-            <div className="flex space-x-2">
-              <Input
-                value={currentInput}
-                onChange={(e) => setCurrentInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Type your message..."
-                className="flex-1 h-10 text-sm"
-              />
-              <Button
-                onClick={handleSend}
-                disabled={!currentInput.trim()}
-                className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white h-10 w-10 p-0"
-              >
-                <Send className="w-4 h-4" />
-              </Button>
-            </div>
+        {/* Input Area */}
+        <div className="p-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
+          <div className="flex space-x-2">
+            <Input
+              value={currentInput}
+              onChange={(e) => setCurrentInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+              placeholder="Ask about healthcare jobs, career advice..."
+              className="flex-1 h-11 text-sm bg-white border-gray-200 rounded-xl focus:ring-1 focus:ring-teal-300 focus:border-teal-300"
+              disabled={isTyping}
+            />
+            <Button
+              onClick={handleSend}
+              disabled={!currentInput.trim() || isTyping}
+              className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white h-11 w-11 p-0 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
+            >
+              <Send className="w-4 h-4" />
+            </Button>
           </div>
-        )}
-
-        {/* Final CTA */}
-        {currentStep >= chatFlow.length - 1 && (
-          <div className="p-4 border-t border-gray-100 space-y-2">
+          
+          {/* Quick Actions */}
+          <div className="flex justify-center space-x-2 mt-3">
             <Button
               onClick={() => window.open('/jobs', '_blank')}
-              className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white h-10"
+              size="sm"
+              variant="outline"
+              className="text-xs border-teal-200 text-teal-600 hover:bg-teal-50 px-3 py-1 rounded-full"
             >
-              Browse Jobs Now 🔍
+              🔍 Browse Jobs
             </Button>
             <Button
               onClick={() => window.open('/register', '_blank')}
+              size="sm"
               variant="outline"
-              className="w-full border-teal-600 text-teal-600 hover:bg-teal-50 h-10"
+              className="text-xs border-teal-200 text-teal-600 hover:bg-teal-50 px-3 py-1 rounded-full"
             >
-              Create Account 📝
+              📝 Sign Up
             </Button>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
