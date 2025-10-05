@@ -60,23 +60,43 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section with Search */}
-      <section className="relative py-16 px-4 bg-gradient-to-br from-blue-50 via-white to-green-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            {/* Trust Badge */}
-            <div className="inline-flex items-center px-4 py-2 mb-6 bg-green-100 rounded-full border border-green-200">
-              <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-              <span className="text-green-700 font-medium text-sm">Trusted by 75k+ Healthcare Professionals</span>
-            </div>
+      <section className="relative py-20 px-4 bg-gradient-to-br from-teal-50 via-white to-emerald-50 overflow-hidden">
+        {/* Floating Animation Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-20 h-20 bg-teal-200 rounded-full opacity-20 animate-bounce"></div>
+          <div className="absolute top-40 right-20 w-16 h-16 bg-emerald-200 rounded-full opacity-30 animate-pulse"></div>
+          <div className="absolute bottom-32 left-20 w-12 h-12 bg-cyan-200 rounded-full opacity-25 animate-ping"></div>
+          <div className="absolute bottom-20 right-40 w-14 h-14 bg-green-200 rounded-full opacity-20 animate-bounce" style={{animationDelay: '1s'}}></div>
+        </div>
 
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              India's Largest <br />
-              <span className="text-blue-600">Healthcare Community</span>
-            </h1>
-            
-            <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Connect with 2,000+ top healthcare companies. Discover jobs, courses, and career support in one trusted platform.
-            </p>
+        <div className="max-w-7xl mx-auto relative">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Column - Content */}
+            <div className="space-y-8">
+              {/* Trust Badge with Animation */}
+              <div className="inline-flex items-center px-5 py-3 bg-gradient-to-r from-teal-100 to-emerald-100 rounded-full border border-teal-200 shadow-sm animate-fade-in-up">
+                <div className="w-2 h-2 bg-teal-500 rounded-full mr-3 animate-pulse"></div>
+                <span className="text-teal-700 font-semibold text-sm">🏥 Trusted by 75,000+ Healthcare Professionals</span>
+              </div>
+
+              {/* Main Headline with Staggered Animation */}
+              <div className="space-y-4">
+                <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight animate-slide-up">
+                  Explore The Best
+                </h1>
+                <h1 className="text-5xl md:text-6xl font-bold leading-tight animate-slide-up" style={{animationDelay: '0.2s'}}>
+                  <span className="bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 bg-clip-text text-transparent">
+                    Healthcare Jobs
+                  </span>
+                </h1>
+                <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight animate-slide-up" style={{animationDelay: '0.4s'}}>
+                  In Your Dream Country
+                </h1>
+              </div>
+              
+              <p className="text-xl text-gray-600 max-w-2xl animate-slide-up" style={{animationDelay: '0.6s'}}>
+                AI-Powered Job Recommendations • Customised Search Filters • Dedicated Portal for Healthcare Professionals
+              </p>
 
             {/* Clean Search Bar */}
             <div className="max-w-2xl mx-auto mb-8" data-testid="hero-search-section">
