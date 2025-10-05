@@ -28,7 +28,9 @@ const AdminPanel = () => {
     salary_max: '',
     job_type: 'full_time',
     requirements: [],
-    benefits: []
+    benefits: [],
+    is_external: false,
+    external_url: ''
   });
   
   // Blog Creation State
