@@ -148,11 +148,15 @@ function App() {
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
+              <Route path="/job-seeker-login" element={!user ? <JobSeekerLogin /> : <Navigate to="/dashboard" />} />
+              <Route path="/employer-login" element={!user ? <EmployerLogin /> : <Navigate to="/dashboard" />} />
               <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
               <Route path="/cms-login" element={!user ? <CMSLogin /> : <Navigate to="/admin" />} />
               
               {/* Protected Routes */}
-              <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+              <Route path="/dashboard" element={user ? (
+                user.role === 'job_seeker' ? <JobSeekerDashboard /> : <Dashboard />
+              ) : <Navigate to="/job-seeker-login" />} />
               <Route path="/admin" element={
                 user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/cms-login" />
               } />
