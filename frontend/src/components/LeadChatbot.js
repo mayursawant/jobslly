@@ -194,39 +194,53 @@ const LeadChatbot = () => {
         {/* Messages */}
         <div className="flex-1 p-4 overflow-y-auto space-y-3">
           {messages.map((msg, index) => (
-            <div key={index} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-xs px-3 py-2 rounded-2xl text-sm ${
+            <div key={index} className={`flex items-end space-x-2 ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+              {msg.type === 'bot' && (
+                <div className="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Bot className="w-4 h-4 text-teal-600" />
+                </div>
+              )}
+              <div className={`max-w-[70%] px-4 py-3 rounded-2xl text-sm ${
                 msg.type === 'user' 
-                  ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-br-sm' 
-                  : 'bg-gray-100 text-gray-800 rounded-bl-sm'
-              } animate-slide-up`}>
+                  ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-br-md' 
+                  : 'bg-gray-100 text-gray-800 rounded-bl-md'
+              } animate-slide-up shadow-sm`}>
                 {msg.text}
               </div>
+              {msg.type === 'user' && (
+                <div className="w-6 h-6 bg-teal-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <User className="w-4 h-4 text-white" />
+                </div>
+              )}
             </div>
           ))}
           
           {isTyping && (
-            <div className="flex justify-start">
-              <div className="bg-gray-100 text-gray-800 px-3 py-2 rounded-2xl rounded-bl-sm text-sm animate-pulse">
+            <div className="flex items-end space-x-2 justify-start">
+              <div className="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center">
+                <Bot className="w-4 h-4 text-teal-600" />
+              </div>
+              <div className="bg-gray-100 text-gray-800 px-4 py-3 rounded-2xl rounded-bl-md text-sm animate-pulse shadow-sm">
                 <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                  <div className="w-2 h-2 bg-teal-400 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-teal-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                  <div className="w-2 h-2 bg-teal-400 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Quick options */}
-          {currentStep < chatFlow.length && chatFlow[currentStep].options && (
-            <div className="space-y-2">
-              {chatFlow[currentStep].options.map((option, index) => (
+          {/* Quick Reply Suggestions */}
+          {messages.length <= 2 && !isTyping && (
+            <div className="space-y-2 mt-4">
+              <div className="text-xs text-gray-500 text-center mb-2">Quick questions:</div>
+              {quickReplies.map((reply, index) => (
                 <button
                   key={index}
-                  onClick={() => handleOptionClick(option)}
-                  className="block w-full text-left px-3 py-2 text-sm bg-teal-50 text-teal-700 rounded-lg hover:bg-teal-100 transition-colors duration-200 border border-teal-200"
+                  onClick={() => handleQuickReply(reply)}
+                  className="block w-full text-left px-3 py-2 text-sm bg-teal-50 text-teal-700 rounded-lg hover:bg-teal-100 transition-colors duration-200 border border-teal-200 hover:border-teal-300"
                 >
-                  {option}
+                  {reply}
                 </button>
               ))}
             </div>
