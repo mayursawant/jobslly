@@ -332,6 +332,15 @@ const JobDetails = () => {
             </Card>
           </div>
         </div>
+
+        {/* Lead Collection Modal */}
+        <LeadCollectionModal
+          isOpen={showLeadModal}
+          onClose={() => setShowLeadModal(false)}
+          jobId={jobId}
+          jobTitle={job?.title}
+          companyName={job?.company}
+        />
       </div>
     </div>
   );
