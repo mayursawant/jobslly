@@ -130,7 +130,7 @@ const Login = () => {
                 Don't have an account?{' '}
                 <Link 
                   to="/register" 
-                  className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
+                  className="text-teal-600 hover:text-teal-700 font-medium transition-colors"
                   data-testid="register-link"
                 >
                   Sign up here
