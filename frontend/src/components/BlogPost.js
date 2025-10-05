@@ -81,7 +81,7 @@ const BlogPost = () => {
               "name": "Jobslly",
               "logo": {
                 "@type": "ImageObject",
-                "url": "https://careerheal.preview.emergentagent.com/logo.png"
+                "url": "https://healthjobs.preview.emergentagent.com/logo.png"
               }
             },
             "datePublished": post.published_at,
