@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: Complete the "Apply Now" functionality within the LeadCollectionModal, implement job application submission process, verify SEO endpoints, and develop employer dashboard features.
+user_problem_statement: Comprehensive testing and validation of Jobslly healthcare job platform including AI job enhancement features, external job redirection, complete footer with sitemap, and all core functionalities. Update documentation with PRD and code documentation.
 
 backend:
   - task: "Job listing API endpoint"
