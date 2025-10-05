@@ -252,10 +252,12 @@ class HealthcareJobsAPITester:
             
             if response.status_code == 200:
                 data = response.json()
-                if data.get("success"):
-                    self.log_result("Job Application Submission", True, f"Application submitted: {data.get('message')}")
+                # Handle both response formats - success dict or JobApplication object
+                if data.get("success") or (data.get("id") and data.get("job_id")):
+                    message = data.get('message', f"Application created with ID: {data.get('id')}")
+                    self.log_result("Job Application Submission", True, f"Application submitted: {message}")
                 else:
-                    self.log_result("Job Application Submission", False, "Success flag not true", data)
+                    self.log_result("Job Application Submission", False, "Invalid response format", data)
             else:
                 self.log_result("Job Application Submission", False, f"Status: {response.status_code}", response.text)
         
