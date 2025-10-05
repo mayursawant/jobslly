@@ -372,6 +372,335 @@ class HealthcareJobsAPITester:
         except Exception as e:
             self.log_result("Application Count Increment", False, f"Exception: {str(e)}")
     
+    def test_admin_authentication(self):
+        """Test 8: Admin Authentication with existing admin user"""
+        print("🔐 Testing Admin Authentication...")
+        
+        try:
+            # Login with existing admin user
+            login_data = {
+                "email": "admin@gmail.com",
+                "password": "password"
+            }
+            
+            response = requests.post(f"{self.base_url}/auth/login", json=login_data)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "access_token" in data:
+                    self.admin_token = data["access_token"]
+                    self.log_result("Admin Authentication", True, "Admin login successful")
+                else:
+                    self.log_result("Admin Authentication", False, "No access token in response", data)
+            else:
+                self.log_result("Admin Authentication", False, f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Admin Authentication", False, f"Exception: {str(e)}")
+    
+    def test_ai_enhancement_endpoints(self):
+        """Test 9: AI Enhancement Endpoints (Priority 1)"""
+        print("🤖 Testing AI Enhancement Endpoints...")
+        
+        if not self.admin_token:
+            self.log_result("AI Enhancement Endpoints", False, "No admin token available")
+            return
+        
+        headers = {"Authorization": f"Bearer {self.admin_token}"}
+        
+        # Test 1: AI Job Description Enhancement
+        try:
+            ai_request = {
+                "text": "We are looking for a Registered Nurse to join our team. Must have experience in patient care."
+            }
+            
+            response = requests.post(f"{self.base_url}/ai/enhance-job-description", 
+                                   json=ai_request, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "enhanced_description" in data and data["enhanced_description"]:
+                    self.log_result("AI Job Description Enhancement", True, 
+                                  f"Enhanced description received ({len(data['enhanced_description'])} chars)")
+                else:
+                    self.log_result("AI Job Description Enhancement", False, "No enhanced description in response", data)
+            else:
+                self.log_result("AI Job Description Enhancement", False, f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("AI Job Description Enhancement", False, f"Exception: {str(e)}")
+        
+        # Test 2: AI Job Requirements Suggestions
+        try:
+            ai_request = {
+                "text": "Senior Cardiologist position at major hospital in Sydney. Leading cardiac surgery department."
+            }
+            
+            response = requests.post(f"{self.base_url}/ai/suggest-job-requirements", 
+                                   json=ai_request, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "suggested_requirements" in data and data["suggested_requirements"]:
+                    self.log_result("AI Job Requirements Suggestions", True, 
+                                  f"Requirements suggestions received ({len(data['suggested_requirements'])} chars)")
+                else:
+                    self.log_result("AI Job Requirements Suggestions", False, "No requirements suggestions in response", data)
+            else:
+                self.log_result("AI Job Requirements Suggestions", False, f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("AI Job Requirements Suggestions", False, f"Exception: {str(e)}")
+        
+        # Test 3: AI Job Benefits Suggestions
+        try:
+            ai_request = {
+                "text": "Pharmacist position at community pharmacy. Full-time role with growth opportunities."
+            }
+            
+            response = requests.post(f"{self.base_url}/ai/suggest-job-benefits", 
+                                   json=ai_request, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "suggested_benefits" in data and data["suggested_benefits"]:
+                    self.log_result("AI Job Benefits Suggestions", True, 
+                                  f"Benefits suggestions received ({len(data['suggested_benefits'])} chars)")
+                else:
+                    self.log_result("AI Job Benefits Suggestions", False, "No benefits suggestions in response", data)
+            else:
+                self.log_result("AI Job Benefits Suggestions", False, f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("AI Job Benefits Suggestions", False, f"Exception: {str(e)}")
+        
+        # Test 4: AI Job Posting Assistant
+        try:
+            ai_request = {
+                "text": "What salary range should I offer for a nurse practitioner position in Melbourne?"
+            }
+            
+            response = requests.post(f"{self.base_url}/ai/job-posting-assistant", 
+                                   json=ai_request, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "assistant_response" in data and data["assistant_response"]:
+                    self.log_result("AI Job Posting Assistant", True, 
+                                  f"Assistant response received ({len(data['assistant_response'])} chars)")
+                else:
+                    self.log_result("AI Job Posting Assistant", False, "No assistant response in response", data)
+            else:
+                self.log_result("AI Job Posting Assistant", False, f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("AI Job Posting Assistant", False, f"Exception: {str(e)}")
+        
+        # Test 5: AI Access Control (non-admin user should be denied)
+        try:
+            if self.job_seeker_token:
+                headers_non_admin = {"Authorization": f"Bearer {self.job_seeker_token}"}
+                ai_request = {"text": "Test access control"}
+                
+                response = requests.post(f"{self.base_url}/ai/enhance-job-description", 
+                                       json=ai_request, headers=headers_non_admin)
+                
+                if response.status_code == 403:
+                    self.log_result("AI Access Control", True, "Non-admin access correctly denied")
+                else:
+                    self.log_result("AI Access Control", False, f"Expected 403, got {response.status_code}")
+            else:
+                self.log_result("AI Access Control", False, "No job seeker token for access control test")
+        
+        except Exception as e:
+            self.log_result("AI Access Control", False, f"Exception: {str(e)}")
+    
+    def test_sample_data_validation(self):
+        """Test 10: Sample Data Validation"""
+        print("📊 Testing Sample Data Validation...")
+        
+        # Test job count (should have 15 jobs)
+        try:
+            response = requests.get(f"{self.base_url}/jobs?limit=50")
+            
+            if response.status_code == 200:
+                jobs = response.json()
+                job_count = len(jobs)
+                
+                if job_count >= 10:  # Allow some flexibility
+                    self.log_result("Sample Jobs Data", True, f"Found {job_count} jobs (expected ~15)")
+                    
+                    # Check for external jobs
+                    external_jobs = [job for job in jobs if job.get('is_external', False)]
+                    if external_jobs:
+                        self.log_result("External Jobs Data", True, f"Found {len(external_jobs)} external jobs")
+                    else:
+                        self.log_result("External Jobs Data", False, "No external jobs found")
+                        
+                else:
+                    self.log_result("Sample Jobs Data", False, f"Only {job_count} jobs found, expected ~15")
+            else:
+                self.log_result("Sample Jobs Data", False, f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Sample Jobs Data", False, f"Exception: {str(e)}")
+        
+        # Test blog posts
+        try:
+            response = requests.get(f"{self.base_url}/blog?limit=20")
+            
+            if response.status_code == 200:
+                blogs = response.json()
+                blog_count = len(blogs)
+                
+                if blog_count >= 5:  # Allow some flexibility
+                    self.log_result("Sample Blog Data", True, f"Found {blog_count} blog posts (expected ~10)")
+                else:
+                    self.log_result("Sample Blog Data", False, f"Only {blog_count} blog posts found, expected ~10")
+            else:
+                self.log_result("Sample Blog Data", False, f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Sample Blog Data", False, f"Exception: {str(e)}")
+    
+    def test_user_roles_validation(self):
+        """Test 11: User Roles Validation"""
+        print("👥 Testing User Roles Validation...")
+        
+        # Test existing users login
+        test_users = [
+            ("admin@gmail.com", "admin"),
+            ("hr@gmail.com", "employer"),
+            ("doctor@gmail.com", "job_seeker")
+        ]
+        
+        for email, expected_role in test_users:
+            try:
+                login_data = {
+                    "email": email,
+                    "password": "password"
+                }
+                
+                response = requests.post(f"{self.base_url}/auth/login", json=login_data)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    if "access_token" in data:
+                        # Get user info to verify role
+                        headers = {"Authorization": f"Bearer {data['access_token']}"}
+                        me_response = requests.get(f"{self.base_url}/auth/me", headers=headers)
+                        
+                        if me_response.status_code == 200:
+                            user_data = me_response.json()
+                            actual_role = user_data.get("role")
+                            
+                            if actual_role == expected_role:
+                                self.log_result(f"User Role - {email}", True, f"Role verified: {actual_role}")
+                            else:
+                                self.log_result(f"User Role - {email}", False, f"Expected {expected_role}, got {actual_role}")
+                        else:
+                            self.log_result(f"User Role - {email}", False, "Could not fetch user info")
+                    else:
+                        self.log_result(f"User Role - {email}", False, "No access token in response")
+                else:
+                    self.log_result(f"User Role - {email}", False, f"Login failed: {response.status_code}")
+            
+            except Exception as e:
+                self.log_result(f"User Role - {email}", False, f"Exception: {str(e)}")
+    
+    def test_external_jobs_flow(self):
+        """Test 12: External Jobs Flow"""
+        print("🔗 Testing External Jobs Flow...")
+        
+        try:
+            # Get all jobs and find external ones
+            response = requests.get(f"{self.base_url}/jobs?limit=50")
+            
+            if response.status_code == 200:
+                jobs = response.json()
+                external_jobs = [job for job in jobs if job.get('is_external', False)]
+                
+                if external_jobs:
+                    external_job = external_jobs[0]
+                    job_id = external_job['id']
+                    
+                    # Test lead collection for external job
+                    lead_data = {
+                        "name": "External Job Applicant",
+                        "email": f"external_{uuid.uuid4().hex[:8]}@example.com",
+                        "phone": "+1-555-0199",
+                        "current_position": "Healthcare Professional",
+                        "experience_years": "4"
+                    }
+                    
+                    response = requests.post(f"{self.base_url}/jobs/{job_id}/apply-lead", json=lead_data)
+                    
+                    if response.status_code == 200:
+                        data = response.json()
+                        if data.get("is_external") and data.get("redirect_url"):
+                            self.log_result("External Job Flow", True, 
+                                          f"External job flow working, redirect URL: {data['redirect_url']}")
+                        else:
+                            self.log_result("External Job Flow", False, "Missing external job response fields", data)
+                    else:
+                        self.log_result("External Job Flow", False, f"Status: {response.status_code}", response.text)
+                else:
+                    self.log_result("External Job Flow", False, "No external jobs found for testing")
+            else:
+                self.log_result("External Job Flow", False, f"Could not fetch jobs: {response.status_code}")
+        
+        except Exception as e:
+            self.log_result("External Job Flow", False, f"Exception: {str(e)}")
+    
+    def test_blog_management(self):
+        """Test 13: Blog Management APIs"""
+        print("📝 Testing Blog Management APIs...")
+        
+        # Test public blog endpoint
+        try:
+            response = requests.get(f"{self.base_url}/blog")
+            
+            if response.status_code == 200:
+                blogs = response.json()
+                if isinstance(blogs, list):
+                    self.log_result("Public Blog API", True, f"Retrieved {len(blogs)} published blog posts")
+                    
+                    # Test individual blog post if available
+                    if blogs:
+                        blog_slug = blogs[0].get('slug')
+                        if blog_slug:
+                            blog_response = requests.get(f"{self.base_url}/blog/{blog_slug}")
+                            if blog_response.status_code == 200:
+                                self.log_result("Individual Blog Post", True, f"Retrieved blog post: {blog_slug}")
+                            else:
+                                self.log_result("Individual Blog Post", False, f"Status: {blog_response.status_code}")
+                        else:
+                            self.log_result("Individual Blog Post", False, "No blog slug available")
+                else:
+                    self.log_result("Public Blog API", False, "Response is not a list", blogs)
+            else:
+                self.log_result("Public Blog API", False, f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Public Blog API", False, f"Exception: {str(e)}")
+        
+        # Test admin blog management (if admin token available)
+        if self.admin_token:
+            try:
+                headers = {"Authorization": f"Bearer {self.admin_token}"}
+                response = requests.get(f"{self.base_url}/admin/blog", headers=headers)
+                
+                if response.status_code == 200:
+                    admin_blogs = response.json()
+                    self.log_result("Admin Blog Management", True, f"Admin can access {len(admin_blogs)} blog posts")
+                else:
+                    self.log_result("Admin Blog Management", False, f"Status: {response.status_code}", response.text)
+            
+            except Exception as e:
+                self.log_result("Admin Blog Management", False, f"Exception: {str(e)}")
+        else:
+            self.log_result("Admin Blog Management", False, "No admin token available")
+    
     def run_all_tests(self):
         """Run all test suites"""
         print("🚀 Starting Healthcare Jobs API Testing Suite")
