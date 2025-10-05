@@ -178,18 +178,18 @@ const Blog = () => {
           </section>
 
           {/* Newsletter Signup */}
-          <section className="mt-20 text-center">
-            <Card className="max-w-2xl mx-auto bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/20 backdrop-blur-xl">
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-bold text-white mb-4">Stay Updated</h3>
-                <p className="text-gray-300 mb-6">Get the latest healthcare career insights delivered to your inbox</p>
-                <div className="flex gap-4">
+          <section className="mt-16">
+            <Card className="max-w-2xl mx-auto bg-blue-50 border border-blue-200">
+              <CardContent className="p-8 text-center">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Stay Updated</h3>
+                <p className="text-gray-600 mb-6">Get the latest healthcare career insights delivered to your inbox</p>
+                <div className="flex flex-col sm:flex-row gap-3">
                   <Input
                     type="email"
                     placeholder="Enter your email..."
-                    className="bg-white/10 border-white/20 text-white placeholder-gray-400"
+                    className="flex-1"
                   />
-                  <Button className="bg-gradient-to-r from-emerald-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 text-white px-8">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8">
                     Subscribe
                   </Button>
                 </div>
