@@ -678,6 +678,93 @@ async def update_seo_settings(seo_data: SEOSettings, current_user: User = Depend
         {"$set": seo_data.dict()},
         upsert=True
     )
+    return {"success": True, "message": "SEO settings updated"}
+
+# Database Management Routes (Admin only)
+@api_router.delete("/admin/clear-database")
+async def clear_database(current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    try:
+        # Clear all collections
+        collections_to_clear = [
+            "users", "jobs", "applications", "job_leads", "user_profiles",
+            "chat_messages", "blog_posts", "seo_settings", "saved_jobs"
+        ]
+        
+        cleared_collections = []
+        for collection_name in collections_to_clear:
+            collection = getattr(db, collection_name)
+            result = await collection.delete_many({})
+            cleared_collections.append(f"{collection_name}: {result.deleted_count} documents")
+        
+        return {
+            "success": True,
+            "message": "Database cleared successfully",
+            "details": cleared_collections
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error clearing database: {str(e)}")
+
+@api_router.post("/admin/initialize-users")
+async def initialize_default_users():
+    """Initialize the database with default users"""
+    try:
+        # Check if users already exist
+        existing_users = await db.users.count_documents({})
+        if existing_users > 0:
+            raise HTTPException(status_code=400, detail="Users already exist in database")
+        
+        # Create default users
+        default_users = [
+            {
+                "full_name": "Admin User",
+                "email": "admin@gmail.com", 
+                "password": "password",
+                "role": "admin"
+            },
+            {
+                "full_name": "HR Manager",
+                "email": "hr@gmail.com",
+                "password": "password", 
+                "role": "employer"
+            },
+            {
+                "full_name": "Dr. John Smith", 
+                "email": "doctor@gmail.com",
+                "password": "password",
+                "role": "job_seeker"
+            }
+        ]
+        
+        created_users = []
+        for user_data in default_users:
+            # Hash password
+            hashed_password = pwd_context.hash(user_data["password"])
+            
+            # Create user
+            user = User(
+                full_name=user_data["full_name"],
+                email=user_data["email"],
+                hashed_password=hashed_password,
+                role=UserRole(user_data["role"]),
+                is_verified=True
+            )
+            
+            user_dict = user.dict()
+            user_dict['created_at'] = user_dict['created_at'].isoformat()
+            
+            await db.users.insert_one(user_dict)
+            created_users.append(f"{user_data['email']} ({user_data['role']})")
+        
+        return {
+            "success": True,
+            "message": "Default users created successfully",
+            "users": created_users
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error creating users: {str(e)}")
     
     return {"message": "SEO settings updated successfully"}
 
