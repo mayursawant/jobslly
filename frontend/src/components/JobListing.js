@@ -133,88 +133,88 @@ const JobListing = () => {
 
         {/* Job Grid */}
         {sortedJobs.length === 0 ? (
-          <div className="text-center py-16" data-testid="no-jobs-message">
-            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="text-center py-16 bg-white rounded-lg border border-gray-200" data-testid="no-jobs-message">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">No jobs found</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No jobs found</h3>
             <p className="text-gray-600 mb-6">Try adjusting your search criteria or filters</p>
             <Button onClick={() => {setSearchTerm(''); setJobType('all');}} variant="outline">
               Clear Filters
             </Button>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6" data-testid="jobs-grid">
+          <div className="space-y-4" data-testid="jobs-grid">
             {sortedJobs.map((job) => (
-              <Card key={job.id} className="job-card" data-testid={`job-card-${job.id}`}>
+              <Card key={job.id} className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-200" data-testid={`job-card-${job.id}`}>
                 <CardContent className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <Badge variant="secondary" className="bg-emerald-100 text-emerald-700">
-                      {job.job_type.replace('_', ' ').toUpperCase()}
-                    </Badge>
-                    {job.salary_min && (
-                      <span className="text-sm font-medium text-emerald-600">
-                        ${job.salary_min.toLocaleString()}
-                        {job.salary_max && ` - $${job.salary_max.toLocaleString()}`}
-                      </span>
-                    )}
-                  </div>
-                  
-                  <h3 className="text-xl font-semibold mb-2 text-gray-800">{job.title}</h3>
-                  <p className="text-emerald-600 font-medium mb-2">{job.company}</p>
-                  <p className="text-gray-600 mb-4 flex items-center">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    {job.location}
-                  </p>
-                  
-                  <p className="text-gray-700 mb-4 line-clamp-3">
-                    {job.description.substring(0, 150)}...
-                  </p>
+                  <div className="flex flex-col md:flex-row md:items-start md:justify-between">
+                    <div className="flex-1 mb-4 md:mb-0">
+                      <div className="flex items-center gap-3 mb-3">
+                        <Badge className="bg-blue-100 text-blue-800 text-xs">
+                          {job.job_type.replace('_', ' ').toUpperCase()}
+                        </Badge>
+                        {job.salary_min && (
+                          <span className="text-sm font-semibold text-green-600">
+                            ${job.salary_min.toLocaleString()}
+                            {job.salary_max && ` - $${job.salary_max.toLocaleString()}`}
+                          </span>
+                        )}
+                        <span className="text-xs text-gray-500 ml-auto md:ml-0">
+                          {new Date(job.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      
+                      <h3 className="text-lg font-semibold mb-1 text-gray-900 hover:text-blue-600 transition-colors">{job.title}</h3>
+                      <p className="text-blue-600 font-medium mb-2">{job.company}</p>
+                      <p className="text-gray-500 mb-3 flex items-center">
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {job.location}
+                      </p>
+                      
+                      <p className="text-gray-600 mb-3 line-clamp-2">
+                        {job.description.substring(0, 200)}...
+                      </p>
 
-                  {job.requirements && job.requirements.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {job.requirements.slice(0, 3).map((req, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
-                          {req}
-                        </Badge>
-                      ))}
-                      {job.requirements.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{job.requirements.length - 3} more
-                        </Badge>
+                      {job.requirements && job.requirements.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-3">
+                          {job.requirements.slice(0, 4).map((req, index) => (
+                            <Badge key={index} variant="outline" className="text-xs border-gray-200 text-gray-600">
+                              {req}
+                            </Badge>
+                          ))}
+                          {job.requirements.length > 4 && (
+                            <Badge variant="outline" className="text-xs border-gray-200 text-gray-600">
+                              +{job.requirements.length - 4} more
+                            </Badge>
+                          )}
+                        </div>
                       )}
                     </div>
-                  )}
 
-                  <div className="flex gap-2">
-                    <Link to={`/jobs/${job.id}`} className="flex-1">
-                      <Button className="w-full btn-primary" data-testid={`view-job-${job.id}`}>
-                        View Details
-                      </Button>
-                    </Link>
-                    
-                    {isAuthenticated && user?.role === 'job_seeker' && (
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="px-3"
-                        title="Quick Apply"
-                        data-testid={`quick-apply-${job.id}`}
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
-                      </Button>
-                    )}
-                  </div>
-
-                  <div className="mt-3 text-xs text-gray-500">
-                    Posted {new Date(job.created_at).toLocaleDateString()}
+                    <div className="flex flex-col gap-2 md:ml-6 md:flex-shrink-0">
+                      <Link to={`/jobs/${job.id}`}>
+                        <Button className="w-full md:w-32 bg-blue-600 hover:bg-blue-700 text-white" data-testid={`view-job-${job.id}`}>
+                          View Details
+                        </Button>
+                      </Link>
+                      
+                      {isAuthenticated && user?.role === 'job_seeker' && (
+                        <Button 
+                          variant="outline" 
+                          className="w-full md:w-32 border-gray-300 text-gray-700 hover:bg-gray-50"
+                          title="Save Job"
+                          data-testid={`save-job-${job.id}`}
+                        >
+                          Save Job
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
