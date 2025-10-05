@@ -61,27 +61,15 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
-      </div>
-      
-      <div className="relative w-full max-w-md">
-        <Card className="glass-strong shadow-2xl border-emerald-500/30 relative overflow-hidden" data-testid="register-form">
-          {/* Neon accent */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 via-cyan-500 to-emerald-400 animate-gradient"></div>
-          
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
+      <div className="w-full max-w-md">
+        <Card className="bg-white shadow-lg border border-gray-200" data-testid="register-form">
           <CardHeader className="text-center pb-6">
-            <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-full flex items-center justify-center shadow-lg animate-pulse-glow">
-              <span className="text-2xl">🌟</span>
-            </div>
-            <CardTitle className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-500 bg-clip-text text-transparent">
-              Join the Future
+            <CardTitle className="text-2xl font-bold text-gray-900 mb-2">
+              Create Your Account
             </CardTitle>
-            <p className="text-gray-300 mt-2">
-              Begin your next-level healthcare career with Jobslly
+            <p className="text-gray-600">
+              Join India's largest healthcare community
             </p>
           </CardHeader>
           
