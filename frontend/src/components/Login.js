@@ -144,13 +144,29 @@ const Login = () => {
             </div>
 
             {/* Demo credentials */}
-            <div className="mt-6 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
-              <p className="text-sm text-emerald-700 font-medium mb-2">Demo Credentials:</p>
-              <div className="text-xs text-emerald-600 space-y-1">
-                <p>Admin: admin@healthcare.com / password</p>
-                <p>Employer: employer@hospital.com / password</p>
-                <p>Job Seeker: seeker@email.com / password</p>
+            <div className="mt-6 p-4 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-xl border border-cyan-500/20 backdrop-blur-sm">
+              <p className="text-sm text-cyan-400 font-medium mb-2 flex items-center">
+                <span className="mr-2">🎮</span>
+                Demo Accounts:
+              </p>
+              <div className="text-xs text-cyan-300 space-y-1 font-mono">
+                <p>🩺 Doctor: test@nurse.com / password123</p>
+                <p>🏥 Employer: hr@hospital.com / password123</p>
+                <p>⚡ Admin: admin@healthcare.com / admin123</p>
               </div>
+            </div>
+            
+            <div className="mt-4 text-center">
+              <p className="text-gray-400 text-sm">
+                Need CMS access?{' '}
+                <Link 
+                  to="/cms-login" 
+                  className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors underline"
+                  data-testid="cms-login-link"
+                >
+                  CMS Portal →
+                </Link>
+              </p>
             </div>
           </CardContent>
         </Card>
