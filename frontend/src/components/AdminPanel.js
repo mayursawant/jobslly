@@ -169,6 +169,26 @@ const AdminPanel = () => {
                   <p className="text-xs text-gray-500 mt-1">Total submissions</p>
                 </CardContent>
               </Card>
+
+              <Card className="card" data-testid="admin-stat-blogs">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-medium text-gray-600">Blog Posts</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-gray-800">{stats.total_blogs || 0}</div>
+                  <p className="text-xs text-gray-500 mt-1">Articles created</p>
+                </CardContent>
+              </Card>
+
+              <Card className="card" data-testid="admin-stat-published">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-medium text-gray-600">Published</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-emerald-600">{stats.published_blogs || 0}</div>
+                  <p className="text-xs text-gray-500 mt-1">Live articles</p>
+                </CardContent>
+              </Card>
             </div>
 
             <Card className="card">
