@@ -166,23 +166,26 @@ const LeadChatbot = () => {
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
-      <div className="bg-white rounded-2xl shadow-2xl border border-teal-100 w-80 h-96 flex flex-col animate-slide-up">
+      <div className="bg-white rounded-2xl shadow-2xl border border-teal-100 w-80 h-[500px] flex flex-col animate-slide-up">
         {/* Header */}
         <div className="bg-gradient-to-r from-teal-600 to-emerald-600 text-white p-4 rounded-t-2xl flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-              <span className="text-sm">🏥</span>
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center animate-pulse">
+              <Bot className="w-5 h-5" />
             </div>
             <div>
-              <div className="font-semibold text-sm">Healthcare Assistant</div>
-              <div className="text-xs text-teal-100">Online • Here to help</div>
+              <div className="font-semibold">Healthcare AI Assistant</div>
+              <div className="text-xs text-teal-100 flex items-center">
+                <div className="w-2 h-2 bg-green-400 rounded-full mr-1 animate-pulse"></div>
+                Online
+              </div>
             </div>
           </div>
           <Button
             onClick={() => setIsOpen(false)}
             variant="ghost"
             size="sm"
-            className="text-white hover:bg-white/10 h-8 w-8 p-0"
+            className="text-white hover:bg-white/20 h-8 w-8 p-0 rounded-full"
           >
             <X className="w-4 h-4" />
           </Button>
