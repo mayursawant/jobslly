@@ -120,44 +120,44 @@ const Blog = () => {
 
           {/* All Posts */}
           <section>
-            <h2 className="text-4xl font-bold text-white mb-8 text-center">Latest Articles</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Latest Articles</h2>
             {filteredPosts.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="w-24 h-24 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-4xl">📝</span>
+              <div className="text-center py-16 bg-gray-50 rounded-lg">
+                <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">📝</span>
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">No articles found</h3>
-                <p className="text-gray-400 mb-6">Try adjusting your search criteria</p>
-                <Button onClick={() => setSearchTerm('')} variant="outline" className="border-white/20 text-white hover:bg-white/10">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">No articles found</h3>
+                <p className="text-gray-600 mb-6">Try adjusting your search criteria</p>
+                <Button onClick={() => setSearchTerm('')} variant="outline">
                   Clear Search
                 </Button>
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredPosts.map((post) => (
-                  <Card key={post.id} className="group bg-white/5 backdrop-blur-xl border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-105 cursor-pointer">
+                  <Card key={post.id} className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 cursor-pointer">
                     <CardContent className="p-0">
                       {post.featured_image && (
-                        <div className="h-40 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-t-lg"></div>
+                        <div className="h-40 bg-gray-100 rounded-t-lg"></div>
                       )}
                       <div className="p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <Badge variant="outline" className="border-white/20 text-gray-300">
+                        <div className="flex items-center justify-between mb-3">
+                          <Badge variant="outline" className="border-gray-200 text-gray-600 text-xs">
                             {post.category}
                           </Badge>
-                          <span className="text-xs text-gray-400">
+                          <span className="text-xs text-gray-500">
                             {new Date(post.published_at).toLocaleDateString()}
                           </span>
                         </div>
-                        <h3 className="text-lg font-semibold text-white mb-3 group-hover:text-cyan-400 transition-colors line-clamp-2">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors line-clamp-2">
                           {post.title}
                         </h3>
-                        <p className="text-gray-300 mb-4 line-clamp-3 text-sm">{post.excerpt}</p>
+                        <p className="text-gray-600 mb-4 line-clamp-3 text-sm">{post.excerpt}</p>
                         
                         {post.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mb-4">
+                          <div className="flex flex-wrap gap-1 mb-4">
                             {post.tags.slice(0, 3).map((tag, index) => (
-                              <Badge key={index} variant="secondary" className="text-xs bg-white/5 text-gray-400">
+                              <Badge key={index} variant="secondary" className="text-xs bg-gray-100 text-gray-600">
                                 #{tag}
                               </Badge>
                             ))}
@@ -165,7 +165,7 @@ const Blog = () => {
                         )}
 
                         <Link to={`/blog/${post.slug}`}>
-                          <Button size="sm" className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white">
+                          <Button size="sm" className="w-full bg-blue-600 hover:bg-blue-700 text-white">
                             Read Article →
                           </Button>
                         </Link>
