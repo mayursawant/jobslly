@@ -173,14 +173,14 @@ const Login = () => {
             </div>
             
             <div className="mt-4 text-center">
-              <p className="text-gray-400 text-sm">
+              <p className="text-gray-500 text-sm">
                 Need CMS access?{' '}
                 <Link 
                   to="/cms-login" 
-                  className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors underline"
+                  className="text-teal-600 hover:text-teal-700 font-medium transition-colors"
                   data-testid="cms-login-link"
                 >
-                  CMS Portal →
+                  Admin Login
                 </Link>
               </p>
             </div>
