@@ -107,30 +107,44 @@ const Blog = () => {
 
           {/* Featured Posts */}
           {featuredPosts.length > 0 && (
-            <section className="mb-16">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Featured Articles</h2>
-              <div className="grid md:grid-cols-3 gap-6">
-                {featuredPosts.map((post) => (
-                  <Card key={post.id} className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 cursor-pointer">
-                    <CardContent className="p-0">
-                      {post.featured_image && (
-                        <div className="h-48 bg-blue-50 rounded-t-lg"></div>
+            <section className="mb-20">
+              <div className="text-center mb-12">
+                <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Articles</h2>
+                <div className="w-20 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 mx-auto rounded-full"></div>
+              </div>
+              <div className="grid md:grid-cols-3 gap-8">
+                {featuredPosts.map((post, index) => (
+                  <Card key={post.id} className="group bg-white border border-teal-100 hover:border-teal-300 hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2">
+                    <CardContent className="p-0 overflow-hidden rounded-lg">
+                      {post.featured_image ? (
+                        <div className="h-48 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-t-lg relative overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-br from-teal-400/20 to-emerald-400/20"></div>
+                          <div className="absolute bottom-4 left-4 right-4">
+                            <div className="text-4xl filter drop-shadow-lg">
+                              {index === 0 ? '🏥' : index === 1 ? '💊' : '🩺'}
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="h-48 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-t-lg flex items-center justify-center">
+                          <span className="text-6xl opacity-50">{index === 0 ? '🏥' : index === 1 ? '💊' : '🩺'}</span>
+                        </div>
                       )}
                       <div className="p-6">
-                        <Badge className="bg-blue-100 text-blue-800 text-xs mb-3">
-                          Featured
+                        <Badge className="bg-gradient-to-r from-teal-100 to-emerald-100 text-teal-700 border-teal-200 text-xs mb-4">
+                          ⭐ Featured
                         </Badge>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors line-clamp-2">
+                        <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-teal-700 transition-colors line-clamp-2 leading-tight">
                           {post.title}
                         </h3>
-                        <p className="text-gray-600 mb-4 line-clamp-3 text-sm">{post.excerpt}</p>
+                        <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
                         <div className="flex justify-between items-center">
-                          <span className="text-xs text-gray-500">
-                            {new Date(post.published_at).toLocaleDateString()}
+                          <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
+                            📅 {new Date(post.published_at).toLocaleDateString()}
                           </span>
                           <Link to={`/blog/${post.slug}`}>
-                            <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-                              Read More
+                            <Button size="sm" className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-xl px-4 py-2 transform hover:scale-105 transition-all duration-300">
+                              Read Article →
                             </Button>
                           </Link>
                         </div>
