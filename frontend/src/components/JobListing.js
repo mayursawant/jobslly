@@ -83,49 +83,51 @@ const JobListing = () => {
         </div>
 
         {/* Search and Filters */}
-        <div className="mb-8 space-y-4">
-          <div className="flex flex-col md:flex-row gap-4 items-center">
-            <div className="flex-1">
-              <Input
-                type="text"
-                placeholder="Search by job title, company, or location..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="form-input w-full"
-                data-testid="job-search-input"
-              />
-            </div>
-            
-            <div className="flex gap-3">
-              <Select value={jobType} onValueChange={setJobType}>
-                <SelectTrigger className="w-40" data-testid="job-type-filter">
-                  <SelectValue placeholder="Job Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="full_time">Full Time</SelectItem>
-                  <SelectItem value="part_time">Part Time</SelectItem>
-                  <SelectItem value="contract">Contract</SelectItem>
-                </SelectContent>
-              </Select>
+        <div className="mb-8">
+          <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+            <div className="flex flex-col md:flex-row gap-4 items-center mb-4">
+              <div className="flex-1">
+                <Input
+                  type="text"
+                  placeholder="Search by job title, company, or location..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="h-12"
+                  data-testid="job-search-input"
+                />
+              </div>
+              
+              <div className="flex gap-3">
+                <Select value={jobType} onValueChange={setJobType}>
+                  <SelectTrigger className="w-40 h-12" data-testid="job-type-filter">
+                    <SelectValue placeholder="Job Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="full_time">Full Time</SelectItem>
+                    <SelectItem value="part_time">Part Time</SelectItem>
+                    <SelectItem value="contract">Contract</SelectItem>
+                  </SelectContent>
+                </Select>
 
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-40" data-testid="job-sort-filter">
-                  <SelectValue placeholder="Sort By" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="newest">Newest</SelectItem>
-                  <SelectItem value="salary_high">Salary: High to Low</SelectItem>
-                  <SelectItem value="salary_low">Salary: Low to High</SelectItem>
-                  <SelectItem value="company">Company A-Z</SelectItem>
-                </SelectContent>
-              </Select>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-40 h-12" data-testid="job-sort-filter">
+                    <SelectValue placeholder="Sort By" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Newest</SelectItem>
+                    <SelectItem value="salary_high">Salary: High to Low</SelectItem>
+                    <SelectItem value="salary_low">Salary: Low to High</SelectItem>
+                    <SelectItem value="company">Company A-Z</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-          </div>
 
-          {/* Results count */}
-          <div className="text-center text-gray-600" data-testid="jobs-count">
-            Showing {sortedJobs.length} of {jobs.length} positions
+            {/* Results count */}
+            <div className="text-sm text-gray-600" data-testid="jobs-count">
+              Showing {sortedJobs.length} of {jobs.length} positions
+            </div>
           </div>
         </div>
 
