@@ -90,23 +90,70 @@ const BlogPost = () => {
         </script>
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-        {/* Animated Background */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
-        </div>
-
-        <div className="relative py-24 px-4">
-          <div className="max-w-4xl mx-auto">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-emerald-50">
+        {/* Hero Section */}
+        <section className="relative py-16 px-4 bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 text-white overflow-hidden">
+          {/* Background animation elements */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full animate-bounce"></div>
+            <div className="absolute top-32 right-20 w-16 h-16 bg-white/20 rounded-full animate-pulse"></div>
+            <div className="absolute bottom-20 left-40 w-12 h-12 bg-white/15 rounded-full animate-ping"></div>
+          </div>
+          
+          <div className="max-w-4xl mx-auto relative">
             {/* Back Button */}
             <Button 
               variant="ghost" 
               onClick={() => navigate('/blog')}
-              className="mb-8 text-emerald-400 hover:text-emerald-300 hover:bg-white/5"
+              className="mb-6 text-white hover:text-teal-100 hover:bg-white/10 border border-white/20"
             >
               ← Back to Health Hub
             </Button>
+            
+            <div className="mb-6">
+              <Badge className="bg-white/20 text-white border-white/30 mb-4">
+                {post.category}
+              </Badge>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+                {post.title}
+              </h1>
+              <p className="text-xl text-teal-100 mb-6">{post.excerpt}</p>
+              
+              <div className="flex flex-wrap items-center justify-between text-sm text-teal-100">
+                <div className="flex items-center space-x-4 mb-4 md:mb-0">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                      <span className="text-sm">📅</span>
+                    </div>
+                    <span>
+                      {new Date(post.published_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {post.tags.map((tag, index) => (
+                    <Badge key={index} variant="outline" className="border-white/30 text-white bg-white/10">
+                      #{tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {post.featured_image && (
+              <div className="h-64 md:h-80 bg-white/10 rounded-2xl mb-8 border border-white/20 backdrop-blur-sm flex items-center justify-center">
+                <div className="text-6xl opacity-60">🏥</div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <div className="py-16 px-4">
+          <div className="max-w-4xl mx-auto">
 
             {/* Article Header */}
             <Card className="glass-strong border-emerald-500/30 mb-8">
