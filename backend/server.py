@@ -955,7 +955,7 @@ async def get_sitemap():
     
     return Response(content=xml_formatted, media_type="application/xml")
 
-@app.get("/robots.txt", response_class=PlainTextResponse)
+@api_router.get("/robots.txt", response_class=PlainTextResponse)
 async def get_robots_txt():
     """
     Generate robots.txt for search engine crawling
