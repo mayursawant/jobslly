@@ -338,7 +338,7 @@ class HealthcareJobsAPITester:
             # Submit a lead (should increment count)
             lead_data = {
                 "name": "Count Test User",
-                "email": f"counttest_{uuid.uuid4().hex[:8]}@healthjobs.test",
+                "email": f"counttest_{uuid.uuid4().hex[:8]}@example.com",
                 "phone": "+1-555-9999",
                 "current_position": "Healthcare Professional",
                 "experience_years": "3"
