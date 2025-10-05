@@ -75,16 +75,16 @@ const Register = () => {
           
           <CardContent>
             {error && (
-              <Alert className="mb-6 border-red-200 bg-red-50" data-testid="register-error">
+              <Alert className="mb-4 border-red-200 bg-red-50" data-testid="register-error">
                 <AlertDescription className="text-red-700">
                   {error}
                 </AlertDescription>
               </Alert>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="full_name" className="text-sm font-medium text-gray-700">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-1">
+                <Label htmlFor="full_name" className="text-sm font-medium text-gray-900">
                   Full Name
                 </Label>
                 <Input
@@ -94,14 +94,14 @@ const Register = () => {
                   value={formData.full_name}
                   onChange={handleChange}
                   required
-                  className="form-input"
-                  placeholder="Dr. Jane Smith"
+                  className="h-11"
+                  placeholder="Enter your full name"
                   data-testid="fullname-input"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+              <div className="space-y-1">
+                <Label htmlFor="email" className="text-sm font-medium text-gray-900">
                   Email Address
                 </Label>
                 <Input
@@ -111,14 +111,14 @@ const Register = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="form-input"
-                  placeholder="nurse@hospital.com"
+                  className="h-11"
+                  placeholder="Enter your email"
                   data-testid="email-input"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+              <div className="space-y-1">
+                <Label htmlFor="password" className="text-sm font-medium text-gray-900">
                   Password
                 </Label>
                 <Input
@@ -128,26 +128,26 @@ const Register = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className="form-input"
-                  placeholder="At least 6 characters"
+                  className="h-11"
+                  placeholder="Create a password"
                   data-testid="password-input"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="role" className="text-sm font-medium text-gray-700">
+              <div className="space-y-1">
+                <Label htmlFor="role" className="text-sm font-medium text-gray-900">
                   I am a...
                 </Label>
                 <Select value={formData.role} onValueChange={handleRoleChange}>
-                  <SelectTrigger className="form-input" data-testid="role-select">
+                  <SelectTrigger className="h-11" data-testid="role-select">
                     <SelectValue placeholder="Select your role" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="job_seeker" data-testid="role-job-seeker">
-                      Healthcare Professional (Looking for Jobs)
+                      Healthcare Professional
                     </SelectItem>
                     <SelectItem value="employer" data-testid="role-employer">
-                      Healthcare Employer (Hiring)
+                      Healthcare Employer
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -156,43 +156,35 @@ const Register = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full btn-primary text-lg py-3"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white h-11 mt-6"
                 data-testid="register-submit-btn"
               >
                 {loading ? (
                   <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                     Creating Account...
                   </div>
                 ) : (
-                  'Create Account'
+                  'Create Free Account'
                 )}
               </Button>
             </form>
 
             <div className="mt-6 text-center">
-              <p className="text-gray-600">
+              <p className="text-sm text-gray-600">
                 Already have an account?{' '}
                 <Link 
                   to="/login" 
-                  className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
+                  className="text-blue-600 hover:text-blue-700 font-medium"
                   data-testid="login-link"
                 >
-                  Sign in here
+                  Sign in
                 </Link>
               </p>
             </div>
 
-            {/* Role descriptions */}
-            <div className="mt-6 space-y-3">
-              <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-200">
-                <p className="text-sm text-emerald-700 font-medium">Healthcare Professional</p>
-                <p className="text-xs text-emerald-600">Search jobs, get AI-powered matching, upload resume</p>
-              </div>
-              <div className="p-3 bg-teal-50 rounded-lg border border-teal-200">
-                <p className="text-sm text-teal-700 font-medium">Healthcare Employer</p>
-                <p className="text-xs text-teal-600">Post jobs, manage applications, access candidate pool</p>
-              </div>
+            <div className="mt-6 text-xs text-gray-500 text-center">
+              By creating an account, you agree to our Terms of Service and Privacy Policy
             </div>
           </CardContent>
         </Card>
