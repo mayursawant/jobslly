@@ -225,14 +225,12 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Job listing API endpoint"
-    - "Job listings display"
-    - "LeadCollectionModal integration"
-  stuck_tasks:
-    - "Job listing API endpoint"
-    - "Job listings display"
+    - "Employer dashboard backend APIs"
+    - "Employer dashboard job posting interface"
+    - "Candidate shortlisting and resume viewing"
+  stuck_tasks: []
   test_all: false
-  test_priority: "stuck_first"
+  test_priority: "high_first"
 
 agent_communication:
     - agent: "main"
