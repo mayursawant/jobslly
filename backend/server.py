@@ -33,7 +33,6 @@ api_router = APIRouter(prefix="/api")
 SECRET_KEY = os.environ.get('JWT_SECRET', 'your-secret-key-change-this')
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
 
 # AI Integration
