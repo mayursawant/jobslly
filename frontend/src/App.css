@@ -233,8 +233,25 @@ body {
   animation: slideInRight 0.8s ease-out;
 }
 
+.animate-slide-up {
+  animation: slideUp 0.8s ease-out forwards;
+  opacity: 0;
+}
+
 .animate-pulse-glow {
   animation: pulse-glow 3s infinite;
+}
+
+.animate-heartbeat {
+  animation: heartbeat 2s ease-in-out infinite;
+}
+
+.animate-medical-pulse {
+  animation: medicalPulse 2s infinite;
+}
+
+.animate-healthcare-float {
+  animation: healthcareFloat 4s ease-in-out infinite;
 }
 
 .animate-gradient {
