@@ -981,7 +981,7 @@ Allow: /api/jobs
 Allow: /api/blog
 
 # Sitemap location
-Sitemap: {base_url}/sitemap.xml
+Sitemap: {base_url}/api/sitemap.xml
 
 # Crawl delay to be respectful
 Crawl-delay: 1
