@@ -233,15 +233,15 @@ const JobListing = () => {
 
         {/* CTA for non-authenticated users */}
         {!isAuthenticated && (
-          <div className="mt-16 text-center p-8 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl text-white">
+          <div className="mt-12 p-8 bg-blue-600 rounded-lg text-white text-center">
             <h2 className="text-2xl font-bold mb-4">Ready to Apply?</h2>
-            <p className="text-lg mb-6 opacity-90">
+            <p className="text-lg mb-6 text-blue-100">
               Create your account to apply for jobs and get personalized recommendations
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/register">
-                <Button size="lg" className="bg-white text-emerald-600 hover:bg-gray-100">
-                  Create Account
+                <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
+                  Get Started Free
                 </Button>
               </Link>
               <Link to="/login">
