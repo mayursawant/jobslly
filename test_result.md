@@ -352,6 +352,18 @@ frontend:
           agent: "testing"
           comment: "Job listings with clean professional layout WORKING. Page displays 15 healthcare positions with proper search and filtering functionality. Search works for healthcare terms (nurse returns 1 result). Job cards display correctly with salary ranges, company info, location, and requirements. Professional layout with proper spacing and typography confirmed."
 
+  - task: "Platform updates: Privacy/Terms pages, Navbar changes, Hero image, Job filters, Footer updates, Demo blog"
+    implemented: true
+    working: true
+    file: "components/PrivacyPolicy.js, TermsOfService.js, Navbar.js, Home.js, JobListing.js, Footer.js, Blog.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "COMPREHENSIVE PLATFORM UPDATES TESTING: All 6 requested updates verified working: 1) Privacy Policy (/privacy-policy) and Terms of Service (/terms-of-service) pages load with comprehensive content (11+ and 15+ sections), 2) Navbar 'Signup' button with teal/emerald theme successfully replaced 'Join the Future', 3) Healthcare professionals hero image from Unsplash successfully replaced founder image, 4) Job listing page now uses horizontal box category filters (6 boxes with teal active states) instead of dropdown, 5) Footer updates complete: academicallyglobal.com link removed, job categories match search page (Doctors, Pharmacy, Dentist, Nurses, Physiotherapy), Privacy Policy and Terms links functional, 6) Demo blog with images working: found 5 published blog posts including 'The Future of Healthcare Technology' with featured Unsplash images. All updates production-ready."
+
 frontend:
   - task: "LeadCollectionModal integration"
     implemented: true
