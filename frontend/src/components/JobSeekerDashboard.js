@@ -223,48 +223,75 @@ const JobSeekerDashboard = () => {
           </div>
         </div>
 
-        {/* Dashboard Statistics Cards */}
+        {/* Enhanced Statistics Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="glass border-blue-200" data-testid="applications-stat">
+          <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-blue-50 to-blue-100" data-testid="applications-stat">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Applications Sent</p>
+                  <div className="flex items-center space-x-2 mb-1">
+                    <Briefcase className="w-4 h-4 text-blue-600" />
+                    <p className="text-sm font-medium text-blue-700">Applications Sent</p>
+                  </div>
                   <p className="text-3xl font-bold text-blue-600">{dashboardData.applications_count + dashboardData.leads_count}</p>
+                  <p className="text-xs text-blue-500 mt-1">+2 this week</p>
                 </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-xl">📝</span>
+                <div className="w-14 h-14 bg-blue-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Briefcase className="w-7 h-7 text-white" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="glass border-emerald-200" data-testid="profile-completion-stat">
+          <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-emerald-50 to-emerald-100" data-testid="profile-completion-stat">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Profile Complete</p>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <User className="w-4 h-4 text-emerald-600" />
+                    <p className="text-sm font-medium text-emerald-700">Profile Complete</p>
+                  </div>
                   <p className="text-3xl font-bold text-emerald-600">{dashboardData.profile_completion}%</p>
+                  <Progress value={dashboardData.profile_completion} className="mt-2 h-2" />
                 </div>
-                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center">
-                  <span className="text-xl">✅</span>
+                <div className="w-14 h-14 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <CheckCircle className="w-7 h-7 text-white" />
                 </div>
               </div>
-              <Progress value={dashboardData.profile_completion} className="mt-2" />
             </CardContent>
           </Card>
 
-          {/* Saved jobs section removed */}
-
-          <Card className="glass border-orange-200" data-testid="interviews-stat">
+          <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-purple-50 to-purple-100" data-testid="profile-views-stat">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Interview Requests</p>
-                  <p className="text-3xl font-bold text-orange-600">2</p>
+                  <div className="flex items-center space-x-2 mb-1">
+                    <Eye className="w-4 h-4 text-purple-600" />
+                    <p className="text-sm font-medium text-purple-700">Profile Views</p>
+                  </div>
+                  <p className="text-3xl font-bold text-purple-600">47</p>
+                  <p className="text-xs text-purple-500 mt-1">+12 this month</p>
                 </div>
-                <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                  <span className="text-xl">🎯</span>
+                <div className="w-14 h-14 bg-purple-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Eye className="w-7 h-7 text-white" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-orange-50 to-orange-100" data-testid="interviews-stat">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center space-x-2 mb-1">
+                    <Users className="w-4 h-4 text-orange-600" />
+                    <p className="text-sm font-medium text-orange-700">Interviews</p>
+                  </div>
+                  <p className="text-3xl font-bold text-orange-600">3</p>
+                  <p className="text-xs text-orange-500 mt-1">1 scheduled</p>
+                </div>
+                <div className="w-14 h-14 bg-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Calendar className="w-7 h-7 text-white" />
                 </div>
               </div>
             </CardContent>
