@@ -111,6 +111,57 @@ const AdminPanel = () => {
     }
   };
 
+  /**
+   * Handle blog editing
+   */
+  const handleEditBlog = (blog) => {
+    // Populate the blog form with existing data
+    setNewBlog({
+      title: blog.title,
+      excerpt: blog.excerpt || '',
+      content: blog.content,
+      category: blog.category || 'healthcare',
+      is_published: blog.is_published || false,
+      is_featured: blog.is_featured || false,
+      seo_title: blog.seo_title || '',
+      seo_description: blog.seo_description || '',
+      featured_image: null // Can't edit existing image directly
+    });
+    
+    // Store the blog ID for updating
+    setNewBlog(prev => ({ ...prev, id: blog.id }));
+    
+    // Switch to create blog tab for editing
+    document.querySelector('[data-testid="admin-tab-create-blog"]').click();
+    
+    toast.info('Blog loaded for editing. Make your changes and save.');
+  };
+
+  /**
+   * Handle blog deletion
+   */
+  const handleDeleteBlog = async (blogId) => {
+    if (!window.confirm('Are you sure you want to delete this blog post? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('access_token');
+      await axios.delete(`${API}/admin/blog/${blogId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      // Remove from local state
+      setBlogPosts(prev => prev.filter(blog => blog.id !== blogId));
+      toast.success('Blog post deleted successfully!');
+    } catch (error) {
+      console.error('Failed to delete blog:', error);
+      toast.error('Failed to delete blog post');
+    }
+  };
+
   const handleAIEnhancement = (field, enhancedContent) => {
     if (field === 'description') {
       setNewJob(prev => ({ ...prev, description: enhancedContent }));
