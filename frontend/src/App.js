@@ -19,7 +19,7 @@ import JobSeekerLogin from './components/JobSeekerLogin';
 import JobSeekerDashboard from './components/JobSeekerDashboard';
 import Blog from './components/Blog';
 import BlogPost from './components/BlogPost';
-import ChatBot from './components/ChatBot';
+{/* ChatBot component removed as per user request */}
 {/* LeadChatbot removed as per user request */}
 import ScrollToTop from './components/ScrollToTop';
 import Sitemap from './components/Sitemap';
