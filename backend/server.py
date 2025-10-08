@@ -79,6 +79,7 @@ class Job(BaseModel):
     salary_min: Optional[int] = None
     salary_max: Optional[int] = None
     job_type: str = "full_time"  # full_time, part_time, contract
+    category: Optional[str] = None  # doctors, pharmacists, dentists, physiotherapists, nurses
     requirements: List[str] = []
     benefits: List[str] = []
     employer_id: str
