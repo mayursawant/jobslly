@@ -53,8 +53,7 @@ const Home = () => {
     { icon: '💊', name: 'Pharmacy', count: '1,890+', color: 'from-green-500 to-emerald-600' },
     { icon: '🦷', name: 'Dentist', count: '1,245+', color: 'from-blue-500 to-cyan-600' },
     { icon: '🏃‍♂️', name: 'Physiotherapy', count: '967+', color: 'from-purple-500 to-indigo-600' },
-    { icon: '👩‍⚕️', name: 'Nurses', count: '3,456+', color: 'from-teal-500 to-cyan-600' },
-    { icon: '🧠', name: 'Mental Health', count: '789+', color: 'from-amber-500 to-orange-600' }
+    { icon: '👩‍⚕️', name: 'Nurses', count: '3,456+', color: 'from-teal-500 to-cyan-600' }
   ];
 
   return (
