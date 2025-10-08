@@ -54,6 +54,7 @@ const AdminPanel = () => {
     tags: [],
     is_published: false,
     is_featured: false,
+    featured_image: null,
     seo_title: '',
     seo_description: '',
     seo_keywords: []
