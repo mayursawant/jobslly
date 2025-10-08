@@ -515,10 +515,9 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Updated job categories to new healthcare specializations"
-    - "Removed admin access completely"
-    - "Changed Twitter icon to X logo in footer"
-    - "Revamped job seeker dashboard with enhanced design"
+    - "Recent Activity Section Removal from Job Seeker Dashboard"
+    - "Header Background Color Fix (Pure White)"
+    - "CMS Admin Login Restoration"
   stuck_tasks: 
     - "Chatbot auto-open functionality"
   test_all: false
