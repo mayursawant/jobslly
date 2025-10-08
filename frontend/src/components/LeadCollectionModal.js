@@ -123,7 +123,7 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, companyName }) 
         setTimeout(() => {
           window.open(response.data.redirect_url, '_blank');
         }, 2000);
-        toast.success('Redirecting to external application...');
+{/* Redirect toast removed as per user request */}
       } else {
         // Redirect to registration with job context
         navigate('/register', { 
