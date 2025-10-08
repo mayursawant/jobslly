@@ -78,46 +78,106 @@ const AdminPanel = () => {
   }, []);
 
   const fetchAdminData = async () => {
+    console.log('🔄 Starting fetchAdminData...');
+    setLoading(true);
+    
     try {
       const token = localStorage.getItem('access_token');
+      console.log('🔑 Token found:', !!token);
+      
       if (!token) {
-        throw new Error('No authentication token found');
+        throw new Error('No authentication token found. Please login again.');
       }
 
       const headers = {
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
       };
 
-      const [statsResponse, jobsResponse, blogResponse] = await Promise.all([
-        axios.get(`${API}/admin/stats`, { headers }),
-        axios.get(`${API}/admin/jobs/pending`, { headers }),
-        axios.get(`${API}/admin/blog`, { headers })
-      ]);
+      console.log('📡 Making API calls to:', {
+        stats: `${API}/admin/stats`,
+        jobs: `${API}/admin/jobs/pending`, 
+        blogs: `${API}/admin/blog`
+      });
+
+      // Make API calls individually for better error tracking
+      let statsResponse, jobsResponse, blogResponse;
       
-      setStats(statsResponse.data);
-      setPendingJobs(jobsResponse.data);
-      setBlogPosts(blogResponse.data);
+      try {
+        console.log('📊 Fetching stats...');
+        statsResponse = await axios.get(`${API}/admin/stats`, { headers });
+        console.log('✅ Stats loaded:', statsResponse.data);
+      } catch (error) {
+        console.error('❌ Stats API failed:', error);
+        throw new Error(`Stats API failed: ${error.response?.status || 'Network error'}`);
+      }
+
+      try {
+        console.log('💼 Fetching pending jobs...');
+        jobsResponse = await axios.get(`${API}/admin/jobs/pending`, { headers });
+        console.log('✅ Jobs loaded:', jobsResponse.data.length, 'jobs');
+      } catch (error) {
+        console.error('❌ Jobs API failed:', error);
+        throw new Error(`Jobs API failed: ${error.response?.status || 'Network error'}`);
+      }
+
+      try {
+        console.log('📝 Fetching blogs...');
+        blogResponse = await axios.get(`${API}/admin/blog`, { headers });
+        console.log('✅ Blogs loaded:', blogResponse.data.length, 'blogs');
+      } catch (error) {
+        console.error('❌ Blogs API failed:', error);
+        throw new Error(`Blogs API failed: ${error.response?.status || 'Network error'}`);
+      }
+      
+      // Set data
+      setStats(statsResponse.data || {});
+      setPendingJobs(jobsResponse.data || []);
+      setBlogPosts(blogResponse.data || []);
+      
+      console.log('🎉 Admin data loaded successfully!');
+      
     } catch (error) {
-      console.error('Failed to fetch admin data:', error);
-      console.error('Error details:', {
+      console.error('💥 Failed to fetch admin data:', error);
+      console.error('📋 Error details:', {
+        message: error.message,
         status: error.response?.status,
         statusText: error.response?.statusText,
         data: error.response?.data,
-        config: error.config
+        url: error.config?.url
       });
       
-      let errorMessage = 'Failed to load admin data';
-      if (error.response?.status === 401) {
-        errorMessage = 'Authentication required. Please login again.';
+      let errorMessage = 'Failed to load admin dashboard data';
+      
+      if (error.message.includes('No authentication token')) {
+        errorMessage = '🔑 Authentication required. Please login again.';
+        // Redirect to login
+        setTimeout(() => {
+          window.location.href = '/cms-login';
+        }, 2000);
+      } else if (error.response?.status === 401) {
+        errorMessage = '🔑 Session expired. Please login again.';
+        setTimeout(() => {
+          window.location.href = '/cms-login';
+        }, 2000);
       } else if (error.response?.status === 403) {
-        errorMessage = 'Admin access required. Insufficient permissions.';
+        errorMessage = '🚫 Admin access required. Insufficient permissions.';
+      } else if (error.response?.status === 404) {
+        errorMessage = '🔍 Admin endpoints not found. Check backend configuration.';
+      } else if (error.response?.status === 500) {
+        errorMessage = '🔧 Server error. Please try again in a few moments.';
+      } else if (!error.response) {
+        errorMessage = '🌐 Network error. Check your internet connection.';
       } else if (error.response?.data?.detail) {
-        errorMessage = error.response.data.detail;
+        errorMessage = `⚠️ ${error.response.data.detail}`;
+      } else {
+        errorMessage = `❌ ${error.message}`;
       }
       
       toast.error(errorMessage);
     } finally {
       setLoading(false);
+      console.log('✅ fetchAdminData completed');
     }
   };
 
