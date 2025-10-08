@@ -103,8 +103,7 @@ function App() {
     register,
     logout,
     isAuthenticated: !!user,
-    isEmployer: user?.role === 'employer',
-    isAdmin: user?.role === 'admin'
+    isEmployer: user?.role === 'employer'
   };
 
   if (loading) {
