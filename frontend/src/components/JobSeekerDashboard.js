@@ -161,6 +161,7 @@ const JobSeekerDashboard = () => {
    * Updates user profile information
    */
   const updateProfile = async () => {
+    setSaving(true);
     try {
       // Validate required fields
       const errors = [];
@@ -202,6 +203,8 @@ const JobSeekerDashboard = () => {
       console.error('Failed to update profile:', error);
       const errorMessage = error.response?.data?.detail || 'Failed to update profile. Please try again.';
       toast.error(errorMessage);
+    } finally {
+      setSaving(false);
     }
   };
 
