@@ -108,16 +108,28 @@ const AdminPanel = () => {
 
   const approveJob = async (jobId) => {
     try {
-      await axios.put(`${API}/admin/jobs/${jobId}/approve`);
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      await axios.put(`${API}/admin/jobs/${jobId}/approve`, {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
       toast.success('Job approved successfully!');
       setPendingJobs(prev => prev.filter(job => job.id !== jobId));
       setStats(prev => ({
         ...prev,
-        pending_jobs: prev.pending_jobs - 1
+        pending_jobs: Math.max(0, prev.pending_jobs - 1),
+        approved_jobs: prev.approved_jobs + 1
       }));
     } catch (error) {
       console.error('Failed to approve job:', error);
-      toast.error('Failed to approve job');
+      const errorMessage = error.response?.data?.detail || 'Failed to approve job';
+      toast.error(errorMessage);
     }
   };
 
