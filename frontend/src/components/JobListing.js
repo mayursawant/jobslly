@@ -24,10 +24,10 @@ const JobListing = () => {
   const categories = [
     { value: 'all', label: 'All Categories' },
     { value: 'doctors', label: '🩺 Doctors' },
-    { value: 'pharmacy', label: '💊 Pharmacy' },
-    { value: 'dentist', label: '🦷 Dentist' },
-    { value: 'nurses', label: '👩‍⚕️ Nurses' },
-    { value: 'physiotherapy', label: '🏃‍♂️ Physiotherapy' }
+    { value: 'pharmacists', label: '💊 Pharmacists' },
+    { value: 'dentists', label: '🦷 Dentists' },
+    { value: 'physiotherapists', label: '🏃‍♂️ Physiotherapists' },
+    { value: 'nurses', label: '👩‍⚕️ Nurses' }
   ];
 
   useEffect(() => {
