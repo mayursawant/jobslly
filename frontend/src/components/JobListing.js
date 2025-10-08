@@ -53,7 +53,9 @@ const JobListing = () => {
     
     const matchesType = jobType === 'all' || job.job_type === jobType;
     
-    return matchesSearch && matchesType;
+    const matchesCategory = category === 'all' || (job.category && job.category.toLowerCase() === category);
+    
+    return matchesSearch && matchesType && matchesCategory;
   });
 
   const sortedJobs = [...filteredJobs].sort((a, b) => {
