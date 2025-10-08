@@ -361,14 +361,27 @@ const JobSeekerDashboard = () => {
   };
 
   /**
-   * Fetches user profile information
+   * Fetches user profile data
    */
   const fetchProfile = async () => {
     try {
-      const response = await axios.get(`${API}/profile`);
-      setProfile(response.data);
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        return;
+      }
+      
+      const response = await axios.get(`${API}/profile`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.data) {
+        setProfile(prev => ({ ...prev, ...response.data }));
+      }
     } catch (error) {
       console.error('Failed to fetch profile:', error);
+      // Don't show error toast for profile fetch as it might not exist yet
     }
   };
 
