@@ -56,19 +56,83 @@ const JobDetails = () => {
   };
 
   /**
-   * Handles the apply button click
-   * If user is not authenticated, shows lead collection modal
-   * If authenticated, proceeds with application
+   * Fetch user profile and calculate completion
+   */
+  const fetchUserProfile = async () => {
+    try {
+      const token = localStorage.getItem('access_token');
+      if (!token) return;
+
+      const response = await axios.get(`${API}/profile`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      setUserProfile(response.data);
+      const completion = calculateProfileCompletion(response.data);
+      setProfileCompletion(completion);
+    } catch (error) {
+      console.error('Failed to fetch profile:', error);
+      // Profile might not exist yet, set empty state
+      setUserProfile({});
+      setProfileCompletion(0);
+    }
+  };
+
+  /**
+   * Calculate profile completion percentage based on required fields
+   */
+  const calculateProfileCompletion = (profile) => {
+    if (!profile) return 0;
+
+    const requiredFields = [
+      profile.phone,                    // Personal Details: Phone
+      user?.full_name,                 // Personal Details: Name (from user context)  
+      user?.email,                     // Personal Details: Email (from user context)
+      profile.specialization,          // Healthcare Category
+      profile.experience_years >= 0    // Experience
+    ];
+
+    // Handle custom specialization
+    let hasSpecialization = profile.specialization;
+    if (profile.specialization === 'other' && profile.custom_specialization) {
+      hasSpecialization = true;
+    } else if (profile.specialization === 'other' && !profile.custom_specialization) {
+      hasSpecialization = false;
+    }
+
+    const completionFields = [
+      profile.phone,
+      user?.full_name,
+      user?.email,
+      hasSpecialization,
+      profile.experience_years >= 0
+    ];
+
+    const filledFields = completionFields.filter(field => 
+      field !== null && field !== undefined && field !== ''
+    ).length;
+
+    return Math.round((filledFields / completionFields.length) * 100);
+  };
+
+  /**
+   * Enhanced apply button click handler
    */
   const handleApplyClick = () => {
     if (!isAuthenticated) {
-      // Show lead collection modal for unauthenticated users
+      // Non-logged-in user flow
       setShowLeadModal(true);
       return;
     }
     
-    // For authenticated users, proceed with application
-    handleDirectApply();
+    // Logged-in user flow - check profile completion
+    if (profileCompletion === 100) {
+      // Profile complete - proceed with application
+      handleDirectApply();
+    } else {
+      // Profile incomplete - show completion prompt
+      setShowIncompleteProfileModal(true);
+    }
   };
 
   /**
