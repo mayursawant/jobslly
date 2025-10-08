@@ -392,7 +392,7 @@ const JobSeekerDashboard = () => {
                     <Button 
                       variant="outline" 
                       className="w-full justify-between border-purple-200 hover:bg-purple-50 group"
-                      onClick={() => document.querySelector('[data-testid="tab-profile"]').click()}
+                      onClick={switchToProfileTab}
                     >
                       <div className="flex items-center">
                         <User className="w-4 h-4 mr-2 text-purple-600" />
