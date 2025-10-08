@@ -1044,6 +1044,100 @@ async def update_user_profile(profile_data: UserProfileUpdate, current_user: Use
     
     return UserProfile(**updated_profile)
 
+# Job Seeker Profile Management
+@api_router.post("/job-seekers/profile", response_model=JobSeekerProfile)
+async def create_or_update_job_seeker_profile(profile_data: JobSeekerProfileCreate):
+    """
+    Create or update job seeker profile based on email
+    """
+    # Check if job seeker profile already exists
+    existing_profile = await db.job_seekers.find_one({"email": profile_data.email})
+    
+    if existing_profile:
+        # Update existing profile
+        update_data = profile_data.dict(exclude_unset=True)
+        update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+        update_data["last_activity"] = datetime.now(timezone.utc).isoformat()
+        
+        await db.job_seekers.update_one(
+            {"email": profile_data.email},
+            {"$set": update_data}
+        )
+        
+        # Get updated profile
+        updated_profile = await db.job_seekers.find_one({"email": profile_data.email})
+        return JobSeekerProfile(**updated_profile)
+    else:
+        # Create new profile
+        profile = JobSeekerProfile(
+            email=profile_data.email,
+            name=profile_data.name,
+            phone=profile_data.phone,
+            country_code=profile_data.country_code,
+            current_position=profile_data.current_position,
+            experience_years=profile_data.experience_years,
+            location=profile_data.location,
+            specialization=profile_data.specialization,
+            first_source=profile_data.source
+        )
+        
+        # Calculate profile completion
+        profile.profile_completion = calculate_profile_completion(profile)
+        
+        profile_dict = profile.dict()
+        profile_dict['acquisition_date'] = profile_dict['acquisition_date'].isoformat()
+        profile_dict['last_activity'] = profile_dict['last_activity'].isoformat()
+        profile_dict['created_at'] = profile_dict['created_at'].isoformat()
+        profile_dict['updated_at'] = profile_dict['updated_at'].isoformat()
+        
+        await db.job_seekers.insert_one(profile_dict)
+        return profile
+
+def calculate_profile_completion(profile: JobSeekerProfile) -> int:
+    """
+    Calculate profile completion percentage
+    """
+    fields_to_check = ['name', 'phone', 'current_position', 'experience_years', 'location', 'specialization']
+    filled_fields = 0
+    
+    for field in fields_to_check:
+        if getattr(profile, field) is not None and getattr(profile, field) != "":
+            filled_fields += 1
+    
+    return int((filled_fields / len(fields_to_check)) * 100)
+
+@api_router.get("/job-seekers/profile/{email}", response_model=JobSeekerProfile)
+async def get_job_seeker_profile_by_email(email: str):
+    """
+    Get job seeker profile by email
+    """
+    profile = await db.job_seekers.find_one({"email": email})
+    if not profile:
+        raise HTTPException(status_code=404, detail="Job seeker profile not found")
+    
+    return JobSeekerProfile(**profile)
+
+@api_router.post("/job-seekers/track-application")
+async def track_job_application(email: str, job_id: str):
+    """
+    Track job application for a job seeker
+    """
+    # Update job seeker profile with application
+    await db.job_seekers.update_one(
+        {"email": email},
+        {
+            "$inc": {"total_applications": 1},
+            "$addToSet": {"jobs_applied": job_id},
+            "$set": {
+                "last_activity": datetime.now(timezone.utc).isoformat(),
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }
+        },
+        upsert=True  # Create if doesn't exist
+    )
+    
+    return {"success": True, "message": "Application tracked successfully"}
+
 # Job Application Endpoint
 @api_router.post("/jobs/{job_id}/apply", response_model=Dict)
 async def apply_for_job(job_id: str, application_data: dict, current_user: User = Depends(get_current_user)):
