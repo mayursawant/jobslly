@@ -442,36 +442,56 @@ const JobSeekerDashboard = () => {
               </Card>
             </div>
 
-            {/* Recent Activity */}
-            <Card className="glass border-gray-200">
+            {/* Enhanced Recent Activity */}
+            <Card className="border-0 shadow-lg bg-white">
               <CardHeader>
-                <CardTitle className="text-lg text-gray-800 flex items-center">
-                  <span className="mr-2">🕒</span>
-                  Recent Activity
+                <CardTitle className="text-lg text-gray-800 flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Clock className="w-5 h-5 mr-2 text-gray-600" />
+                    Recent Activity
+                  </div>
+                  <Button variant="ghost" size="sm" className="text-teal-600 hover:text-teal-700">
+                    View All
+                  </Button>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {dashboardData.recent_applications.length > 0 || dashboardData.recent_leads.length > 0 ? (
                   <div className="space-y-3">
                     {[...dashboardData.recent_applications, ...dashboardData.recent_leads].slice(0, 5).map((activity, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div>
-                          <p className="font-medium text-gray-800">Applied to Position</p>
-                          <p className="text-sm text-gray-600">
-                            {activity.created_at ? new Date(activity.created_at).toLocaleDateString() : 'Recently'}
-                          </p>
+                      <div key={index} className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-teal-50 hover:to-emerald-50 transition-all duration-200 border border-gray-100">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
+                            <Briefcase className="w-5 h-5 text-teal-600" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-gray-800">Applied to Healthcare Position</p>
+                            <p className="text-sm text-gray-600 flex items-center">
+                              <Calendar className="w-3 h-3 mr-1" />
+                              {activity.created_at ? new Date(activity.created_at).toLocaleDateString() : 'Recently'}
+                            </p>
+                          </div>
                         </div>
-                        <Badge variant="outline" className="bg-blue-50 text-blue-700">
-                          Submitted
-                        </Badge>
+                        <div className="flex items-center space-x-2">
+                          <Badge className="bg-blue-100 text-blue-700">
+                            Submitted
+                          </Badge>
+                          <ArrowRight className="w-4 h-4 text-gray-400" />
+                        </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8">
-                    <p className="text-gray-500 mb-4">No recent activity</p>
+                  <div className="text-center py-12">
+                    <div className="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Briefcase className="w-10 h-10 text-teal-600" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2">Ready to start your journey?</h3>
+                    <p className="text-gray-600 mb-6">Begin applying to healthcare positions and track your progress here</p>
                     <Link to="/jobs">
-                      <Button>Start Applying to Jobs</Button>
+                      <Button className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white">
+                        Explore Healthcare Jobs
+                      </Button>
                     </Link>
                   </div>
                 )}
