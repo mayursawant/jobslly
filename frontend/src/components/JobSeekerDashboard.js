@@ -203,19 +203,7 @@ const JobSeekerDashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="glass border-purple-200" data-testid="saved-jobs-stat">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Saved Jobs</p>
-                  <p className="text-3xl font-bold text-purple-600">{dashboardData.saved_jobs_count}</p>
-                </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                  <span className="text-xl">💾</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Saved jobs section removed */}
 
           <Card className="glass border-orange-200" data-testid="interviews-stat">
             <CardContent className="p-6">
