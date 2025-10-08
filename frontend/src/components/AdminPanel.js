@@ -254,7 +254,7 @@ const AdminPanel = () => {
     }
 
     try {
-      const token = localStorage.getItem('access_token');
+      const token = localStorage.getItem('token');
       await axios.delete(`${API}/admin/blog/${blogId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
