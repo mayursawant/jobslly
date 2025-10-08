@@ -99,11 +99,15 @@ class UserProfile(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     user_id: str
     # Personal Information
+    country_code: Optional[str] = None
     phone: Optional[str] = None
+    full_phone: Optional[str] = None  # Combined country code + phone
     address: Optional[str] = None
     date_of_birth: Optional[str] = None
     # Professional Information
     specialization: Optional[str] = None
+    custom_specialization: Optional[str] = None  # For "other" specialization
+    final_specialization: Optional[str] = None  # Processed specialization
     experience_years: Optional[int] = None
     education: List[Dict[str, str]] = []
     certifications: List[str] = []
