@@ -84,7 +84,7 @@ const CMSLogin = () => {
               </Alert>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" data-testid="cms-login-form">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium text-gray-200">
                   Administrator Email
