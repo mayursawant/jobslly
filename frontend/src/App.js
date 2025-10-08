@@ -244,8 +244,7 @@ function App() {
             </Routes>
           </main>
           <Footer />
-          <ChatBot />
-          {/* LeadChatbot component removed as per user request */}
+          {/* All chatbot components removed as per user request */}
           <Toaster />
         </div>
       </BrowserRouter>
