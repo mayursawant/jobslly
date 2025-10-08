@@ -645,6 +645,76 @@ const AdminPanel = () => {
                   />
                   <p className="text-xs text-gray-500 mt-1">💡 HTML tags supported: &lt;h2&gt;, &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;a&gt;</p>
                 </div>
+
+                {/* Featured Image Upload */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Featured Image</label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-emerald-400 transition-colors">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          // Validate file size (max 5MB)
+                          if (file.size > 5 * 1024 * 1024) {
+                            toast.error('Image must be less than 5MB');
+                            return;
+                          }
+                          
+                          // Validate file type
+                          if (!file.type.startsWith('image/')) {
+                            toast.error('Please select a valid image file');
+                            return;
+                          }
+
+                          setNewBlog(prev => ({...prev, featured_image: file}));
+                        }
+                      }}
+                      className="hidden"
+                      id="blog-image-upload"
+                    />
+                    <label 
+                      htmlFor="blog-image-upload" 
+                      className="cursor-pointer flex flex-col items-center space-y-2"
+                    >
+                      {newBlog.featured_image ? (
+                        <div className="space-y-2">
+                          <div className="w-20 h-20 bg-emerald-100 rounded-lg flex items-center justify-center">
+                            <span className="text-2xl">🖼️</span>
+                          </div>
+                          <p className="text-sm text-emerald-600 font-medium">
+                            {newBlog.featured_image.name}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Click to change image
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <span className="text-2xl">📷</span>
+                          </div>
+                          <p className="text-sm text-gray-600">
+                            Click to upload featured image
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            PNG, JPG, GIF up to 5MB
+                          </p>
+                        </div>
+                      )}
+                    </label>
+                  </div>
+                  {newBlog.featured_image && (
+                    <button
+                      type="button"
+                      onClick={() => setNewBlog(prev => ({...prev, featured_image: null}))}
+                      className="mt-2 text-sm text-red-600 hover:text-red-700"
+                    >
+                      Remove image
+                    </button>
+                  )}
+                </div>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
