@@ -161,14 +161,63 @@ const JobSeekerDashboard = () => {
    */
   const updateProfile = async () => {
     try {
-      const response = await axios.put(`${API}/profile`, profile);
-      setProfile(response.data);
-      toast.success('Profile updated successfully!');
-      fetchDashboardData(); // Refresh to get updated completion percentage
+      // Validate required fields
+      const errors = [];
+      
+      if (!profile.phone) errors.push('Phone number is required');
+      if (!profile.specialization) errors.push('Healthcare specialization is required');
+      if (profile.specialization === 'other' && !profile.custom_specialization) {
+        errors.push('Please specify your specialization');
+      }
+      if (profile.experience_years < 0) errors.push('Years of experience must be 0 or greater');
+      
+      if (errors.length > 0) {
+        toast.error(`Please fix the following: ${errors.join(', ')}`);
+        return;
+      }
+
+      // Prepare profile data
+      const profileData = {
+        ...profile,
+        // Combine country code with phone number for storage
+        full_phone: `${profile.country_code} ${profile.phone}`,
+        // Use custom specialization if "other" is selected
+        final_specialization: profile.specialization === 'other' ? profile.custom_specialization : profile.specialization
+      };
+
+      const response = await axios.put(`${API}/profile`, profileData);
+      
+      // Update local state with response
+      if (response.data) {
+        setProfile(response.data);
+      }
+      
+      toast.success('Profile updated successfully! 🎉');
+      
+      // Refresh dashboard data to update completion percentage
+      fetchDashboardData();
+      
     } catch (error) {
       console.error('Failed to update profile:', error);
-      toast.error('Failed to update profile');
+      const errorMessage = error.response?.data?.detail || 'Failed to update profile. Please try again.';
+      toast.error(errorMessage);
     }
+  };
+
+  /**
+   * Calculate profile completion percentage
+   */
+  const calculateProfileCompletion = () => {
+    const requiredFields = [
+      profile.phone,
+      profile.specialization,
+      profile.experience_years >= 0,
+      profile.address,
+      profile.skills?.length > 0
+    ];
+    
+    const completedFields = requiredFields.filter(field => field).length;
+    return Math.round((completedFields / requiredFields.length) * 100);
   };
 
   /**
