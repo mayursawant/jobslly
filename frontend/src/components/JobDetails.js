@@ -136,23 +136,49 @@ const JobDetails = () => {
   };
 
   /**
-   * Handles direct application for authenticated users
+   * Handles direct application for authenticated users with complete profiles
    */
   const handleDirectApply = async () => {
+    // Check if it's an external job
+    if (job.external_url) {
+      // External job - redirect immediately
+      window.open(job.external_url, '_blank');
+      return;
+    }
+
+    // Internal job - submit application
     setApplying(true);
     try {
+      const token = localStorage.getItem('access_token');
       await axios.post(`${API}/jobs/${jobId}/apply`, {
         cover_letter: coverLetter
+      }, {
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       
-      toast.success('Application submitted successfully!');
       setHasApplied(true);
       setCoverLetter('');
+      setShowSuccessModal(true);
     } catch (error) {
       const message = error.response?.data?.detail || 'Application failed';
       toast.error(message);
     } finally {
       setApplying(false);
+    }
+  };
+
+  /**
+   * Handle lead collection success for non-logged-in users
+   */
+  const handleLeadCollectionSuccess = () => {
+    setShowLeadModal(false);
+    
+    if (job.external_url) {
+      // External job - redirect to external URL
+      window.open(job.external_url, '_blank');
+    } else {
+      // Internal job - show login prompt
+      setShowLoginPromptModal(true);
     }
   };
 
