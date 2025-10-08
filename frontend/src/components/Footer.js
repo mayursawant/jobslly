@@ -62,8 +62,6 @@ const Footer = () => {
     { name: 'Privacy Policy', path: '/privacy' },
     { name: 'Terms of Service', path: '/terms' },
     { name: 'Cookie Policy', path: '/cookies' },
-    { name: 'Data Protection', path: '/data-protection' },
-    { name: 'Accessibility', path: '/accessibility' },
     { name: 'Sitemap', path: '/sitemap' }
   ];
 
