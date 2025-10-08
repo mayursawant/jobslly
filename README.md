@@ -2,12 +2,12 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Backend Tests](https://img.shields.io/badge/Backend%20Tests-29%2F29%20Passing-brightgreen)](https://github.com)
-[![Platform Status](https://img.shields.io/badge/Platform%20Status-Production%20Ready-success)](https://jobslly-health.preview.emergentagent.com)
+[![Platform Status](https://img.shields.io/badge/Platform%20Status-Production%20Ready-success)](https://jobslly-redesign.preview.emergentagent.com)
 [![AI Features](https://img.shields.io/badge/AI%20Features-Enabled-blue)](https://github.com)
 
 > **Connecting healthcare professionals worldwide with their dream careers through AI-powered technology and comprehensive recruitment solutions.**
 
-**Live Platform:** [https://jobslly-health.preview.emergentagent.com](https://jobslly-health.preview.emergentagent.com)
+**Live Platform:** [https://jobslly-redesign.preview.emergentagent.com](https://jobslly-redesign.preview.emergentagent.com)
 
 ---
 
@@ -266,7 +266,7 @@ Content-Type: application/json
 ```
 
 ### Complete API Reference
-- **Base URL**: `https://jobslly-health.preview.emergentagent.com/api`
+- **Base URL**: `https://jobslly-redesign.preview.emergentagent.com/api`
 - **Authentication**: JWT Bearer tokens
 - **Rate Limiting**: 1000 requests/hour for authenticated users
 - **Documentation**: Available at `/docs` endpoint with Swagger UI
@@ -316,7 +316,7 @@ const enhanceJobDescription = async (jobData) => {
 
 ### Production Environment
 ```yaml
-Platform URL: https://jobslly-health.preview.emergentagent.com
+Platform URL: https://jobslly-redesign.preview.emergentagent.com
 Infrastructure: Kubernetes cluster with auto-scaling
 Database: MongoDB Atlas with global replication
 CDN: CloudFront for global content delivery
@@ -330,10 +330,10 @@ Monitoring: Real-time performance tracking
 MONGO_URL="mongodb+srv://cluster.mongodb.net/jobslly"
 JWT_SECRET="production-super-secret-key"
 EMERGENT_LLM_KEY="sk-emergent-production-key"
-CORS_ORIGINS="https://jobslly-health.preview.emergentagent.com"
+CORS_ORIGINS="https://jobslly-redesign.preview.emergentagent.com"
 
 # Production Frontend Configuration  
-REACT_APP_BACKEND_URL="https://jobslly-health.preview.emergentagent.com"
+REACT_APP_BACKEND_URL="https://jobslly-redesign.preview.emergentagent.com"
 REACT_APP_ENVIRONMENT="production"
 ```
 

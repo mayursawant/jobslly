@@ -1352,7 +1352,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",  # Development
-        "https://jobslly-health.preview.emergentagent.com"  # Production
+        "https://jobslly-redesign.preview.emergentagent.com"  # Production
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
@@ -2156,7 +2156,7 @@ spec:
         - containerPort: 80
         env:
         - name: REACT_APP_BACKEND_URL
-          value: "https://jobslly-health.preview.emergentagent.com"
+          value: "https://jobslly-redesign.preview.emergentagent.com"
         resources:
           requests:
             memory: "128Mi"
