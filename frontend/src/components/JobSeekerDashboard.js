@@ -83,6 +83,16 @@ const JobSeekerDashboard = () => {
   const { user } = useContext(AuthContext);
 
   /**
+   * Switch to Edit Profile tab
+   */
+  const switchToProfileTab = () => {
+    const profileTab = document.querySelector('[data-testid="tab-profile"]');
+    if (profileTab) {
+      profileTab.click();
+    }
+  };
+
+  /**
    * Fetch dashboard data on component mount
    */
   useEffect(() => {
