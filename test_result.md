@@ -561,6 +561,54 @@ frontend:
           agent: "testing"
           comment: "CONFIRMED: /cms-login route is accessible and shows CMS Access Portal page. Login form elements (email, password, submit button) are present and functional. Admin navigation links appear for admin users. Admin panel route /admin is accessible for authenticated admin users."
 
+  - task: "Up Arrow Removal Bug Fix"
+    implemented: true
+    working: "NA"
+    file: "components/ScrollToTop.js, App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Completely removed scroll-to-top arrow button from all pages. ScrollToTop component now only handles route-based scrolling without visible UI elements."
+
+  - task: "Admin Dashboard Data Loading Fix"
+    implemented: true
+    working: "NA"
+    file: "components/AdminPanel.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Fixed authentication headers and error handling for admin dashboard data loading. Updated token retrieval from localStorage and improved error messages for authentication issues."
+
+  - task: "Third-Party Job Redirect Toast Removal"
+    implemented: true
+    working: "NA"
+    file: "components/LeadCollectionModal.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Removed 'Redirecting to external application...' toast notification from external job redirect flow. External job redirect still works but without toast notification."
+
+  - task: "ChatBot/AI Chat Components Removal Verification"
+    implemented: true
+    working: "NA"
+    file: "App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "All 3 ChatBot/AI chat components have been completely removed from the application. Need to verify no chatbot functionality remains."
+
 test_plan:
   current_focus:
     - "Cookie Policy Page Implementation"
