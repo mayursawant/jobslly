@@ -311,25 +311,7 @@ const JobDetails = () => {
               </CardContent>
             </Card>
 
-            {/* Share Job */}
-            <Card className="card">
-              <CardHeader>
-                <CardTitle className="text-lg text-gray-800">Share this Job</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex space-x-2">
-                  <Button variant="outline" size="sm" className="flex-1" data-testid="share-linkedin">
-                    LinkedIn
-                  </Button>
-                  <Button variant="outline" size="sm" className="flex-1" data-testid="share-twitter">
-                    Twitter
-                  </Button>
-                  <Button variant="outline" size="sm" className="flex-1" data-testid="share-email">
-                    Email
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Share section removed */}
           </div>
         </div>
 
