@@ -127,10 +127,14 @@ class UserProfile(BaseModel):
     updated_at: Optional[datetime] = None
 
 class UserProfileUpdate(BaseModel):
+    country_code: Optional[str] = None
     phone: Optional[str] = None
+    full_phone: Optional[str] = None
     address: Optional[str] = None
     date_of_birth: Optional[str] = None
     specialization: Optional[str] = None
+    custom_specialization: Optional[str] = None
+    final_specialization: Optional[str] = None
     experience_years: Optional[int] = None
     education: List[Dict[str, str]] = []
     certifications: List[str] = []
