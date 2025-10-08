@@ -97,7 +97,7 @@ const CMSLogin = () => {
                   onChange={handleChange}
                   required
                   className="bg-white/10 border-white/20 text-white placeholder-gray-400 focus:border-red-500/50 focus:ring-red-500/20 h-12"
-                  placeholder="admin@jobslly.com"
+                  placeholder="admin@gmail.com"
                   data-testid="cms-email-input"
                 />
               </div>
