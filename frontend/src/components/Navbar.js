@@ -188,7 +188,7 @@ const Navbar = () => {
                   <Button variant="ghost" className="w-full justify-start">Login</Button>
                 </Link>
                 <Link to="/register" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button className="bg-gradient-to-r from-cyan-500 to-purple-600 w-full">Join the Future</Button>
+                  <Button className="bg-gradient-to-r from-teal-600 to-emerald-600 w-full">Signup</Button>
                 </Link>
               </div>
             )}
