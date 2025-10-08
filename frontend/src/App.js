@@ -245,7 +245,7 @@ function App() {
           </main>
           <Footer />
           <ChatBot />
-          <LeadChatbot />
+          {/* LeadChatbot component removed as per user request */}
           <Toaster />
         </div>
       </BrowserRouter>
