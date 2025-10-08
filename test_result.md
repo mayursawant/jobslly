@@ -611,10 +611,10 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Cookie Policy Page Implementation"
-    - "LeadChatbot Component Removal"
-    - "Blog Management Edit/Delete Functionality"
-    - "Blog Creation Fixed (500 Error Resolution)"
+    - "Up Arrow Removal Bug Fix"
+    - "Admin Dashboard Data Loading Fix"
+    - "Third-Party Job Redirect Toast Removal"
+    - "ChatBot/AI Chat Components Removal Verification"
   stuck_tasks: 
     - "Chatbot auto-open functionality"
   test_all: false
