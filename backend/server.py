@@ -168,6 +168,7 @@ class JobCreate(BaseModel):
     salary_min: Optional[int] = None
     salary_max: Optional[int] = None
     job_type: str = "full_time"
+    category: Optional[str] = None  # doctors, pharmacists, dentists, physiotherapists, nurses
     requirements: List[str] = []
     benefits: List[str] = []
     # Third-party job features
