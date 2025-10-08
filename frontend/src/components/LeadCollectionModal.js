@@ -163,7 +163,7 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, companyName }) 
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center text-lg font-semibold text-gray-800">
             <span className="mr-2">🚀</span>
