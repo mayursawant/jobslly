@@ -69,31 +69,31 @@ const Footer = () => {
     { 
       name: 'Facebook', 
       icon: Facebook, 
-      url: 'https://facebook.com/academicallyglobal',
+      url: 'https://www.facebook.com/academically.australia',
       color: 'hover:text-blue-600'
     },
     { 
-      name: 'Twitter', 
+      name: 'X', 
       icon: Twitter, 
-      url: 'https://twitter.com/academicallyglobal',
-      color: 'hover:text-blue-400'
+      url: 'https://x.com/AcademicallyAus',
+      color: 'hover:text-gray-400'
     },
     { 
       name: 'LinkedIn', 
       icon: Linkedin, 
-      url: 'https://linkedin.com/company/academically-global',
+      url: 'https://in.linkedin.com/company/academicallyglobal',
       color: 'hover:text-blue-700'
     },
     { 
       name: 'Instagram', 
       icon: Instagram, 
-      url: 'https://instagram.com/academicallyglobal',
+      url: 'https://www.instagram.com/academically.global/?igsh=dnJnaWR2ZW9raTV4#',
       color: 'hover:text-pink-600'
     },
     { 
       name: 'YouTube', 
       icon: Youtube, 
-      url: 'https://youtube.com/@academicallyglobal',
+      url: 'https://www.youtube.com/@DrAkramAhmad',
       color: 'hover:text-red-600'
     }
   ];
