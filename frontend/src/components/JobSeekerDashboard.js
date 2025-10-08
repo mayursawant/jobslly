@@ -538,12 +538,30 @@ const JobSeekerDashboard = () => {
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      value={profile.phone || ''}
-                      onChange={(e) => setProfile(prev => ({...prev, phone: e.target.value}))}
-                      placeholder="+1 (555) 123-4567"
-                    />
+                    <div className="flex space-x-2">
+                      <Select value={profile.country_code || '+91'} onValueChange={(value) => setProfile(prev => ({...prev, country_code: value}))}>
+                        <SelectTrigger className="w-32">
+                          <SelectValue placeholder="Code" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {countryCodes.map((country) => (
+                            <SelectItem key={country.code} value={country.code}>
+                              <div className="flex items-center space-x-2">
+                                <span>{country.flag}</span>
+                                <span>{country.code}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Input
+                        id="phone"
+                        className="flex-1"
+                        value={profile.phone || ''}
+                        onChange={(e) => setProfile(prev => ({...prev, phone: e.target.value}))}
+                        placeholder="123-456-7890"
+                      />
+                    </div>
                   </div>
                   
                   <div className="space-y-2">
