@@ -73,21 +73,7 @@ const Navbar = () => {
                   <div className="absolute inset-x-0 -bottom-2 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
                 </Link>
                 
-                {isAdmin && (
-                  <Link 
-                    to="/admin" 
-                    className={`nav-link ${isActive('/admin') ? 'active' : ''} relative group`}
-                    data-testid="nav-admin"
-                  >
-                    <span className="relative z-10 flex items-center">
-                      CMS Admin
-                      <Badge className="ml-2 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs">
-                        Admin
-                      </Badge>
-                    </span>
-                    <div className="absolute inset-x-0 -bottom-2 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-                  </Link>
-                )}
+                {/* Admin link removed */}
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
