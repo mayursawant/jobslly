@@ -566,7 +566,14 @@ const JobSeekerDashboard = () => {
                   
                   <div className="space-y-2">
                     <Label htmlFor="specialization">Healthcare Specialization</Label>
-                    <Select value={profile.specialization || ''} onValueChange={(value) => setProfile(prev => ({...prev, specialization: value}))}>
+                    <Select 
+                      value={profile.specialization || ''} 
+                      onValueChange={(value) => setProfile(prev => ({
+                        ...prev, 
+                        specialization: value,
+                        custom_specialization: value !== 'other' ? '' : prev.custom_specialization
+                      }))}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select specialization" />
                       </SelectTrigger>
@@ -576,8 +583,18 @@ const JobSeekerDashboard = () => {
                         <SelectItem value="pharmacists">Pharmacist</SelectItem>
                         <SelectItem value="dentists">Dentist</SelectItem>
                         <SelectItem value="physiotherapists">Physiotherapist</SelectItem>
+                        <SelectItem value="other">Other (Please specify)</SelectItem>
                       </SelectContent>
                     </Select>
+                    
+                    {profile.specialization === 'other' && (
+                      <Input
+                        value={profile.custom_specialization || ''}
+                        onChange={(e) => setProfile(prev => ({...prev, custom_specialization: e.target.value}))}
+                        placeholder="Please specify your specialization"
+                        className="mt-2"
+                      />
+                    )}
                   </div>
 
                   <div className="space-y-2">
