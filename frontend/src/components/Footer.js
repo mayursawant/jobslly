@@ -106,18 +106,13 @@ const Footer = () => {
           
           {/* Company Information */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-10 h-10">
-                <img 
-                  src="/jobslly-logo.png" 
-                  alt="Jobslly Logo" 
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold">Jobslly</h3>
-                <p className="text-sm text-gray-400">by Academically Global</p>
-              </div>
+            <div className="mb-6">
+              <img 
+                src="/jobslly-logo.png" 
+                alt="Jobslly Logo" 
+                className="h-16 w-auto object-contain"
+              />
+              <p className="text-sm text-gray-400 mt-2">by Academically Global</p>
             </div>
             
             <p className="text-gray-300 text-sm leading-relaxed">
