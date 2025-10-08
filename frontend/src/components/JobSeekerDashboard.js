@@ -427,7 +427,16 @@ const JobSeekerDashboard = () => {
         final_specialization: profile.specialization === 'other' ? profile.custom_specialization : profile.specialization
       };
 
-      const response = await axios.put(`${API}/profile`, profileData);
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+      
+      const response = await axios.put(`${API}/profile`, profileData, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       
       // Update local state with response
       if (response.data) {
