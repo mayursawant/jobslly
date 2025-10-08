@@ -125,18 +125,32 @@ const Footer = () => {
               Find opportunities in medicine, nursing, pharmacy, and allied health across the globe.
             </p>
             
-            <div className="space-y-2">
-              <div className="flex items-center space-x-3 text-sm">
-                <MapPin className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span className="text-gray-300">123 Healthcare Plaza, Medical District, Global City 12345</span>
+            <div className="space-y-3">
+              {/* Australia Address */}
+              <div className="flex items-start space-x-3 text-sm">
+                <MapPin className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <div className="font-medium text-gray-200 mb-1">Australia:</div>
+                  <span className="text-gray-300">Suite 207A/30 Campbell St, Blacktown NSW 2148</span>
+                </div>
               </div>
+              
+              {/* India Address */}
+              <div className="flex items-start space-x-3 text-sm">
+                <MapPin className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <div className="font-medium text-gray-200 mb-1">India:</div>
+                  <span className="text-gray-300">Plot A2, IT Park, Sahastradhara Rd, Doon IT Park, Sidcul, Dehradun, Uttarakhand 248001</span>
+                </div>
+              </div>
+              
               <div className="flex items-center space-x-3 text-sm">
                 <Phone className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span className="text-gray-300">+1 (555) 123-JOBS (5627)</span>
+                <span className="text-gray-300">08071722349</span>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <Mail className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span className="text-gray-300">hello@academicallyglobal.com</span>
+                <span className="text-gray-300">contact@academically.com</span>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <Globe className="w-4 h-4 text-emerald-400 flex-shrink-0" />
