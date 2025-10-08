@@ -441,7 +441,7 @@ const AdminPanel = () => {
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="block text-sm font-medium text-gray-700">Job Description</label>
+                    <label className="block text-sm font-medium text-gray-700">Job Description *</label>
                     <button
                       type="button"
                       onClick={() => setIsAIModalOpen(true)}
@@ -457,6 +457,7 @@ const AdminPanel = () => {
                     placeholder="Detailed job description and responsibilities..."
                     rows={6}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    required
                   />
                 </div>
                 <Button 
