@@ -884,31 +884,7 @@ const JobSeekerDashboard = () => {
             </Card>
           </TabsContent>
 
-          {/* Applications Tab */}
-          <TabsContent value="applications">
-            <Card className="glass border-purple-200">
-              <CardHeader>
-                <CardTitle className="text-lg text-gray-800 flex items-center">
-                  <span className="mr-2">📋</span>
-                  My Job Applications
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl">📋</span>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">No applications yet</h3>
-                  <p className="text-gray-600 mb-4">Start applying to jobs to see your application status here</p>
-                  <Link to="/jobs">
-                    <Button className="bg-purple-600 hover:bg-purple-700 text-white">
-                      Browse Available Jobs
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          {/* Applications Tab content removed as per user request */}
 
           {/* Recommendations Tab */}
           <TabsContent value="recommendations">
