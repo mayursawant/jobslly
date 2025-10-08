@@ -605,17 +605,7 @@ const JobSeekerDashboard = () => {
                       </div>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-purple-600" />
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      className="w-full justify-between border-orange-200 hover:bg-orange-50 group"
-                      onClick={() => document.querySelector('[data-testid="tab-recommendations"]').click()}
-                    >
-                      <div className="flex items-center">
-                        <Star className="w-4 h-4 mr-2 text-orange-600" />
-                        View Matches
-                      </div>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-orange-600" />
-                    </Button>
+                    {/* View Matches button removed as recommendations tab was removed */}
                   </div>
                 </CardContent>
               </Card>
