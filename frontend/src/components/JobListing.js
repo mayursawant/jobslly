@@ -18,7 +18,17 @@ const JobListing = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [jobType, setJobType] = useState('all');
+  const [category, setCategory] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
+
+  const categories = [
+    { value: 'all', label: 'All Categories' },
+    { value: 'doctors', label: '🩺 Doctors' },
+    { value: 'pharmacy', label: '💊 Pharmacy' },
+    { value: 'dentist', label: '🦷 Dentist' },
+    { value: 'nurses', label: '👩‍⚕️ Nurses' },
+    { value: 'physiotherapy', label: '🏃‍♂️ Physiotherapy' }
+  ];
 
   useEffect(() => {
     fetchJobs();
