@@ -448,19 +448,33 @@ const JobSeekerDashboard = () => {
   };
 
   /**
-   * Calculate profile completion percentage
+   * Calculate profile completion percentage based on required fields
+   * Personal Details (Name, Email, Phone) + Healthcare Category + Experience
    */
   const calculateProfileCompletion = () => {
+    if (!user && !profile) return 0;
+
+    // Handle custom specialization
+    let hasSpecialization = profile.specialization;
+    if (profile.specialization === 'other' && profile.custom_specialization) {
+      hasSpecialization = true;
+    } else if (profile.specialization === 'other' && !profile.custom_specialization) {
+      hasSpecialization = false;
+    }
+
     const requiredFields = [
-      profile.phone,
-      profile.specialization,
-      profile.experience_years >= 0,
-      profile.address,
-      profile.skills?.length > 0
+      profile.phone,                    // Personal Details: Phone
+      user?.full_name,                 // Personal Details: Name (from user context)  
+      user?.email,                     // Personal Details: Email (from user context)
+      hasSpecialization,               // Healthcare Category
+      profile.experience_years >= 0    // Experience
     ];
-    
-    const completedFields = requiredFields.filter(field => field).length;
-    return Math.round((completedFields / requiredFields.length) * 100);
+
+    const filledFields = requiredFields.filter(field => 
+      field !== null && field !== undefined && field !== ''
+    ).length;
+
+    return Math.round((filledFields / requiredFields.length) * 100);
   };
 
   /**
