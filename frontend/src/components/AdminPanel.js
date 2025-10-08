@@ -77,7 +77,20 @@ const AdminPanel = () => {
 
   useEffect(() => {
     fetchAdminData();
-  }, []);
+  }, [retryCount]);
+
+  /**
+   * Retry function for failed API calls
+   */
+  const retryFetchData = () => {
+    if (retryCount < 3) {
+      console.log(`🔄 Retrying admin data fetch... Attempt ${retryCount + 1}/3`);
+      setError(null);
+      setRetryCount(prev => prev + 1);
+    } else {
+      toast.error('Maximum retry attempts reached. Please refresh the page or contact support.');
+    }
+  };
 
   const fetchAdminData = async () => {
     console.log('🔄 Starting fetchAdminData...');
