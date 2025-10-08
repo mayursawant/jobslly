@@ -635,10 +635,7 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Up Arrow Removal Bug Fix"
-    - "Admin Dashboard Data Loading Fix"
-    - "Third-Party Job Redirect Toast Removal"
-    - "ChatBot/AI Chat Components Removal Verification"
+    - "All bug fixes tested and verified"
   stuck_tasks: 
     - "Chatbot auto-open functionality"
   test_all: false
