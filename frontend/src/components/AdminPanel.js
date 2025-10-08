@@ -191,6 +191,7 @@ const AdminPanel = () => {
         errorMessage = `❌ ${error.message}`;
       }
       
+      setError(errorMessage);
       toast.error(errorMessage);
     } finally {
       setLoading(false);
