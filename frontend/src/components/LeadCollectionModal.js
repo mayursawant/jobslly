@@ -32,7 +32,7 @@ import axios from 'axios';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl, onSuccess }) => {
+const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl, companyName, onSuccess }) => {
   // Lead form state
   const [leadData, setLeadData] = useState({
     name: '',
