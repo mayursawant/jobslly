@@ -229,11 +229,15 @@ function App() {
               <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
               <Route path="/job-seeker-login" element={!user ? <JobSeekerLogin /> : <Navigate to="/dashboard" />} />
               <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
+              <Route path="/cms-login" element={!user ? <CMSLogin /> : <Navigate to="/admin" />} />
               
               {/* Protected Routes */}
               <Route path="/dashboard" element={user ? (
-                user.role === 'job_seeker' ? <JobSeekerDashboard /> : <JobSeekerDashboard />
+                user.role === 'job_seeker' ? <JobSeekerDashboard /> : <Dashboard />
               ) : <Navigate to="/job-seeker-login" />} />
+              <Route path="/admin" element={
+                user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/cms-login" />
+              } />
             </Routes>
           </main>
           <Footer />
