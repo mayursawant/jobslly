@@ -50,9 +50,9 @@ const Home = () => {
 
   const specializations = [
     { icon: '🩺', name: 'Doctors', count: '2,340+', color: 'from-red-500 to-pink-600' },
-    { icon: '💊', name: 'Pharmacy', count: '1,890+', color: 'from-green-500 to-emerald-600' },
-    { icon: '🦷', name: 'Dentist', count: '1,245+', color: 'from-blue-500 to-cyan-600' },
-    { icon: '🏃‍♂️', name: 'Physiotherapy', count: '967+', color: 'from-purple-500 to-indigo-600' },
+    { icon: '💊', name: 'Pharmacists', count: '1,890+', color: 'from-green-500 to-emerald-600' },
+    { icon: '🦷', name: 'Dentists', count: '1,245+', color: 'from-blue-500 to-cyan-600' },
+    { icon: '🏃‍♂️', name: 'Physiotherapists', count: '967+', color: 'from-purple-500 to-indigo-600' },
     { icon: '👩‍⚕️', name: 'Nurses', count: '3,456+', color: 'from-teal-500 to-cyan-600' }
   ];
 
