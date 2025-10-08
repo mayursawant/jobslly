@@ -191,7 +191,7 @@ const JobSeekerDashboard = () => {
             <div className="relative z-10 flex justify-between items-center">
               <div>
                 <h1 className="text-4xl font-bold mb-2">
-                  Welcome back, {user?.full_name?.split(' ')[0]}! 
+                  Welcome back, {user?.full_name || user?.email?.split('@')[0]}! 
                   <span className="wave inline-block ml-2">👋</span>
                 </h1>
                 <p className="text-teal-100 text-lg">
