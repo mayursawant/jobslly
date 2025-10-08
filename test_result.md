@@ -645,6 +645,18 @@ frontend:
           agent: "testing"
           comment: "COMPREHENSIVE JOB SEEKER TRACKING SYSTEM FULLY WORKING: ✅ Lead Collection for Unauthenticated Users - Lead collection modal working perfectly, captures comprehensive healthcare professional data (name, email, phone, position, experience), creates job seeker profiles automatically, handles multiple applications from same email by updating existing profiles. ✅ Profile Creation via User Login - User authentication working for job seekers/employers, profiles automatically created/updated on login, registered users marked with 'registered' status, profile data properly synced. ✅ Admin Job Seeker Management - Admin authentication successful (admin@gmail.com/password), comprehensive analytics dashboard showing 8 total job seekers, 0 registered users, 8 leads, 7 applications, 0% conversion rate, job_application as top source. Individual profiles accessible with complete details including profile completion percentages (66-100%), application counts, timestamps, and source attribution. ✅ Data Integrity - Duplicate email handling working correctly (updates existing profile instead of creating duplicates), application tracking accurate, profile completion calculated properly, timestamps and source tracking working. ✅ All Backend Endpoints Working - POST /api/jobs/{job_id}/apply-lead, POST /api/job-seekers/profile, GET /api/admin/job-seekers, GET /api/admin/job-seekers/stats all tested with realistic healthcare data and functioning correctly. System successfully tracks job seekers from initial interest through registration and provides comprehensive analytics for admin management."
 
+  - task: "Comprehensive Job Application Flow System with Different User States"
+    implemented: true
+    working: false
+    file: "JobDetails.js, LeadCollectionModal.js, JobSeekerDashboard.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "COMPREHENSIVE JOB APPLICATION FLOW TESTING RESULTS: ✅ WORKING COMPONENTS: Lead Collection Modal fully functional with all form fields (name, email, phone, position, experience dropdown, message), form validation, and successful data submission. User authentication working correctly (doctor@gmail.com/password login successful). Job Seeker Dashboard accessible with modern design, profile editing interface with comprehensive fields, and 0% initial profile completion tracking. ❌ CRITICAL ISSUES: 1) Login Prompt Modal Missing - After lead collection submission for internal jobs, login prompt modal does not appear (shows success toast instead), breaking the expected flow for non-logged-in users applying to internal jobs. 2) Modal State Management Issue - The handleLeadCollectionSuccess callback in JobDetails.js may not be properly triggering the setShowLoginPromptModal(true) for internal jobs. 3) Authentication Context Detection - Even logged-in users are seeing lead collection modal instead of authenticated user interface, suggesting authentication state not properly detected in job application flow. 4) External Job Flow Unverified - External job redirect functionality needs testing with actual external jobs. FIXED: Added missing companyName prop to LeadCollectionModal component. RECOMMENDATION: Investigate modal state management and authentication context detection in job application flow."
+
 test_plan:
   current_focus:
     - "Comprehensive Job Seeker Tracking System testing completed"
