@@ -333,11 +333,28 @@ const JobSeekerDashboard = () => {
    */
   const fetchDashboardData = async () => {
     try {
-      const response = await axios.get(`${API}/job-seeker/dashboard`);
-      setDashboardData(response.data);
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+      
+      const response = await axios.get(`${API}/job-seeker/dashboard`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      setDashboardData(response.data || {
+        applications_count: 0,
+        leads_count: 0,
+        profile_completion: 0,
+        recent_applications: [],
+        recent_leads: []
+      });
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
-      toast.error('Failed to load dashboard data');
+      const errorMessage = error.response?.data?.detail || 'Failed to load dashboard data';
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
