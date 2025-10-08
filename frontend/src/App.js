@@ -15,7 +15,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import CMSLogin from './components/CMSLogin';
 import JobSeekerLogin from './components/JobSeekerLogin';
-import EmployerLogin from './components/EmployerLogin';
+// import EmployerLogin from './components/EmployerLogin'; // Removed
 import JobSeekerDashboard from './components/JobSeekerDashboard';
 import Blog from './components/Blog';
 import BlogPost from './components/BlogPost';
