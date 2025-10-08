@@ -154,13 +154,6 @@ const Login = () => {
                 </div>
                 <div 
                   className="flex justify-between items-center bg-white p-2 rounded border cursor-pointer hover:bg-teal-50 hover:border-teal-300 transition-colors duration-200"
-                  onClick={() => fillDemoCredentials('hr@gmail.com', 'password')}
-                >
-                  <span>🏥 <strong>Employer:</strong> hr@gmail.com</span>
-                  <span className="text-teal-600 font-mono">password</span>
-                </div>
-                <div 
-                  className="flex justify-between items-center bg-white p-2 rounded border cursor-pointer hover:bg-teal-50 hover:border-teal-300 transition-colors duration-200"
                   onClick={() => fillDemoCredentials('admin@gmail.com', 'password')}
                 >
                   <span>⚡ <strong>Admin:</strong> admin@gmail.com</span>
