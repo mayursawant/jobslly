@@ -29,11 +29,21 @@ const AdminPanel = () => {
     salary_min: '',
     salary_max: '',
     job_type: 'full_time',
+    category: 'doctors',
     requirements: [],
     benefits: [],
     is_external: false,
     external_url: ''
   });
+
+  const jobCategories = [
+    { value: 'doctors', label: '🩺 Doctors' },
+    { value: 'pharmacy', label: '💊 Pharmacy' },
+    { value: 'dentist', label: '🦷 Dentist' },
+    { value: 'nurses', label: '👩‍⚕️ Nurses' },
+    { value: 'physiotherapy', label: '🏃‍♂️ Physiotherapy' },
+    { value: 'all', label: '🏥 All Categories' }
+  ];
   
   // Blog Creation State
   const [newBlog, setNewBlog] = useState({
