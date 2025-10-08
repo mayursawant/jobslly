@@ -590,6 +590,12 @@ frontend:
         - working: true
           agent: "testing"
           comment: "VERIFIED: Admin dashboard data loading fix successful. Admin login with credentials admin@gmail.com/password works correctly. Dashboard loads without 'Failed to load admin dashboard data' errors. Found 6 admin statistics cards displaying properly. Authentication headers working correctly with Bearer token from localStorage. No error messages found on admin dashboard."
+        - working: false
+          agent: "testing"
+          comment: "CRITICAL BUG FOUND: Token storage mismatch causing dashboard loading failure. AdminPanel.js was looking for 'access_token' in localStorage but App.js login stores it as 'token'. This caused 'No authentication token found' errors and dashboard showing 'Dashboard Loading Error' with retry button. All API calls failing due to authentication issues."
+        - working: true
+          agent: "testing"
+          comment: "BUG FIXED: Corrected token storage mismatch by changing all instances of localStorage.getItem('access_token') to localStorage.getItem('token') in AdminPanel.js. COMPREHENSIVE TESTING RESULTS: ✅ CMS login page loads correctly at /cms-login with proper test ID and demo credentials, ✅ Admin authentication works with admin@gmail.com/password and redirects to /admin, ✅ Dashboard loads completely WITHOUT 'Failed to load data' error, ✅ All 6 statistics cards display with real numbers (11 users, 22 jobs, 0 pending, 19 applications, 12 blogs, 11 published), ✅ Console shows successful API calls with debug logs (🔄 Starting fetchAdminData, 🔑 Token found: true, 📊 Fetching stats, ✅ Stats loaded, 🎉 Admin data loaded successfully), ✅ All 6 admin tabs accessible (Overview, Jobs, Create Job, Blog, Create Article, SEO), ✅ Blog management working with 12 Edit/Delete button pairs functional. No error messages or retry prompts appear. Admin dashboard fully operational."
 
   - task: "Third-Party Job Redirect Toast Removal"
     implemented: true
