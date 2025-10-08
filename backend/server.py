@@ -1187,32 +1187,43 @@ async def apply_with_lead_collection(job_id: str, lead_data: JobLeadCreate):
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     
-    # Store lead information
-    lead = JobLead(**lead_data.dict(), job_id=job_id)
+    # Create or update job seeker profile
+    profile_data = JobSeekerProfileCreate(
+        email=lead_data.email,
+        name=lead_data.name,
+        phone=lead_data.phone,
+        current_position=lead_data.current_position,
+        experience_years=lead_data.experience_years,
+        source="job_application"
+    )
+    
+    job_seeker_profile = await create_or_update_job_seeker_profile(profile_data)
+    
+    # Track the application
+    await track_job_application(lead_data.email, job_id)
+    
+    # Create job lead for backward compatibility
+    lead = JobLead(
+        job_id=job_id,
+        job_seeker_id=job_seeker_profile.id,
+        name=lead_data.name,
+        email=lead_data.email,
+        phone=lead_data.phone,
+        current_position=lead_data.current_position,
+        experience_years=lead_data.experience_years,
+        message=lead_data.message
+    )
+    
     lead_dict = lead.dict()
     lead_dict['created_at'] = lead_dict['created_at'].isoformat()
     
     await db.job_leads.insert_one(lead_dict)
     
-    # Update job application count
-    await db.jobs.update_one(
-        {"id": job_id},
-        {"$inc": {"application_count": 1}}
-    )
-    
-    # If it's an external job, return redirect URL
-    if job.get('is_external') and job.get('external_url'):
-        return {
-            "success": True,
-            "message": "Lead collected successfully",
-            "redirect_url": job['external_url'],
-            "is_external": True
-        }
-    
     return {
         "success": True,
-        "message": "Application submitted successfully",
-        "is_external": False
+        "message": "Application submitted successfully! We'll contact you soon.",
+        "lead_id": lead.id,
+        "job_seeker_id": job_seeker_profile.id
     }
 
 # Job Seeker Dashboard Routes
