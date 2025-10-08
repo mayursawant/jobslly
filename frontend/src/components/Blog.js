@@ -117,12 +117,19 @@ const Blog = () => {
                   <Card key={post.id} className="group bg-white border border-teal-100 hover:border-teal-300 hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2">
                     <CardContent className="p-0 overflow-hidden rounded-lg">
                       {post.featured_image ? (
-                        <div className="h-48 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-t-lg relative overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-br from-teal-400/20 to-emerald-400/20"></div>
-                          <div className="absolute bottom-4 left-4 right-4">
-                            <div className="text-4xl filter drop-shadow-lg">
-                              {index === 0 ? '🏥' : index === 1 ? '💊' : '🩺'}
-                            </div>
+                        <div className="h-48 bg-gray-100 rounded-t-lg relative overflow-hidden">
+                          <img 
+                            src={post.featured_image} 
+                            alt={post.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              // Fallback to placeholder if image fails to load
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                          <div className="h-48 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-t-lg hidden items-center justify-center">
+                            <span className="text-6xl opacity-50">{index === 0 ? '🏥' : index === 1 ? '💊' : '🩺'}</span>
                           </div>
                         </div>
                       ) : (
