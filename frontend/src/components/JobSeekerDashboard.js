@@ -303,8 +303,7 @@ const JobSeekerDashboard = () => {
     { code: '+263', country: 'Zimbabwe', flag: '🇿🇼' }
   ];
 
-  // Recommended jobs state
-  const [recommendedJobs, setRecommendedJobs] = useState([]);
+  // Recommended jobs state removed as per user request
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const { user } = useContext(AuthContext);
