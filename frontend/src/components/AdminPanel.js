@@ -416,6 +416,26 @@ const AdminPanel = () => {
                     />
                   </div>
                 </div>
+
+                {/* Job Category */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Job Category *</label>
+                  <select
+                    value={newJob.category}
+                    onChange={(e) => setNewJob(prev => ({...prev, category: e.target.value}))}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    required
+                  >
+                    {jobCategories.map((cat) => (
+                      <option key={cat.value} value={cat.value}>
+                        {cat.label}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-sm text-gray-500 mt-1">
+                    💡 Select "All Categories" if the job is suitable for multiple healthcare specializations
+                  </p>
+                </div>
                 
                 {/* External Job Configuration */}
                 <div className="border-t pt-6 space-y-4">
