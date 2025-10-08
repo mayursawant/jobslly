@@ -538,7 +538,7 @@ const AdminPanel = () => {
                         salary_max: salaryMaxNum > 0 ? parseInt(salaryMaxNum) : null
                       });
                       toast.success('Job posted successfully!');
-                      setNewJob({title: '', company: '', location: '', description: '', salary_min: '', salary_max: '', job_type: 'full_time', requirements: [], benefits: [], is_external: false, external_url: ''});
+                      setNewJob({title: '', company: '', location: '', description: '', salary_min: '', salary_max: '', job_type: 'full_time', category: 'doctors', requirements: [], benefits: [], is_external: false, external_url: ''});
                       fetchAdminData();
                     } catch (error) {
                       toast.error('Failed to create job: ' + (error.response?.data?.message || error.message));
