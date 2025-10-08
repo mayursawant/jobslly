@@ -6,6 +6,17 @@ html {
   scroll-behavior: smooth; /* Smooth scrolling for anchor links */
 }
 
+/* Fix for modal scroll issues */
+.dialog-overlay {
+  overflow-y: auto !important;
+}
+
+/* Ensure modal content is scrollable */
+[data-radix-dialog-content] {
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+}
+
 * {
   margin: 0;
   padding: 0;
