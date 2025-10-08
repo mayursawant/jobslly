@@ -391,7 +391,7 @@ async def login(user_data: UserLogin):
             )
             
             # Create or update profile
-            job_seeker_profile = await create_or_update_job_seeker_profile(profile_data)
+            await create_or_update_job_seeker_profile(profile_data)
             
             # Mark as registered user
             await db.job_seekers.update_one(
