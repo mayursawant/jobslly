@@ -222,6 +222,7 @@ function App() {
               <Route path="/jobs/:jobId" element={<JobDetails />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/sitemap" element={<Sitemap />} />
               <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
               <Route path="/job-seeker-login" element={!user ? <JobSeekerLogin /> : <Navigate to="/dashboard" />} />
               {/* Employer login removed */}
