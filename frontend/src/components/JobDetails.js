@@ -416,13 +416,130 @@ const JobDetails = () => {
         </div>
 
         {/* Lead Collection Modal */}
-        <LeadCollectionModal
+        <LeadCollectionModal 
           isOpen={showLeadModal}
           onClose={() => setShowLeadModal(false)}
           jobId={jobId}
           jobTitle={job?.title}
-          companyName={job?.company}
+          jobExternalUrl={job?.external_url}
+          onSuccess={handleLeadCollectionSuccess}
         />
+
+        {/* Application Success Modal */}
+        {showSuccessModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Application Submitted Successfully!</h3>
+              <p className="text-gray-600 mb-6">Your application has been submitted and the employer will review it shortly.</p>
+              
+              <div className="space-y-3">
+                <button
+                  onClick={() => {
+                    setShowSuccessModal(false);
+                    navigate('/dashboard');
+                  }}
+                  className="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 px-4 rounded-lg transition-colors"
+                >
+                  View Applied Jobs
+                </button>
+                <button
+                  onClick={() => setShowSuccessModal(false)}
+                  className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-lg transition-colors"
+                >
+                  Continue Browsing Jobs
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Incomplete Profile Modal */}
+        {showIncompleteProfileModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 15.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Profile Incomplete</h3>
+              <p className="text-gray-600 mb-4">
+                Your profile is {profileCompletion}% complete. Please complete your profile to apply for this job.
+              </p>
+              
+              <div className="bg-gray-100 rounded-lg p-3 mb-6">
+                <div className="flex justify-between text-sm text-gray-600 mb-1">
+                  <span>Profile Completion</span>
+                  <span>{profileCompletion}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-teal-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${profileCompletion}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <button
+                  onClick={() => {
+                    setShowIncompleteProfileModal(false);
+                    navigate('/dashboard');
+                    // Switch to profile tab
+                    setTimeout(() => {
+                      const profileTab = document.querySelector('[data-testid="tab-profile"]');
+                      if (profileTab) profileTab.click();
+                    }, 100);
+                  }}
+                  className="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 px-4 rounded-lg transition-colors"
+                >
+                  Complete My Profile
+                </button>
+                <button
+                  onClick={() => setShowIncompleteProfileModal(false)}
+                  className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-lg transition-colors"
+                >
+                  Maybe Later
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Login Prompt Modal for Internal Jobs */}
+        {showLoginPromptModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl max-w-md w-full p-6 text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Account Required</h3>
+              <p className="text-gray-600 mb-6">Please log in or create an account to apply for this job.</p>
+              
+              <div className="space-y-3">
+                <button
+                  onClick={() => navigate('/login')}
+                  className="w-full bg-teal-600 hover:bg-teal-700 text-white py-2 px-4 rounded-lg transition-colors"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => navigate('/register')}
+                  className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-lg transition-colors"
+                >
+                  Sign Up
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
