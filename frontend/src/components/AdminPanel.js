@@ -79,10 +79,19 @@ const AdminPanel = () => {
 
   const fetchAdminData = async () => {
     try {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const headers = {
+        'Authorization': `Bearer ${token}`
+      };
+
       const [statsResponse, jobsResponse, blogResponse] = await Promise.all([
-        axios.get(`${API}/admin/stats`),
-        axios.get(`${API}/admin/jobs/pending`),
-        axios.get(`${API}/admin/blog`)
+        axios.get(`${API}/admin/stats`, { headers }),
+        axios.get(`${API}/admin/jobs/pending`, { headers }),
+        axios.get(`${API}/admin/blog`, { headers })
       ]);
       
       setStats(statsResponse.data);
@@ -90,7 +99,8 @@ const AdminPanel = () => {
       setBlogPosts(blogResponse.data);
     } catch (error) {
       console.error('Failed to fetch admin data:', error);
-      toast.error('Failed to load admin data');
+      const errorMessage = error.response?.data?.detail || 'Failed to load admin data';
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
