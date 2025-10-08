@@ -8,7 +8,7 @@ import { Separator } from './ui/separator';
 import { Badge } from './ui/badge';
 
 const Navbar = () => {
-  const { user, logout, isAuthenticated, isAdmin } = useContext(AuthContext);
+  const { user, logout, isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
