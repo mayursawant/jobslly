@@ -20,12 +20,11 @@ import {
 const Footer = () => {
   const [recentBlogs, setRecentBlogs] = useState([]);
   const [jobCategories] = useState([
-    { name: 'Doctor Jobs', path: '/jobs?category=doctor', count: '150+' },
-    { name: 'Nursing Jobs', path: '/jobs?category=nursing', count: '200+' },
-    { name: 'Pharmacy Jobs', path: '/jobs?category=pharmacy', count: '75+' },
-    { name: 'Allied Health', path: '/jobs?category=allied', count: '100+' },
-    { name: 'Healthcare Technology', path: '/jobs?category=technology', count: '50+' },
-    { name: 'MSL Jobs', path: '/jobs?category=msl', count: '25+' }
+    { name: 'Doctors', path: '/jobs?category=doctors', count: '150+' },
+    { name: 'Pharmacy', path: '/jobs?category=pharmacy', count: '200+' },
+    { name: 'Dentist', path: '/jobs?category=dentist', count: '75+' },
+    { name: 'Nurses', path: '/jobs?category=nurses', count: '100+' },
+    { name: 'Physiotherapy', path: '/jobs?category=physiotherapy', count: '50+' }
   ]);
 
   useEffect(() => {
