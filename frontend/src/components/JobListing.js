@@ -97,32 +97,40 @@ const JobListing = () => {
         {/* Search and Filters */}
         <div className="mb-8">
           <div className="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-            <div className="flex flex-col md:flex-row gap-4 items-center mb-4">
-              <div className="flex-1">
-                <Input
-                  type="text"
-                  placeholder="Search by job title, company, or location..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="h-12"
-                  data-testid="job-search-input"
-                />
-              </div>
+            <div className="flex flex-col gap-4 mb-4">
+              {/* Search Input */}
+              <Input
+                type="text"
+                placeholder="Search by job title, company, or location..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="h-12"
+                data-testid="job-search-input"
+              />
               
-              <div className="flex gap-3 flex-wrap">
-                <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger className="w-48 h-12" data-testid="job-category-filter">
-                    <SelectValue placeholder="Category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat.value} value={cat.value}>
-                        {cat.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              {/* Category Box Filters */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Filter by Category:</label>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map((cat) => (
+                    <button
+                      key={cat.value}
+                      onClick={() => setCategory(cat.value)}
+                      className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                        category === cat.value
+                          ? 'bg-teal-600 text-white shadow-md transform scale-105'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                      }`}
+                      data-testid={`category-filter-${cat.value}`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
+              {/* Other Filters */}
+              <div className="flex gap-3 flex-wrap">
                 <Select value={jobType} onValueChange={setJobType}>
                   <SelectTrigger className="w-40 h-12" data-testid="job-type-filter">
                     <SelectValue placeholder="Job Type" />
