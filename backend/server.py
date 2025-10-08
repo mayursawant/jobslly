@@ -1479,7 +1479,7 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
         "description": "Discover healthcare opportunities for doctors, nurses, pharmacists, dentists, and physiotherapists with AI-powered career matching.",
         "keywords": ["healthcare jobs", "medical careers", "doctor jobs", "nurse jobs"],
         "og_image": "https://jobslly-redesign.preview.emergentagent.com/og-image-default.jpg",
-        "canonical": f"https://jobslly-redesign.preview.emergentagent.com"
+        "canonical": "https://jobslly-redesign.preview.emergentagent.com"
     }
 
 # Include the router
