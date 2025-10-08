@@ -151,6 +151,8 @@ const AdminPanel = () => {
       setBlogPosts(blogResponse.data || []);
       
       console.log('🎉 Admin data loaded successfully!');
+      setError(null); // Clear any previous errors
+      setRetryCount(0); // Reset retry count on success
       
     } catch (error) {
       console.error('💥 Failed to fetch admin data:', error);
