@@ -99,7 +99,22 @@ const AdminPanel = () => {
       setBlogPosts(blogResponse.data);
     } catch (error) {
       console.error('Failed to fetch admin data:', error);
-      const errorMessage = error.response?.data?.detail || 'Failed to load admin data';
+      console.error('Error details:', {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        config: error.config
+      });
+      
+      let errorMessage = 'Failed to load admin data';
+      if (error.response?.status === 401) {
+        errorMessage = 'Authentication required. Please login again.';
+      } else if (error.response?.status === 403) {
+        errorMessage = 'Admin access required. Insufficient permissions.';
+      } else if (error.response?.data?.detail) {
+        errorMessage = error.response.data.detail;
+      }
+      
       toast.error(errorMessage);
     } finally {
       setLoading(false);
