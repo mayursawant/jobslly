@@ -446,17 +446,56 @@ const AdminPanel = () => {
                 </div>
                 <Button 
                   onClick={async () => {
+                    // Validation
+                    const errors = [];
+                    
+                    // Check required fields
+                    if (!newJob.title.trim()) errors.push('Job title is required');
+                    if (!newJob.company.trim()) errors.push('Company name is required');
+                    if (!newJob.location.trim()) errors.push('Location is required');
+                    if (!newJob.description.trim()) errors.push('Job description is required');
+                    
+                    // Validate salary fields (only numeric)
+                    const salaryMinNum = newJob.salary_min ? parseFloat(newJob.salary_min) : 0;
+                    const salaryMaxNum = newJob.salary_max ? parseFloat(newJob.salary_max) : 0;
+                    
+                    if (newJob.salary_min && isNaN(salaryMinNum)) {
+                      errors.push('Minimum salary must be a valid number');
+                    }
+                    if (newJob.salary_max && isNaN(salaryMaxNum)) {
+                      errors.push('Maximum salary must be a valid number');
+                    }
+                    
+                    // Check salary range logic
+                    if (salaryMinNum > 0 && salaryMaxNum > 0 && salaryMaxNum < salaryMinNum) {
+                      errors.push('Maximum salary cannot be less than minimum salary');
+                    }
+                    
+                    // External job validation
+                    if (newJob.is_external && !newJob.external_url.trim()) {
+                      errors.push('External URL is required for external jobs');
+                    }
+                    
+                    if (newJob.is_external && newJob.external_url && !newJob.external_url.match(/^https?:\/\/.+/)) {
+                      errors.push('External URL must be a valid URL starting with http:// or https://');
+                    }
+                    
+                    if (errors.length > 0) {
+                      toast.error(`Please fix the following errors:\n${errors.join('\n')}`);
+                      return;
+                    }
+
                     try {
                       await axios.post(`${API}/admin/jobs`, {
                         ...newJob,
-                        salary_min: newJob.salary_min ? parseInt(newJob.salary_min) : null,
-                        salary_max: newJob.salary_max ? parseInt(newJob.salary_max) : null
+                        salary_min: salaryMinNum > 0 ? parseInt(salaryMinNum) : null,
+                        salary_max: salaryMaxNum > 0 ? parseInt(salaryMaxNum) : null
                       });
                       toast.success('Job posted successfully!');
                       setNewJob({title: '', company: '', location: '', description: '', salary_min: '', salary_max: '', job_type: 'full_time', requirements: [], benefits: [], is_external: false, external_url: ''});
                       fetchAdminData();
                     } catch (error) {
-                      toast.error('Failed to create job');
+                      toast.error('Failed to create job: ' + (error.response?.data?.message || error.message));
                     }
                   }}
                   className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3"
