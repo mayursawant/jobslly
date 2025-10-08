@@ -62,10 +62,12 @@ const JobSeekerDashboard = () => {
   
   // Profile data state
   const [profile, setProfile] = useState({
+    country_code: '+91', // Default to India
     phone: '',
     address: '',
     specialization: '',
-    experience_years: '',
+    custom_specialization: '',
+    experience_years: 0,
     education: [],
     skills: [],
     certifications: [],
@@ -76,6 +78,20 @@ const JobSeekerDashboard = () => {
     salary_expectation_min: '',
     salary_expectation_max: ''
   });
+
+  // Country codes list
+  const countryCodes = [
+    { code: '+91', country: 'India', flag: '🇮🇳' },
+    { code: '+1', country: 'USA/Canada', flag: '🇺🇸' },
+    { code: '+44', country: 'United Kingdom', flag: '🇬🇧' },
+    { code: '+61', country: 'Australia', flag: '🇦🇺' },
+    { code: '+971', country: 'UAE', flag: '🇦🇪' },
+    { code: '+65', country: 'Singapore', flag: '🇸🇬' },
+    { code: '+49', country: 'Germany', flag: '🇩🇪' },
+    { code: '+33', country: 'France', flag: '🇫🇷' },
+    { code: '+81', country: 'Japan', flag: '🇯🇵' },
+    { code: '+86', country: 'China', flag: '🇨🇳' },
+  ];
 
   // Recommended jobs state
   const [recommendedJobs, setRecommendedJobs] = useState([]);
