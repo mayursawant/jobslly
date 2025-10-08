@@ -910,8 +910,16 @@ async def get_user_profile(current_user: User = Depends(get_current_user)):
 @api_router.put("/profile", response_model=UserProfile)
 async def update_user_profile(profile_data: UserProfileUpdate, current_user: User = Depends(get_current_user)):
     # Calculate profile completion percentage
-    completion_fields = ['phone', 'address', 'specialization', 'experience_years', 'education', 'skills']
-    filled_fields = sum(1 for field in completion_fields if getattr(profile_data, field, None))
+    completion_fields = ['phone', 'address', 'specialization', 'experience_years', 'skills']
+    filled_fields = 0
+    
+    # Count filled fields
+    if profile_data.phone: filled_fields += 1
+    if profile_data.address: filled_fields += 1
+    if profile_data.specialization: filled_fields += 1
+    if profile_data.experience_years is not None and profile_data.experience_years >= 0: filled_fields += 1
+    if profile_data.skills and len(profile_data.skills) > 0: filled_fields += 1
+    
     completion_percentage = int((filled_fields / len(completion_fields)) * 100)
     
     update_data = profile_data.dict(exclude_unset=True)
