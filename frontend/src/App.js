@@ -23,6 +23,8 @@ import ChatBot from './components/ChatBot';
 import LeadChatbot from './components/LeadChatbot';
 import ScrollToTop from './components/ScrollToTop';
 import Sitemap from './components/Sitemap';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsOfService from './components/TermsOfService';
 import { Toaster } from './components/ui/sonner';
 import { Helmet } from 'react-helmet';
 
