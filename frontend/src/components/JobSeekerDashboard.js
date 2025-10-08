@@ -96,6 +96,7 @@ const JobSeekerDashboard = () => {
   // Recommended jobs state
   const [recommendedJobs, setRecommendedJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const { user } = useContext(AuthContext);
 
   /**
