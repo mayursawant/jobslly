@@ -422,6 +422,7 @@ const JobDetails = () => {
           jobId={jobId}
           jobTitle={job?.title}
           jobExternalUrl={job?.external_url}
+          companyName={job?.company}
           onSuccess={handleLeadCollectionSuccess}
         />
 
