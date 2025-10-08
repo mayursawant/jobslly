@@ -563,9 +563,10 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Recent Activity Section Removal from Job Seeker Dashboard"
-    - "Header Background Color Fix (Pure White)"
-    - "CMS Admin Login Restoration"
+    - "Cookie Policy Page Implementation"
+    - "LeadChatbot Component Removal"
+    - "Blog Management Edit/Delete Functionality"
+    - "Blog Creation Fixed (500 Error Resolution)"
   stuck_tasks: 
     - "Chatbot auto-open functionality"
   test_all: false
