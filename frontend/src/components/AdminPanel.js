@@ -850,6 +850,12 @@ const AdminPanel = () => {
                         return;
                       }
 
+                      const token = localStorage.getItem('access_token');
+                      if (!token) {
+                        toast.error('Authentication required');
+                        return;
+                      }
+
                       // Create FormData for file upload
                       const formData = new FormData();
                       formData.append('title', newBlog.title);
@@ -866,22 +872,52 @@ const AdminPanel = () => {
                         formData.append('featured_image', newBlog.featured_image);
                       }
 
-                      await axios.post(`${API}/admin/blog`, formData, {
+                      // Check if we're editing or creating
+                      const isEditing = newBlog.id;
+                      const url = isEditing ? `${API}/admin/blog/${newBlog.id}` : `${API}/admin/blog`;
+                      const method = isEditing ? 'put' : 'post';
+
+                      await axios({
+                        method,
+                        url,
+                        data: formData,
                         headers: {
-                          'Content-Type': 'multipart/form-data'
+                          'Content-Type': 'multipart/form-data',
+                          'Authorization': `Bearer ${token}`
                         }
                       });
                       
-                      toast.success(newBlog.is_published ? 'Article published successfully!' : 'Article saved as draft!');
-                      setNewBlog({title: '', excerpt: '', content: '', category: 'healthcare', tags: [], is_published: false, is_featured: false, featured_image: null, seo_title: '', seo_description: '', seo_keywords: []});
+                      toast.success(
+                        isEditing 
+                          ? 'Article updated successfully!' 
+                          : (newBlog.is_published ? 'Article published successfully!' : 'Article saved as draft!')
+                      );
+                      
+                      // Reset form
+                      setNewBlog({
+                        title: '', 
+                        excerpt: '', 
+                        content: '', 
+                        category: 'healthcare', 
+                        tags: [], 
+                        is_published: false, 
+                        is_featured: false, 
+                        featured_image: null, 
+                        seo_title: '', 
+                        seo_description: '', 
+                        seo_keywords: []
+                      });
+                      
                       fetchAdminData();
                     } catch (error) {
-                      toast.error('Failed to create article: ' + (error.response?.data?.message || error.message));
+                      console.error('Blog operation failed:', error);
+                      const errorMessage = error.response?.data?.detail || error.response?.data?.message || error.message;
+                      toast.error('Failed to save article: ' + errorMessage);
                     }
                   }}
                   className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3"
                 >
-                  {newBlog.is_published ? '🚀 Publish Article' : '💾 Save as Draft'}
+                  {newBlog.id ? '📝 Update Article' : (newBlog.is_published ? '🚀 Publish Article' : '💾 Save as Draft')}
                 </Button>
               </CardContent>
             </Card>
