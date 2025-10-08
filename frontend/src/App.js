@@ -223,7 +223,7 @@ function App() {
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
               <Route path="/job-seeker-login" element={!user ? <JobSeekerLogin /> : <Navigate to="/dashboard" />} />
-              <Route path="/employer-login" element={!user ? <EmployerLogin /> : <Navigate to="/dashboard" />} />
+              {/* Employer login removed */}
               <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
               <Route path="/cms-login" element={!user ? <CMSLogin /> : <Navigate to="/admin" />} />
               
