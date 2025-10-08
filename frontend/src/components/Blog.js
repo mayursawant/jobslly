@@ -186,14 +186,24 @@ const Blog = () => {
                   <Card key={post.id} className="group bg-white border border-gray-200 hover:border-teal-300 hover:shadow-xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-1">
                     <CardContent className="p-0 overflow-hidden rounded-lg">
                       {post.featured_image ? (
-                        <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-lg relative overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-br from-teal-400/10 to-emerald-400/10"></div>
-                          <div className="absolute bottom-4 right-4">
-                            <div className="text-3xl filter drop-shadow-lg">
+                        <div className="h-48 bg-gray-100 rounded-t-lg relative overflow-hidden">
+                          <img 
+                            src={post.featured_image} 
+                            alt={post.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              // Fallback to placeholder if image fails to load
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                          <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-lg hidden items-center justify-center relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-teal-400/10 to-emerald-400/10"></div>
+                            <span className="text-5xl opacity-60 relative z-10">
                               {post.category === 'Healthcare Trends' ? '📈' : 
                                post.category === 'Career Development' ? '🚀' : 
                                post.category === 'Industry News' ? '📰' : '🏥'}
-                            </div>
+                            </span>
                           </div>
                         </div>
                       ) : (
