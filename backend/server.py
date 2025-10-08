@@ -645,27 +645,57 @@ async def admin_create_job(job_data: JobCreate, current_user: User = Depends(get
 
 # Blog Management Routes
 @api_router.post("/admin/blog", response_model=BlogPost)
-async def create_blog_post(blog_data: BlogPostCreate, current_user: User = Depends(get_current_user)):
+async def create_blog_post(
+    title: str = Form(...),
+    excerpt: str = Form(""),
+    content: str = Form(...),
+    category: str = Form("healthcare"),
+    is_published: bool = Form(False),
+    is_featured: bool = Form(False),
+    seo_title: str = Form(""),
+    seo_description: str = Form(""),
+    featured_image: Optional[UploadFile] = File(None),
+    current_user: User = Depends(get_current_user)
+):
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Admin access required")
     
     # Generate slug from title
-    slug = blog_data.title.lower().replace(' ', '-').replace('/', '-')
+    slug = title.lower().replace(' ', '-').replace('/', '-')
     slug = ''.join(c for c in slug if c.isalnum() or c == '-')
     
-    blog_post = BlogPost(**blog_data.dict(), author_id=current_user.id, slug=slug)
-    if blog_data.is_published:
-        blog_post.published_at = datetime.now(timezone.utc)
+    # Handle featured image upload
+    featured_image_url = None
+    if featured_image and featured_image.filename:
+        # For now, we'll just store a placeholder URL
+        # In production, you would upload to cloud storage
+        featured_image_url = f"/uploads/blog/{slug}-{featured_image.filename}"
     
-    blog_dict = blog_post.dict()
-    blog_dict['created_at'] = blog_dict['created_at'].isoformat()
-    if blog_dict.get('updated_at'):
-        blog_dict['updated_at'] = blog_dict['updated_at'].isoformat()
-    if blog_dict.get('published_at'):
-        blog_dict['published_at'] = blog_dict['published_at'].isoformat()
+    # Create blog post
+    blog_data = {
+        "title": title,
+        "excerpt": excerpt,
+        "content": content,
+        "category": category,
+        "is_published": is_published,
+        "is_featured": is_featured,
+        "seo_title": seo_title,
+        "seo_description": seo_description,
+        "featured_image": featured_image_url,
+        "author_id": current_user.id,
+        "slug": slug,
+        "id": str(uuid.uuid4()),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
     
-    await db.blog_posts.insert_one(blog_dict)
-    return blog_post
+    if is_published:
+        blog_data["published_at"] = datetime.now(timezone.utc).isoformat()
+    
+    await db.blog_posts.insert_one(blog_data)
+    
+    # Return the created blog post
+    return BlogPost(**blog_data)
 
 @api_router.get("/admin/blog", response_model=List[BlogPost])
 async def get_admin_blog_posts(current_user: User = Depends(get_current_user)):
