@@ -329,33 +329,48 @@ const AdminPanel = () => {
               <CardContent className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Job Title</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Job Title *</label>
                     <input
                       type="text"
                       value={newJob.title}
-                      onChange={(e) => setNewJob(prev => ({...prev, title: e.target.value}))}
-                      placeholder="e.g. Senior Cardiologist"
+                      onChange={(e) => {
+                        // Only allow letters, spaces, and common job title characters
+                        const value = e.target.value.replace(/[^a-zA-Z\s\-&.,()]/g, '');
+                        setNewJob(prev => ({...prev, title: value}));
+                      }}
+                      placeholder="e.g. Senior Healthcare Specialist"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Company *</label>
                     <input
                       type="text"
                       value={newJob.company}
-                      onChange={(e) => setNewJob(prev => ({...prev, company: e.target.value}))}
-                      placeholder="e.g. City Medical Center"
+                      onChange={(e) => {
+                        // Only allow letters, spaces, and common company name characters
+                        const value = e.target.value.replace(/[^a-zA-Z\s\-&.,()]/g, '');
+                        setNewJob(prev => ({...prev, company: value}));
+                      }}
+                      placeholder="e.g. Healthcare Corp"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Location *</label>
                     <input
                       type="text"
                       value={newJob.location}
-                      onChange={(e) => setNewJob(prev => ({...prev, location: e.target.value}))}
+                      onChange={(e) => {
+                        // Only allow letters, spaces, and location characters
+                        const value = e.target.value.replace(/[^a-zA-Z\s\-,./()]/g, '');
+                        setNewJob(prev => ({...prev, location: value}));
+                      }}
                       placeholder="e.g. New York, NY"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      required
                     />
                   </div>
                   <div>
