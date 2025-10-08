@@ -1369,6 +1369,64 @@ async def get_all_leads(current_user: User = Depends(get_current_user)):
     
     return leads
 
+# Admin Job Seeker Management
+@api_router.get("/admin/job-seekers", response_model=List[JobSeekerProfile])
+async def get_all_job_seekers(current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    job_seekers = await db.job_seekers.find().sort("created_at", -1).to_list(length=None)
+    return [JobSeekerProfile(**seeker) for seeker in job_seekers]
+
+@api_router.get("/admin/job-seekers/stats")
+async def get_job_seeker_stats(current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Get total counts
+    total_job_seekers = await db.job_seekers.count_documents({})
+    registered_users = await db.job_seekers.count_documents({"is_registered": True})
+    leads_only = await db.job_seekers.count_documents({"is_registered": False})
+    
+    # Get application statistics
+    pipeline = [
+        {
+            "$group": {
+                "_id": None,
+                "total_applications": {"$sum": "$total_applications"},
+                "avg_applications_per_user": {"$avg": "$total_applications"}
+            }
+        }
+    ]
+    
+    app_stats = await db.job_seekers.aggregate(pipeline).to_list(length=1)
+    total_applications = app_stats[0]["total_applications"] if app_stats else 0
+    avg_applications = round(app_stats[0]["avg_applications_per_user"], 2) if app_stats else 0
+    
+    # Get top sources
+    sources_pipeline = [
+        {
+            "$group": {
+                "_id": "$first_source",
+                "count": {"$sum": 1}
+            }
+        },
+        {"$sort": {"count": -1}},
+        {"$limit": 5}
+    ]
+    
+    top_sources = await db.job_seekers.aggregate(sources_pipeline).to_list(length=5)
+    
+    return {
+        "total_job_seekers": total_job_seekers,
+        "registered_users": registered_users,
+        "leads_only": leads_only,
+        "total_applications": total_applications,
+        "avg_applications_per_user": avg_applications,
+        "top_sources": top_sources,
+        "conversion_rate": round((registered_users / total_job_seekers * 100), 2) if total_job_seekers > 0 else 0
+    }
+
 # SEO Routes - Dynamic Sitemap and Robots.txt
 @api_router.get("/sitemap.xml", response_class=Response)
 async def get_sitemap():
