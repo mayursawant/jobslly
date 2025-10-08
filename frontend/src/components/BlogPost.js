@@ -145,8 +145,20 @@ const BlogPost = () => {
             </div>
 
             {post.featured_image && (
-              <div className="h-64 md:h-80 bg-white/10 rounded-2xl mb-8 border border-white/20 backdrop-blur-sm flex items-center justify-center">
-                <div className="text-6xl opacity-60">🏥</div>
+              <div className="h-64 md:h-80 bg-white/10 rounded-2xl mb-8 border border-white/20 backdrop-blur-sm overflow-hidden">
+                <img 
+                  src={post.featured_image} 
+                  alt={post.title}
+                  className="w-full h-full object-cover rounded-2xl"
+                  onError={(e) => {
+                    // Fallback to placeholder if image fails to load
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+                <div className="h-64 md:h-80 bg-white/10 rounded-2xl hidden items-center justify-center">
+                  <div className="text-6xl opacity-60">🏥</div>
+                </div>
               </div>
             )}
           </div>
