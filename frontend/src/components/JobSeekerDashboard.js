@@ -519,8 +519,7 @@ const JobSeekerDashboard = () => {
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
             <TabsTrigger value="profile" data-testid="tab-profile">Edit Profile</TabsTrigger>
-            <TabsTrigger value="applications" data-testid="tab-applications">Applications</TabsTrigger>
-            <TabsTrigger value="recommendations" data-testid="tab-recommendations">Recommendations</TabsTrigger>
+            {/* Applications and Recommendations tabs removed as per user request */}
           </TabsList>
 
           {/* Enhanced Overview Tab */}
