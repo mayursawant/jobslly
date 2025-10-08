@@ -727,8 +727,22 @@ const JobSeekerDashboard = () => {
                   </div>
                 </div>
 
-                <Button onClick={updateProfile} className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-                  💾 Save Profile Changes
+                <Button 
+                  onClick={updateProfile} 
+                  disabled={saving}
+                  className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white disabled:opacity-50"
+                >
+                  {saving ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <span>Saving...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="w-4 h-4" />
+                      <span>Save Profile Changes</span>
+                    </div>
+                  )}
                 </Button>
               </CardContent>
             </Card>
