@@ -595,8 +595,21 @@ const AdminPanel = () => {
                           </div>
                         </div>
                         <div className="flex space-x-2">
-                          <Button size="sm" variant="outline">Edit</Button>
-                          <Button size="sm" variant="outline" className="text-red-600 border-red-300">Delete</Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => handleEditBlog(post)}
+                          >
+                            Edit
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="text-red-600 border-red-300 hover:bg-red-50"
+                            onClick={() => handleDeleteBlog(post.id)}
+                          >
+                            Delete
+                          </Button>
                         </div>
                       </div>
                     ))}
