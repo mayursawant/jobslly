@@ -179,16 +179,48 @@ const JobSeekerDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-emerald-50 py-8 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Welcome Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            Welcome back, {user?.full_name}! 👋
-          </h1>
-          <p className="text-gray-600">
-            Track your job search progress and discover new opportunities
-          </p>
+        {/* Modern Welcome Header */}
+        <div className="mb-8 relative overflow-hidden">
+          <div className="bg-gradient-to-r from-teal-600 to-emerald-600 rounded-2xl p-8 text-white shadow-xl">
+            {/* Floating Animation Elements */}
+            <div className="absolute top-4 right-4 w-20 h-20 bg-white/10 rounded-full opacity-20 animate-pulse"></div>
+            <div className="absolute bottom-4 left-4 w-12 h-12 bg-white/10 rounded-full opacity-30 animate-bounce"></div>
+            
+            <div className="relative z-10 flex justify-between items-center">
+              <div>
+                <h1 className="text-4xl font-bold mb-2">
+                  Welcome back, {user?.full_name?.split(' ')[0]}! 
+                  <span className="wave inline-block ml-2">👋</span>
+                </h1>
+                <p className="text-teal-100 text-lg">
+                  Your healthcare career journey continues here
+                </p>
+                <div className="flex items-center mt-4 space-x-6">
+                  <div className="flex items-center space-x-2">
+                    <TrendingUp className="w-5 h-5 text-teal-200" />
+                    <span className="text-teal-100 text-sm">Progress Tracking</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Target className="w-5 h-5 text-teal-200" />
+                    <span className="text-teal-100 text-sm">Smart Matching</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Award className="w-5 h-5 text-teal-200" />
+                    <span className="text-teal-100 text-sm">Career Growth</span>
+                  </div>
+                </div>
+              </div>
+              <div className="hidden lg:block">
+                <div className="w-32 h-32 bg-white/10 rounded-full flex items-center justify-center">
+                  <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center">
+                    <User className="w-12 h-12 text-white" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Dashboard Statistics Cards */}
