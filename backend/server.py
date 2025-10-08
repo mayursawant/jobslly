@@ -146,10 +146,55 @@ class UserProfileUpdate(BaseModel):
     salary_expectation_min: Optional[int] = None
     salary_expectation_max: Optional[int] = None
 
-# Lead Collection Model
+# Enhanced Job Seeker Profile Model
+class JobSeekerProfile(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    email: str  # Primary identifier
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    country_code: Optional[str] = None
+    current_position: Optional[str] = None
+    experience_years: Optional[str] = None
+    location: Optional[str] = None
+    specialization: Optional[str] = None
+    
+    # User engagement data
+    user_id: Optional[str] = None  # Link to User model if they register
+    total_applications: int = 0
+    jobs_applied: List[str] = []  # List of job IDs
+    last_activity: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    
+    # Source tracking
+    first_source: str = "direct"  # direct, job_application, lead_collection, registration
+    acquisition_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    
+    # Profile completion and status
+    is_registered: bool = False  # True if they created an account
+    profile_completion: int = 0  # Percentage based on filled fields
+    status: str = "lead"  # lead, registered, active, inactive
+    
+    # Additional tracking
+    resume_uploaded: bool = False
+    cover_letters_count: int = 0
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class JobSeekerProfileCreate(BaseModel):
+    email: str
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    country_code: Optional[str] = None
+    current_position: Optional[str] = None
+    experience_years: Optional[str] = None
+    location: Optional[str] = None
+    specialization: Optional[str] = None
+    source: str = "direct"
+
+# Enhanced Lead Collection Model (for backward compatibility)
 class JobLead(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     job_id: str
+    job_seeker_id: str  # Link to JobSeekerProfile
     name: str
     email: str
     phone: Optional[str] = None
@@ -167,6 +212,7 @@ class JobLeadCreate(BaseModel):
     current_position: Optional[str] = None
     experience_years: Optional[str] = None
     message: Optional[str] = None
+    job_id: Optional[str] = None
 
 class JobCreate(BaseModel):
     title: str
