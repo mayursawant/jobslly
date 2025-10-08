@@ -109,7 +109,20 @@ const JobListing = () => {
                 />
               </div>
               
-              <div className="flex gap-3">
+              <div className="flex gap-3 flex-wrap">
+                <Select value={category} onValueChange={setCategory}>
+                  <SelectTrigger className="w-48 h-12" data-testid="job-category-filter">
+                    <SelectValue placeholder="Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.value} value={cat.value}>
+                        {cat.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
                 <Select value={jobType} onValueChange={setJobType}>
                   <SelectTrigger className="w-40 h-12" data-testid="job-type-filter">
                     <SelectValue placeholder="Job Type" />
