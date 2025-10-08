@@ -359,7 +359,7 @@ const JobSeekerDashboard = () => {
                           <div>
                             <p className="text-sm font-medium text-gray-800">Boost your visibility</p>
                             <p className="text-xs text-gray-600 mb-2">Complete your profile for better job matches</p>
-                            <Button size="sm" className="bg-teal-600 hover:bg-teal-700" onClick={() => document.querySelector('[data-testid="tab-profile"]').click()}>
+                            <Button size="sm" className="bg-teal-600 hover:bg-teal-700" onClick={switchToProfileTab}>
                               Complete Now
                             </Button>
                           </div>
