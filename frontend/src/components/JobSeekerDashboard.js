@@ -527,14 +527,11 @@ const JobSeekerDashboard = () => {
                         <SelectValue placeholder="Select specialization" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="doctor">Doctor/Physician</SelectItem>
-                        <SelectItem value="nurse">Nurse</SelectItem>
-                        <SelectItem value="pharmacist">Pharmacist</SelectItem>
-                        <SelectItem value="dentist">Dentist</SelectItem>
-                        <SelectItem value="physiotherapist">Physiotherapist</SelectItem>
-                        <SelectItem value="mental-health">Mental Health Professional</SelectItem>
-                        <SelectItem value="technician">Medical Technician</SelectItem>
-                        <SelectItem value="administrator">Healthcare Administrator</SelectItem>
+                        <SelectItem value="doctors">Doctor/Physician</SelectItem>
+                        <SelectItem value="nurses">Nurse</SelectItem>
+                        <SelectItem value="pharmacists">Pharmacist</SelectItem>
+                        <SelectItem value="dentists">Dentist</SelectItem>
+                        <SelectItem value="physiotherapists">Physiotherapist</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
