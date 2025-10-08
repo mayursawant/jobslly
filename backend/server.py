@@ -715,7 +715,19 @@ async def get_admin_blog_posts(current_user: User = Depends(get_current_user)):
     return [BlogPost(**post) for post in posts]
 
 @api_router.put("/admin/blog/{post_id}", response_model=BlogPost)
-async def update_blog_post(post_id: str, blog_data: BlogPostCreate, current_user: User = Depends(get_current_user)):
+async def update_blog_post(
+    post_id: str,
+    title: str = Form(...),
+    excerpt: str = Form(""),
+    content: str = Form(...),
+    category: str = Form("healthcare"),
+    is_published: bool = Form(False),
+    is_featured: bool = Form(False),
+    seo_title: str = Form(""),
+    seo_description: str = Form(""),
+    featured_image: Optional[UploadFile] = File(None),
+    current_user: User = Depends(get_current_user)
+):
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -723,21 +735,37 @@ async def update_blog_post(post_id: str, blog_data: BlogPostCreate, current_user
     if not existing_post:
         raise HTTPException(status_code=404, detail="Blog post not found")
     
-    # Update slug if title changed
-    slug = blog_data.title.lower().replace(' ', '-').replace('/', '-')
+    # Generate slug from title
+    slug = title.lower().replace(' ', '-').replace('/', '-')
     slug = ''.join(c for c in slug if c.isalnum() or c == '-')
     
-    update_data = blog_data.dict()
-    update_data['slug'] = slug
-    update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+    # Handle featured image upload
+    featured_image_url = existing_post.get('featured_image')  # Keep existing image
+    if featured_image and featured_image.filename:
+        # Update with new image
+        featured_image_url = f"/uploads/blog/{slug}-{featured_image.filename}"
     
-    if blog_data.is_published and not existing_post.get('is_published'):
-        update_data['published_at'] = datetime.now(timezone.utc).isoformat()
+    update_data = {
+        "title": title,
+        "excerpt": excerpt,
+        "content": content,
+        "category": category,
+        "is_published": is_published,
+        "is_featured": is_featured,
+        "seo_title": seo_title,
+        "seo_description": seo_description,
+        "featured_image": featured_image_url,
+        "slug": slug,
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    if is_published and not existing_post.get('published_at'):
+        update_data["published_at"] = datetime.now(timezone.utc).isoformat()
     
     await db.blog_posts.update_one({"id": post_id}, {"$set": update_data})
     
     updated_post = await db.blog_posts.find_one({"id": post_id})
-    if isinstance(updated_post.get('created_at'), str):
+    if updated_post.get('created_at') and isinstance(updated_post.get('created_at'), str):
         updated_post['created_at'] = datetime.fromisoformat(updated_post['created_at'])
     if updated_post.get('updated_at') and isinstance(updated_post.get('updated_at'), str):
         updated_post['updated_at'] = datetime.fromisoformat(updated_post['updated_at'])
