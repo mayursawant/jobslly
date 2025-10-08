@@ -24,8 +24,15 @@ const JobDetails = () => {
   const [coverLetter, setCoverLetter] = useState('');
   const [hasApplied, setHasApplied] = useState(false);
   
-  // Lead collection modal state
+  // Modal states
   const [showLeadModal, setShowLeadModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showIncompleteProfileModal, setShowIncompleteProfileModal] = useState(false);
+  const [showLoginPromptModal, setShowLoginPromptModal] = useState(false);
+  
+  // User profile states
+  const [userProfile, setUserProfile] = useState(null);
+  const [profileCompletion, setProfileCompletion] = useState(0);
 
   useEffect(() => {
     fetchJobDetails();
