@@ -10,8 +10,10 @@ import Home from './components/Home';
 import JobListing from './components/JobListing';
 import JobDetails from './components/JobDetails';
 import Dashboard from './components/Dashboard';
+import AdminPanel from './components/AdminPanel';
 import Login from './components/Login';
 import Register from './components/Register';
+import CMSLogin from './components/CMSLogin';
 import JobSeekerLogin from './components/JobSeekerLogin';
 // import EmployerLogin from './components/EmployerLogin'; // Removed
 import JobSeekerDashboard from './components/JobSeekerDashboard';
