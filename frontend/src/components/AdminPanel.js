@@ -168,15 +168,8 @@ const AdminPanel = () => {
       
       if (error.message.includes('No authentication token')) {
         errorMessage = '🔑 Authentication required. Please login again.';
-        // Redirect to login
-        setTimeout(() => {
-          window.location.href = '/cms-login';
-        }, 2000);
       } else if (error.response?.status === 401) {
         errorMessage = '🔑 Session expired. Please login again.';
-        setTimeout(() => {
-          window.location.href = '/cms-login';
-        }, 2000);
       } else if (error.response?.status === 403) {
         errorMessage = '🚫 Admin access required. Insufficient permissions.';
       } else if (error.response?.status === 404) {
