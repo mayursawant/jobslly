@@ -21,10 +21,10 @@ const Footer = () => {
   const [recentBlogs, setRecentBlogs] = useState([]);
   const [jobCategories] = useState([
     { name: 'Doctors', path: '/jobs?category=doctors', count: '150+' },
-    { name: 'Pharmacy', path: '/jobs?category=pharmacy', count: '200+' },
-    { name: 'Dentist', path: '/jobs?category=dentist', count: '75+' },
-    { name: 'Nurses', path: '/jobs?category=nurses', count: '100+' },
-    { name: 'Physiotherapy', path: '/jobs?category=physiotherapy', count: '50+' }
+    { name: 'Pharmacists', path: '/jobs?category=pharmacists', count: '200+' },
+    { name: 'Dentists', path: '/jobs?category=dentists', count: '75+' },
+    { name: 'Physiotherapists', path: '/jobs?category=physiotherapists', count: '50+' },
+    { name: 'Nurses', path: '/jobs?category=nurses', count: '100+' }
   ]);
 
   useEffect(() => {
