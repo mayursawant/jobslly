@@ -386,16 +386,8 @@ const JobSeekerDashboard = () => {
   };
 
   /**
-   * Fetches AI-recommended jobs based on user profile
+   * Recommended jobs functionality removed as per user request
    */
-  const fetchRecommendedJobs = async () => {
-    try {
-      const response = await axios.get(`${API}/jobs?limit=6`);
-      setRecommendedJobs(response.data);
-    } catch (error) {
-      console.error('Failed to fetch recommended jobs:', error);
-    }
-  };
 
   /**
    * Updates user profile information
