@@ -325,7 +325,6 @@ const JobSeekerDashboard = () => {
   useEffect(() => {
     fetchDashboardData();
     fetchProfile();
-    fetchRecommendedJobs();
   }, []);
 
   /**
