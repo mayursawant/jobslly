@@ -97,7 +97,7 @@ const AdminPanel = () => {
     setLoading(true);
     
     try {
-      const token = localStorage.getItem('access_token');
+      const token = localStorage.getItem('token');
       console.log('🔑 Token found:', !!token);
       
       if (!token) {
