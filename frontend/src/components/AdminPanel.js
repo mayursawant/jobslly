@@ -999,7 +999,7 @@ const AdminPanel = () => {
                         return;
                       }
 
-                      const token = localStorage.getItem('access_token');
+                      const token = localStorage.getItem('token');
                       if (!token) {
                         toast.error('Authentication required');
                         return;
