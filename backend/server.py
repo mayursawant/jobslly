@@ -1018,11 +1018,16 @@ async def update_user_profile(profile_data: UserProfileUpdate, current_user: Use
     filled_fields = 0
     
     # Count filled fields
-    if profile_data.phone: filled_fields += 1
-    if profile_data.address: filled_fields += 1
-    if profile_data.specialization: filled_fields += 1
-    if profile_data.experience_years is not None and profile_data.experience_years >= 0: filled_fields += 1
-    if profile_data.skills and len(profile_data.skills) > 0: filled_fields += 1
+    if profile_data.phone:
+        filled_fields += 1
+    if profile_data.address:
+        filled_fields += 1
+    if profile_data.specialization:
+        filled_fields += 1
+    if profile_data.experience_years is not None and profile_data.experience_years >= 0:
+        filled_fields += 1
+    if profile_data.skills and len(profile_data.skills) > 0:
+        filled_fields += 1
     
     completion_percentage = int((filled_fields / len(completion_fields)) * 100)
     
