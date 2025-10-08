@@ -307,31 +307,53 @@ const JobSeekerDashboard = () => {
             <TabsTrigger value="recommendations" data-testid="tab-recommendations">Recommendations</TabsTrigger>
           </TabsList>
 
-          {/* Overview Tab */}
+          {/* Enhanced Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
-            <div className="grid lg:grid-cols-2 gap-6">
-              {/* Profile Completion Card */}
-              <Card className="glass border-blue-200">
+            <div className="grid lg:grid-cols-3 gap-6">
+              {/* Profile Strength Card */}
+              <Card className="border-0 shadow-lg bg-gradient-to-br from-teal-50 to-emerald-50">
                 <CardHeader>
                   <CardTitle className="text-lg text-gray-800 flex items-center">
-                    <span className="mr-2">📊</span>
-                    Profile Completion
+                    <TrendingUp className="w-5 h-5 mr-2 text-teal-600" />
+                    Profile Strength
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Overall Progress</span>
-                      <span className="font-semibold text-blue-600">{dashboardData.profile_completion}%</span>
+                    <div className="text-center">
+                      <div className="relative w-24 h-24 mx-auto mb-4">
+                        <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
+                          <circle cx="50" cy="50" r="40" stroke="rgb(229 231 235)" strokeWidth="8" fill="none" />
+                          <circle 
+                            cx="50" 
+                            cy="50" 
+                            r="40" 
+                            stroke="rgb(20 184 166)" 
+                            strokeWidth="8" 
+                            fill="none"
+                            strokeDasharray={`${2.51 * dashboardData.profile_completion} 251`}
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-2xl font-bold text-teal-600">{dashboardData.profile_completion}%</span>
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-600">Professional Profile</p>
                     </div>
-                    <Progress value={dashboardData.profile_completion} className="h-3" />
                     
                     {dashboardData.profile_completion < 100 && (
-                      <div className="bg-blue-50 p-4 rounded-lg">
-                        <p className="text-sm text-blue-700 font-medium mb-2">🚀 Complete your profile to get better job matches!</p>
-                        <Button size="sm" onClick={() => document.querySelector('[data-testid="tab-profile"]').click()}>
-                          Complete Profile
-                        </Button>
+                      <div className="bg-white p-4 rounded-lg border border-teal-100">
+                        <div className="flex items-start space-x-3">
+                          <AlertCircle className="w-5 h-5 text-amber-500 mt-0.5" />
+                          <div>
+                            <p className="text-sm font-medium text-gray-800">Boost your visibility</p>
+                            <p className="text-xs text-gray-600 mb-2">Complete your profile for better job matches</p>
+                            <Button size="sm" className="bg-teal-600 hover:bg-teal-700" onClick={() => document.querySelector('[data-testid="tab-profile"]').click()}>
+                              Complete Now
+                            </Button>
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -339,34 +361,82 @@ const JobSeekerDashboard = () => {
               </Card>
 
               {/* Quick Actions Card */}
-              <Card className="glass border-emerald-200">
+              <Card className="border-0 shadow-lg bg-white">
                 <CardHeader>
                   <CardTitle className="text-lg text-gray-800 flex items-center">
-                    <span className="mr-2">⚡</span>
+                    <Target className="w-5 h-5 mr-2 text-purple-600" />
                     Quick Actions
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     <Link to="/jobs">
-                      <Button className="w-full justify-start bg-blue-600 hover:bg-blue-700 text-white">
-                        🔍 Browse New Jobs
+                      <Button className="w-full justify-between bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white group">
+                        <div className="flex items-center">
+                          <Briefcase className="w-4 h-4 mr-2" />
+                          Browse Jobs
+                        </div>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </Button>
                     </Link>
                     <Button 
                       variant="outline" 
-                      className="w-full justify-start border-emerald-200 hover:bg-emerald-50"
+                      className="w-full justify-between border-purple-200 hover:bg-purple-50 group"
                       onClick={() => document.querySelector('[data-testid="tab-profile"]').click()}
                     >
-                      ✏️ Update Profile
+                      <div className="flex items-center">
+                        <User className="w-4 h-4 mr-2 text-purple-600" />
+                        Update Profile
+                      </div>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-purple-600" />
                     </Button>
                     <Button 
                       variant="outline" 
-                      className="w-full justify-start border-purple-200 hover:bg-purple-50"
+                      className="w-full justify-between border-orange-200 hover:bg-orange-50 group"
                       onClick={() => document.querySelector('[data-testid="tab-recommendations"]').click()}
                     >
-                      🎯 View Recommendations
+                      <div className="flex items-center">
+                        <Star className="w-4 h-4 mr-2 text-orange-600" />
+                        View Matches
+                      </div>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-orange-600" />
                     </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Career Insights Card */}
+              <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50">
+                <CardHeader>
+                  <CardTitle className="text-lg text-gray-800 flex items-center">
+                    <Award className="w-5 h-5 mr-2 text-blue-600" />
+                    Career Insights
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">Market Demand</span>
+                      <Badge className="bg-green-100 text-green-700">High</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">Profile Ranking</span>
+                      <Badge className="bg-blue-100 text-blue-700">Top 15%</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">Response Rate</span>
+                      <Badge className="bg-purple-100 text-purple-700">85%</Badge>
+                    </div>
+                    
+                    <div className="bg-white p-3 rounded-lg border border-blue-100 mt-4">
+                      <div className="flex items-start space-x-2">
+                        <TrendingUp className="w-4 h-4 text-blue-600 mt-0.5" />
+                        <div>
+                          <p className="text-xs font-medium text-blue-700">Pro Tip</p>
+                          <p className="text-xs text-blue-600">Healthcare professionals with complete profiles get 3x more interviews</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
