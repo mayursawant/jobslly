@@ -776,12 +776,43 @@ const AdminPanel = () => {
                 <Button 
                   onClick={async () => {
                     try {
-                      await axios.post(`${API}/admin/blog`, newBlog);
+                      // Validation
+                      if (!newBlog.title.trim()) {
+                        toast.error('Article title is required');
+                        return;
+                      }
+                      if (!newBlog.content.trim()) {
+                        toast.error('Article content is required');
+                        return;
+                      }
+
+                      // Create FormData for file upload
+                      const formData = new FormData();
+                      formData.append('title', newBlog.title);
+                      formData.append('excerpt', newBlog.excerpt);
+                      formData.append('content', newBlog.content);
+                      formData.append('category', newBlog.category);
+                      formData.append('is_published', newBlog.is_published);
+                      formData.append('is_featured', newBlog.is_featured);
+                      formData.append('seo_title', newBlog.seo_title);
+                      formData.append('seo_description', newBlog.seo_description);
+                      
+                      // Add image if selected
+                      if (newBlog.featured_image) {
+                        formData.append('featured_image', newBlog.featured_image);
+                      }
+
+                      await axios.post(`${API}/admin/blog`, formData, {
+                        headers: {
+                          'Content-Type': 'multipart/form-data'
+                        }
+                      });
+                      
                       toast.success(newBlog.is_published ? 'Article published successfully!' : 'Article saved as draft!');
-                      setNewBlog({title: '', excerpt: '', content: '', category: 'healthcare', tags: [], is_published: false, is_featured: false, seo_title: '', seo_description: '', seo_keywords: []});
+                      setNewBlog({title: '', excerpt: '', content: '', category: 'healthcare', tags: [], is_published: false, is_featured: false, featured_image: null, seo_title: '', seo_description: '', seo_keywords: []});
                       fetchAdminData();
                     } catch (error) {
-                      toast.error('Failed to create article');
+                      toast.error('Failed to create article: ' + (error.response?.data?.message || error.message));
                     }
                   }}
                   className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3"
