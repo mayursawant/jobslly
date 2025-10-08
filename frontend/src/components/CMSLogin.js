@@ -146,8 +146,8 @@ const CMSLogin = () => {
                 Demo CMS Access:
               </p>
               <div className="text-xs text-red-300 space-y-1 font-mono">
-                <p><strong>Email:</strong> admin@healthcare.com</p>
-                <p><strong>Password:</strong> admin123</p>
+                <p><strong>Email:</strong> admin@gmail.com</p>
+                <p><strong>Password:</strong> password</p>
               </div>
             </div>
 
