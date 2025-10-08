@@ -228,17 +228,6 @@ const JobListing = () => {
                           View Details
                         </Button>
                       </Link>
-                      
-                      {isAuthenticated && user?.role === 'job_seeker' && (
-                        <Button 
-                          variant="outline" 
-                          className="w-full md:w-32 border-gray-300 text-gray-700 hover:bg-gray-50"
-                          title="Save Job"
-                          data-testid={`save-job-${job.id}`}
-                        >
-                          Save Job
-                        </Button>
-                      )}
                     </div>
                   </div>
                 </CardContent>
