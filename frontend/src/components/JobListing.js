@@ -166,7 +166,7 @@ const JobListing = () => {
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">No jobs found</h3>
             <p className="text-gray-600 mb-6">Try adjusting your search criteria or filters</p>
-            <Button onClick={() => {setSearchTerm(''); setJobType('all');}} variant="outline">
+            <Button onClick={() => {setSearchTerm(''); setJobType('all'); setCategory('all');}} variant="outline">
               Clear Filters
             </Button>
           </div>
