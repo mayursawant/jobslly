@@ -19,6 +19,8 @@ const AdminPanel = () => {
   const [pendingJobs, setPendingJobs] = useState([]);
   const [blogPosts, setBlogPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
   
   // Job Creation State
   const [newJob, setNewJob] = useState({
