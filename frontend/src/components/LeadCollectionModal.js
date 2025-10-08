@@ -112,28 +112,29 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
       // Submit lead data to backend
       const response = await axios.post(`${API}/jobs/${jobId}/apply-lead`, leadData);
       
-      toast.success('Thank you for your interest! Please complete your registration to apply.');
+      toast.success('Thank you for your interest!');
       
       // Close modal
       onClose();
       
-      // Check if it's an external job
-      if (response.data.is_external && response.data.redirect_url) {
-        // Redirect to external application after a brief delay
-        setTimeout(() => {
-          window.open(response.data.redirect_url, '_blank');
-        }, 2000);
-{/* Redirect toast removed as per user request */}
+      // Call success callback which will handle the flow based on job type
+      if (onSuccess) {
+        onSuccess();
       } else {
-        // Redirect to registration with job context
-        navigate('/register', { 
-          state: { 
-            jobId, 
-            jobTitle, 
-            companyName,
-            leadData: leadData.email 
-          } 
-        });
+        // Fallback behavior if no callback provided
+        if (jobExternalUrl) {
+          setTimeout(() => {
+            window.open(jobExternalUrl, '_blank');
+          }, 1000);
+        } else {
+          navigate('/register', { 
+            state: { 
+              jobId, 
+              jobTitle,
+              leadData: leadData.email 
+            } 
+          });
+        }
       }
       
     } catch (error) {
