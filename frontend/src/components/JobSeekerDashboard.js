@@ -36,7 +36,6 @@ const JobSeekerDashboard = () => {
   const [dashboardData, setDashboardData] = useState({
     applications_count: 0,
     leads_count: 0,
-    saved_jobs_count: 0,
     profile_completion: 0,
     recent_applications: [],
     recent_leads: []
