@@ -155,11 +155,7 @@ const Navbar = () => {
                 <Link to="/dashboard" className="block nav-link" onClick={() => setIsMobileMenuOpen(false)}>
                   Dashboard
                 </Link>
-                {isAdmin && (
-                  <Link to="/admin" className="block nav-link" onClick={() => setIsMobileMenuOpen(false)}>
-                    CMS Admin
-                  </Link>
-                )}
+                {/* Mobile admin link removed */}
                 <Button 
                   variant="ghost" 
                   onClick={handleLogout} 
