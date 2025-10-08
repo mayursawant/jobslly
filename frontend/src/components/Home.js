@@ -315,10 +315,6 @@ const Home = () => {
                   <div className="font-semibold text-emerald-700">10+ Years</div>
                   <div className="text-sm text-gray-600">Teaching & Research</div>
                 </div>
-                <div className="bg-cyan-50 px-6 py-3 rounded-xl border border-cyan-200">
-                  <div className="font-semibold text-cyan-700">Clinical Pharmacist</div>
-                  <div className="text-sm text-gray-600">Healthcare Expert</div>
-                </div>
               </div>
             </div>
           </div>
