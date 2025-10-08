@@ -147,17 +147,7 @@ const Footer = () => {
                 <Mail className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                 <span className="text-gray-300">contact@academically.com</span>
               </div>
-              <div className="flex items-center space-x-3 text-sm">
-                <Globe className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <a 
-                  href="https://academicallyglobal.com" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-gray-300 hover:text-emerald-400 transition-colors"
-                >
-                  www.academicallyglobal.com
-                </a>
-              </div>
+              {/* Website link removed as per user request */}
             </div>
             
             {/* Social Media Links */}
