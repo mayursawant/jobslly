@@ -516,7 +516,7 @@ const JobSeekerDashboard = () => {
 
         {/* Main Dashboard Content */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
             <TabsTrigger value="profile" data-testid="tab-profile">Edit Profile</TabsTrigger>
             {/* Applications and Recommendations tabs removed as per user request */}
