@@ -327,22 +327,16 @@ const AdminPanel = () => {
                 🔄 Retry ({retryCount}/3)
               </button>
             ) : (
-              <button
-                onClick={() => window.location.reload()}
-                className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded-lg transition-colors"
-              >
-                🔄 Refresh Page
-              </button>
+              <div className="space-y-2">
+                <p className="text-sm text-gray-600">Maximum retries reached</p>
+                <button
+                  onClick={retryFetchData}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-6 rounded-lg transition-colors"
+                >
+                  🔄 Try Again
+                </button>
+              </div>
             )}
-            
-            <div>
-              <button
-                onClick={() => window.location.href = '/cms-login'}
-                className="text-emerald-600 hover:text-emerald-700 underline"
-              >
-                Back to Login
-              </button>
-            </div>
           </div>
         </div>
       </div>
