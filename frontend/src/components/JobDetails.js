@@ -171,13 +171,17 @@ const JobDetails = () => {
    * Handle lead collection success for non-logged-in users
    */
   const handleLeadCollectionSuccess = () => {
+    console.log('Lead collection success callback triggered');
+    console.log('Job external URL:', job?.external_url);
     setShowLeadModal(false);
     
-    if (job.external_url) {
+    if (job?.external_url) {
       // External job - redirect to external URL
+      console.log('Redirecting to external URL:', job.external_url);
       window.open(job.external_url, '_blank');
     } else {
       // Internal job - show login prompt
+      console.log('Showing login prompt modal for internal job');
       setShowLoginPromptModal(true);
     }
   };
