@@ -79,7 +79,7 @@ const Footer = () => {
     },
     { 
       name: 'X', 
-      icon: Twitter, 
+      icon: XIcon, 
       url: 'https://x.com/AcademicallyAus',
       color: 'hover:text-gray-400'
     },
