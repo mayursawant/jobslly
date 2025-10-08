@@ -25,6 +25,25 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { 
+  User, 
+  Briefcase, 
+  Target, 
+  TrendingUp, 
+  Calendar, 
+  MapPin, 
+  Phone, 
+  Mail, 
+  Star,
+  Award,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  ArrowRight,
+  Eye,
+  Users,
+  Building
+} from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'sonner';
 
