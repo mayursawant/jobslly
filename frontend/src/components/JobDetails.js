@@ -36,7 +36,10 @@ const JobDetails = () => {
 
   useEffect(() => {
     fetchJobDetails();
-  }, [jobId]);
+    if (isAuthenticated) {
+      fetchUserProfile();
+    }
+  }, [jobId, isAuthenticated]);
 
   const fetchJobDetails = async () => {
     try {
