@@ -438,6 +438,13 @@ const JobSeekerDashboard = () => {
       // Refresh dashboard data to update completion percentage
       fetchDashboardData();
       
+      // Update profile completion in real-time
+      const newCompletion = calculateProfileCompletion();
+      setDashboardData(prev => ({
+        ...prev,
+        profile_completion: newCompletion
+      }));
+      
     } catch (error) {
       console.error('Failed to update profile:', error);
       const errorMessage = error.response?.data?.detail || 'Failed to update profile. Please try again.';
