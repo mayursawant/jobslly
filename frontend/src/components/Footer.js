@@ -172,25 +172,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4 flex items-center space-x-2">
-              <Users className="w-5 h-5 text-emerald-400" />
-              <span>Quick Links</span>
-            </h4>
-            <ul className="space-y-2">
-              {quickLinks.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    to={link.path}
-                    className="text-gray-300 hover:text-emerald-400 transition-colors text-sm block py-1"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Quick Links section removed */}
 
           {/* Job Categories */}
           <div>
