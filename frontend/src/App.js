@@ -228,6 +228,7 @@ function App() {
               <Route path="/sitemap" element={<Sitemap />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/cookies" element={<CookiePolicy />} />
               <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
               <Route path="/job-seeker-login" element={!user ? <JobSeekerLogin /> : <Navigate to="/dashboard" />} />
               <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
