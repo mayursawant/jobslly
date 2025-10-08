@@ -25,20 +25,12 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 group">
-            <div className="relative">
-              <img 
-                src="/jobslly-logo.png" 
-                alt="Jobslly Logo" 
-                className="w-12 h-12 object-contain group-hover:scale-105 transition-transform"
-              />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">
-                Jobslly
-              </h1>
-              <p className="text-xs text-gray-500 font-medium">Healthcare Jobs & Career Opportunities</p>
-            </div>
+          <Link to="/" className="group">
+            <img 
+              src="/jobslly-logo.png" 
+              alt="Jobslly Logo" 
+              className="h-16 w-auto object-contain group-hover:scale-105 transition-transform"
+            />
           </Link>
 
           {/* Desktop Navigation */}
