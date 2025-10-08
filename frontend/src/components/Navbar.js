@@ -128,8 +128,8 @@ const Navbar = () => {
                   </Button>
                 </Link>
                 <Link to="/register">
-                  <Button className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="register-btn">
-                    Join the Future
+                  <Button className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105" data-testid="register-btn">
+                    Signup
                   </Button>
                 </Link>
               </div>
