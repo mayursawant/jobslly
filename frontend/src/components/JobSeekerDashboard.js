@@ -585,8 +585,13 @@ const JobSeekerDashboard = () => {
                     <Input
                       id="experience"
                       type="number"
-                      value={profile.experience_years || ''}
-                      onChange={(e) => setProfile(prev => ({...prev, experience_years: parseInt(e.target.value) || 0}))}
+                      min="0"
+                      max="50"
+                      value={profile.experience_years || 0}
+                      onChange={(e) => {
+                        const value = Math.max(0, parseInt(e.target.value) || 0);
+                        setProfile(prev => ({...prev, experience_years: value}));
+                      }}
                       placeholder="5"
                     />
                   </div>
