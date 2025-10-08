@@ -107,8 +107,12 @@ const Footer = () => {
           {/* Company Information */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-lg flex items-center justify-center">
-                <Heart className="w-6 h-6 text-white" />
+              <div className="w-10 h-10">
+                <img 
+                  src="/jobslly-logo.png" 
+                  alt="Jobslly Logo" 
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
                 <h3 className="text-xl font-bold">Jobslly</h3>
