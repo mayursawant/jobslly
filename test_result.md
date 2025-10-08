@@ -659,9 +659,10 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Comprehensive Job Seeker Tracking System testing completed"
+    - "Comprehensive Job Application Flow System with Different User States"
   stuck_tasks: 
     - "Chatbot auto-open functionality"
+    - "Comprehensive Job Application Flow System with Different User States"
   test_all: false
   test_priority: "high_first"
 
