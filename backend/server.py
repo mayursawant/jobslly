@@ -366,10 +366,51 @@ async def register(user_data: UserCreate):
 
 @api_router.post("/auth/login", response_model=Token)
 async def login(user_data: UserLogin):
+    # Check if user exists and password is correct
     user = await db.users.find_one({"email": user_data.email})
     if not user or not verify_password(user_data.password, user['hashed_password']):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
+    # Create or update job seeker profile for registered users
+    if user.get("role") in ["job_seeker", "employer"]:  # Don't create profile for admin
+        try:
+            # Get user profile for additional data
+            user_profile = await db.user_profiles.find_one({"user_id": user["id"]})
+            
+            # Create/update job seeker profile
+            profile_data = JobSeekerProfileCreate(
+                email=user["email"],
+                name=user.get("full_name"),
+                phone=user_profile.get("phone") if user_profile else None,
+                country_code=user_profile.get("country_code") if user_profile else None,
+                current_position=user_profile.get("specialization") if user_profile else None,
+                experience_years=str(user_profile.get("experience_years")) if user_profile and user_profile.get("experience_years") else None,
+                location=user_profile.get("address") if user_profile else None,
+                specialization=user_profile.get("specialization") if user_profile else None,
+                source="login"
+            )
+            
+            # Create or update profile
+            job_seeker_profile = await create_or_update_job_seeker_profile(profile_data)
+            
+            # Mark as registered user
+            await db.job_seekers.update_one(
+                {"email": user["email"]},
+                {
+                    "$set": {
+                        "user_id": user["id"],
+                        "is_registered": True,
+                        "status": "registered",
+                        "updated_at": datetime.now(timezone.utc).isoformat()
+                    }
+                }
+            )
+            
+        except Exception as e:
+            # Log error but don't fail login
+            print(f"Error creating job seeker profile on login: {e}")
+    
+    # Create access token
     access_token = create_access_token(
         data={"sub": user['email']},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
