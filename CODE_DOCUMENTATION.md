@@ -1,18 +1,19 @@
 # 🚀 Jobslly - Code Documentation
 
 ## Table of Contents
-1. [Architecture Overview](#architecture-overview)
-2. [Backend Documentation](#backend-documentation)
-3. [Frontend Documentation](#frontend-documentation)
-4. [Database Schema](#database-schema)
-5. [API Reference](#api-reference)
-6. [Component Architecture](#component-architecture)
-7. [State Management](#state-management)
-8. [Security Implementation](#security-implementation)
-9. [AI Integration](#ai-integration)
-10. [Testing Framework](#testing-framework)
-11. [Deployment Guide](#deployment-guide)
-12. [Performance Optimization](#performance-optimization)
+1. [Recent Changes & Updates](#recent-changes--updates)
+2. [Architecture Overview](#architecture-overview)
+3. [Backend Documentation](#backend-documentation)
+4. [Frontend Documentation](#frontend-documentation)
+5. [Database Schema](#database-schema)
+6. [API Reference](#api-reference)
+7. [Component Architecture](#component-architecture)
+8. [State Management](#state-management)
+9. [Security Implementation](#security-implementation)
+10. [AI Integration](#ai-integration)
+11. [Testing Framework](#testing-framework)
+12. [Deployment Guide](#deployment-guide)
+13. [Performance Optimization](#performance-optimization)
 
 ---
 
