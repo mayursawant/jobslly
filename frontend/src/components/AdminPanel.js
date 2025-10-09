@@ -223,6 +223,97 @@ const AdminPanel = () => {
   };
 
   /**
+   * Fetch all jobs for management
+   */
+  const fetchAllJobs = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const response = await axios.get(`${API}/admin/jobs/all`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      setAllJobs(response.data || []);
+    } catch (error) {
+      console.error('Failed to fetch all jobs:', error);
+      toast.error('Failed to load jobs');
+    }
+  };
+
+  /**
+   * Handle job editing
+   */
+  const handleEditJob = async (job) => {
+    setEditingJob({
+      ...job,
+      requirements: job.requirements || [],
+      benefits: job.benefits || []
+    });
+    setIsEditModalOpen(true);
+  };
+
+  /**
+   * Save edited job
+   */
+  const saveEditedJob = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      await axios.put(`${API}/admin/jobs/${editingJob.id}`, editingJob, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      toast.success('Job updated successfully!');
+      setIsEditModalOpen(false);
+      setEditingJob(null);
+      fetchAllJobs(); // Refresh the jobs list
+    } catch (error) {
+      console.error('Failed to update job:', error);
+      const errorMessage = error.response?.data?.detail || 'Failed to update job';
+      toast.error(errorMessage);
+    }
+  };
+
+  /**
+   * Soft delete a job
+   */
+  const deleteJob = async (jobId) => {
+    if (!window.confirm('Are you sure you want to delete this job? It will be soft-deleted and can be restored later.')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      await axios.delete(`${API}/admin/jobs/${jobId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      toast.success('Job deleted successfully!');
+      fetchAllJobs(); // Refresh the jobs list
+    } catch (error) {
+      console.error('Failed to delete job:', error);
+      const errorMessage = error.response?.data?.detail || 'Failed to delete job';
+      toast.error(errorMessage);
+    }
+  };
+
+  /**
    * Handle blog editing
    */
   const handleEditBlog = (blog) => {
