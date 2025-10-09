@@ -873,6 +873,109 @@ async def delete_blog_post(post_id: str, current_user: User = Depends(get_curren
     
     return {"message": "Blog post deleted successfully"}
 
+# Admin Job Management Routes
+@api_router.get("/admin/jobs/all", response_model=List[Job])
+async def get_all_jobs_admin(
+    include_deleted: bool = False,
+    current_user: User = Depends(get_current_user)
+):
+    """Get all jobs for admin management (including soft-deleted if requested)"""
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    query = {}
+    if not include_deleted:
+        query["is_deleted"] = {"$ne": True}
+    
+    jobs = await db.jobs.find(query).sort("created_at", -1).to_list(length=None)
+    
+    for job in jobs:
+        if isinstance(job.get('created_at'), str):
+            job['created_at'] = datetime.fromisoformat(job['created_at'])
+        if job.get('expires_at') and isinstance(job.get('expires_at'), str):
+            job['expires_at'] = datetime.fromisoformat(job['expires_at'])
+    
+    return [Job(**job) for job in jobs]
+
+@api_router.get("/admin/jobs/{job_id}", response_model=Job)
+async def get_job_by_id_admin(job_id: str, current_user: User = Depends(get_current_user)):
+    """Get a specific job by ID for editing"""
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    job = await db.jobs.find_one({"id": job_id})
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    if isinstance(job.get('created_at'), str):
+        job['created_at'] = datetime.fromisoformat(job['created_at'])
+    if job.get('expires_at') and isinstance(job.get('expires_at'), str):
+        job['expires_at'] = datetime.fromisoformat(job['expires_at'])
+    
+    return Job(**job)
+
+@api_router.put("/admin/jobs/{job_id}", response_model=Job)
+async def update_job_admin(
+    job_id: str,
+    job_data: JobCreate,
+    current_user: User = Depends(get_current_user)
+):
+    """Update a job listing"""
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    existing_job = await db.jobs.find_one({"id": job_id})
+    if not existing_job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    update_data = job_data.dict(exclude_unset=True)
+    update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+    
+    await db.jobs.update_one(
+        {"id": job_id},
+        {"$set": update_data}
+    )
+    
+    updated_job = await db.jobs.find_one({"id": job_id})
+    if isinstance(updated_job.get('created_at'), str):
+        updated_job['created_at'] = datetime.fromisoformat(updated_job['created_at'])
+    if updated_job.get('expires_at') and isinstance(updated_job.get('expires_at'), str):
+        updated_job['expires_at'] = datetime.fromisoformat(updated_job['expires_at'])
+    
+    return Job(**updated_job)
+
+@api_router.delete("/admin/jobs/{job_id}")
+async def soft_delete_job(job_id: str, current_user: User = Depends(get_current_user)):
+    """Soft delete a job (mark as deleted, don't remove from database)"""
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.jobs.update_one(
+        {"id": job_id},
+        {"$set": {"is_deleted": True, "deleted_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    return {"message": "Job deleted successfully"}
+
+@api_router.post("/admin/jobs/{job_id}/restore")
+async def restore_job(job_id: str, current_user: User = Depends(get_current_user)):
+    """Restore a soft-deleted job"""
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.jobs.update_one(
+        {"id": job_id},
+        {"$set": {"is_deleted": False}, "$unset": {"deleted_at": ""}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    return {"message": "Job restored successfully"}
+
 # Public Blog Routes
 @api_router.get("/blog", response_model=List[BlogPost])
 async def get_blog_posts(featured_only: bool = False, limit: int = 10, skip: int = 0):
