@@ -358,9 +358,10 @@ const AdminPanel = () => {
         </Alert>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-6 lg:w-fit">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-7 lg:w-fit">
             <TabsTrigger value="overview" data-testid="admin-tab-overview">Overview</TabsTrigger>
-            <TabsTrigger value="jobs" data-testid="admin-tab-jobs">Jobs</TabsTrigger>
+            <TabsTrigger value="jobs" data-testid="admin-tab-jobs">Pending Jobs</TabsTrigger>
+            <TabsTrigger value="manage-jobs" data-testid="admin-tab-manage-jobs">Manage Jobs</TabsTrigger>
             <TabsTrigger value="create-job" data-testid="admin-tab-create-job">Create Job</TabsTrigger>
             <TabsTrigger value="blog" data-testid="admin-tab-blog">Blog</TabsTrigger>
             <TabsTrigger value="create-blog" data-testid="admin-tab-create-blog">Create Article</TabsTrigger>
