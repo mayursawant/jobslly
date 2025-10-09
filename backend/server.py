@@ -841,8 +841,20 @@ async def update_blog_post(
     # Handle featured image upload
     featured_image_url = existing_post.get('featured_image')  # Keep existing image
     if featured_image and featured_image.filename:
-        # Update with new image
-        featured_image_url = f"/uploads/blog/{slug}-{featured_image.filename}"
+        try:
+            # Read the image file
+            contents = await featured_image.read()
+            # Store as base64 encoded string in database
+            import base64
+            encoded_image = base64.b64encode(contents).decode('utf-8')
+            # Get file extension
+            file_ext = featured_image.filename.split('.')[-1]
+            # Create data URL
+            featured_image_url = f"data:image/{file_ext};base64,{encoded_image}"
+        except Exception as e:
+            print(f"Error processing image: {e}")
+            # Keep existing image if upload fails
+            featured_image_url = existing_post.get('featured_image')
     
     update_data = {
         "title": title,
