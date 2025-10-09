@@ -1395,13 +1395,24 @@ async def get_job_seeker_dashboard(current_user: User = Depends(get_current_user
     profile = await db.user_profiles.find_one({"user_id": current_user.id})
     profile_completion = profile.get('profile_completion', 0) if profile else 0
     
+    # Convert ObjectId to string for JSON serialization
+    def clean_document(doc):
+        if doc and '_id' in doc:
+            doc['_id'] = str(doc['_id'])
+        return doc
+    
+    # Clean applications and leads for JSON serialization
+    clean_applications = [clean_document(app) for app in applications] if applications else []
+    clean_leads = [clean_document(lead) for lead in leads] if leads else []
+    clean_saved_jobs = [clean_document(job) for job in saved_jobs] if saved_jobs else []
+    
     return {
         "applications_count": len(applications),
         "leads_count": len(leads),
         "saved_jobs_count": len(saved_jobs),
         "profile_completion": profile_completion,
-        "recent_applications": applications[-5:] if applications else [],
-        "recent_leads": leads[-5:] if leads else []
+        "recent_applications": clean_applications[-5:] if clean_applications else [],
+        "recent_leads": clean_leads[-5:] if clean_leads else []
     }
 
 # Employer Dashboard Routes
