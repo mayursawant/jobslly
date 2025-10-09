@@ -1978,7 +1978,209 @@ describe('AIJobEnhancementModal', () => {
 
 ## Deployment Guide
 
-### 🐳 Docker Configuration
+### 🚀 Emergent Platform Deployment (Current Setup)
+
+The Jobslly platform is currently deployed on the Emergent platform using **Supervisor** for process management, not Docker. This section documents the actual deployment setup.
+
+#### Environment Architecture
+```
+/app/
+├── backend/
+│   ├── server.py                 # FastAPI application
+│   ├── requirements.txt          # Python dependencies
+│   └── .env                      # Backend environment variables
+├── frontend/
+│   ├── src/                      # React source code
+│   ├── package.json              # Node dependencies
+│   └── .env                      # Frontend environment variables
+└── supervisord.conf              # Supervisor configuration
+```
+
+#### Supervisor Configuration
+```ini
+# /etc/supervisor/conf.d/app.conf
+
+[program:backend]
+command=uvicorn server:app --host 0.0.0.0 --port 8001 --reload
+directory=/app/backend
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/supervisor/backend.err.log
+stdout_logfile=/var/log/supervisor/backend.out.log
+environment=PYTHONUNBUFFERED=1
+
+[program:frontend]
+command=yarn start
+directory=/app/frontend
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/supervisor/frontend.err.log
+stdout_logfile=/var/log/supervisor/frontend.out.log
+environment=PORT=3000,BROWSER=none
+```
+
+#### Deployment Commands
+```bash
+# Check service status
+sudo supervisorctl status
+
+# Restart services (after code changes)
+sudo supervisorctl restart backend    # Backend only
+sudo supervisorctl restart frontend   # Frontend only
+sudo supervisorctl restart all        # All services
+
+# Start/stop services
+sudo supervisorctl stop backend
+sudo supervisorctl start backend
+
+# View logs in real-time
+sudo supervisorctl tail -f backend stderr
+sudo supervisorctl tail -f frontend stdout
+
+# Check log files
+tail -n 100 /var/log/supervisor/backend.err.log
+tail -n 100 /var/log/supervisor/backend.out.log
+```
+
+#### Environment Variables (Production)
+```bash
+# Backend (/app/backend/.env)
+MONGO_URL="mongodb://localhost:27017"
+DB_NAME="test_database"
+JWT_SECRET="healthcare_jobs_secret_key_change_in_production"
+EMERGENT_LLM_KEY="sk-emergent-<key>"
+CORS_ORIGINS="*"
+
+# Frontend (/app/frontend/.env)
+REACT_APP_BACKEND_URL="https://jobslly-health-1.preview.emergentagent.com"
+WDS_SOCKET_PORT=443
+```
+
+#### Kubernetes Ingress Rules
+```yaml
+# The Emergent platform uses Kubernetes ingress for routing:
+# 
+# /api/*  → Backend service (port 8001)
+# /*      → Frontend service (port 3000)
+#
+# CRITICAL: All backend API endpoints MUST be prefixed with /api
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jobslly-ingress
+spec:
+  rules:
+  - host: jobslly-health-1.preview.emergentagent.com
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 8001
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 3000
+```
+
+#### Hot Reload Configuration
+```bash
+# Backend: FastAPI has --reload flag enabled
+# - Auto-detects Python file changes
+# - Restarts server automatically
+# - Good for development, should be disabled in production
+
+# Frontend: React dev server with hot module replacement
+# - Auto-detects React component changes
+# - Updates browser without full reload
+# - Only for development (production uses built files)
+
+# When to manually restart:
+# 1. After installing new packages (pip install / yarn add)
+# 2. After changing .env files
+# 3. After supervisor configuration changes
+# 4. When hot reload fails to detect changes
+```
+
+#### Deployment Workflow
+```bash
+# 1. Make code changes
+git pull origin main
+
+# 2. Install new dependencies (if any)
+cd /app/backend && pip install -r requirements.txt
+cd /app/frontend && yarn install
+
+# 3. Restart services
+sudo supervisorctl restart all
+
+# 4. Verify deployment
+curl https://jobslly-health-1.preview.emergentagent.com/api/health
+
+# 5. Check logs for errors
+sudo supervisorctl tail -f backend stderr
+sudo supervisorctl tail -f frontend stdout
+
+# 6. Test in browser
+# Visit: https://jobslly-health-1.preview.emergentagent.com
+```
+
+#### Health Checks
+```bash
+# Backend health endpoint
+curl https://jobslly-health-1.preview.emergentagent.com/api/health
+# Expected: {"status":"healthy","timestamp":"..."}
+
+# Frontend accessibility
+curl -I https://jobslly-health-1.preview.emergentagent.com
+# Expected: HTTP/2 200
+
+# MongoDB connectivity
+mongosh --eval "db.adminCommand('ping')"
+# Expected: { ok: 1 }
+
+# API documentation
+# Visit: https://jobslly-health-1.preview.emergentagent.com/docs
+```
+
+#### Troubleshooting Common Issues
+```bash
+# Issue: Backend won't start
+# Solution: Check MongoDB connection and Python dependencies
+sudo systemctl status mongod
+pip list | grep fastapi
+sudo supervisorctl tail -f backend stderr
+
+# Issue: Frontend shows blank page
+# Solution: Clear build cache and rebuild
+cd /app/frontend
+rm -rf node_modules/.cache
+yarn build
+sudo supervisorctl restart frontend
+
+# Issue: API calls returning 404
+# Solution: Verify /api prefix in all backend routes
+grep -r "GET\|POST\|PUT\|DELETE" /app/backend/server.py | grep -v "/api/"
+
+# Issue: Changes not reflecting
+# Solution: Hard restart services
+sudo supervisorctl stop all
+sudo supervisorctl start all
+# Clear browser cache (Ctrl+F5)
+```
+
+---
+
+### 🐳 Docker Configuration (Alternative Deployment)
+
+**Note:** The following Docker setup is for local development or alternative deployment environments. The current production deployment uses Supervisor.
 
 #### Backend Dockerfile
 ```dockerfile
