@@ -60,7 +60,8 @@ const JobDetails = () => {
    */
   const fetchUserProfile = async () => {
     try {
-      const token = localStorage.getItem('access_token');
+      // FIX: Use 'token' instead of 'access_token'
+      const token = localStorage.getItem('token');
       if (!token) return;
 
       const response = await axios.get(`${API}/profile`, {
@@ -68,7 +69,8 @@ const JobDetails = () => {
       });
       
       setUserProfile(response.data);
-      const completion = calculateProfileCompletion(response.data);
+      // Use profile_completion from backend if available, otherwise calculate
+      const completion = response.data.profile_completion || calculateProfileCompletion(response.data);
       setProfileCompletion(completion);
     } catch (error) {
       console.error('Failed to fetch profile:', error);
