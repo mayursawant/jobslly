@@ -770,15 +770,18 @@ agent_communication:
 
   - task: "Admin Jobs Management - Edit Job"
     implemented: true
-    working: "NA"
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Added GET /api/admin/jobs/{job_id} and PUT /api/admin/jobs/{job_id} endpoints. Admin can fetch specific job and update all fields (title, company, location, description, salary, job_type, category, requirements, benefits, external job settings)."
+        - working: true
+          agent: "testing"
+          comment: "ADMIN EDIT JOB API TESTING COMPLETE: ✅ GET /api/admin/jobs/{job_id} working correctly - retrieved job details successfully with all required fields (id, title, company, location, description). ✅ PUT /api/admin/jobs/{job_id} working correctly - job updated successfully with new title, description, salary range, requirements, and benefits. Changes persisted to database correctly."
 
   - task: "Admin Jobs Management - Soft Delete"
     implemented: true
