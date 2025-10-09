@@ -871,26 +871,86 @@ The platform includes comprehensive sample data for testing and demonstration:
 
 ## Technical Requirements & Dependencies
 
-### Infrastructure Requirements
-- **Hosting:** Kubernetes cluster with auto-scaling capabilities
-- **Database:** MongoDB Atlas with global distribution
-- **CDN:** CloudFront or similar for global content delivery
-- **SSL/TLS:** End-to-end encryption with automatic certificate renewal
-- **Monitoring:** Application performance monitoring and alerting
+### Infrastructure Requirements (Current Production Setup)
+- **Hosting:** Emergent Platform with Kubernetes orchestration
+- **Process Management:** Supervisor for backend (port 8001) and frontend (port 3000)
+- **Database:** MongoDB (local instance on port 27017)
+- **Domain:** jobslly-health-1.preview.emergentagent.com
+- **SSL/TLS:** Automatic certificate management via Kubernetes ingress
+- **Routing:** Ingress rules: `/api/*` → Backend, `/*` → Frontend
+- **Monitoring:** Supervisor logs at `/var/log/supervisor/`
+
+### Current Environment Configuration
+**Backend (.env):**
+```
+MONGO_URL="mongodb://localhost:27017"
+DB_NAME="test_database"
+JWT_SECRET="healthcare_jobs_secret_key_change_in_production"
+EMERGENT_LLM_KEY="sk-emergent-<key>"
+CORS_ORIGINS="*"
+```
+
+**Frontend (.env):**
+```
+REACT_APP_BACKEND_URL="https://jobslly-health-1.preview.emergentagent.com"
+WDS_SOCKET_PORT=443
+```
 
 ### Third-Party Integrations
-- **AI Services:** Emergent LLM API (OpenAI, Anthropic, Google)
-- **Email Services:** SendGrid or Amazon SES for transactional emails
-- **Analytics:** Google Analytics 4, Mixpanel for advanced analytics
-- **Payment Processing:** Stripe for premium features and job postings
-- **Social Authentication:** Google, LinkedIn OAuth integration
+- **AI Services:** Emergent LLM API (OpenAI, Anthropic, Google) - ✅ Integrated
+- **Email Services:** Future - SendGrid or Amazon SES for transactional emails
+- **Analytics:** Future - Google Analytics 4, Mixpanel for advanced analytics
+- **Payment Processing:** Future - Stripe for premium features and job postings
+- **Social Authentication:** Future - Google, LinkedIn OAuth integration
 
 ### Development & Deployment
-- **Version Control:** Git with branching strategy for releases
-- **CI/CD Pipeline:** Automated testing and deployment
-- **Environment Management:** Development, staging, production environments
-- **Backup Strategy:** Automated daily backups with 30-day retention
-- **Documentation:** Comprehensive API documentation and user guides
+- **Version Control:** Git with feature branching
+- **Development Environment:** Local development with hot reload (uvicorn --reload / yarn start)
+- **Production Deployment:** Supervisor-managed services on Emergent platform
+- **Service Management:** 
+  - Start: `sudo supervisorctl start all`
+  - Stop: `sudo supervisorctl stop all`
+  - Restart: `sudo supervisorctl restart all`
+  - Logs: `sudo supervisorctl tail -f backend stderr`
+- **Hot Reload:** Enabled for both backend (FastAPI) and frontend (React)
+- **Backup Strategy:** MongoDB backups (to be implemented)
+- **Documentation:** README.md, CODE_DOCUMENTATION.md, PRD.md, API docs at `/docs`
+
+### Deployment Workflow
+1. **Code Changes:** Make updates to backend or frontend code
+2. **Dependency Installation:** 
+   - Backend: `pip install -r requirements.txt`
+   - Frontend: `yarn install`
+3. **Service Restart (if needed):**
+   - New packages: `sudo supervisorctl restart all`
+   - Code changes: Hot reload handles automatically
+4. **Health Check:** `curl https://jobslly-health-1.preview.emergentagent.com/api/health`
+5. **Verification:** Test functionality in browser
+6. **Monitor:** Check supervisor logs for errors
+
+### Local Development Setup
+```bash
+# 1. Install dependencies
+cd /app/backend && pip install -r requirements.txt
+cd /app/frontend && yarn install
+
+# 2. Start services (choose one)
+# Option A: Supervisor (recommended)
+sudo supervisorctl start all
+
+# Option B: Manual start
+cd /app/backend && uvicorn server:app --reload &
+cd /app/frontend && yarn start &
+
+# 3. Access application
+# Frontend: http://localhost:3000 (dev) or https://jobslly-health-1... (prod)
+# Backend: http://localhost:8001 (dev) or /api endpoint (prod)
+# API Docs: http://localhost:8001/docs
+
+# 4. Test accounts
+# Admin: admin@gmail.com / password
+# Job Seeker: doctor@gmail.com / password
+```
 
 ---
 
