@@ -138,6 +138,7 @@ class Job(BaseModel):
     company: str
     location: str
     description: str
+    category: Optional[str] = None  # Job category: Doctors, Nurses, Pharmacists, etc.
     salary_min: Optional[int] = None
     salary_max: Optional[int] = None
     job_type: str = "full_time"  # full_time, part_time, contract
@@ -158,6 +159,7 @@ class JobCreate(BaseModel):
     company: str
     location: str
     description: str
+    category: Optional[str] = None  # Job category filter
     salary_min: Optional[int] = None
     salary_max: Optional[int] = None
     job_type: str = "full_time"
