@@ -854,13 +854,7 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Fix Job Seeker Dashboard token storage issue"
-    - "Fix Profile Update functionality"
-    - "Admin Jobs Management - Get All Jobs"
-    - "Admin Jobs Management - Edit Job"
-    - "Admin Jobs Management - Soft Delete"
-    - "Admin Panel - Manage Jobs Tab UI"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
