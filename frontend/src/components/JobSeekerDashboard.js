@@ -419,7 +419,8 @@ const JobSeekerDashboard = () => {
         final_specialization: profile.specialization === 'other' ? profile.custom_specialization : profile.specialization
       };
 
-      const token = localStorage.getItem('access_token');
+      // FIX: Use 'token' instead of 'access_token'
+      const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No authentication token found');
       }
