@@ -452,7 +452,7 @@ async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True):
 
 @api_router.get("/jobs/{job_id}", response_model=Job)
 async def get_job(job_id: str):
-    job = await db.jobs.find_one({"id": job_id})
+    job = await db.jobs.find_one({"id": job_id, "is_deleted": {"$ne": True}})
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     
