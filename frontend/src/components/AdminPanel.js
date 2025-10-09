@@ -80,6 +80,7 @@ const AdminPanel = () => {
 
   useEffect(() => {
     fetchAdminData();
+    fetchAllJobs();
   }, [retryCount]);
 
   /**
