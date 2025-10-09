@@ -347,38 +347,170 @@ const enhanceJobDescription = async (jobData) => {
 
 ## 🌐 Deployment & Infrastructure
 
-### Production Environment
+### Production Environment (Emergent Platform)
 ```yaml
 Platform URL: https://jobslly-health-1.preview.emergentagent.com
 Infrastructure: Kubernetes cluster with auto-scaling
-Database: MongoDB Atlas with global replication
-CDN: CloudFront for global content delivery
-SSL/TLS: Automatic certificate management
-Monitoring: Real-time performance tracking
+Container Runtime: Docker with supervisor process management
+Database: MongoDB (local instance)
+Backend Port: 8001 (internal, mapped externally)
+Frontend Port: 3000 (internal, mapped externally)
+SSL/TLS: Automatic certificate management via Kubernetes ingress
+Monitoring: Real-time supervisor logs and health checks
 ```
 
-### Environment Variables
-```bash
-# Production Backend Configuration
-MONGO_URL="mongodb+srv://cluster.mongodb.net/jobslly"
-JWT_SECRET="production-super-secret-key"
-EMERGENT_LLM_KEY="sk-emergent-production-key"
-CORS_ORIGINS="https://jobslly-health-1.preview.emergentagent.com"
+### Deployment on Emergent Platform
 
-# Production Frontend Configuration  
+#### Step 1: Environment Setup
+The Emergent platform pre-configures environment variables. **DO NOT modify these:**
+
+**Backend `.env` (pre-configured)**
+```bash
+MONGO_URL="mongodb://localhost:27017"
+DB_NAME="test_database"
+JWT_SECRET="healthcare_jobs_secret_key_change_in_production"
+EMERGENT_LLM_KEY="sk-emergent-<your-key>"
+CORS_ORIGINS="*"
+```
+
+**Frontend `.env` (pre-configured)**
+```bash
 REACT_APP_BACKEND_URL="https://jobslly-health-1.preview.emergentagent.com"
-REACT_APP_ENVIRONMENT="production"
+WDS_SOCKET_PORT=443
 ```
 
-### Deployment Process
+#### Step 2: Service Management with Supervisor
+All services are managed by supervisor in the Emergent platform:
+
 ```bash
-# Automated CI/CD Pipeline
+# Check service status
+sudo supervisorctl status
+# Output:
+# backend    RUNNING   pid 123, uptime 1:23:45
+# frontend   RUNNING   pid 456, uptime 1:23:45
+
+# Restart services after code changes
+sudo supervisorctl restart backend    # Restart backend only
+sudo supervisorctl restart frontend   # Restart frontend only
+sudo supervisorctl restart all        # Restart all services
+
+# Stop services
+sudo supervisorctl stop backend
+sudo supervisorctl stop all
+
+# Start services
+sudo supervisorctl start backend
+sudo supervisorctl start all
+
+# View live logs
+sudo supervisorctl tail -f backend stderr    # Backend error logs
+sudo supervisorctl tail -f backend stdout    # Backend output logs
+sudo supervisorctl tail -f frontend stdout   # Frontend logs
+
+# Check log files directly
+tail -n 100 /var/log/supervisor/backend.err.log
+tail -n 100 /var/log/supervisor/backend.out.log
+tail -n 100 /var/log/supervisor/frontend.out.log
+```
+
+#### Step 3: Hot Reload Behavior
+- **Backend**: FastAPI has hot reload enabled - changes are auto-detected
+- **Frontend**: React has hot reload enabled - changes are auto-detected
+- **When to restart:**
+  - After installing new Python packages (`pip install`)
+  - After installing new Node packages (`yarn add`)
+  - After modifying `.env` files
+  - After supervisor configuration changes
+
+#### Step 4: Health Checks
+```bash
+# Backend health check
+curl https://jobslly-health-1.preview.emergentagent.com/api/health
+
+# Expected response:
+# {"status": "healthy", "timestamp": "2025-10-05T10:30:00Z"}
+
+# Check backend API documentation
+# Visit: https://jobslly-health-1.preview.emergentagent.com/docs
+```
+
+#### Step 5: Troubleshooting Deployment
+
+**Service not starting:**
+```bash
+# Check supervisor logs
+sudo supervisorctl tail -f backend stderr
+
+# Common issues:
+# - Missing dependencies: pip install -r requirements.txt
+# - Port already in use: Check for conflicting processes
+# - MongoDB not running: sudo systemctl start mongod
+```
+
+**Changes not reflecting:**
+```bash
+# Clear browser cache for frontend changes
+# Hard refresh: Ctrl+F5 (Windows/Linux) or Cmd+Shift+R (macOS)
+
+# Restart services
+sudo supervisorctl restart all
+
+# Check if hot reload is working
+sudo supervisorctl tail -f backend stdout
+# Look for "Uvicorn running" and file change detection messages
+```
+
+**Database connection issues:**
+```bash
+# Check MongoDB status
+sudo systemctl status mongod
+
+# Test MongoDB connection
+mongosh --eval "db.adminCommand('ping')"
+
+# Check connection string in .env
+cat /app/backend/.env | grep MONGO_URL
+```
+
+### Kubernetes Ingress Routing
+
+The Emergent platform uses Kubernetes ingress with specific routing rules:
+
+```yaml
+# All requests to /api/* → Backend (port 8001)
+# All other requests → Frontend (port 3000)
+
+# CRITICAL: All backend API routes MUST start with /api
+# Example:
+# ✅ /api/jobs         → Backend
+# ✅ /api/auth/login   → Backend
+# ✅ /api/blog         → Backend
+# ❌ /jobs             → Frontend (404 error!)
+```
+
+### Production Deployment Checklist
+
+- [ ] Environment variables configured correctly
+- [ ] Dependencies installed (Python + Node)
+- [ ] MongoDB running and accessible
+- [ ] Services started via supervisor
+- [ ] Health check endpoint responding
+- [ ] Frontend accessible in browser
+- [ ] Backend API documentation accessible at `/docs`
+- [ ] Admin login working (admin@gmail.com / password)
+- [ ] Sample data loaded successfully
+- [ ] All API routes prefixed with `/api`
+
+### CI/CD Pipeline (Future Enhancement)
+```bash
+# Automated deployment workflow (not yet implemented)
 1. Code Push → GitHub Repository
-2. Automated Testing → Jest & Pytest  
-3. Docker Build → Container Images
-4. Kubernetes Deploy → Rolling Updates
-5. Health Checks → Service Validation
-6. DNS Update → Traffic Routing
+2. Automated Testing → Pytest (Backend) + Jest (Frontend)
+3. Build Verification → Linting and type checking
+4. Docker Build → Container images (if using Docker)
+5. Deploy → Supervisor service restart
+6. Health Checks → Verify services are running
+7. Smoke Tests → Basic functionality verification
 ```
 
 ---
