@@ -195,27 +195,48 @@ sudo supervisorctl tail -f frontend stdout
 ## 👥 User Roles & Test Accounts
 
 ### Test User Accounts
+
+**Important:** These credentials are for testing purposes only. Change them in production!
+
 ```yaml
-# Administrator Account
+# Administrator Account (CMS Access)
 Email: admin@gmail.com
 Password: password
-Role: Full platform management access
+Role: Full platform management, AI enhancement access, blog/job management
+Access: /admin route, /cms-login
 
-# Employer Account  
-Email: hr@gmail.com
-Password: password
-Role: Job posting and candidate management
+# Employer Account (Currently Disabled)
+Note: Employer-specific login has been removed
+Employers now use the main admin portal
 
 # Job Seeker Account
 Email: doctor@gmail.com  
 Password: password
-Role: Job search and application submission
+Role: Job search, application submission, profile management
+Access: /dashboard, /job-seeker-login
 ```
 
 ### Role-Based Access Control
-- **🔧 Administrators**: CMS access, user management, platform analytics
-- **🏢 Employers**: Job posting, candidate management, lead access
-- **👨‍⚕️ Job Seekers**: Job search, application submission, profile management
+- **🔧 Administrators**: 
+  - Access to complete CMS dashboard (`/admin`)
+  - Job management (create, approve, edit, delete)
+  - Blog management with image uploads
+  - AI job enhancement features
+  - User analytics and platform statistics
+  - SEO settings management
+
+- **👨‍⚕️ Job Seekers**: 
+  - Personalized dashboard (`/dashboard`)
+  - Profile management with completion tracking
+  - Job search and application
+  - View application history
+  - Update profile information (country code, specialization, experience)
+
+### Authentication Notes
+- **Employer login removed**: Simplified to admin-only job posting
+- **Token-based auth**: JWT tokens stored in localStorage
+- **Session management**: 24-hour token expiration
+- **Admin verification**: Backend checks user role for protected routes
 
 ---
 
