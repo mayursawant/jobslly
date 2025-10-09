@@ -84,6 +84,7 @@ class Job(BaseModel):
     benefits: List[str] = []
     employer_id: str
     is_approved: bool = False
+    is_deleted: bool = False  # Soft delete flag
     # Third-party job redirection features
     is_external: bool = False
     external_url: Optional[str] = None
