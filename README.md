@@ -42,9 +42,25 @@ Jobslly is a comprehensive healthcare career platform built by **Academically Gl
 
 ### 📊 Professional CMS & Analytics
 - **Complete Admin Dashboard**: Job management, user analytics, content creation
-- **SEO-Optimized Blogging**: Advanced content management with built-in SEO tools
+- **SEO-Optimized Blogging**: Advanced content management with built-in SEO tools (with image upload support)
 - **Dynamic Sitemap**: Automated SEO optimization and search engine submission
 - **Performance Metrics**: Real-time analytics for jobs, applications, and content
+- **Blog Image Management**: Upload and display images for blog posts via FormData
+
+### 👤 Enhanced Job Seeker Experience
+- **Smart Profile Completion**: Real-time profile completion percentage tracking
+- **International Phone Numbers**: Country code dropdown for global applicants
+- **Flexible Specialization**: Choose from predefined categories or add custom specialization
+- **Streamlined Dashboard**: Modern UI with focused profile management
+- **Application Flow**: Conditional prompts based on login status and profile completion
+
+### 🎨 Recent Platform Improvements
+- **Category Filters**: Box-style job category filters (Doctors, Pharmacists, Dentists, Physiotherapists, Nurses)
+- **Authentication Fix**: Resolved admin dashboard token issues for stable CMS access
+- **Profile Updates**: Real-time profile completion calculation with validation
+- **Removed Features**: Streamlined UI by removing employer login, saved jobs, share options, and statistics cards
+- **Legal Pages**: Added Privacy Policy, Terms of Service, and Cookie Policy
+- **Footer Redesign**: Updated with current contact info, social links (X/Twitter), and cleaner layout
 
 ---
 
