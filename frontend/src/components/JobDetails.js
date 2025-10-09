@@ -151,7 +151,8 @@ const JobDetails = () => {
     // Internal job - submit application
     setApplying(true);
     try {
-      const token = localStorage.getItem('access_token');
+      // FIX: Use 'token' instead of 'access_token'
+      const token = localStorage.getItem('token');
       await axios.post(`${API}/jobs/${jobId}/apply`, {
         cover_letter: coverLetter
       }, {
