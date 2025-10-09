@@ -785,15 +785,18 @@ agent_communication:
 
   - task: "Admin Jobs Management - Soft Delete"
     implemented: true
-    working: "NA"
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Added DELETE /api/admin/jobs/{job_id} endpoint for soft delete (sets is_deleted=true, adds deleted_at timestamp). Also added POST /api/admin/jobs/{job_id}/restore for restoring deleted jobs. Updated Job model with is_deleted field. Public job endpoints now exclude deleted jobs."
+        - working: true
+          agent: "testing"
+          comment: "ADMIN SOFT DELETE API TESTING COMPLETE: ✅ DELETE /api/admin/jobs/{job_id} working correctly - job soft deleted successfully. ✅ Soft delete verification - deleted job correctly excluded from public listings (404 response). ✅ POST /api/admin/jobs/{job_id}/restore working correctly - job restored successfully. ✅ Restore verification - restored job correctly available in public listings again. Soft delete functionality working perfectly."
 
   - task: "Admin Panel - Manage Jobs Tab UI"
     implemented: true
