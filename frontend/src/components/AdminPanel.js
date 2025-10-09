@@ -626,6 +626,236 @@ const AdminPanel = () => {
             </Card>
           </TabsContent>
 
+          {/* Manage Jobs Tab */}
+          <TabsContent value="manage-jobs" className="space-y-6">
+            <Card className="card" data-testid="manage-jobs-card">
+              <CardHeader>
+                <CardTitle className="text-lg text-gray-800">
+                  Manage All Jobs ({allJobs.length})
+                </CardTitle>
+                <p className="text-gray-600">View, edit, and manage all job listings in the system</p>
+              </CardHeader>
+              <CardContent>
+                {allJobs.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-600">No jobs found</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {allJobs.map((job) => (
+                      <div key={job.id} className="border rounded-lg p-4 bg-white hover:shadow-md transition-shadow" data-testid={`job-${job.id}`}>
+                        <div className="flex justify-between items-start mb-3">
+                          <div className="flex-1">
+                            <h4 className="text-lg font-semibold text-gray-800">{job.title}</h4>
+                            <p className="text-emerald-600 font-medium">{job.company}</p>
+                            <p className="text-gray-600">{job.location}</p>
+                            {job.category && (
+                              <Badge variant="outline" className="mt-1 bg-blue-50 text-blue-700 border-blue-200">
+                                {job.category}
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Badge variant="outline" className={job.is_approved ? "bg-green-50 text-green-700 border-green-200" : "bg-yellow-50 text-yellow-700 border-yellow-200"}>
+                              {job.is_approved ? 'Approved' : 'Pending'}
+                            </Badge>
+                            {job.is_external && (
+                              <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                                External
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="mb-4">
+                          <p className="text-gray-700 line-clamp-2">{job.description}</p>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <div className="text-sm text-gray-500">
+                            Posted {new Date(job.created_at).toLocaleDateString()}
+                            {job.salary_min && (
+                              <span className="ml-4">
+                                ${job.salary_min.toLocaleString()}
+                                {job.salary_max && ` - $${job.salary_max.toLocaleString()}`}
+                              </span>
+                            )}
+                          </div>
+                          
+                          <div className="flex space-x-2">
+                            <Button
+                              onClick={() => handleEditJob(job)}
+                              size="sm"
+                              variant="outline"
+                              className="text-blue-600 border-blue-300 hover:bg-blue-50"
+                              data-testid={`edit-job-${job.id}`}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              onClick={() => deleteJob(job.id)}
+                              size="sm"
+                              variant="outline"
+                              className="text-red-600 border-red-300 hover:bg-red-50"
+                              data-testid={`delete-job-${job.id}`}
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Edit Job Modal */}
+          {isEditModalOpen && editingJob && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setIsEditModalOpen(false)}>
+              <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6" onClick={(e) => e.stopPropagation()}>
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold text-gray-800">Edit Job</h2>
+                  <button onClick={() => setIsEditModalOpen(false)} className="text-gray-500 hover:text-gray-700">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Job Title *</label>
+                      <input
+                        type="text"
+                        value={editingJob.title}
+                        onChange={(e) => setEditingJob(prev => ({...prev, title: e.target.value}))}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Company *</label>
+                      <input
+                        type="text"
+                        value={editingJob.company}
+                        onChange={(e) => setEditingJob(prev => ({...prev, company: e.target.value}))}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Location *</label>
+                      <input
+                        type="text"
+                        value={editingJob.location}
+                        onChange={(e) => setEditingJob(prev => ({...prev, location: e.target.value}))}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                      <select
+                        value={editingJob.category || ''}
+                        onChange={(e) => setEditingJob(prev => ({...prev, category: e.target.value}))}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                      >
+                        <option value="">Select Category</option>
+                        {jobCategories.filter(cat => cat.value !== 'all').map(cat => (
+                          <option key={cat.value} value={cat.value}>{cat.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Job Type</label>
+                      <select
+                        value={editingJob.job_type}
+                        onChange={(e) => setEditingJob(prev => ({...prev, job_type: e.target.value}))}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                      >
+                        <option value="full_time">Full Time</option>
+                        <option value="part_time">Part Time</option>
+                        <option value="contract">Contract</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Salary</label>
+                      <input
+                        type="number"
+                        value={editingJob.salary_min || ''}
+                        onChange={(e) => setEditingJob(prev => ({...prev, salary_min: parseInt(e.target.value) || null}))}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                        placeholder="50000"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Maximum Salary</label>
+                      <input
+                        type="number"
+                        value={editingJob.salary_max || ''}
+                        onChange={(e) => setEditingJob(prev => ({...prev, salary_max: parseInt(e.target.value) || null}))}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                        placeholder="100000"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Job Description *</label>
+                    <textarea
+                      value={editingJob.description}
+                      onChange={(e) => setEditingJob(prev => ({...prev, description: e.target.value}))}
+                      rows={6}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                      placeholder="Detailed job description..."
+                      required
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-4">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        checked={editingJob.is_external}
+                        onChange={(e) => setEditingJob(prev => ({...prev, is_external: e.target.checked}))}
+                        className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500"
+                      />
+                      <span className="text-sm text-gray-700">External Job</span>
+                    </label>
+                    {editingJob.is_external && (
+                      <input
+                        type="url"
+                        value={editingJob.external_url || ''}
+                        onChange={(e) => setEditingJob(prev => ({...prev, external_url: e.target.value}))}
+                        className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                        placeholder="https://company.com/apply"
+                      />
+                    )}
+                  </div>
+
+                  <div className="flex justify-end space-x-3 mt-6 pt-6 border-t">
+                    <Button
+                      onClick={() => setIsEditModalOpen(false)}
+                      variant="outline"
+                      className="px-6"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={saveEditedJob}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white px-6"
+                    >
+                      Save Changes
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Create Job Tab */}
           <TabsContent value="create-job" className="space-y-6">
             <Card className="card" data-testid="admin-create-job">
