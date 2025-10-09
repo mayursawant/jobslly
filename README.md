@@ -89,6 +89,7 @@ Security: HTTPS, JWT tokens, CORS, input validation
 - **Python** 3.9 or higher  
 - **MongoDB** (local or Atlas)
 - **Git** for version control
+- **Yarn** package manager (recommended over npm)
 
 ### 1. Clone & Setup
 ```bash
@@ -100,32 +101,46 @@ cd jobslly
 cd backend
 pip install -r requirements.txt
 
-# Install frontend dependencies  
+# Install frontend dependencies (use yarn, not npm)
 cd ../frontend
-npm install
+yarn install
 ```
 
 ### 2. Environment Configuration
+
+#### Backend Environment (`backend/.env`)
 ```bash
-# Backend Environment (.env)
 MONGO_URL="mongodb://localhost:27017"
 DB_NAME="jobslly_database"
-JWT_SECRET="your-super-secret-key-here"
-EMERGENT_LLM_KEY="your-ai-key-here"
-CORS_ORIGINS="http://localhost:3000"
-
-# Frontend Environment (.env)
-REACT_APP_BACKEND_URL="http://localhost:8001"
-REACT_APP_ENVIRONMENT="development"
+JWT_SECRET="your-super-secret-key-change-in-production"
+EMERGENT_LLM_KEY="your-emergent-llm-key-here"
+CORS_ORIGINS="*"
 ```
+
+#### Frontend Environment (`frontend/.env`)
+```bash
+REACT_APP_BACKEND_URL="http://localhost:8001"
+WDS_SOCKET_PORT=443
+```
+
+**Important Notes:**
+- Never modify `REACT_APP_BACKEND_URL` or `MONGO_URL` in production - these are pre-configured
+- All backend API routes must be prefixed with `/api` for proper routing
+- Get your Emergent LLM Key from the Emergent platform dashboard
 
 ### 3. Database Initialization
 ```bash
-# The platform will auto-create collections on first run
-# Sample data is included for testing and demonstration
+# MongoDB will auto-create collections on first run
+# Start MongoDB service (if running locally)
+sudo systemctl start mongod  # Linux
+brew services start mongodb-community  # macOS
+
+# Sample data will be automatically populated on first run
 ```
 
 ### 4. Start Development Servers
+
+#### Option A: Local Development (Manual Start)
 ```bash
 # Terminal 1: Backend Server
 cd backend
@@ -133,13 +148,31 @@ uvicorn server:app --host 0.0.0.0 --port 8001 --reload
 
 # Terminal 2: Frontend Server
 cd frontend  
-npm start
+yarn start
+```
+
+#### Option B: Using Supervisor (Production-like)
+```bash
+# Check service status
+sudo supervisorctl status
+
+# Start all services
+sudo supervisorctl start all
+
+# Restart individual services
+sudo supervisorctl restart backend
+sudo supervisorctl restart frontend
+
+# View logs
+sudo supervisorctl tail -f backend stderr
+sudo supervisorctl tail -f frontend stdout
 ```
 
 ### 5. Access the Platform
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:8001
-- **API Documentation**: http://localhost:8001/docs
+- **API Documentation**: http://localhost:8001/docs (Interactive Swagger UI)
+- **Health Check**: http://localhost:8001/health
 
 ---
 
