@@ -8,6 +8,52 @@
 
 ---
 
+## Recent Updates & Changes (Version 2.0 - October 2025)
+
+### Feature Additions
+- ✅ **Job Category Filtering**: Box-style category filters for Doctors, Pharmacists, Dentists, Physiotherapists, Nurses
+- ✅ **Blog Image Upload**: Admin can upload images for blog posts using FormData/multipart
+- ✅ **Profile Completion Tracking**: Real-time percentage calculation with visual indicators
+- ✅ **International Phone Support**: Country code dropdown for global job seekers
+- ✅ **Custom Specialization**: "Other" option with text input for specialized fields
+- ✅ **Legal Compliance Pages**: Privacy Policy, Terms of Service, Cookie Policy
+- ✅ **Admin Dashboard Authentication Fix**: Resolved token handling issues for stable CMS access
+
+### Feature Modifications
+- 🔄 **Job Seeker Dashboard**: Complete redesign with modern UI, removed statistics cards and activity sections
+- 🔄 **Footer**: Updated with current contact information, X (Twitter) integration, removed quick links
+- 🔄 **Job Application Flow**: Conditional prompts based on login status and profile completion percentage
+- 🔄 **Admin Panel**: Enhanced blog management with edit/delete functionality
+
+### Features Removed
+- ❌ **Employer Login**: Streamlined to admin-only job posting workflow
+- ❌ **AI Chatbot**: Removed lead generation chatbot
+- ❌ **Save Job**: Simplified job seeker experience by removing save functionality
+- ❌ **Share Option**: Removed share buttons from job details pages
+- ❌ **Statistics Cards**: Removed from job seeker dashboard (applications sent, profile views, etc.)
+- ❌ **Recent Activity**: Removed activity timeline from dashboard
+- ❌ **Applications Tab**: Removed from job seeker dashboard
+- ❌ **Recommendations Tab**: Removed from job seeker dashboard
+- ❌ **Third-Party Redirect Toast**: Removed notification for external jobs
+
+### Bug Fixes
+- 🐛 Fixed: Admin dashboard "Failed to load data" error due to token mismatch
+- 🐛 Fixed: Admin blog posting/editing authentication issues
+- 🐛 Fixed: Profile updates not saving to database
+- 🐛 Fixed: Profile completion percentage not updating in real-time
+- 🐛 Fixed: Job category filter not applying correctly
+- 🐛 Fixed: Years of experience accepting negative values
+- 🐛 Fixed: CMS login displaying incorrect default credentials
+
+### Technical Improvements
+- 🔧 **Database Schema**: Added `category` field to Jobs collection
+- 🔧 **API Endpoints**: Enhanced profile update endpoint with real-time completion calculation
+- 🔧 **Authentication**: Corrected token storage and retrieval (`token` vs `access_token`)
+- 🔧 **Image Handling**: Implemented proper FormData handling for file uploads
+- 🔧 **Deployment**: Documented Supervisor-based deployment on Emergent platform
+
+---
+
 ## Executive Summary
 
 Jobslly is a comprehensive healthcare career platform that connects medical professionals worldwide with their dream opportunities. Built by Academically Global, the platform serves doctors, nurses, pharmacists, allied health professionals, and healthcare organizations seeking top talent.
