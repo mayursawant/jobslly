@@ -331,7 +331,8 @@ const JobSeekerDashboard = () => {
    */
   const fetchDashboardData = async () => {
     try {
-      const token = localStorage.getItem('access_token');
+      // FIX: Use 'token' instead of 'access_token' to match authentication storage
+      const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No authentication token found');
       }
