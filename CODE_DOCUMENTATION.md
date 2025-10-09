@@ -1209,21 +1209,46 @@ GET /api/blog?limit=10&category=careers&featured=true
 // Get Specific Blog Post
 GET /api/blog/{slug}
 
-// Create Blog Post (Admin only)
+// Create Blog Post with Image Upload (Admin only)
 POST /api/admin/blog
-Headers: { Authorization: "Bearer <admin_token>" }
-{
-  "title": "Healthcare Career Trends 2025",
-  "excerpt": "Explore emerging trends in healthcare careers...",
-  "content": "Full blog content in markdown format...",
-  "category": "careers",
-  "tags": ["healthcare", "careers", "trends"],
-  "is_published": true,
-  "is_featured": false,
-  "seo_title": "Healthcare Career Trends 2025 | Industry Insights",
-  "seo_description": "Discover the latest healthcare career trends...",
-  "seo_keywords": ["healthcare careers", "medical jobs", "career trends"]
+Headers: { 
+  Authorization: "Bearer <admin_token>",
+  Content-Type: "multipart/form-data"
 }
+Body: FormData {
+  title: "Healthcare Career Trends 2025",
+  excerpt: "Explore emerging trends in healthcare careers...",
+  content: "Full blog content in markdown format...",
+  category: "careers",
+  tags: "healthcare,careers,trends",  // Comma-separated string
+  is_published: "true",
+  is_featured: "false",
+  seo_title: "Healthcare Career Trends 2025 | Industry Insights",
+  seo_description: "Discover the latest healthcare career trends...",
+  seo_keywords: "healthcare careers,medical jobs,career trends",
+  image: <File>  // Optional: Image file (jpg, png, gif, webp)
+}
+
+// Update Blog Post with Image (Admin only)
+PUT /api/admin/blog/{blog_id}
+Headers: { 
+  Authorization: "Bearer <admin_token>",
+  Content-Type: "multipart/form-data"
+}
+Body: FormData {
+  // Same structure as create, all fields optional for updates
+}
+
+// Delete Blog Post (Admin only)
+DELETE /api/admin/blog/{blog_id}
+Headers: { Authorization: "Bearer <admin_token>" }
+
+// Image Upload Technical Details:
+// - Backend uses FastAPI's Form() and File() parameters
+// - Accepts: image/jpeg, image/png, image/gif, image/webp
+// - Max size: 10MB (configurable)
+// - Stored in database as base64 or URL reference
+// - Frontend sends via FormData for proper multipart encoding
 ```
 
 #### SEO Endpoints
