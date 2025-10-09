@@ -17,10 +17,13 @@ const AdminPanel = () => {
   const { user } = useContext(AuthContext);
   const [stats, setStats] = useState({});
   const [pendingJobs, setPendingJobs] = useState([]);
+  const [allJobs, setAllJobs] = useState([]);
   const [blogPosts, setBlogPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [editingJob, setEditingJob] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   
   // Job Creation State
   const [newJob, setNewJob] = useState({
