@@ -755,15 +755,18 @@ agent_communication:
 
   - task: "Admin Jobs Management - Get All Jobs"
     implemented: true
-    working: "NA"
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Added GET /api/admin/jobs/all endpoint to fetch all jobs for admin management. Supports include_deleted parameter. Returns jobs sorted by created_at descending."
+        - working: true
+          agent: "testing"
+          comment: "ADMIN GET ALL JOBS API TESTING COMPLETE: ✅ GET /api/admin/jobs/all working correctly - retrieved 22 jobs with deleted jobs excluded by default. ✅ include_deleted=true parameter working - retrieved 22 jobs including deleted ones. Admin authentication with admin@gmail.com/password successful. Proper authorization enforced (403 for non-admin users)."
 
   - task: "Admin Jobs Management - Edit Job"
     implemented: true
