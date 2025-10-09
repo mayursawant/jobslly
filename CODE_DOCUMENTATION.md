@@ -17,6 +17,52 @@
 
 ---
 
+## Recent Changes & Updates
+
+### Version 2.0 Updates (October 2025)
+
+#### Backend Changes
+- **✅ Job Category Field**: Added `category` field to `Job` and `JobCreate` models for better filtering
+- **✅ Blog Image Upload**: Implemented `FormData` handling for blog post images using `Form()` and `File()` parameters
+- **✅ Profile Completion**: Enhanced `UserProfile` model with `country_code`, `custom_specialization` fields
+- **✅ Admin Endpoints**: Added `/api/admin/job-seekers/stats` and `/api/admin/job-seekers` for analytics
+- **✅ Authentication Fix**: Corrected token validation in admin endpoints (`token` vs `access_token`)
+- **✅ Lead Collection**: Streamlined lead flow for internal and external jobs
+
+#### Frontend Changes
+- **✅ Job Category Filters**: Box-style category filters in JobListing (Doctors, Pharmacists, Dentists, Physiotherapists, Nurses)
+- **✅ JobSeekerDashboard Revamp**: 
+  - Real-time profile completion percentage
+  - Country code dropdown for international applicants
+  - Custom specialization input with "Other" option
+  - Years of experience validation (positive integers only)
+  - Removed: Statistics cards, Recent Activity, Applications tab, Recommendations tab
+- **✅ Admin Panel Fixes**: 
+  - Fixed authentication token handling
+  - Blog edit/delete functionality with proper permissions
+  - Image upload for blog creation/updates
+- **✅ Application Flow**: Conditional logic based on login status and profile completion
+- **✅ Legal Pages**: Added PrivacyPolicy, TermsOfService, CookiePolicy components
+- **✅ Footer Redesign**: Updated contact info, social links (X/Twitter icon), removed quick links
+
+#### Removed Features
+- **❌ Employer Login**: Simplified to admin-only job posting
+- **❌ Chatbot**: Removed LeadChatbot component
+- **❌ Save Job**: Removed job saving functionality
+- **❌ Share Option**: Removed share button from job details
+- **❌ Statistics Cards**: Removed from job seeker dashboard
+- **❌ Third-Party Job Toast**: Removed redirect notification
+
+#### Bug Fixes
+- Fixed admin dashboard "Failed to load data" error
+- Fixed admin blog posting authentication issues
+- Fixed profile update not saving to database
+- Fixed profile completion not updating in real-time
+- Fixed job category filter not working
+- Fixed CMS login credentials display
+
+---
+
 ## Architecture Overview
 
 ### System Architecture Diagram
