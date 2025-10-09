@@ -804,11 +804,14 @@ agent_communication:
     file: "AdminPanel.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Added new 'Manage Jobs' tab to Admin Panel. Shows all jobs with Edit and Delete buttons. Displays job details including title, company, location, category, approval status, external job badge. Includes edit modal for updating all job fields."
+        - working: "NA"
+          agent: "testing"
+          comment: "FRONTEND COMPONENT NOT TESTED: This is a frontend UI component. Testing agent only tests backend APIs. Main agent should verify the frontend Jobs Management tab functionality works correctly with the tested backend endpoints."
 
 frontend:
   - task: "Job Seeker Dashboard - Fix token storage"
