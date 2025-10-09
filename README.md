@@ -747,6 +747,227 @@ Mentorship Platform: Career guidance and connection system
 
 ---
 
+## 🔧 Troubleshooting Guide
+
+### Common Issues and Solutions
+
+#### Backend Issues
+
+**1. Backend won't start**
+```bash
+# Check supervisor logs
+sudo supervisorctl tail -f backend stderr
+
+# Common causes:
+# - Missing dependencies
+pip install -r /app/backend/requirements.txt
+
+# - MongoDB not running
+sudo systemctl start mongod
+sudo systemctl status mongod
+
+# - Port 8001 already in use
+lsof -i :8001
+kill -9 <PID>
+
+# Restart backend
+sudo supervisorctl restart backend
+```
+
+**2. AI Enhancement not working**
+```bash
+# Check Emergent LLM Key
+cat /app/backend/.env | grep EMERGENT_LLM_KEY
+
+# Verify admin authentication
+# Ensure you're logged in as admin@gmail.com
+# Check browser console for 403 errors
+
+# Test AI endpoint manually
+curl -X POST https://jobslly-health-1.preview.emergentagent.com/api/ai/enhance-job-description \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Test job description"}'
+```
+
+**3. Database connection errors**
+```bash
+# Check MongoDB status
+sudo systemctl status mongod
+
+# Test connection
+mongosh --eval "db.adminCommand('ping')"
+
+# Check connection string
+cat /app/backend/.env | grep MONGO_URL
+
+# Restart MongoDB
+sudo systemctl restart mongod
+```
+
+#### Frontend Issues
+
+**1. Frontend won't load**
+```bash
+# Check supervisor status
+sudo supervisorctl status frontend
+
+# Check frontend logs
+sudo supervisorctl tail -f frontend stdout
+
+# Common causes:
+# - Missing dependencies
+cd /app/frontend && yarn install
+
+# - Build errors
+cd /app/frontend && yarn build
+
+# Restart frontend
+sudo supervisorctl restart frontend
+```
+
+**2. Changes not reflecting**
+```bash
+# Hard refresh browser
+# Windows/Linux: Ctrl + F5
+# macOS: Cmd + Shift + R
+
+# Clear browser cache completely
+
+# Restart frontend with cache clear
+sudo supervisorctl restart frontend
+
+# Check hot reload is working
+sudo supervisorctl tail -f frontend stdout
+# Look for "webpack compiled" messages
+```
+
+**3. API calls failing (CORS errors)**
+```bash
+# Check REACT_APP_BACKEND_URL
+cat /app/frontend/.env | grep REACT_APP_BACKEND_URL
+
+# Ensure all backend routes start with /api
+# ✅ /api/jobs
+# ❌ /jobs
+
+# Check browser console for exact error
+# Look for 404 or CORS errors
+```
+
+#### Authentication Issues
+
+**1. Admin login failing**
+```bash
+# Verify admin user exists in database
+mongosh
+use test_database
+db.users.findOne({email: "admin@gmail.com"})
+
+# Test login endpoint
+curl -X POST https://jobslly-health-1.preview.emergentagent.com/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@gmail.com","password":"password"}'
+
+# Check JWT_SECRET is set
+cat /app/backend/.env | grep JWT_SECRET
+```
+
+**2. Token expired errors**
+```bash
+# Clear localStorage in browser
+# Open browser console:
+localStorage.clear()
+
+# Login again to get fresh token
+```
+
+**3. Admin dashboard not loading data**
+```bash
+# Check authentication token in localStorage
+# Browser console:
+console.log(localStorage.getItem('token'))
+
+# Verify token format (should start with 'eyJ')
+# If null or invalid, login again
+
+# Check backend logs for errors
+sudo supervisorctl tail -f backend stderr
+```
+
+#### Image Upload Issues
+
+**1. Blog image upload failing**
+```bash
+# Check FormData is being sent correctly
+# Backend expects: FormData with 'image' field
+
+# Verify file size (should be < 10MB)
+# Check file type (jpg, png, gif, webp)
+
+# Check backend logs for specific error
+sudo supervisorctl tail -f backend stderr
+```
+
+### Performance Issues
+
+**1. Slow page load times**
+```bash
+# Check backend response time
+curl -w "@-" -o /dev/null -s https://jobslly-health-1.preview.emergentagent.com/api/health <<'EOF'
+time_namelookup:  %{time_namelookup}\n
+time_connect:  %{time_connect}\n
+time_total:  %{time_total}\n
+EOF
+
+# Check MongoDB query performance
+# Add indexes if needed
+
+# Clear browser cache
+# Use incognito mode to test
+```
+
+**2. High memory usage**
+```bash
+# Check process memory
+ps aux | grep -E '(python|node)'
+
+# Check supervisor limits
+cat /etc/supervisor/supervisord.conf
+
+# Restart services to clear memory
+sudo supervisorctl restart all
+```
+
+### Quick Fixes
+
+```bash
+# Nuclear option - restart everything
+sudo supervisorctl restart all
+sudo systemctl restart mongod
+
+# Check all services are running
+sudo supervisorctl status
+
+# View all recent errors
+tail -n 100 /var/log/supervisor/backend.err.log
+tail -n 100 /var/log/supervisor/frontend.out.log
+
+# Test basic connectivity
+curl https://jobslly-health-1.preview.emergentagent.com/api/health
+```
+
+### Getting Help
+
+If issues persist:
+1. Check the `test_result.md` file for testing insights
+2. Review backend logs: `/var/log/supervisor/backend.*.log`
+3. Review frontend logs: `/var/log/supervisor/frontend.*.log`
+4. Check MongoDB logs: `/var/log/mongodb/mongod.log`
+5. Contact support: hello@academicallyglobal.com
+
+---
+
 ## 🤝 Contributing
 
 We welcome contributions from the healthcare technology community! Here's how to get involved:
