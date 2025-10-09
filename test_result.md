@@ -705,3 +705,143 @@ agent_communication:
       message: "COMPREHENSIVE JOB APPLICATION FLOW SYSTEM TESTING COMPLETE: Executed thorough testing of the comprehensive job application flow system with different user states and job types as requested. RESULTS: ✅ LEAD COLLECTION MODAL - FULLY WORKING: Modal appears correctly for non-logged-in users, all form fields functional (name, email, phone, position, experience dropdown, message), form validation working, data submission successful with proper success toast message. Fixed critical bug: added missing companyName prop to LeadCollectionModal component. ✅ NON-LOGGED-IN USER FLOW - PARTIALLY WORKING: Lead collection modal works perfectly, but login prompt modal for internal jobs not appearing after lead submission (shows success toast instead). External job redirect functionality needs verification. ✅ LOGGED-IN USER AUTHENTICATION - WORKING: User login successful (doctor@gmail.com/password), authentication state properly maintained, dashboard accessible with correct user data (Dr. John Smith), profile completion tracking at 0% initially. ✅ DASHBOARD & PROFILE MANAGEMENT - WORKING: Job seeker dashboard loads correctly with modern healthcare-focused design, profile editing interface available with comprehensive fields (phone, specialization, experience, skills), country code dropdown with international options present. ⚠️ CRITICAL ISSUES IDENTIFIED: 1) Login prompt modal not appearing for internal job applications after lead collection, 2) Profile completion calculation and modal triggering needs verification, 3) External job redirect flow requires testing with actual external jobs, 4) Authentication context may not be properly detected in job application flow. RECOMMENDATION: Main agent should investigate the modal state management in JobDetails component and verify the handleLeadCollectionSuccess callback flow for internal vs external jobs."
     - agent: "testing"
       message: "CMS ADMIN AUTHENTICATION AND DASHBOARD TESTING COMPLETE: Executed comprehensive testing of fixed CMS admin authentication and dashboard loading as requested. CRITICAL BUG FOUND AND FIXED: Token storage mismatch was causing dashboard loading failure - AdminPanel.js was looking for 'access_token' in localStorage but App.js login stores it as 'token'. Fixed all instances in AdminPanel.js. COMPREHENSIVE TEST RESULTS: ✅ CMS LOGIN ACCESS - /cms-login route loads correctly with proper test ID (data-testid='cms-login-form') and demo credentials displayed (admin@gmail.com / password), ✅ ADMIN AUTHENTICATION - Login with admin@gmail.com/password works correctly and redirects to /admin dashboard, no authentication errors occur, ✅ ADMIN DASHBOARD LOADING - Dashboard loads completely WITHOUT 'Failed to load data' error, all 6 statistics cards display with real numbers (11 users, 22 jobs, 0 pending, 19 applications, 12 blogs, 11 published), pending jobs and blog management sections accessible, ✅ ENHANCED DEBUGGING - Console shows successful API calls with all debug logs (🔄 Starting fetchAdminData, 🔑 Token found: true, 📊 Fetching stats, ✅ Stats loaded, 🎉 Admin data loaded successfully), no error messages or retry prompts, ✅ DATA VERIFICATION - Statistics show real numbers, blog management working with 12 Edit/Delete button pairs functional, all 6 admin tabs accessible (Overview, Jobs, Create Job, Blog, Create Article, SEO). Admin dashboard is now fully operational and production-ready."
+  - task: "Fix Job Seeker Dashboard token storage issue"
+    implemented: true
+    working: "NA"
+    file: "JobSeekerDashboard.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "User reported: 'Failed to load data' error appears immediately after login in job seeker dashboard"
+        - working: "NA"
+          agent: "main"
+          comment: "Fixed token storage issue - changed from localStorage.getItem('access_token') to localStorage.getItem('token') in fetchDashboardData, fetchProfile, and updateProfile functions"
+
+  - task: "Fix Profile Update functionality"
+    implemented: true
+    working: "NA"
+    file: "JobSeekerDashboard.js, server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "User reported: 'Failed to update profile' error when clicking Save Profile button"
+        - working: "NA"
+          agent: "main"
+          comment: "Fixed token storage issue in updateProfile function. Backend already has profile completion calculation and saves it to database. Profile completion percentage updates in real-time after save."
+
+  - task: "Profile Completion Percentage tracking"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Backend already properly calculates and saves profile completion percentage in /api/profile PUT endpoint. Updates automatically on each profile save."
+
+  - task: "Admin Jobs Management - Get All Jobs"
+    implemented: true
+    working: "NA"
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Added GET /api/admin/jobs/all endpoint to fetch all jobs for admin management. Supports include_deleted parameter. Returns jobs sorted by created_at descending."
+
+  - task: "Admin Jobs Management - Edit Job"
+    implemented: true
+    working: "NA"
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Added GET /api/admin/jobs/{job_id} and PUT /api/admin/jobs/{job_id} endpoints. Admin can fetch specific job and update all fields (title, company, location, description, salary, job_type, category, requirements, benefits, external job settings)."
+
+  - task: "Admin Jobs Management - Soft Delete"
+    implemented: true
+    working: "NA"
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Added DELETE /api/admin/jobs/{job_id} endpoint for soft delete (sets is_deleted=true, adds deleted_at timestamp). Also added POST /api/admin/jobs/{job_id}/restore for restoring deleted jobs. Updated Job model with is_deleted field. Public job endpoints now exclude deleted jobs."
+
+  - task: "Admin Panel - Manage Jobs Tab UI"
+    implemented: true
+    working: "NA"
+    file: "AdminPanel.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Added new 'Manage Jobs' tab to Admin Panel. Shows all jobs with Edit and Delete buttons. Displays job details including title, company, location, category, approval status, external job badge. Includes edit modal for updating all job fields."
+
+frontend:
+  - task: "Job Seeker Dashboard - Fix token storage"
+    implemented: true
+    working: "NA"
+    file: "JobSeekerDashboard.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "Dashboard shows 'Failed to load data' immediately after login"
+        - working: "NA"
+          agent: "main"
+          comment: "Fixed by changing localStorage.getItem('access_token') to localStorage.getItem('token') in all three places: fetchDashboardData, fetchProfile, and updateProfile"
+
+  - task: "Admin Panel - Jobs Management Section"
+    implemented: true
+    working: "NA"
+    file: "AdminPanel.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Added complete Jobs Management tab with: 1) List of all jobs 2) Edit button opens modal with all editable fields 3) Delete button for soft delete with confirmation 4) Shows job stats (category, approval status, external badge) 5) fetchAllJobs function loads all jobs 6) handleEditJob opens edit modal 7) saveEditedJob updates job via API 8) deleteJob performs soft delete"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.1"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Fix Job Seeker Dashboard token storage issue"
+    - "Fix Profile Update functionality"
+    - "Admin Jobs Management - Get All Jobs"
+    - "Admin Jobs Management - Edit Job"
+    - "Admin Jobs Management - Soft Delete"
+    - "Admin Panel - Manage Jobs Tab UI"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "main"
+      message: "Fixed two critical issues in Job Seeker Dashboard: 1) Token storage - changed from 'access_token' to 'token' which caused 'Failed to load data' error. 2) Same fix for profile update which caused 'Failed to update profile' error. Also implemented complete Admin Jobs Management section with: GET /api/admin/jobs/all (fetch all jobs), GET /api/admin/jobs/{id} (get single job), PUT /api/admin/jobs/{id} (update job), DELETE /api/admin/jobs/{id} (soft delete). Added is_deleted field to Job model. Frontend has new 'Manage Jobs' tab with list view, edit modal, and delete functionality. All public job endpoints now exclude soft-deleted jobs. Ready for comprehensive testing with admin@gmail.com / password credentials."
+
