@@ -307,15 +307,13 @@ const JobSeekerDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const { user } = useContext(AuthContext);
+  const [activeTab, setActiveTab] = useState('overview');
 
   /**
    * Switch to Edit Profile tab
    */
   const switchToProfileTab = () => {
-    const profileTab = document.querySelector('[data-testid="tab-profile"]');
-    if (profileTab) {
-      profileTab.click();
-    }
+    setActiveTab('profile');
   };
 
   /**
