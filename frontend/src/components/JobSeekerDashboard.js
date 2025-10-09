@@ -364,7 +364,8 @@ const JobSeekerDashboard = () => {
    */
   const fetchProfile = async () => {
     try {
-      const token = localStorage.getItem('access_token');
+      // FIX: Use 'token' instead of 'access_token'
+      const token = localStorage.getItem('token');
       if (!token) {
         return;
       }
