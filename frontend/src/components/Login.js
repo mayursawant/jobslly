@@ -139,7 +139,7 @@ const Login = () => {
             </div>
 
             {/* Demo credentials */}
-            <div className="mt-6 p-4 bg-teal-50 rounded-xl border border-teal-200">
+            {/* <div className="mt-6 p-4 bg-teal-50 rounded-xl border border-teal-200">
               <p className="text-sm text-teal-700 font-semibold mb-3 flex items-center">
                 <span className="mr-2">🎮</span>
                 Demo Accounts for Testing:
@@ -163,9 +163,9 @@ const Login = () => {
               <p className="text-xs text-gray-500 mt-3 text-center">
                 Click any credential to auto-fill the form
               </p>
-            </div>
+            </div> */}
             
-            <div className="mt-4 text-center">
+            {/* <div className="mt-4 text-center">
               <p className="text-gray-500 text-sm">
                 Need CMS access?{' '}
                 <Link 
@@ -176,7 +176,7 @@ const Login = () => {
                   Admin Login
                 </Link>
               </p>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
       </div>

@@ -195,7 +195,7 @@ const EmployerLogin = () => {
             </div>
 
             {/* Demo credentials */}
-            <div className="mt-6 p-4 bg-emerald-50 rounded-xl border border-emerald-200">
+            {/* <div className="mt-6 p-4 bg-emerald-50 rounded-xl border border-emerald-200">
               <p className="text-sm text-emerald-700 font-medium mb-2 flex items-center">
                 <span className="mr-2">🔑</span>
                 Demo Account:
@@ -204,7 +204,7 @@ const EmployerLogin = () => {
                 <p><strong>Email:</strong> hr@hospital.com</p>
                 <p><strong>Password:</strong> password123</p>
               </div>
-            </div>
+            </div> */}
 
             {/* Premium features callout */}
             <div className="mt-6 p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-emerald-200">

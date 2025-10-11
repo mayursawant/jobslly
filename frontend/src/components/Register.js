@@ -143,9 +143,9 @@ const Register = () => {
                     <SelectValue placeholder="Select your role" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="job_seeker" data-testid="role-job-seeker">
+                    {/* <SelectItem value="job_seeker" data-testid="role-job-seeker">
                       Healthcare Professional
-                    </SelectItem>
+                    </SelectItem> */}
                     <SelectItem value="employer" data-testid="role-employer">
                       Healthcare Employer
                     </SelectItem>

@@ -196,7 +196,7 @@ const JobSeekerLogin = () => {
             </div>
 
             {/* Demo credentials for testing */}
-            <div className="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
+            {/* <div className="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
               <p className="text-sm text-blue-700 font-medium mb-2 flex items-center">
                 <span className="mr-2">🔑</span>
                 Demo Account:
@@ -205,7 +205,7 @@ const JobSeekerLogin = () => {
                 <p><strong>Email:</strong> test@nurse.com</p>
                 <p><strong>Password:</strong> password123</p>
               </div>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
       </div>
