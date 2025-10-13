@@ -95,9 +95,21 @@ function App() {
   };
 
   const logout = () => {
+    // Clear all authentication data
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    // Clear any other app-specific data if needed
+    // localStorage.clear(); // Use this if you want to clear ALL localStorage
+    
+    // Remove authorization header
     delete axios.defaults.headers.common['Authorization'];
+    
+    // Clear user state
     setUser(null);
+    
+    // Clear any session storage
+    sessionStorage.clear();
   };
 
   const authValue = {
