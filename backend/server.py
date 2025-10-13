@@ -72,6 +72,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     full_name: str
+    phone: Optional[str] = None
     role: str = UserRole.JOB_SEEKER
 
 class UserLogin(BaseModel):
