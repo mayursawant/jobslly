@@ -246,9 +246,11 @@ function App() {
               <Route path="/terms-of-service" element={<TermsOfService />} />
               <Route path="/cookies" element={<CookiePolicy />} />
               <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
-              <Route path="/job-seeker-login" element={!user ? <JobSeekerLogin /> : <Navigate to="/dashboard" />} />
               <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
-              <Route path="/cms-login" element={!user ? <CMSLogin /> : <Navigate to="/admin" />} />
+              {/* Removed separate login routes - consolidated to /login */}
+              {/* Redirect old routes to new unified login */}
+              <Route path="/job-seeker-login" element={<Navigate to="/login" replace />} />
+              <Route path="/cms-login" element={<Navigate to="/login" replace />} />
               
               {/* Protected Routes */}
               <Route path="/dashboard" element={user ? (
