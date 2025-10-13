@@ -328,7 +328,8 @@ const AdminPanel = () => {
       is_featured: blog.is_featured || false,
       seo_title: blog.seo_title || '',
       seo_description: blog.seo_description || '',
-      featured_image: null // Can't edit existing image directly
+      featured_image: null, // Will be set when new image uploaded
+      existing_image_url: blog.featured_image || null // Store existing image URL
     });
     
     // Store the blog ID for updating
