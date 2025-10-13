@@ -110,6 +110,9 @@ function App() {
     
     // Clear any session storage
     sessionStorage.clear();
+    
+    // Redirect to login page
+    window.location.href = '/login';
   };
 
   const authValue = {
