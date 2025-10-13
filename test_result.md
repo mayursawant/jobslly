@@ -847,6 +847,21 @@ frontend:
           agent: "testing"
           comment: "FRONTEND COMPONENT NOT TESTED: This is a frontend UI component. Testing agent only tests backend APIs. All corresponding backend APIs have been tested and are working correctly: GET /api/admin/jobs/all, GET /api/admin/jobs/{id}, PUT /api/admin/jobs/{id}, DELETE /api/admin/jobs/{id}, POST /api/admin/jobs/{id}/restore. Main agent should verify the frontend admin panel integrates correctly with these tested backend endpoints."
 
+  - task: "Blog Listing Page - Image Resolution and Tile Clickability"
+    implemented: true
+    working: true
+    file: "Blog.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "User reported two issues: 1) Blog images on listing page not displaying with correct resolution 2) Only 'Read Full Article' button is clickable, not the entire blog tile"
+        - working: true
+          agent: "main"
+          comment: "Fixed both issues: 1) Changed object-cover to object-contain on blog images (lines 124 and 193) to preserve full image without cropping 2) Wrapped entire Card component in Link for both featured posts and regular posts to make full tile clickable. Screenshot testing confirms: clicking anywhere on blog tile navigates to blog post, images display with proper resolution using object-contain."
+
 metadata:
   created_by: "main_agent"
   version: "1.1"
