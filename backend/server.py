@@ -467,6 +467,14 @@ async def create_job(job_data: JobCreate, current_user: User = Depends(get_curre
     if current_user.role not in [UserRole.EMPLOYER, UserRole.ADMIN]:
         raise HTTPException(status_code=403, detail="Not authorized to create jobs")
     
+    # Validate external URL must be HTTPS
+    if job_data.is_external and job_data.external_url:
+        if not job_data.external_url.startswith('https://'):
+            raise HTTPException(
+                status_code=400, 
+                detail="Invalid URL. External job URLs must start with https:// for security"
+            )
+    
     job = Job(**job_data.dict(), employer_id=current_user.id)
     job_dict = job.dict()
     job_dict['created_at'] = job_dict['created_at'].isoformat()
