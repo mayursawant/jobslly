@@ -1049,8 +1049,8 @@ const AdminPanel = () => {
                       errors.push('External URL is required for external jobs');
                     }
                     
-                    if (newJob.is_external && newJob.external_url && !newJob.external_url.match(/^https?:\/\/.+/)) {
-                      errors.push('External URL must be a valid URL starting with http:// or https://');
+                    if (newJob.is_external && newJob.external_url && !newJob.external_url.match(/^https:\/\/.+/)) {
+                      errors.push('Invalid URL. It must start with https://');
                     }
                     
                     if (errors.length > 0) {
