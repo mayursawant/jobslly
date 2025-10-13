@@ -114,50 +114,50 @@ const Blog = () => {
               </div>
               <div className="grid md:grid-cols-3 gap-8">
                 {featuredPosts.map((post, index) => (
-                  <Card key={post.id} className="group bg-white border border-teal-100 hover:border-teal-300 hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2">
-                    <CardContent className="p-0 overflow-hidden rounded-lg">
-                      {post.featured_image ? (
-                        <div className="h-48 bg-gray-100 rounded-t-lg relative overflow-hidden">
-                          <img 
-                            src={post.featured_image} 
-                            alt={post.title}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              // Fallback to placeholder if image fails to load
-                              e.target.style.display = 'none';
-                              e.target.nextSibling.style.display = 'flex';
-                            }}
-                          />
-                          <div className="h-48 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-t-lg hidden items-center justify-center">
+                  <Link key={post.id} to={`/blog/${post.slug}`} className="block">
+                    <Card className="group bg-white border border-teal-100 hover:border-teal-300 hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 h-full">
+                      <CardContent className="p-0 overflow-hidden rounded-lg">
+                        {post.featured_image ? (
+                          <div className="h-48 bg-gray-100 rounded-t-lg relative overflow-hidden">
+                            <img 
+                              src={post.featured_image} 
+                              alt={post.title}
+                              className="w-full h-full object-contain"
+                              onError={(e) => {
+                                // Fallback to placeholder if image fails to load
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                            <div className="h-48 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-t-lg hidden items-center justify-center">
+                              <span className="text-6xl opacity-50">{index === 0 ? '🏥' : index === 1 ? '💊' : '🩺'}</span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="h-48 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-t-lg flex items-center justify-center">
                             <span className="text-6xl opacity-50">{index === 0 ? '🏥' : index === 1 ? '💊' : '🩺'}</span>
                           </div>
-                        </div>
-                      ) : (
-                        <div className="h-48 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-t-lg flex items-center justify-center">
-                          <span className="text-6xl opacity-50">{index === 0 ? '🏥' : index === 1 ? '💊' : '🩺'}</span>
-                        </div>
-                      )}
-                      <div className="p-6">
-                        <Badge className="bg-gradient-to-r from-teal-100 to-emerald-100 text-teal-700 border-teal-200 text-xs mb-4">
-                          ⭐ Featured
-                        </Badge>
-                        <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-teal-700 transition-colors line-clamp-2 leading-tight">
-                          {post.title}
-                        </h3>
-                        <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
-                        <div className="flex justify-between items-center">
-                          <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
-                            📅 {new Date(post.published_at).toLocaleDateString()}
-                          </span>
-                          <Link to={`/blog/${post.slug}`}>
+                        )}
+                        <div className="p-6">
+                          <Badge className="bg-gradient-to-r from-teal-100 to-emerald-100 text-teal-700 border-teal-200 text-xs mb-4">
+                            ⭐ Featured
+                          </Badge>
+                          <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-teal-700 transition-colors line-clamp-2 leading-tight">
+                            {post.title}
+                          </h3>
+                          <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
+                              📅 {new Date(post.published_at).toLocaleDateString()}
+                            </span>
                             <Button size="sm" className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-xl px-4 py-2 transform hover:scale-105 transition-all duration-300">
                               Read Article →
                             </Button>
-                          </Link>
+                          </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 ))}
               </div>
             </section>
