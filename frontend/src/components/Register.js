@@ -119,6 +119,26 @@ const Register = () => {
               </div>
 
               <div className="space-y-1">
+                <Label htmlFor="phone" className="text-sm font-medium text-gray-900">
+                  Phone Number
+                </Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                  className="h-11"
+                  placeholder="Enter your phone number"
+                  data-testid="phone-input"
+                  pattern="[0-9]{10,15}"
+                  title="Please enter a valid phone number (10-15 digits)"
+                />
+                <p className="text-xs text-gray-500">Enter 10-15 digit phone number</p>
+              </div>
+
+              <div className="space-y-1">
                 <Label htmlFor="password" className="text-sm font-medium text-gray-900">
                   Password
                 </Label>
