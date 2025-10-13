@@ -112,7 +112,7 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
       // Submit lead data to backend
       const response = await axios.post(`${API}/jobs/${jobId}/apply-lead`, leadData);
       
-      toast.success('Thank you for your interest!');
+      // toast.success('Thank you for your interest!');
       
       // Close modal
       onClose();
