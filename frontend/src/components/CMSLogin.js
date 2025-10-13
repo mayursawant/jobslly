@@ -140,7 +140,7 @@ const CMSLogin = () => {
             </form>
 
             {/* Demo credentials */}
-            <div className="mt-8 p-4 bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-xl border border-red-500/20 backdrop-blur-sm">
+            {/* <div className="mt-8 p-4 bg-gradient-to-r from-red-500/10 to-orange-500/10 rounded-xl border border-red-500/20 backdrop-blur-sm">
               <p className="text-sm text-red-400 font-medium mb-2 flex items-center">
                 <span className="mr-2">🔑</span>
                 Demo CMS Access:
@@ -149,7 +149,7 @@ const CMSLogin = () => {
                 <p><strong>Email:</strong> admin@gmail.com</p>
                 <p><strong>Password:</strong> password</p>
               </div>
-            </div>
+            </div> */}
 
             {/* Security Notice */}
             <div className="mt-6 text-center">

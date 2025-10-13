@@ -146,9 +146,9 @@ const Register = () => {
                     <SelectItem value="job_seeker" data-testid="role-job-seeker">
                       Healthcare Professional
                     </SelectItem>
-                    <SelectItem value="employer" data-testid="role-employer">
+                    {/* <SelectItem value="employer" data-testid="role-employer">
                       Healthcare Employer
-                    </SelectItem>
+                    </SelectItem> */}
                   </SelectContent>
                 </Select>
               </div>

@@ -112,7 +112,7 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
       // Submit lead data to backend
       const response = await axios.post(`${API}/jobs/${jobId}/apply-lead`, leadData);
       
-      toast.success('Thank you for your interest!');
+      // toast.success('Thank you for your interest!');
       
       // Close modal
       onClose();
@@ -198,7 +198,7 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
           {/* Email Field */}
           <div className="space-y-2">
             <Label htmlFor="lead-email" className="text-sm font-medium text-gray-700">
-              Professional Email *
+              Email *
             </Label>
             <Input
               id="lead-email"
