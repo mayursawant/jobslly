@@ -145,11 +145,11 @@ const BlogPost = () => {
             </div>
 
             {post.featured_image && (
-              <div className="h-64 md:h-80 bg-white/10 rounded-2xl mb-8 border border-white/20 backdrop-blur-sm overflow-hidden">
+              <div className="bg-white/10 rounded-2xl mb-8 border border-white/20 backdrop-blur-sm overflow-hidden">
                 <img 
                   src={post.featured_image} 
                   alt={post.title}
-                  className="w-full h-full object-cover rounded-2xl"
+                  className="w-full h-auto max-h-96 object-contain rounded-2xl"
                   onError={(e) => {
                     // Fallback to placeholder if image fails to load
                     e.target.style.display = 'none';
