@@ -1369,13 +1369,14 @@ const AdminPanel = () => {
                       formData.append('seo_title', newBlog.seo_title);
                       formData.append('seo_description', newBlog.seo_description);
                       
-                      // Add image if selected
+                      // Check if we're editing or creating
+                      const isEditing = newBlog.id;
+                      
+                      // Add image only if a new one is selected
+                      // When editing, if no new image is uploaded, the existing image will be preserved on backend
                       if (newBlog.featured_image) {
                         formData.append('featured_image', newBlog.featured_image);
                       }
-
-                      // Check if we're editing or creating
-                      const isEditing = newBlog.id;
                       const url = isEditing ? `${API}/admin/blog/${newBlog.id}` : `${API}/admin/blog`;
                       const method = isEditing ? 'put' : 'post';
 
