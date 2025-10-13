@@ -1006,6 +1006,14 @@ async def update_job_admin(
     if not existing_job:
         raise HTTPException(status_code=404, detail="Job not found")
     
+    # Validate external URL must be HTTPS
+    if job_data.is_external and job_data.external_url:
+        if not job_data.external_url.startswith('https://'):
+            raise HTTPException(
+                status_code=400, 
+                detail="Invalid URL. External job URLs must start with https:// for security"
+            )
+    
     update_data = job_data.dict(exclude_unset=True)
     update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
     
