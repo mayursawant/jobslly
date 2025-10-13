@@ -1240,6 +1240,22 @@ const AdminPanel = () => {
                             Click to change image
                           </p>
                         </div>
+                      ) : newBlog.existing_image_url ? (
+                        <div className="space-y-2">
+                          <div className="w-20 h-20 bg-blue-100 rounded-lg overflow-hidden">
+                            <img 
+                              src={newBlog.existing_image_url} 
+                              alt="Current" 
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <p className="text-sm text-blue-600 font-medium">
+                            Current Image
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Click to upload new image
+                          </p>
+                        </div>
                       ) : (
                         <div className="space-y-2">
                           <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center">
