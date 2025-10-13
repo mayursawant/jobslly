@@ -69,8 +69,8 @@ const JobDetails = () => {
       });
       
       setUserProfile(response.data);
-      // Use profile_completion from backend if available, otherwise calculate
-      const completion = response.data.profile_completion || calculateProfileCompletion(response.data);
+      // Always use profile_completion from backend for consistency
+      const completion = response.data.profile_completion || 0;
       setProfileCompletion(completion);
     } catch (error) {
       console.error('Failed to fetch profile:', error);
