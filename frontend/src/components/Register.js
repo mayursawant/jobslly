@@ -14,6 +14,7 @@ const Register = () => {
     email: '',
     password: '',
     full_name: '',
+    phone: '',
     role: 'job_seeker'
   });
   const [loading, setLoading] = useState(false);
