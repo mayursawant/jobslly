@@ -183,21 +183,32 @@ const Blog = () => {
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredPosts.map((post, index) => (
-                  <Card key={post.id} className="group bg-white border border-gray-200 hover:border-teal-300 hover:shadow-xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-1">
-                    <CardContent className="p-0 overflow-hidden rounded-lg">
-                      {post.featured_image ? (
-                        <div className="h-48 bg-gray-100 rounded-t-lg relative overflow-hidden">
-                          <img 
-                            src={post.featured_image} 
-                            alt={post.title}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              // Fallback to placeholder if image fails to load
-                              e.target.style.display = 'none';
-                              e.target.nextSibling.style.display = 'flex';
-                            }}
-                          />
-                          <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-lg hidden items-center justify-center relative overflow-hidden">
+                  <Link key={post.id} to={`/blog/${post.slug}`} className="block">
+                    <Card className="group bg-white border border-gray-200 hover:border-teal-300 hover:shadow-xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-1 h-full">
+                      <CardContent className="p-0 overflow-hidden rounded-lg">
+                        {post.featured_image ? (
+                          <div className="h-48 bg-gray-100 rounded-t-lg relative overflow-hidden">
+                            <img 
+                              src={post.featured_image} 
+                              alt={post.title}
+                              className="w-full h-full object-contain"
+                              onError={(e) => {
+                                // Fallback to placeholder if image fails to load
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                            <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-lg hidden items-center justify-center relative overflow-hidden">
+                              <div className="absolute inset-0 bg-gradient-to-br from-teal-400/10 to-emerald-400/10"></div>
+                              <span className="text-5xl opacity-60 relative z-10">
+                                {post.category === 'Healthcare Trends' ? '📈' : 
+                                 post.category === 'Career Development' ? '🚀' : 
+                                 post.category === 'Industry News' ? '📰' : '🏥'}
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-lg flex items-center justify-center relative overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-br from-teal-400/10 to-emerald-400/10"></div>
                             <span className="text-5xl opacity-60 relative z-10">
                               {post.category === 'Healthcare Trends' ? '📈' : 
@@ -205,57 +216,46 @@ const Blog = () => {
                                post.category === 'Industry News' ? '📰' : '🏥'}
                             </span>
                           </div>
-                        </div>
-                      ) : (
-                        <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-lg flex items-center justify-center relative overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-br from-teal-400/10 to-emerald-400/10"></div>
-                          <span className="text-5xl opacity-60 relative z-10">
-                            {post.category === 'Healthcare Trends' ? '📈' : 
-                             post.category === 'Career Development' ? '🚀' : 
-                             post.category === 'Industry News' ? '📰' : '🏥'}
-                          </span>
-                        </div>
-                      )}
-                      <div className="p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <Badge 
-                            variant="outline" 
-                            className={`text-xs border ${
-                              post.category === 'Healthcare Trends' ? 'border-emerald-200 text-emerald-700 bg-emerald-50' :
-                              post.category === 'Career Development' ? 'border-blue-200 text-blue-700 bg-blue-50' :
-                              post.category === 'Industry News' ? 'border-purple-200 text-purple-700 bg-purple-50' :
-                              'border-teal-200 text-teal-700 bg-teal-50'
-                            }`}
-                          >
-                            {post.category}
-                          </Badge>
-                          <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
-                            📅 {new Date(post.published_at).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <h3 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-teal-700 transition-colors line-clamp-2 leading-tight">
-                          {post.title}
-                        </h3>
-                        <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
-                        
-                        {post.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mb-4">
-                            {post.tags.slice(0, 3).map((tag, index) => (
-                              <Badge key={index} variant="secondary" className="text-xs bg-teal-50 text-teal-600 border-teal-200">
-                                #{tag}
-                              </Badge>
-                            ))}
-                          </div>
                         )}
+                        <div className="p-6">
+                          <div className="flex items-center justify-between mb-4">
+                            <Badge 
+                              variant="outline" 
+                              className={`text-xs border ${
+                                post.category === 'Healthcare Trends' ? 'border-emerald-200 text-emerald-700 bg-emerald-50' :
+                                post.category === 'Career Development' ? 'border-blue-200 text-blue-700 bg-blue-50' :
+                                post.category === 'Industry News' ? 'border-purple-200 text-purple-700 bg-purple-50' :
+                                'border-teal-200 text-teal-700 bg-teal-50'
+                              }`}
+                            >
+                              {post.category}
+                            </Badge>
+                            <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
+                              📅 {new Date(post.published_at).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <h3 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-teal-700 transition-colors line-clamp-2 leading-tight">
+                            {post.title}
+                          </h3>
+                          <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
+                          
+                          {post.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mb-4">
+                              {post.tags.slice(0, 3).map((tag, index) => (
+                                <Badge key={index} variant="secondary" className="text-xs bg-teal-50 text-teal-600 border-teal-200">
+                                  #{tag}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
 
-                        <Link to={`/blog/${post.slug}`}>
                           <Button size="sm" className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-xl transform hover:scale-105 transition-all duration-300">
                             📖 Read Full Article →
                           </Button>
-                        </Link>
-                      </div>
-                    </CardContent>
-                  </Card>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 ))}
               </div>
             )}
