@@ -826,13 +826,18 @@ const AdminPanel = () => {
                       <span className="text-sm text-gray-700">External Job</span>
                     </label>
                     {editingJob.is_external && (
-                      <input
-                        type="url"
-                        value={editingJob.external_url || ''}
-                        onChange={(e) => setEditingJob(prev => ({...prev, external_url: e.target.value}))}
-                        className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                        placeholder="https://company.com/apply"
-                      />
+                      <div className="flex-1">
+                        <input
+                          type="url"
+                          value={editingJob.external_url || ''}
+                          onChange={(e) => setEditingJob(prev => ({...prev, external_url: e.target.value}))}
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                          placeholder="https://company.com/apply"
+                          pattern="https://.*"
+                          title="URL must start with https://"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">Must start with https://</p>
+                      </div>
                     )}
                   </div>
 
