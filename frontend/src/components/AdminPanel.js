@@ -994,7 +994,12 @@ const AdminPanel = () => {
                         placeholder="https://example.com/jobs/apply-here"
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                         required={newJob.is_external}
+                        pattern="https://.*"
+                        title="URL must start with https://"
                       />
+                      <p className="text-sm text-red-600 mt-1 font-medium">
+                        ⚠️ URL must start with https:// (secure connection required)
+                      </p>
                       <p className="text-sm text-gray-500 mt-1">
                         📋 Users will still fill out lead information before being redirected to this external application site.
                       </p>
