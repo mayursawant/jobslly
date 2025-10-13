@@ -80,42 +80,8 @@ const JobDetails = () => {
     }
   };
 
-  /**
-   * Calculate profile completion percentage based on required fields
-   */
-  const calculateProfileCompletion = (profile) => {
-    if (!profile) return 0;
-
-    const requiredFields = [
-      profile.phone,                    // Personal Details: Phone
-      user?.full_name,                 // Personal Details: Name (from user context)  
-      user?.email,                     // Personal Details: Email (from user context)
-      profile.specialization,          // Healthcare Category
-      profile.experience_years >= 0    // Experience
-    ];
-
-    // Handle custom specialization
-    let hasSpecialization = profile.specialization;
-    if (profile.specialization === 'other' && profile.custom_specialization) {
-      hasSpecialization = true;
-    } else if (profile.specialization === 'other' && !profile.custom_specialization) {
-      hasSpecialization = false;
-    }
-
-    const completionFields = [
-      profile.phone,
-      user?.full_name,
-      user?.email,
-      hasSpecialization,
-      profile.experience_years >= 0
-    ];
-
-    const filledFields = completionFields.filter(field => 
-      field !== null && field !== undefined && field !== ''
-    ).length;
-
-    return Math.round((filledFields / completionFields.length) * 100);
-  };
+  // Profile completion is now fetched from backend for consistency
+  // The backend calculates based on: name, phone, position, experience, location, specialization
 
   /**
    * Enhanced apply button click handler
