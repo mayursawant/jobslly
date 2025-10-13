@@ -361,11 +361,41 @@ async def register(user_data: UserCreate):
     
     # Create user
     hashed_password = hash_password(user_data.password)
-    user = User(**user_data.dict(exclude={'password'}))
+    user = User(**user_data.dict(exclude={'password', 'phone'}))
     user_dict = user.dict()
     user_dict['hashed_password'] = hashed_password
     
     await db.users.insert_one(user_dict)
+    
+    # Create user profile with phone number if provided
+    if user_data.phone:
+        profile = UserProfile(
+            user_id=user.id,
+            phone=user_data.phone
+        )
+        profile_dict = profile.dict()
+        profile_dict['created_at'] = profile_dict['created_at'].isoformat()
+        if profile_dict.get('updated_at'):
+            profile_dict['updated_at'] = profile_dict['updated_at'].isoformat()
+        
+        await db.user_profiles.insert_one(profile_dict)
+    
+    # Create job seeker profile if role is job_seeker
+    if user_data.role == "job_seeker":
+        try:
+            job_seeker_profile = JobSeekerProfile(
+                email=user.email,
+                name=user.full_name,
+                phone=user_data.phone,
+                user_id=user.id
+            )
+            profile_dict = job_seeker_profile.dict()
+            profile_dict['created_at'] = profile_dict['created_at'].isoformat()
+            profile_dict['updated_at'] = profile_dict['updated_at'].isoformat()
+            
+            await db.job_seekers.insert_one(profile_dict)
+        except Exception as e:
+            print(f"Error creating job seeker profile during registration: {e}")
     
     # Create token
     access_token = create_access_token(
