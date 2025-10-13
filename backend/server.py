@@ -761,6 +761,14 @@ async def admin_create_job(job_data: JobCreate, current_user: User = Depends(get
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Admin access required")
     
+    # Validate external URL must be HTTPS
+    if job_data.is_external and job_data.external_url:
+        if not job_data.external_url.startswith('https://'):
+            raise HTTPException(
+                status_code=400, 
+                detail="Invalid URL. External job URLs must start with https:// for security"
+            )
+    
     job = Job(**job_data.dict(), employer_id=current_user.id, is_approved=True)
     job_dict = job.dict()
     job_dict['created_at'] = job_dict['created_at'].isoformat()
