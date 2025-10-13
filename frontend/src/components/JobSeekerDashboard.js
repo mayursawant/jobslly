@@ -436,15 +436,8 @@ const JobSeekerDashboard = () => {
       
       toast.success('Profile updated successfully! 🎉');
       
-      // Refresh dashboard data to update completion percentage
+      // Refresh dashboard data to update completion percentage from backend
       fetchDashboardData();
-      
-      // Update profile completion in real-time
-      const newCompletion = calculateProfileCompletion();
-      setDashboardData(prev => ({
-        ...prev,
-        profile_completion: newCompletion
-      }));
       
     } catch (error) {
       console.error('Failed to update profile:', error);
