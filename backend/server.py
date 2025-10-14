@@ -497,8 +497,8 @@ async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True):
     
     return [Job(**job) for job in jobs]
 
-@api_router.get("/jobs/{job_id}", response_model=Job)
-async def get_job(job_id: str):
+@api_router.get("/jobs/{job_id}")
+async def get_job(job_id: str, credentials: HTTPAuthorizationCredentials = Depends(security)):
     job = await db.jobs.find_one({"id": job_id, "is_deleted": {"$ne": True}})
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -508,7 +508,29 @@ async def get_job(job_id: str):
     if job.get('expires_at') and isinstance(job.get('expires_at'), str):
         job['expires_at'] = datetime.fromisoformat(job['expires_at'])
     
-    return Job(**job)
+    # Check if user has applied for this job (for logged-in users)
+    has_applied = False
+    try:
+        current_user = await get_current_user(credentials)
+        if current_user:
+            # Check in applications collection
+            existing_application = await db.applications.find_one({
+                "job_id": job_id,
+                "applicant_id": current_user.id
+            })
+            # Also check in job_leads collection (for users who applied before logging in)
+            existing_lead = await db.job_leads.find_one({
+                "job_id": job_id,
+                "email": current_user.email
+            })
+            has_applied = bool(existing_application or existing_lead)
+    except:
+        # User not logged in or invalid token, skip has_applied check
+        pass
+    
+    job_response = Job(**job).dict()
+    job_response['has_applied'] = has_applied
+    return job_response
 
 # Job Application Routes
 # (Job application endpoint is implemented further below with enhanced functionality)
