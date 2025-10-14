@@ -112,6 +112,13 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
       // Submit lead data to backend
       const response = await axios.post(`${API}/jobs/${jobId}/apply-lead`, leadData);
       
+      // Save applied job ID to localStorage for session tracking
+      const appliedJobs = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
+      if (!appliedJobs.includes(jobId)) {
+        appliedJobs.push(jobId);
+        localStorage.setItem('appliedJobs', JSON.stringify(appliedJobs));
+      }
+      
       // toast.success('Thank you for your interest!');
       
       // Close modal
