@@ -4,6 +4,7 @@ from fastapi.responses import Response, PlainTextResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
+from fastapi.staticfiles import StaticFiles
 import hashlib
 from pydantic import BaseModel, Field, EmailStr
 from typing import List, Optional, Dict, Any
