@@ -38,14 +38,33 @@ const JobDetails = () => {
     fetchJobDetails();
     if (isAuthenticated) {
       fetchUserProfile();
+    } else {
+      // For non-logged-in users, check localStorage
+      checkLocalStorageApplied();
     }
   }, [jobId, isAuthenticated]);
 
+  const checkLocalStorageApplied = () => {
+    const appliedJobs = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
+    setHasApplied(appliedJobs.includes(jobId));
+  };
+
   const fetchJobDetails = async () => {
     try {
-      // Use the tracking endpoint to increment view count
-      const response = await axios.get(`${API}/jobs/${jobId}/details`);
+      // Get token if user is logged in
+      const token = localStorage.getItem('token');
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      
+      const response = await axios.get(`${API}/jobs/${jobId}`, { headers });
       setJob(response.data);
+      
+      // Check if user has already applied (from backend response)
+      if (response.data.has_applied !== undefined) {
+        setHasApplied(response.data.has_applied);
+      } else {
+        // Fallback to localStorage check for non-logged-in users
+        checkLocalStorageApplied();
+      }
     } catch (error) {
       console.error('Failed to fetch job details:', error);
       toast.error('Job not found');
