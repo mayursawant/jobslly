@@ -58,11 +58,12 @@ const JobDetails = () => {
       const response = await axios.get(`${API}/jobs/${jobId}`, { headers });
       setJob(response.data);
       
-      // Check if user has already applied (from backend response)
-      if (response.data.has_applied !== undefined) {
+      // Check if user has already applied
+      if (token && response.data.has_applied !== undefined) {
+        // For logged-in users, use backend response
         setHasApplied(response.data.has_applied);
       } else {
-        // Fallback to localStorage check for non-logged-in users
+        // For non-logged-in users, always check localStorage
         checkLocalStorageApplied();
       }
     } catch (error) {
