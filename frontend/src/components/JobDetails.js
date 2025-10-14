@@ -162,6 +162,7 @@ const JobDetails = () => {
     console.log('Lead collection success callback triggered');
     console.log('Job external URL:', job?.external_url);
     setShowLeadModal(false);
+    setHasApplied(true); // Update state to show "Applied" status
     
     if (job?.external_url) {
       // External job - redirect to external URL
