@@ -1574,14 +1574,22 @@ async def get_job_seeker_dashboard(current_user: User = Depends(get_current_user
 # Get Job Seeker Applications with Job Details
 @api_router.get("/job-seeker/applications")
 async def get_job_seeker_applications(current_user: User = Depends(get_current_user)):
+    print(f"📋 Fetching applications for user: {current_user.id}, email: {current_user.email}, role: {current_user.role}")
+    
     if current_user.role != UserRole.JOB_SEEKER:
         raise HTTPException(status_code=403, detail="Job seeker access required")
     
     # Get applications from applications collection (logged-in applications)
     applications = await db.applications.find({"applicant_id": current_user.id}).to_list(length=None)
+    print(f"💼 Found {len(applications)} applications in applications collection")
+    if applications:
+        print(f"   Application IDs: {[app['id'] for app in applications]}")
     
     # Get applications from job_leads collection (applied before logging in, matched by email)
     leads = await db.job_leads.find({"email": current_user.email}).to_list(length=None)
+    print(f"📧 Found {len(leads)} leads in job_leads collection")
+    if leads:
+        print(f"   Lead IDs: {[lead['id'] for lead in leads]}")
     
     # Combine and get job details for each application
     all_applications = []
@@ -1602,6 +1610,9 @@ async def get_job_seeker_applications(current_user: User = Depends(get_current_u
                 "status": app.get('status', 'pending'),
                 "application_type": "registered"
             })
+            print(f"   ✅ Processed application for job: {job.get('title')}")
+        else:
+            print(f"   ⚠️ Job not found or deleted for application ID: {app['id']}, job_id: {app['job_id']}")
     
     # Process lead applications
     for lead in leads:
@@ -1622,9 +1633,16 @@ async def get_job_seeker_applications(current_user: User = Depends(get_current_u
                     "status": "pending",
                     "application_type": "lead"
                 })
+                print(f"   ✅ Processed lead for job: {job.get('title')}")
+            else:
+                print(f"   ⚠️ Job not found or deleted for lead ID: {lead['id']}, job_id: {lead['job_id']}")
+        else:
+            print(f"   ℹ️ Skipping lead {lead['id']} - already converted to application")
     
     # Sort by applied date (most recent first)
     all_applications.sort(key=lambda x: x['applied_at'], reverse=True)
+    
+    print(f"📊 Total applications to return: {len(all_applications)}")
     
     return {
         "total_applications": len(all_applications),
