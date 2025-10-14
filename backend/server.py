@@ -446,6 +446,30 @@ async def login(user_data: UserLogin):
                 }
             )
             
+            # Merge lead applications to user account
+            # Find all leads for this email that haven't been converted to applications
+            leads = await db.job_leads.find({"email": user["email"]}).to_list(length=None)
+            for lead in leads:
+                # Check if application already exists for this job
+                existing_app = await db.applications.find_one({
+                    "job_id": lead['job_id'],
+                    "applicant_id": user["id"]
+                })
+                
+                if not existing_app:
+                    # Create application from lead
+                    application = JobApplication(
+                        job_id=lead['job_id'],
+                        applicant_id=user["id"],
+                        cover_letter=lead.get('message', ''),
+                        status="pending"
+                    )
+                    
+                    application_dict = application.dict()
+                    application_dict['created_at'] = lead.get('created_at', datetime.now(timezone.utc).isoformat())
+                    
+                    await db.applications.insert_one(application_dict)
+            
         except Exception as e:
             # Log error but don't fail login
             print(f"Error creating job seeker profile on login: {e}")
