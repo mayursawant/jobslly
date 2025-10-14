@@ -810,39 +810,6 @@ const JobSeekerDashboard = () => {
             </Card>
           </TabsContent>
 
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Market Demand</span>
-                      <Badge className="bg-green-100 text-green-700">High</Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Profile Ranking</span>
-                      <Badge className="bg-blue-100 text-blue-700">Top 15%</Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Response Rate</span>
-                      <Badge className="bg-purple-100 text-purple-700">85%</Badge>
-                    </div>
-                    
-                    <div className="bg-white p-3 rounded-lg border border-blue-100 mt-4">
-                      <div className="flex items-start space-x-2">
-                        <TrendingUp className="w-4 h-4 text-blue-600 mt-0.5" />
-                        <div>
-                          <p className="text-xs font-medium text-blue-700">Pro Tip</p>
-                          <p className="text-xs text-blue-600">Healthcare professionals with complete profiles get 3x more interviews</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Recent Activity section removed as per user request */}
-          </TabsContent>
-
           {/* Profile Editing Tab */}
           <TabsContent value="profile" className="space-y-6">
             <Card className="glass border-blue-200" data-testid="profile-edit-form">
