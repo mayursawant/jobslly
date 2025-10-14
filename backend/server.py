@@ -543,7 +543,7 @@ async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True):
     return [Job(**job) for job in jobs]
 
 @api_router.get("/jobs/{job_id}")
-async def get_job(job_id: str, credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)):
+async def get_job(job_id: str, authorization: str = Header(None)):
     job = await db.jobs.find_one({"id": job_id, "is_deleted": {"$ne": True}})
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -555,24 +555,20 @@ async def get_job(job_id: str, credentials: Optional[HTTPAuthorizationCredential
     
     # Check if user has applied for this job (for logged-in users)
     has_applied = False
-    try:
-        if credentials:
-            current_user = await get_current_user(credentials)
-            if current_user:
-                # Check in applications collection
-                existing_application = await db.applications.find_one({
-                    "job_id": job_id,
-                    "applicant_id": current_user.id
-                })
-                # Also check in job_leads collection (for users who applied before logging in)
-                existing_lead = await db.job_leads.find_one({
-                    "job_id": job_id,
-                    "email": current_user.email
-                })
-                has_applied = bool(existing_application or existing_lead)
-    except:
-        # User not logged in or invalid token, skip has_applied check
-        pass
+    current_user = await get_current_user_optional(authorization)
+    
+    if current_user:
+        # Check in applications collection
+        existing_application = await db.applications.find_one({
+            "job_id": job_id,
+            "applicant_id": current_user.id
+        })
+        # Also check in job_leads collection (for users who applied before logging in)
+        existing_lead = await db.job_leads.find_one({
+            "job_id": job_id,
+            "email": current_user.email
+        })
+        has_applied = bool(existing_application or existing_lead)
     
     job_response = Job(**job).dict()
     job_response['has_applied'] = has_applied
