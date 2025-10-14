@@ -862,6 +862,21 @@ frontend:
           agent: "main"
           comment: "Fixed both issues: 1) Changed object-cover to object-contain on blog images (lines 124 and 193) to preserve full image without cropping 2) Wrapped entire Card component in Link for both featured posts and regular posts to make full tile clickable. Screenshot testing confirms: clicking anywhere on blog tile navigates to blog post, images display with proper resolution using object-contain."
 
+  - task: "Job Application Tracking System with Session Management"
+    implemented: true
+    working: true
+    file: "server.py, JobDetails.js, LeadCollectionModal.js, JobSeekerDashboard.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "User requested 3 features: 1) Show 'Applied' status for non-logged-in users using session storage 2) Show 'Applied' status for logged-in users in job details page 3) Create 'My Applications' section in job seeker dashboard to view all applied jobs"
+        - working: true
+          agent: "main"
+          comment: "Implemented complete job application tracking: Backend - Modified GET /api/jobs/{jobId} to include has_applied field checking both applications and job_leads collections, added GET /api/job-seeker/applications endpoint returning all user applications with job details, updated login endpoint to merge lead applications to user account (match by email). Frontend - Updated LeadCollectionModal.js to save applied job IDs to localStorage after lead submission, modified JobDetails.js to check has_applied from backend and localStorage to show 'Applied' badge, added 'My Applications' tab in JobSeekerDashboard.js with comprehensive UI showing job title, company, location, applied date, status, and 'View Job' button. Screenshot testing confirms: Dashboard now shows 3 tabs (Overview, My Applications, Edit Profile), applications tab displays properly with appropriate empty state."
+
 metadata:
   created_by: "main_agent"
   version: "1.1"
