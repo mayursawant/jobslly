@@ -13,8 +13,9 @@ import Dashboard from './components/Dashboard';
 import AdminPanel from './components/AdminPanel';
 import Login from './components/Login';
 import Register from './components/Register';
-import CMSLogin from './components/CMSLogin';
-import JobSeekerLogin from './components/JobSeekerLogin';
+// Removed: CMSLogin and JobSeekerLogin - consolidated to single Login
+// import CMSLogin from './components/CMSLogin';
+// import JobSeekerLogin from './components/JobSeekerLogin';
 // import EmployerLogin from './components/EmployerLogin'; // Removed
 import JobSeekerDashboard from './components/JobSeekerDashboard';
 import Blog from './components/Blog';
@@ -95,9 +96,24 @@ function App() {
   };
 
   const logout = () => {
+    // Clear all authentication data
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    // Clear any other app-specific data if needed
+    // localStorage.clear(); // Use this if you want to clear ALL localStorage
+    
+    // Remove authorization header
     delete axios.defaults.headers.common['Authorization'];
+    
+    // Clear user state
     setUser(null);
+    
+    // Clear any session storage
+    sessionStorage.clear();
+    
+    // Redirect to login page
+    window.location.href = '/login';
   };
 
   const authValue = {
@@ -131,21 +147,21 @@ function App() {
             <meta property="og:title" content="Jobslly - Future of Healthcare Careers" />
             <meta property="og:description" content="AI-powered healthcare job platform connecting medical professionals with leading institutions. Find your next career opportunity today." />
             <meta property="og:type" content="website" />
-            <meta property="og:url" content="https://jobslly-health-1.preview.emergentagent.com/" />
-            <meta property="og:image" content="https://jobslly-health-1.preview.emergentagent.com/og-image.jpg" />
+            <meta property="og:url" content="https://healthcare-board.preview.emergentagent.com/" />
+            <meta property="og:image" content="https://healthcare-board.preview.emergentagent.com/og-image.jpg" />
             <meta property="og:site_name" content="Jobslly" />
             
             {/* Twitter */}
             <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:title" content="Jobslly - Future of Healthcare Careers" />
             <meta name="twitter:description" content="AI-powered healthcare job platform for medical professionals" />
-            <meta name="twitter:image" content="https://jobslly-health-1.preview.emergentagent.com/og-image.jpg" />
+            <meta name="twitter:image" content="https://healthcare-board.preview.emergentagent.com/og-image.jpg" />
             
             {/* Additional SEO Meta Tags */}
             <meta name="author" content="Jobslly" />
             <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
             <meta name="googlebot" content="index, follow" />
-            <link rel="canonical" href="https://jobslly-health-1.preview.emergentagent.com/" />
+            <link rel="canonical" href="https://healthcare-board.preview.emergentagent.com/" />
             
             {/* Favicon and App Icons */}
             <link rel="icon" href="/favicon.ico" />
@@ -158,8 +174,8 @@ function App() {
                 "@type": "Organization",
                 "name": "Jobslly",
                 "description": "AI-powered healthcare career platform",
-                "url": "https://jobslly-health-1.preview.emergentagent.com",
-                "logo": "https://jobslly-health-1.preview.emergentagent.com/logo.png",
+                "url": "https://healthcare-board.preview.emergentagent.com",
+                "logo": "https://healthcare-board.preview.emergentagent.com/logo.png",
                 "sameAs": [
                   "https://linkedin.com/company/jobslly",
                   "https://twitter.com/jobslly"
@@ -174,10 +190,10 @@ function App() {
                 "@type": "WebSite",
                 "name": "Jobslly",
                 "description": "Future of Healthcare Careers - AI-Powered Job Platform",
-                "url": "https://jobslly-health-1.preview.emergentagent.com",
+                "url": "https://healthcare-board.preview.emergentagent.com",
                 "potentialAction": {
                   "@type": "SearchAction",
-                  "target": "https://jobslly-health-1.preview.emergentagent.com/jobs?search={search_term_string}",
+                  "target": "https://healthcare-board.preview.emergentagent.com/jobs?search={search_term_string}",
                   "query-input": "required name=search_term_string"
                 },
                 "publisher": {
@@ -192,10 +208,10 @@ function App() {
               {JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "LocalBusiness",
-                "@id": "https://jobslly-health-1.preview.emergentagent.com",
+                "@id": "https://healthcare-board.preview.emergentagent.com",
                 "name": "Jobslly",
                 "description": "Healthcare job platform connecting medical professionals with opportunities",
-                "url": "https://jobslly-health-1.preview.emergentagent.com",
+                "url": "https://healthcare-board.preview.emergentagent.com",
                 "telephone": "+1-800-JOBSLLY",
                 "priceRange": "Free",
                 "openingHours": "Mo-Su 00:00-24:00",
@@ -230,9 +246,11 @@ function App() {
               <Route path="/terms-of-service" element={<TermsOfService />} />
               <Route path="/cookies" element={<CookiePolicy />} />
               <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
-              <Route path="/job-seeker-login" element={!user ? <JobSeekerLogin /> : <Navigate to="/dashboard" />} />
               <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
-              <Route path="/cms-login" element={!user ? <CMSLogin /> : <Navigate to="/admin" />} />
+              {/* Removed separate login routes - consolidated to /login */}
+              {/* Redirect old routes to new unified login */}
+              <Route path="/job-seeker-login" element={<Navigate to="/login" replace />} />
+              <Route path="/cms-login" element={<Navigate to="/login" replace />} />
               
               {/* Protected Routes */}
               <Route path="/dashboard" element={user ? (

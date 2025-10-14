@@ -38,14 +38,38 @@ const JobDetails = () => {
     fetchJobDetails();
     if (isAuthenticated) {
       fetchUserProfile();
+    } else {
+      // For non-logged-in users, check localStorage
+      checkLocalStorageApplied();
     }
   }, [jobId, isAuthenticated]);
 
+  const checkLocalStorageApplied = () => {
+    const appliedJobs = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
+    console.log('🔍 Checking localStorage for job', jobId);
+    console.log('📋 Applied jobs in localStorage:', appliedJobs);
+    const isApplied = appliedJobs.includes(jobId);
+    console.log('✓ Has applied:', isApplied);
+    setHasApplied(isApplied);
+  };
+
   const fetchJobDetails = async () => {
     try {
-      // Use the tracking endpoint to increment view count
-      const response = await axios.get(`${API}/jobs/${jobId}/details`);
+      // Get token if user is logged in
+      const token = localStorage.getItem('token');
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      
+      const response = await axios.get(`${API}/jobs/${jobId}`, { headers });
       setJob(response.data);
+      
+      // Check if user has already applied
+      if (token && response.data.has_applied !== undefined) {
+        // For logged-in users, use backend response
+        setHasApplied(response.data.has_applied);
+      } else {
+        // For non-logged-in users, always check localStorage
+        checkLocalStorageApplied();
+      }
     } catch (error) {
       console.error('Failed to fetch job details:', error);
       toast.error('Job not found');
@@ -69,8 +93,8 @@ const JobDetails = () => {
       });
       
       setUserProfile(response.data);
-      // Use profile_completion from backend if available, otherwise calculate
-      const completion = response.data.profile_completion || calculateProfileCompletion(response.data);
+      // Always use profile_completion from backend for consistency
+      const completion = response.data.profile_completion || 0;
       setProfileCompletion(completion);
     } catch (error) {
       console.error('Failed to fetch profile:', error);
@@ -80,42 +104,8 @@ const JobDetails = () => {
     }
   };
 
-  /**
-   * Calculate profile completion percentage based on required fields
-   */
-  const calculateProfileCompletion = (profile) => {
-    if (!profile) return 0;
-
-    const requiredFields = [
-      profile.phone,                    // Personal Details: Phone
-      user?.full_name,                 // Personal Details: Name (from user context)  
-      user?.email,                     // Personal Details: Email (from user context)
-      profile.specialization,          // Healthcare Category
-      profile.experience_years >= 0    // Experience
-    ];
-
-    // Handle custom specialization
-    let hasSpecialization = profile.specialization;
-    if (profile.specialization === 'other' && profile.custom_specialization) {
-      hasSpecialization = true;
-    } else if (profile.specialization === 'other' && !profile.custom_specialization) {
-      hasSpecialization = false;
-    }
-
-    const completionFields = [
-      profile.phone,
-      user?.full_name,
-      user?.email,
-      hasSpecialization,
-      profile.experience_years >= 0
-    ];
-
-    const filledFields = completionFields.filter(field => 
-      field !== null && field !== undefined && field !== ''
-    ).length;
-
-    return Math.round((filledFields / completionFields.length) * 100);
-  };
+  // Profile completion is now fetched from backend for consistency
+  // The backend calculates based on: name, phone, position, experience, location, specialization
 
   /**
    * Enhanced apply button click handler
@@ -177,6 +167,7 @@ const JobDetails = () => {
     console.log('Lead collection success callback triggered');
     console.log('Job external URL:', job?.external_url);
     setShowLeadModal(false);
+    setHasApplied(true); // Update state to show "Applied" status
     
     if (job?.external_url) {
       // External job - redirect to external URL

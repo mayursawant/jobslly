@@ -81,7 +81,7 @@ const BlogPost = () => {
               "name": "Jobslly",
               "logo": {
                 "@type": "ImageObject",
-                "url": "https://jobslly-health-1.preview.emergentagent.com/logo.png"
+                "url": "https://healthcare-board.preview.emergentagent.com/logo.png"
               }
             },
             "datePublished": post.published_at,
@@ -145,11 +145,11 @@ const BlogPost = () => {
             </div>
 
             {post.featured_image && (
-              <div className="h-64 md:h-80 bg-white/10 rounded-2xl mb-8 border border-white/20 backdrop-blur-sm overflow-hidden">
+              <div className="bg-white/10 rounded-2xl mb-8 border border-white/20 backdrop-blur-sm overflow-hidden">
                 <img 
                   src={post.featured_image} 
                   alt={post.title}
-                  className="w-full h-full object-cover rounded-2xl"
+                  className="w-full h-auto max-h-96 object-contain rounded-2xl"
                   onError={(e) => {
                     // Fallback to placeholder if image fails to load
                     e.target.style.display = 'none';
@@ -171,13 +171,8 @@ const BlogPost = () => {
             <Card className="bg-white shadow-xl border border-gray-100 mb-16 overflow-hidden">
               <CardContent className="p-8 md:p-12">
                 <div 
-                  className="prose prose-lg max-w-none"
+                  className="blog-content"
                   dangerouslySetInnerHTML={{ __html: post.content }}
-                  style={{
-                    color: '#374151',
-                    lineHeight: '1.8',
-                    fontSize: '18px'
-                  }}
                 />
               </CardContent>
             </Card>

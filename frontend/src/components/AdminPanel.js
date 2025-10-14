@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef, useMemo } from 'react';
 import { AuthContext } from '../App';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -9,6 +9,7 @@ import AIJobEnhancementModal from './AIJobEnhancementModal';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Wand2 } from 'lucide-react';
+import JoditEditor from 'jodit-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -64,6 +65,28 @@ const AdminPanel = () => {
     seo_description: '',
     seo_keywords: []
   });
+  
+  // Jodit Editor ref and config
+  const editor = useRef(null);
+  const config = useMemo(() => ({
+    readonly: false,
+    placeholder: 'Write your article content here... Use the toolbar to format with headings, bold, italic, lists, images, and more.',
+    minHeight: 400,
+    buttons: [
+      'bold', 'italic', 'underline', 'strikethrough',
+      '|', 'ul', 'ol',
+      '|', 'font', 'fontsize', 'brush', 'paragraph',
+      '|', 'image', 'video', 'table', 'link',
+      '|', 'align', 'undo', 'redo',
+      '|', 'hr', 'eraser', 'copyformat',
+      '|', 'symbol', 'fullsize', 'preview', 'print'
+    ],
+    removeButtons: ['file', 'about'],
+    uploader: {
+      insertImageAsBase64URI: true
+    },
+    toolbarAdaptive: false
+  }), []);
   
   // AI Enhancement State
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
@@ -328,7 +351,8 @@ const AdminPanel = () => {
       is_featured: blog.is_featured || false,
       seo_title: blog.seo_title || '',
       seo_description: blog.seo_description || '',
-      featured_image: null // Can't edit existing image directly
+      featured_image: null, // Will be set when new image uploaded
+      existing_image_url: blog.featured_image || null // Store existing image URL
     });
     
     // Store the blog ID for updating
@@ -826,13 +850,18 @@ const AdminPanel = () => {
                       <span className="text-sm text-gray-700">External Job</span>
                     </label>
                     {editingJob.is_external && (
-                      <input
-                        type="url"
-                        value={editingJob.external_url || ''}
-                        onChange={(e) => setEditingJob(prev => ({...prev, external_url: e.target.value}))}
-                        className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                        placeholder="https://company.com/apply"
-                      />
+                      <div className="flex-1">
+                        <input
+                          type="url"
+                          value={editingJob.external_url || ''}
+                          onChange={(e) => setEditingJob(prev => ({...prev, external_url: e.target.value}))}
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                          placeholder="https://company.com/apply"
+                          pattern="https://.*"
+                          title="URL must start with https://"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">Must start with https://</p>
+                      </div>
                     )}
                   </div>
 
@@ -989,7 +1018,12 @@ const AdminPanel = () => {
                         placeholder="https://example.com/jobs/apply-here"
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                         required={newJob.is_external}
+                        pattern="https://.*"
+                        title="URL must start with https://"
                       />
+                      <p className="text-sm text-red-600 mt-1 font-medium">
+                        ⚠️ URL must start with https:// (secure connection required)
+                      </p>
                       <p className="text-sm text-gray-500 mt-1">
                         📋 Users will still fill out lead information before being redirected to this external application site.
                       </p>
@@ -1049,8 +1083,8 @@ const AdminPanel = () => {
                       errors.push('External URL is required for external jobs');
                     }
                     
-                    if (newJob.is_external && newJob.external_url && !newJob.external_url.match(/^https?:\/\/.+/)) {
-                      errors.push('External URL must be a valid URL starting with http:// or https://');
+                    if (newJob.is_external && newJob.external_url && !newJob.external_url.match(/^https:\/\/.+/)) {
+                      errors.push('Invalid URL. It must start with https://');
                     }
                     
                     if (errors.length > 0) {
@@ -1175,14 +1209,13 @@ const AdminPanel = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Article Content</label>
-                  <textarea
+                  <JoditEditor
+                    ref={editor}
                     value={newBlog.content}
-                    onChange={(e) => setNewBlog(prev => ({...prev, content: e.target.value}))}
-                    placeholder="Write your full article content here... (HTML supported)"
-                    rows={12}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-mono text-sm"
+                    config={config}
+                    onBlur={newContent => setNewBlog(prev => ({...prev, content: newContent}))}
                   />
-                  <p className="text-xs text-gray-500 mt-1">💡 HTML tags supported: &lt;h2&gt;, &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;a&gt;</p>
+                  <p className="text-xs text-gray-500 mt-2">💡 Use the toolbar to format your content with headings, bold, italic, lists, links, images, and more.</p>
                 </div>
 
                 {/* Featured Image Upload */}
@@ -1227,6 +1260,22 @@ const AdminPanel = () => {
                           </p>
                           <p className="text-xs text-gray-500">
                             Click to change image
+                          </p>
+                        </div>
+                      ) : newBlog.existing_image_url ? (
+                        <div className="space-y-2">
+                          <div className="w-20 h-20 bg-blue-100 rounded-lg overflow-hidden">
+                            <img 
+                              src={newBlog.existing_image_url} 
+                              alt="Current" 
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <p className="text-sm text-blue-600 font-medium">
+                            Current Image
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Click to upload new image
                           </p>
                         </div>
                       ) : (
@@ -1342,13 +1391,14 @@ const AdminPanel = () => {
                       formData.append('seo_title', newBlog.seo_title);
                       formData.append('seo_description', newBlog.seo_description);
                       
-                      // Add image if selected
+                      // Check if we're editing or creating
+                      const isEditing = newBlog.id;
+                      
+                      // Add image only if a new one is selected
+                      // When editing, if no new image is uploaded, the existing image will be preserved on backend
                       if (newBlog.featured_image) {
                         formData.append('featured_image', newBlog.featured_image);
                       }
-
-                      // Check if we're editing or creating
-                      const isEditing = newBlog.id;
                       const url = isEditing ? `${API}/admin/blog/${newBlog.id}` : `${API}/admin/blog`;
                       const method = isEditing ? 'put' : 'post';
 

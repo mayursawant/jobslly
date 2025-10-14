@@ -27,7 +27,28 @@ const Login = () => {
     try {
       await login(formData.email, formData.password);
       toast.success('Successfully logged in!');
-      navigate('/dashboard');
+      
+      // Get user data from localStorage or context to determine role
+      const token = localStorage.getItem('token');
+      if (token) {
+        // Fetch user data to determine redirect
+        const API = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+        const response = await fetch(`${API}/api/auth/me`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const userData = await response.json();
+        
+        // Redirect based on role
+        if (userData.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard');
+        }
+      } else {
+        navigate('/dashboard');
+      }
     } catch (error) {
       const message = error.response?.data?.detail || 'Login failed. Please check your credentials.';
       setError(message);

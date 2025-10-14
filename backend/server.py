@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File, Form
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File, Form, Header
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.responses import Response, PlainTextResponse
 from dotenv import load_dotenv
@@ -72,6 +72,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     full_name: str
+    phone: Optional[str] = None
     role: str = UserRole.JOB_SEEKER
 
 class UserLogin(BaseModel):
@@ -336,6 +337,27 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         raise HTTPException(status_code=401, detail="User not found")
     return User(**user)
 
+async def get_current_user_optional(authorization: str = None):
+    """
+    Optional authentication - returns User if valid token provided, None otherwise
+    """
+    if not authorization or not authorization.startswith('Bearer '):
+        return None
+    
+    try:
+        token = authorization.replace('Bearer ', '')
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            return None
+        
+        user = await db.users.find_one({"email": email})
+        if user is None:
+            return None
+        return User(**user)
+    except:
+        return None
+
 async def get_ai_chat():
     if not AI_ENABLED:
         raise HTTPException(status_code=503, detail="AI service not available")
@@ -360,11 +382,41 @@ async def register(user_data: UserCreate):
     
     # Create user
     hashed_password = hash_password(user_data.password)
-    user = User(**user_data.dict(exclude={'password'}))
+    user = User(**user_data.dict(exclude={'password', 'phone'}))
     user_dict = user.dict()
     user_dict['hashed_password'] = hashed_password
     
     await db.users.insert_one(user_dict)
+    
+    # Create user profile with phone number if provided
+    if user_data.phone:
+        profile = UserProfile(
+            user_id=user.id,
+            phone=user_data.phone
+        )
+        profile_dict = profile.dict()
+        profile_dict['created_at'] = profile_dict['created_at'].isoformat()
+        if profile_dict.get('updated_at'):
+            profile_dict['updated_at'] = profile_dict['updated_at'].isoformat()
+        
+        await db.user_profiles.insert_one(profile_dict)
+    
+    # Create job seeker profile if role is job_seeker
+    if user_data.role == "job_seeker":
+        try:
+            job_seeker_profile = JobSeekerProfile(
+                email=user.email,
+                name=user.full_name,
+                phone=user_data.phone,
+                user_id=user.id
+            )
+            profile_dict = job_seeker_profile.dict()
+            profile_dict['created_at'] = profile_dict['created_at'].isoformat()
+            profile_dict['updated_at'] = profile_dict['updated_at'].isoformat()
+            
+            await db.job_seekers.insert_one(profile_dict)
+        except Exception as e:
+            print(f"Error creating job seeker profile during registration: {e}")
     
     # Create token
     access_token = create_access_token(
@@ -415,6 +467,30 @@ async def login(user_data: UserLogin):
                 }
             )
             
+            # Merge lead applications to user account
+            # Find all leads for this email that haven't been converted to applications
+            leads = await db.job_leads.find({"email": user["email"]}).to_list(length=None)
+            for lead in leads:
+                # Check if application already exists for this job
+                existing_app = await db.applications.find_one({
+                    "job_id": lead['job_id'],
+                    "applicant_id": user["id"]
+                })
+                
+                if not existing_app:
+                    # Create application from lead
+                    application = JobApplication(
+                        job_id=lead['job_id'],
+                        applicant_id=user["id"],
+                        cover_letter=lead.get('message', ''),
+                        status="pending"
+                    )
+                    
+                    application_dict = application.dict()
+                    application_dict['created_at'] = lead.get('created_at', datetime.now(timezone.utc).isoformat())
+                    
+                    await db.applications.insert_one(application_dict)
+            
         except Exception as e:
             # Log error but don't fail login
             print(f"Error creating job seeker profile on login: {e}")
@@ -435,6 +511,14 @@ async def get_me(current_user: User = Depends(get_current_user)):
 async def create_job(job_data: JobCreate, current_user: User = Depends(get_current_user)):
     if current_user.role not in [UserRole.EMPLOYER, UserRole.ADMIN]:
         raise HTTPException(status_code=403, detail="Not authorized to create jobs")
+    
+    # Validate external URL must be HTTPS
+    if job_data.is_external and job_data.external_url:
+        if not job_data.external_url.startswith('https://'):
+            raise HTTPException(
+                status_code=400, 
+                detail="Invalid URL. External job URLs must start with https:// for security"
+            )
     
     job = Job(**job_data.dict(), employer_id=current_user.id)
     job_dict = job.dict()
@@ -458,8 +542,8 @@ async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True):
     
     return [Job(**job) for job in jobs]
 
-@api_router.get("/jobs/{job_id}", response_model=Job)
-async def get_job(job_id: str):
+@api_router.get("/jobs/{job_id}")
+async def get_job(job_id: str, authorization: str = Header(None)):
     job = await db.jobs.find_one({"id": job_id, "is_deleted": {"$ne": True}})
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -469,7 +553,26 @@ async def get_job(job_id: str):
     if job.get('expires_at') and isinstance(job.get('expires_at'), str):
         job['expires_at'] = datetime.fromisoformat(job['expires_at'])
     
-    return Job(**job)
+    # Check if user has applied for this job (for logged-in users)
+    has_applied = False
+    current_user = await get_current_user_optional(authorization)
+    
+    if current_user:
+        # Check in applications collection
+        existing_application = await db.applications.find_one({
+            "job_id": job_id,
+            "applicant_id": current_user.id
+        })
+        # Also check in job_leads collection (for users who applied before logging in)
+        existing_lead = await db.job_leads.find_one({
+            "job_id": job_id,
+            "email": current_user.email
+        })
+        has_applied = bool(existing_application or existing_lead)
+    
+    job_response = Job(**job).dict()
+    job_response['has_applied'] = has_applied
+    return job_response
 
 # Job Application Routes
 # (Job application endpoint is implemented further below with enhanced functionality)
@@ -730,6 +833,14 @@ async def admin_create_job(job_data: JobCreate, current_user: User = Depends(get
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Admin access required")
     
+    # Validate external URL must be HTTPS
+    if job_data.is_external and job_data.external_url:
+        if not job_data.external_url.startswith('https://'):
+            raise HTTPException(
+                status_code=400, 
+                detail="Invalid URL. External job URLs must start with https:// for security"
+            )
+    
     job = Job(**job_data.dict(), employer_id=current_user.id, is_approved=True)
     job_dict = job.dict()
     job_dict['created_at'] = job_dict['created_at'].isoformat()
@@ -958,6 +1069,14 @@ async def update_job_admin(
     existing_job = await db.jobs.find_one({"id": job_id})
     if not existing_job:
         raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Validate external URL must be HTTPS
+    if job_data.is_external and job_data.external_url:
+        if not job_data.external_url.startswith('https://'):
+            raise HTTPException(
+                status_code=400, 
+                detail="Invalid URL. External job URLs must start with https:// for security"
+            )
     
     update_data = job_data.dict(exclude_unset=True)
     update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
@@ -1322,6 +1441,8 @@ async def track_job_application(email: str, job_id: str):
 # Job Application Endpoint
 @api_router.post("/jobs/{job_id}/apply", response_model=Dict)
 async def apply_for_job(job_id: str, application_data: dict, current_user: User = Depends(get_current_user)):
+    print(f"🎯 Application attempt - Job ID: {job_id}, User ID: {current_user.id}, User Email: {current_user.email}")
+    
     # Check if job exists
     job = await db.jobs.find_one({"id": job_id})
     if not job:
@@ -1333,6 +1454,7 @@ async def apply_for_job(job_id: str, application_data: dict, current_user: User 
         "applicant_id": current_user.id
     })
     if existing_application:
+        print(f"⚠️ Duplicate application detected for user {current_user.id} on job {job_id}")
         raise HTTPException(status_code=400, detail="You have already applied for this job")
     
     # Create job application
@@ -1346,7 +1468,9 @@ async def apply_for_job(job_id: str, application_data: dict, current_user: User 
     application_dict = application.dict()
     application_dict['created_at'] = application_dict['created_at'].isoformat()
     
+    print(f"💾 Saving application to database: {application_dict}")
     await db.applications.insert_one(application_dict)
+    print(f"✅ Application saved successfully with ID: {application.id}")
     
     # Update job application count
     await db.jobs.update_one(
@@ -1444,6 +1568,95 @@ async def get_job_seeker_dashboard(current_user: User = Depends(get_current_user
         "profile_completion": profile_completion,
         "recent_applications": clean_applications[-5:] if clean_applications else [],
         "recent_leads": clean_leads[-5:] if clean_leads else []
+    }
+
+
+# Get Job Seeker Applications with Job Details
+@api_router.get("/job-seeker/applications")
+async def get_job_seeker_applications(current_user: User = Depends(get_current_user)):
+    print(f"📋 Fetching applications for user: {current_user.id}, email: {current_user.email}, role: {current_user.role}")
+    
+    if current_user.role != UserRole.JOB_SEEKER:
+        raise HTTPException(status_code=403, detail="Job seeker access required")
+    
+    # Get applications from applications collection (logged-in applications)
+    applications = await db.applications.find({"applicant_id": current_user.id}).to_list(length=None)
+    print(f"💼 Found {len(applications)} applications in applications collection")
+    if applications:
+        print(f"   Application IDs: {[app['id'] for app in applications]}")
+    
+    # Get applications from job_leads collection (applied before logging in, matched by email)
+    leads = await db.job_leads.find({"email": current_user.email}).to_list(length=None)
+    print(f"📧 Found {len(leads)} leads in job_leads collection")
+    if leads:
+        print(f"   Lead IDs: {[lead['id'] for lead in leads]}")
+    
+    # Combine and get job details for each application
+    all_applications = []
+    
+    # Process regular applications
+    for app in applications:
+        job = await db.jobs.find_one({"id": app['job_id'], "is_deleted": {"$ne": True}})
+        if job:
+            # Skip jobs with missing critical fields
+            if not job.get('title') or not job.get('company'):
+                print(f"   ⚠️ Skipping application - job has missing title or company. Job ID: {app['job_id']}")
+                continue
+                
+            all_applications.append({
+                "id": app['id'],
+                "job_id": app['job_id'],
+                "job_title": job.get('title'),
+                "company": job.get('company'),
+                "location": job.get('location', 'Not specified'),
+                "job_type": job.get('job_type', 'Not specified'),
+                "category": job.get('category', 'General'),
+                "applied_at": app['created_at'],
+                "status": app.get('status', 'pending'),
+                "application_type": "registered"
+            })
+            print(f"   ✅ Processed application for job: {job.get('title')}")
+        else:
+            print(f"   ⚠️ Job not found or deleted for application ID: {app['id']}, job_id: {app['job_id']}")
+    
+    # Process lead applications
+    for lead in leads:
+        # Check if this lead has already been converted to a regular application
+        existing_app = any(app['job_id'] == lead['job_id'] for app in applications)
+        if not existing_app:
+            job = await db.jobs.find_one({"id": lead['job_id'], "is_deleted": {"$ne": True}})
+            if job:
+                # Skip jobs with missing critical fields
+                if not job.get('title') or not job.get('company'):
+                    print(f"   ⚠️ Skipping lead application - job has missing title or company. Job ID: {lead['job_id']}")
+                    continue
+                    
+                all_applications.append({
+                    "id": lead['id'],
+                    "job_id": lead['job_id'],
+                    "job_title": job.get('title'),
+                    "company": job.get('company'),
+                    "location": job.get('location', 'Not specified'),
+                    "job_type": job.get('job_type', 'Not specified'),
+                    "category": job.get('category', 'General'),
+                    "applied_at": lead['created_at'],
+                    "status": "pending",
+                    "application_type": "lead"
+                })
+                print(f"   ✅ Processed lead for job: {job.get('title')}")
+            else:
+                print(f"   ⚠️ Job not found or deleted for lead ID: {lead['id']}, job_id: {lead['job_id']}")
+        else:
+            print(f"   ℹ️ Skipping lead {lead['id']} - already converted to application")
+    
+    # Sort by applied date (most recent first)
+    all_applications.sort(key=lambda x: x['applied_at'], reverse=True)
+    
+    print(f"📊 Total applications to return: {len(all_applications)}")
+    
+    return {
+        "total_applications": len(all_applications),
+        "applications": all_applications
     }
 
 # Employer Dashboard Routes
@@ -1584,7 +1797,7 @@ async def get_sitemap():
     urlset = ET.Element("urlset")
     urlset.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
     
-    base_url = os.environ.get('FRONTEND_URL', 'https://jobslly-health-1.preview.emergentagent.com')
+    base_url = os.environ.get('FRONTEND_URL', 'https://healthcare-board.preview.emergentagent.com')
     
     # Static pages
     static_pages = [
@@ -1648,7 +1861,7 @@ async def get_robots_txt():
     """
     Generate robots.txt for search engine crawling
     """
-    base_url = os.environ.get('FRONTEND_URL', 'https://jobslly-health-1.preview.emergentagent.com')
+    base_url = os.environ.get('FRONTEND_URL', 'https://healthcare-board.preview.emergentagent.com')
     
     robots_content = f"""User-agent: *
 Allow: /
@@ -1700,8 +1913,8 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
                     "title": f"{job['title']} - {job['company']} | Jobslly Healthcare Jobs",
                     "description": f"Apply for {job['title']} position at {job['company']} in {job['location']}. {job['description'][:150]}...",
                     "keywords": [job['title'], job['company'], job['location'], "healthcare jobs", "medical careers"],
-                    "og_image": f"https://jobslly-health-1.preview.emergentagent.com/api/og-image/job/{job_id}",
-                    "canonical": f"https://jobslly-health-1.preview.emergentagent.com/jobs/{job_id}"
+                    "og_image": f"https://healthcare-board.preview.emergentagent.com/api/og-image/job/{job_id}",
+                    "canonical": f"https://healthcare-board.preview.emergentagent.com/jobs/{job_id}"
                 }
         
         elif page_type == "blog" and blog_slug:
@@ -1711,8 +1924,8 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
                     "title": post.get('seo_title') or f"{post['title']} | Jobslly Health Hub",
                     "description": post.get('seo_description') or post['excerpt'],
                     "keywords": post.get('seo_keywords', []) + [post['category'], "healthcare", "careers"],
-                    "og_image": post.get('featured_image') or f"https://jobslly-health-1.preview.emergentagent.com/api/og-image/blog/{blog_slug}",
-                    "canonical": f"https://jobslly-health-1.preview.emergentagent.com/blog/{blog_slug}"
+                    "og_image": post.get('featured_image') or f"https://healthcare-board.preview.emergentagent.com/api/og-image/blog/{blog_slug}",
+                    "canonical": f"https://healthcare-board.preview.emergentagent.com/blog/{blog_slug}"
                 }
     
     except Exception as e:
@@ -1723,8 +1936,8 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
         "title": "Jobslly - Future of Healthcare Careers",
         "description": "Discover healthcare opportunities for doctors, nurses, pharmacists, dentists, and physiotherapists with AI-powered career matching.",
         "keywords": ["healthcare jobs", "medical careers", "doctor jobs", "nurse jobs"],
-        "og_image": "https://jobslly-health-1.preview.emergentagent.com/og-image-default.jpg",
-        "canonical": "https://jobslly-health-1.preview.emergentagent.com"
+        "og_image": "https://healthcare-board.preview.emergentagent.com/og-image-default.jpg",
+        "canonical": "https://healthcare-board.preview.emergentagent.com"
     }
 
 # Include the router
