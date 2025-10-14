@@ -360,6 +360,32 @@ const JobSeekerDashboard = () => {
   };
 
   /**
+   * Fetches all job applications for the user
+   */
+  const fetchApplications = async () => {
+    setApplicationsLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+      
+      const response = await axios.get(`${API}/job-seeker/applications`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      setApplications(response.data.applications || []);
+    } catch (error) {
+      console.error('Failed to fetch applications:', error);
+      toast.error('Failed to load applications');
+    } finally {
+      setApplicationsLoading(false);
+    }
+  };
+
+  /**
    * Fetches user profile data
    */
   const fetchProfile = async () => {
