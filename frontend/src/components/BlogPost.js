@@ -171,13 +171,8 @@ const BlogPost = () => {
             <Card className="bg-white shadow-xl border border-gray-100 mb-16 overflow-hidden">
               <CardContent className="p-8 md:p-12">
                 <div 
-                  className="prose prose-lg max-w-none"
+                  className="blog-content"
                   dangerouslySetInnerHTML={{ __html: post.content }}
-                  style={{
-                    color: '#374151',
-                    lineHeight: '1.8',
-                    fontSize: '18px'
-                  }}
                 />
               </CardContent>
             </Card>
