@@ -721,7 +721,9 @@ const JobSeekerDashboard = () => {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {applications.map((app) => (
+                    {applications.map((app) => {
+                      console.log('🎯 Rendering application card:', app.job_title, app);
+                      return (
                       <Card key={app.id} className="border border-gray-200 hover:border-teal-300 hover:shadow-md transition-all duration-300">
                         <CardContent className="p-6">
                           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
