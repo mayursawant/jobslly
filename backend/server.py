@@ -4,7 +4,6 @@ from fastapi.responses import Response, PlainTextResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
-from fastapi.staticfiles import StaticFiles
 import hashlib
 from pydantic import BaseModel, Field, EmailStr
 from typing import List, Optional, Dict, Any
@@ -37,8 +36,6 @@ db = client[os.environ['DB_NAME']]
 # Create the main app
 app = FastAPI(title="HealthCare Jobs API", version="1.0.0")
 
-frontend_build_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../frontend/build')
-app.mount("/static", StaticFiles(directory=os.path.join(frontend_build_path, "static")), name="static")
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
