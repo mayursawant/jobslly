@@ -114,9 +114,13 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
       
       // Save applied job ID to localStorage for session tracking
       const appliedJobs = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
+      console.log('💾 Current applied jobs in localStorage:', appliedJobs);
       if (!appliedJobs.includes(jobId)) {
         appliedJobs.push(jobId);
         localStorage.setItem('appliedJobs', JSON.stringify(appliedJobs));
+        console.log('✅ Saved job', jobId, 'to localStorage. Updated list:', appliedJobs);
+      } else {
+        console.log('ℹ️ Job', jobId, 'already in localStorage');
       }
       
       // toast.success('Thank you for your interest!');
