@@ -1209,19 +1209,13 @@ const AdminPanel = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Article Content</label>
-                  <div className="bg-white border border-gray-300 rounded-lg">
-                    <ReactQuill
-                      theme="snow"
-                      value={newBlog.content}
-                      onChange={(content) => setNewBlog(prev => ({...prev, content}))}
-                      modules={quillModules}
-                      formats={quillFormats}
-                      placeholder="Write your article content here... Use the toolbar above for formatting."
-                      className="blog-editor"
-                      style={{ height: '400px' }}
-                    />
-                  </div>
-                  <p className="text-xs text-gray-500 mt-16">💡 Use the toolbar to format your content with headings, bold, italic, lists, links, images, and more.</p>
+                  <JoditEditor
+                    ref={editor}
+                    value={newBlog.content}
+                    config={config}
+                    onBlur={newContent => setNewBlog(prev => ({...prev, content: newContent}))}
+                  />
+                  <p className="text-xs text-gray-500 mt-2">💡 Use the toolbar to format your content with headings, bold, italic, lists, links, images, and more.</p>
                 </div>
 
                 {/* Featured Image Upload */}
