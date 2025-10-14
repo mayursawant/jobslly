@@ -46,21 +46,50 @@ class JobApplicationTrackingTester:
         print("🔍 Getting job IDs from database...")
         
         try:
-            response = requests.get(f"{self.base_url}/jobs?limit=50")
+            # First login as doctor to check existing applications
+            login_data = {"email": "doctor@gmail.com", "password": "password"}
+            login_response = requests.post(f"{self.base_url}/auth/login", json=login_data)
             
-            if response.status_code == 200:
-                jobs = response.json()
-                if len(jobs) >= 2:
-                    self.test_job_id = jobs[0]["id"]
-                    self.different_job_id = jobs[1]["id"]
-                    self.log_result("Job IDs Retrieved", True, 
-                                  f"Got job IDs: {self.test_job_id[:8]}... and {self.different_job_id[:8]}...")
-                    return True
+            if login_response.status_code == 200:
+                temp_token = login_response.json()["access_token"]
+                headers = {"Authorization": f"Bearer {temp_token}"}
+                
+                # Get existing applications
+                apps_response = requests.get(f"{self.base_url}/job-seeker/applications", headers=headers)
+                applied_job_ids = []
+                if apps_response.status_code == 200:
+                    apps_data = apps_response.json()
+                    applied_job_ids = [app.get('job_id') for app in apps_data.get('applications', [])]
+                
+                # Get all jobs
+                response = requests.get(f"{self.base_url}/jobs?limit=50")
+                
+                if response.status_code == 200:
+                    jobs = response.json()
+                    # Find jobs not already applied to
+                    available_jobs = [job for job in jobs if job['id'] not in applied_job_ids]
+                    
+                    if len(available_jobs) >= 2:
+                        self.test_job_id = available_jobs[0]["id"]
+                        self.different_job_id = available_jobs[1]["id"]
+                        self.log_result("Job IDs Retrieved", True, 
+                                      f"Got available job IDs: {self.test_job_id[:8]}... and {self.different_job_id[:8]}...")
+                        return True
+                    elif len(jobs) >= 2:
+                        # Fallback to any jobs if needed
+                        self.test_job_id = jobs[0]["id"]
+                        self.different_job_id = jobs[1]["id"]
+                        self.log_result("Job IDs Retrieved", True, 
+                                      f"Got job IDs (may have existing applications): {self.test_job_id[:8]}... and {self.different_job_id[:8]}...")
+                        return True
+                    else:
+                        self.log_result("Job IDs Retrieved", False, f"Only {len(jobs)} jobs found, need at least 2")
+                        return False
                 else:
-                    self.log_result("Job IDs Retrieved", False, f"Only {len(jobs)} jobs found, need at least 2")
+                    self.log_result("Job IDs Retrieved", False, f"Status: {response.status_code}", response.text)
                     return False
             else:
-                self.log_result("Job IDs Retrieved", False, f"Status: {response.status_code}", response.text)
+                self.log_result("Job IDs Retrieved", False, f"Doctor login failed: {login_response.status_code}")
                 return False
         
         except Exception as e:
