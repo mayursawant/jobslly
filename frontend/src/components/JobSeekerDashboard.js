@@ -381,13 +381,17 @@ const JobSeekerDashboard = () => {
       console.log('📊 Total applications:', response.data.total_applications);
       console.log('📝 Applications array:', response.data.applications);
       
-      setApplications(response.data.applications || []);
+      const appsData = response.data.applications || [];
+      setApplications(appsData);
+      console.log('🔄 State updated with applications. Array length:', appsData.length);
+      console.log('🔄 First application:', appsData[0]);
     } catch (error) {
       console.error('❌ Failed to fetch applications:', error);
       console.error('Error details:', error.response?.data);
       toast.error('Failed to load applications');
     } finally {
       setApplicationsLoading(false);
+      console.log('⏱️ Loading state set to false');
     }
   };
 
