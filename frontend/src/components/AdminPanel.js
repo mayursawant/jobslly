@@ -66,6 +66,28 @@ const AdminPanel = () => {
     seo_keywords: []
   });
   
+  // Jodit Editor ref and config
+  const editor = useRef(null);
+  const config = useMemo(() => ({
+    readonly: false,
+    placeholder: 'Write your article content here... Use the toolbar to format with headings, bold, italic, lists, images, and more.',
+    minHeight: 400,
+    buttons: [
+      'bold', 'italic', 'underline', 'strikethrough',
+      '|', 'ul', 'ol',
+      '|', 'font', 'fontsize', 'brush', 'paragraph',
+      '|', 'image', 'video', 'table', 'link',
+      '|', 'align', 'undo', 'redo',
+      '|', 'hr', 'eraser', 'copyformat',
+      '|', 'symbol', 'fullsize', 'preview', 'print'
+    ],
+    removeButtons: ['file', 'about'],
+    uploader: {
+      insertImageAsBase64URI: true
+    },
+    toolbarAdaptive: false
+  }), []);
+  
   // AI Enhancement State
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   
