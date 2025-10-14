@@ -1524,6 +1524,67 @@ async def get_job_seeker_dashboard(current_user: User = Depends(get_current_user
         "recent_leads": clean_leads[-5:] if clean_leads else []
     }
 
+
+# Get Job Seeker Applications with Job Details
+@api_router.get("/job-seeker/applications")
+async def get_job_seeker_applications(current_user: User = Depends(get_current_user)):
+    if current_user.role != UserRole.JOB_SEEKER:
+        raise HTTPException(status_code=403, detail="Job seeker access required")
+    
+    # Get applications from applications collection (logged-in applications)
+    applications = await db.applications.find({"applicant_id": current_user.id}).to_list(length=None)
+    
+    # Get applications from job_leads collection (applied before logging in, matched by email)
+    leads = await db.job_leads.find({"email": current_user.email}).to_list(length=None)
+    
+    # Combine and get job details for each application
+    all_applications = []
+    
+    # Process regular applications
+    for app in applications:
+        job = await db.jobs.find_one({"id": app['job_id'], "is_deleted": {"$ne": True}})
+        if job:
+            all_applications.append({
+                "id": app['id'],
+                "job_id": app['job_id'],
+                "job_title": job.get('title'),
+                "company": job.get('company'),
+                "location": job.get('location'),
+                "job_type": job.get('job_type'),
+                "category": job.get('category'),
+                "applied_at": app['created_at'],
+                "status": app.get('status', 'pending'),
+                "application_type": "registered"
+            })
+    
+    # Process lead applications
+    for lead in leads:
+        # Check if this lead has already been converted to a regular application
+        existing_app = any(app['job_id'] == lead['job_id'] for app in applications)
+        if not existing_app:
+            job = await db.jobs.find_one({"id": lead['job_id'], "is_deleted": {"$ne": True}})
+            if job:
+                all_applications.append({
+                    "id": lead['id'],
+                    "job_id": lead['job_id'],
+                    "job_title": job.get('title'),
+                    "company": job.get('company'),
+                    "location": job.get('location'),
+                    "job_type": job.get('job_type'),
+                    "category": job.get('category'),
+                    "applied_at": lead['created_at'],
+                    "status": "pending",
+                    "application_type": "lead"
+                })
+    
+    # Sort by applied date (most recent first)
+    all_applications.sort(key=lambda x: x['applied_at'], reverse=True)
+    
+    return {
+        "total_applications": len(all_applications),
+        "applications": all_applications
+    }
+
 # Employer Dashboard Routes
 @api_router.get("/employer/dashboard")
 async def get_employer_dashboard(current_user: User = Depends(get_current_user)):
