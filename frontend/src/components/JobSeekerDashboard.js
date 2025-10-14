@@ -802,7 +802,8 @@ const JobSeekerDashboard = () => {
                           </div>
                         </CardContent>
                       </Card>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </CardContent>
