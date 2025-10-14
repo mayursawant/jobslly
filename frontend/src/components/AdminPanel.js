@@ -1218,14 +1218,19 @@ const AdminPanel = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Article Content</label>
-                  <textarea
-                    value={newBlog.content}
-                    onChange={(e) => setNewBlog(prev => ({...prev, content: e.target.value}))}
-                    placeholder="Write your full article content here... (HTML supported)"
-                    rows={12}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-mono text-sm"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">💡 HTML tags supported: &lt;h2&gt;, &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;a&gt;</p>
+                  <div className="bg-white border border-gray-300 rounded-lg">
+                    <ReactQuill
+                      theme="snow"
+                      value={newBlog.content}
+                      onChange={(content) => setNewBlog(prev => ({...prev, content}))}
+                      modules={quillModules}
+                      formats={quillFormats}
+                      placeholder="Write your article content here... Use the toolbar above for formatting."
+                      className="blog-editor"
+                      style={{ height: '400px' }}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-16">💡 Use the toolbar to format your content with headings, bold, italic, lists, links, images, and more.</p>
                 </div>
 
                 {/* Featured Image Upload */}
