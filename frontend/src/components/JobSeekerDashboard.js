@@ -370,15 +370,21 @@ const JobSeekerDashboard = () => {
         throw new Error('No authentication token found');
       }
       
+      console.log('📋 Fetching applications...');
       const response = await axios.get(`${API}/job-seeker/applications`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       
+      console.log('✅ Applications response:', response.data);
+      console.log('📊 Total applications:', response.data.total_applications);
+      console.log('📝 Applications array:', response.data.applications);
+      
       setApplications(response.data.applications || []);
     } catch (error) {
-      console.error('Failed to fetch applications:', error);
+      console.error('❌ Failed to fetch applications:', error);
+      console.error('Error details:', error.response?.data);
       toast.error('Failed to load applications');
     } finally {
       setApplicationsLoading(false);
