@@ -308,6 +308,8 @@ const JobSeekerDashboard = () => {
   const [saving, setSaving] = useState(false);
   const { user } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('overview');
+  const [applications, setApplications] = useState([]);
+  const [applicationsLoading, setApplicationsLoading] = useState(false);
 
   /**
    * Switch to Edit Profile tab
