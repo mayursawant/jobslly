@@ -46,7 +46,11 @@ const JobDetails = () => {
 
   const checkLocalStorageApplied = () => {
     const appliedJobs = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
-    setHasApplied(appliedJobs.includes(jobId));
+    console.log('🔍 Checking localStorage for job', jobId);
+    console.log('📋 Applied jobs in localStorage:', appliedJobs);
+    const isApplied = appliedJobs.includes(jobId);
+    console.log('✓ Has applied:', isApplied);
+    setHasApplied(isApplied);
   };
 
   const fetchJobDetails = async () => {
