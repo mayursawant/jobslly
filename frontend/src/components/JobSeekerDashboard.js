@@ -562,7 +562,7 @@ const JobSeekerDashboard = () => {
         {/* Main Dashboard Content */}
         <Tabs value={activeTab} onValueChange={(value) => {
           setActiveTab(value);
-          if (value === 'applications' && applications.length === 0) {
+          if (value === 'applications') {
             fetchApplications();
           }
         }} className="space-y-6">
