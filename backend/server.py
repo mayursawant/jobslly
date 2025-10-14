@@ -337,6 +337,27 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         raise HTTPException(status_code=401, detail="User not found")
     return User(**user)
 
+async def get_current_user_optional(authorization: str = None):
+    """
+    Optional authentication - returns User if valid token provided, None otherwise
+    """
+    if not authorization or not authorization.startswith('Bearer '):
+        return None
+    
+    try:
+        token = authorization.replace('Bearer ', '')
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            return None
+        
+        user = await db.users.find_one({"email": email})
+        if user is None:
+            return None
+        return User(**user)
+    except:
+        return None
+
 async def get_ai_chat():
     if not AI_ENABLED:
         raise HTTPException(status_code=503, detail="AI service not available")
