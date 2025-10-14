@@ -1598,14 +1598,19 @@ async def get_job_seeker_applications(current_user: User = Depends(get_current_u
     for app in applications:
         job = await db.jobs.find_one({"id": app['job_id'], "is_deleted": {"$ne": True}})
         if job:
+            # Skip jobs with missing critical fields
+            if not job.get('title') or not job.get('company'):
+                print(f"   ⚠️ Skipping application - job has missing title or company. Job ID: {app['job_id']}")
+                continue
+                
             all_applications.append({
                 "id": app['id'],
                 "job_id": app['job_id'],
                 "job_title": job.get('title'),
                 "company": job.get('company'),
-                "location": job.get('location'),
-                "job_type": job.get('job_type'),
-                "category": job.get('category'),
+                "location": job.get('location', 'Not specified'),
+                "job_type": job.get('job_type', 'Not specified'),
+                "category": job.get('category', 'General'),
                 "applied_at": app['created_at'],
                 "status": app.get('status', 'pending'),
                 "application_type": "registered"
