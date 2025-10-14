@@ -880,6 +880,12 @@ frontend:
         - working: true
           agent: "main"
           comment: "Implemented complete job application tracking: Backend - Modified GET /api/jobs/{jobId} to include has_applied field checking both applications and job_leads collections, added GET /api/job-seeker/applications endpoint returning all user applications with job details, updated login endpoint to merge lead applications to user account (match by email). Frontend - Updated LeadCollectionModal.js to save applied job IDs to localStorage after lead submission, modified JobDetails.js to check has_applied from backend and localStorage to show 'Applied' badge, added 'My Applications' tab in JobSeekerDashboard.js with comprehensive UI showing job title, company, location, applied date, status, and 'View Job' button. Screenshot testing confirms: Dashboard now shows 3 tabs (Overview, My Applications, Edit Profile), applications tab displays properly with appropriate empty state."
+        - working: false
+          agent: "user"
+          comment: "User reported 2 critical bugs: 1) Non-logged-in users see 'Job not found' error when applying 2) Applications not showing in dashboard even though job details page shows 'Applied' status"
+        - working: true
+          agent: "main"
+          comment: "Fixed both critical bugs: 1) Backend GET /api/jobs/{job_id} was requiring authentication with Depends(security). Created get_current_user_optional function to handle optional authentication, updated endpoint to use Header(None) for authorization allowing both authenticated and unauthenticated requests. 2) JobSeekerDashboard fetchApplications was only called if applications.length === 0, preventing refresh after new applications. Changed to fetch applications every time 'My Applications' tab is clicked. Backend testing via deep_testing_backend_v2 confirmed all functionality working: GET /api/jobs/{job_id} without auth returns has_applied=false, logged-in user application creates application correctly, has_applied updates to true, applications appear in GET /api/job-seeker/applications with full job details, lead application merging on login working."
 
 metadata:
   created_by: "main_agent"
