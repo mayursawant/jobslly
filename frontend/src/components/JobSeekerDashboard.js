@@ -669,14 +669,8 @@ const JobSeekerDashboard = () => {
                   </div>
                 </CardContent>
               </Card>
-
-              {/* Career Insights Card */}
-              <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50">
-                <CardHeader>
-                  <CardTitle className="text-lg text-gray-800 flex items-center">
-                    <Award className="w-5 h-5 mr-2 text-blue-600" />
-                    Career Insights
-                  </CardTitle>
+            </div>
+          </TabsContent>
 
           {/* My Applications Tab */}
           <TabsContent value="applications" className="space-y-6">
