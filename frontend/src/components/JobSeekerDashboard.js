@@ -695,6 +695,11 @@ const JobSeekerDashboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
+                {(() => {
+                  console.log('🎨 Rendering applications tab. applicationsLoading:', applicationsLoading, 'applications.length:', applications.length);
+                  console.log('🎨 Applications state:', applications);
+                  return null;
+                })()}
                 {applicationsLoading ? (
                   <div className="text-center py-12">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
