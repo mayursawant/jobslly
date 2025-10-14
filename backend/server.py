@@ -1441,6 +1441,8 @@ async def track_job_application(email: str, job_id: str):
 # Job Application Endpoint
 @api_router.post("/jobs/{job_id}/apply", response_model=Dict)
 async def apply_for_job(job_id: str, application_data: dict, current_user: User = Depends(get_current_user)):
+    print(f"🎯 Application attempt - Job ID: {job_id}, User ID: {current_user.id}, User Email: {current_user.email}")
+    
     # Check if job exists
     job = await db.jobs.find_one({"id": job_id})
     if not job:
@@ -1452,6 +1454,7 @@ async def apply_for_job(job_id: str, application_data: dict, current_user: User 
         "applicant_id": current_user.id
     })
     if existing_application:
+        print(f"⚠️ Duplicate application detected for user {current_user.id} on job {job_id}")
         raise HTTPException(status_code=400, detail="You have already applied for this job")
     
     # Create job application
@@ -1465,7 +1468,9 @@ async def apply_for_job(job_id: str, application_data: dict, current_user: User 
     application_dict = application.dict()
     application_dict['created_at'] = application_dict['created_at'].isoformat()
     
+    print(f"💾 Saving application to database: {application_dict}")
     await db.applications.insert_one(application_dict)
+    print(f"✅ Application saved successfully with ID: {application.id}")
     
     # Update job application count
     await db.jobs.update_one(
