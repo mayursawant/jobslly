@@ -1899,6 +1899,41 @@ Crawl-delay: 1
     
     return PlainTextResponse(content=robots_content)
 
+
+# Contact Form Submission
+class ContactMessage(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    email: str
+    phone: str
+    subject: str
+    message: str
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    status: str = "new"  # new, read, replied
+
+@api_router.post("/contact")
+async def submit_contact_form(contact: ContactMessage):
+    """
+    Submit contact form inquiry
+    """
+    try:
+        print(f"📧 New contact form submission from: {contact.name} ({contact.email})")
+        
+        # Save to database
+        contact_dict = contact.dict()
+        await db.contact_messages.insert_one(contact_dict)
+        
+        print(f"✅ Contact message saved with ID: {contact.id}")
+        
+        return {
+            "success": True,
+            "message": "Thank you for contacting us! We'll get back to you within 24 hours.",
+            "message_id": contact.id
+        }
+    except Exception as e:
+        print(f"❌ Error saving contact message: {e}")
+        raise HTTPException(status_code=500, detail="Failed to submit contact form")
+
 # SEO Meta Tags API for dynamic pages
 @app.get("/api/seo/meta/{page_type}")
 async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None):
