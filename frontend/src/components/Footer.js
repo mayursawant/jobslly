@@ -287,13 +287,9 @@ const Footer = () => {
       {/* Copyright Bar */}
       <div className="bg-gray-900 border-t border-gray-700">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex flex-col md:flex-row items-center justify-between space-y-2 md:space-y-0">
-            <p className="text-xs text-gray-400 text-center md:text-left">
+          <div className="flex items-center justify-center">
+            <p className="text-xs text-gray-400 text-center">
               © {currentYear} Jobslly by Academically Global. All rights reserved.
-            </p>
-            <p className="text-xs text-gray-500 text-center md:text-right">
-              Empowering healthcare careers worldwide 🌍 | 
-              <span className="ml-1">Built with ❤️ for healthcare professionals</span>
             </p>
           </div>
         </div>
