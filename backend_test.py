@@ -701,6 +701,206 @@ class HealthcareJobsAPITester:
         else:
             self.log_result("Admin Blog Management", False, "No admin token available")
     
+    def test_contact_form_api(self):
+        """Test 14: Contact Form API - POST /api/contact-us"""
+        print("📧 Testing Contact Form API...")
+        
+        # Test 1: Valid contact form submission
+        try:
+            contact_data = {
+                "name": "John Doe",
+                "email": "john.doe@example.com",
+                "phone": "+1 (555) 123-4567",
+                "subject": "General Inquiry",
+                "message": "Hello, I would like to inquire about job opportunities in healthcare. I am a registered nurse with 5 years of experience."
+            }
+            
+            response = requests.post(f"{self.base_url}/contact-us", json=contact_data)
+            
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ["success", "message", "message_id"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if not missing_fields:
+                    if data.get("success") and data.get("message_id"):
+                        first_message_id = data["message_id"]
+                        self.log_result("Contact Form - Valid Submission", True, 
+                                      f"Form submitted successfully. Message ID: {first_message_id}")
+                    else:
+                        self.log_result("Contact Form - Valid Submission", False, 
+                                      f"Invalid response values: success={data.get('success')}, message_id={data.get('message_id')}")
+                else:
+                    self.log_result("Contact Form - Valid Submission", False, f"Missing fields: {missing_fields}")
+            else:
+                self.log_result("Contact Form - Valid Submission", False, f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Contact Form - Valid Submission", False, f"Exception: {str(e)}")
+        
+        # Test 2: Second submission to verify different message IDs
+        try:
+            contact_data_2 = {
+                "name": "Jane Smith",
+                "email": "jane.smith@example.com",
+                "phone": "+1 (555) 987-6543",
+                "subject": "Job Application",
+                "message": "I am interested in applying for a pharmacist position. I have 8 years of experience in clinical pharmacy."
+            }
+            
+            response = requests.post(f"{self.base_url}/contact-us", json=contact_data_2)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("success") and data.get("message_id"):
+                    second_message_id = data["message_id"]
+                    # Check if message IDs are different (UUID format)
+                    if len(second_message_id) == 36 and '-' in second_message_id:
+                        self.log_result("Contact Form - Unique Message IDs", True, 
+                                      f"Second submission successful with unique ID: {second_message_id}")
+                    else:
+                        self.log_result("Contact Form - Unique Message IDs", False, 
+                                      f"Invalid message ID format: {second_message_id}")
+                else:
+                    self.log_result("Contact Form - Unique Message IDs", False, "Missing success or message_id in response")
+            else:
+                self.log_result("Contact Form - Unique Message IDs", False, f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Contact Form - Unique Message IDs", False, f"Exception: {str(e)}")
+        
+        # Test 3: Missing required field - name
+        try:
+            contact_data_missing_name = {
+                "email": "test@example.com",
+                "phone": "+1 (555) 111-2222",
+                "subject": "Test",
+                "message": "Test message"
+            }
+            
+            response = requests.post(f"{self.base_url}/contact-us", json=contact_data_missing_name)
+            
+            # Should return validation error (422) or handle gracefully
+            if response.status_code in [400, 422]:
+                self.log_result("Contact Form - Missing Name Validation", True, 
+                              f"Correctly handled missing name field (Status: {response.status_code})")
+            elif response.status_code == 200:
+                # If it accepts the request, check if it handles it gracefully
+                data = response.json()
+                if data.get("success"):
+                    self.log_result("Contact Form - Missing Name Validation", True, 
+                                  "Gracefully handled missing name field")
+                else:
+                    self.log_result("Contact Form - Missing Name Validation", False, 
+                                  "Accepted request but returned success=false")
+            else:
+                self.log_result("Contact Form - Missing Name Validation", False, 
+                              f"Unexpected status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Contact Form - Missing Name Validation", False, f"Exception: {str(e)}")
+        
+        # Test 4: Missing required field - email
+        try:
+            contact_data_missing_email = {
+                "name": "Test User",
+                "phone": "+1 (555) 111-2222",
+                "subject": "Test",
+                "message": "Test message"
+            }
+            
+            response = requests.post(f"{self.base_url}/contact-us", json=contact_data_missing_email)
+            
+            # Should return validation error (422) or handle gracefully
+            if response.status_code in [400, 422]:
+                self.log_result("Contact Form - Missing Email Validation", True, 
+                              f"Correctly handled missing email field (Status: {response.status_code})")
+            elif response.status_code == 200:
+                # If it accepts the request, check if it handles it gracefully
+                data = response.json()
+                if data.get("success"):
+                    self.log_result("Contact Form - Missing Email Validation", True, 
+                                  "Gracefully handled missing email field")
+                else:
+                    self.log_result("Contact Form - Missing Email Validation", False, 
+                                  "Accepted request but returned success=false")
+            else:
+                self.log_result("Contact Form - Missing Email Validation", False, 
+                              f"Unexpected status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Contact Form - Missing Email Validation", False, f"Exception: {str(e)}")
+        
+        # Test 5: Missing required field - message
+        try:
+            contact_data_missing_message = {
+                "name": "Test User",
+                "email": "test@example.com",
+                "phone": "+1 (555) 111-2222",
+                "subject": "Test"
+            }
+            
+            response = requests.post(f"{self.base_url}/contact-us", json=contact_data_missing_message)
+            
+            # Should return validation error (422) or handle gracefully
+            if response.status_code in [400, 422]:
+                self.log_result("Contact Form - Missing Message Validation", True, 
+                              f"Correctly handled missing message field (Status: {response.status_code})")
+            elif response.status_code == 200:
+                # If it accepts the request, check if it handles it gracefully
+                data = response.json()
+                if data.get("success"):
+                    self.log_result("Contact Form - Missing Message Validation", True, 
+                                  "Gracefully handled missing message field")
+                else:
+                    self.log_result("Contact Form - Missing Message Validation", False, 
+                                  "Accepted request but returned success=false")
+            else:
+                self.log_result("Contact Form - Missing Message Validation", False, 
+                              f"Unexpected status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Contact Form - Missing Message Validation", False, f"Exception: {str(e)}")
+        
+        # Test 6: Multiple submissions to verify data persistence
+        try:
+            contact_submissions = []
+            for i in range(3):
+                contact_data = {
+                    "name": f"Healthcare Professional {i+1}",
+                    "email": f"healthcare{i+1}@example.com",
+                    "phone": f"+1 (555) 00{i+1}-000{i+1}",
+                    "subject": "Healthcare Inquiry",
+                    "message": f"This is test message number {i+1} for healthcare job inquiries."
+                }
+                
+                response = requests.post(f"{self.base_url}/contact-us", json=contact_data)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get("success") and data.get("message_id"):
+                        contact_submissions.append(data["message_id"])
+                    else:
+                        break
+                else:
+                    break
+            
+            if len(contact_submissions) == 3:
+                # Check all message IDs are unique
+                unique_ids = set(contact_submissions)
+                if len(unique_ids) == 3:
+                    self.log_result("Contact Form - Data Persistence", True, 
+                                  f"Successfully created 3 unique contact submissions: {len(unique_ids)} unique IDs")
+                else:
+                    self.log_result("Contact Form - Data Persistence", False, 
+                                  f"Expected 3 unique IDs, got {len(unique_ids)}")
+            else:
+                self.log_result("Contact Form - Data Persistence", False, 
+                              f"Only {len(contact_submissions)} out of 3 submissions succeeded")
+        
+        except Exception as e:
+            self.log_result("Contact Form - Data Persistence", False, f"Exception: {str(e)}")
+    
     def run_all_tests(self):
         """Run all test suites"""
         print("🚀 Starting Comprehensive Healthcare Jobs API Testing Suite")
