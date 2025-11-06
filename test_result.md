@@ -708,7 +708,7 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Job Application Tracking System Testing Complete"
+    - "Contact Form API Testing Complete"
   stuck_tasks: 
     - "Chatbot auto-open functionality"
   test_all: false
