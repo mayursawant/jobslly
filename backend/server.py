@@ -1935,6 +1935,44 @@ User-agent: Googlebot
 Allow: /
 Crawl-delay: 0
 
+
+# Migration endpoint to generate slugs for existing jobs (admin only)
+@api_router.post("/admin/migrate-job-slugs")
+async def migrate_job_slugs(current_user: User = Depends(get_current_user)):
+    """
+    Generate slugs for all existing jobs that don't have one
+    """
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    try:
+        # Find all jobs without slugs
+        jobs_without_slugs = await db.jobs.find({"slug": {"$in": [None, ""]}}).to_list(length=None)
+        
+        updated_count = 0
+        for job in jobs_without_slugs:
+            # Generate slug from title
+            base_slug = generate_slug(job['title'])
+            unique_slug = await ensure_unique_slug(base_slug, job['id'])
+            
+            # Update job with slug
+            await db.jobs.update_one(
+                {"id": job['id']},
+                {"$set": {"slug": unique_slug}}
+            )
+            updated_count += 1
+            print(f"✅ Generated slug '{unique_slug}' for job: {job['title']}")
+        
+        return {
+            "success": True,
+            "message": f"Successfully generated slugs for {updated_count} jobs",
+            "updated_count": updated_count
+        }
+    except Exception as e:
+        print(f"❌ Error migrating slugs: {e}")
+        raise HTTPException(status_code=500, detail=f"Migration failed: {str(e)}")
+
+
 User-agent: Bingbot
 Allow: /
 Crawl-delay: 1
