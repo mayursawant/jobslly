@@ -155,7 +155,7 @@ const Navbar = () => {
             <Link to="/jobs" className="block nav-link" onClick={() => setIsMobileMenuOpen(false)}>
               Opportunities
             </Link>
-            <Link to="/blog" className="block nav-link" onClick={() => setIsMobileMenuOpen(false)}>
+            <Link to="/blogs" className="block nav-link" onClick={() => setIsMobileMenuOpen(false)}>
               Health Hub
             </Link>
             
