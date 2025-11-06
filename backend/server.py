@@ -581,9 +581,13 @@ async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True):
     
     return [Job(**job) for job in jobs]
 
-@api_router.get("/jobs/{job_id}")
-async def get_job(job_id: str, authorization: str = Header(None)):
-    job = await db.jobs.find_one({"id": job_id, "is_deleted": {"$ne": True}})
+@api_router.get("/jobs/{job_identifier}")
+async def get_job(job_identifier: str, authorization: str = Header(None)):
+    # Try to find by slug first, then by ID (backward compatibility)
+    job = await db.jobs.find_one({"slug": job_identifier, "is_deleted": {"$ne": True}})
+    if not job:
+        job = await db.jobs.find_one({"id": job_identifier, "is_deleted": {"$ne": True}})
+    
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     
