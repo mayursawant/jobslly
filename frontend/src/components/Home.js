@@ -455,7 +455,7 @@ const Home = () => {
                 </p>
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-gray-500">5 min read</span>
-                  <Link to="/blog">
+                  <Link to="/blogs">
                     <Button size="sm" variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
                       Read More
                     </Button>
@@ -477,7 +477,7 @@ const Home = () => {
                 </p>
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-gray-500">7 min read</span>
-                  <Link to="/blog">
+                  <Link to="/blogs">
                     <Button size="sm" variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
                       Read More
                     </Button>
@@ -499,7 +499,7 @@ const Home = () => {
                 </p>
                 <div className="flex justify-between items-center">
                   <span className="text-xs text-gray-500">6 min read</span>
-                  <Link to="/blog">
+                  <Link to="/blogs">
                     <Button size="sm" variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
                       Read More
                     </Button>
