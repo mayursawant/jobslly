@@ -1976,14 +1976,6 @@ async def migrate_job_slugs(current_user: User = Depends(get_current_user)):
         raise HTTPException(status_code=500, detail=f"Migration failed: {str(e)}")
 
 
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
-"""
-    
-    return PlainTextResponse(content=robots_content)
-
-
 # Contact Form Submission
 class ContactMessage(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
