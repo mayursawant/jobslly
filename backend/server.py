@@ -1940,7 +1940,7 @@ Crawl-delay: 0
 @api_router.post("/admin/migrate-job-slugs")
 async def migrate_job_slugs(current_user: User = Depends(get_current_user)):
     """
-    Generate slugs for all existing jobs that don't have one
+    Generate slugs for all existing jobs that do not have one
     """
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Admin access required")
