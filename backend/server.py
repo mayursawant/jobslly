@@ -1840,7 +1840,7 @@ async def get_sitemap():
     urlset = ET.Element("urlset")
     urlset.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
     
-    base_url = os.environ.get('FRONTEND_URL', 'https://healthcare-board.preview.emergentagent.com')
+    base_url = os.environ.get('FRONTEND_URL', 'https://medical-careers-1.preview.emergentagent.com')
     
     # Static pages
     static_pages = [
@@ -1904,7 +1904,7 @@ async def get_robots_txt():
     """
     Generate robots.txt for search engine crawling
     """
-    base_url = os.environ.get('FRONTEND_URL', 'https://healthcare-board.preview.emergentagent.com')
+    base_url = os.environ.get('FRONTEND_URL', 'https://medical-careers-1.preview.emergentagent.com')
     
     robots_content = f"""User-agent: *
 Allow: /
@@ -2024,8 +2024,8 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
                     "title": f"{job['title']} - {job['company']} | Jobslly Healthcare Jobs",
                     "description": f"Apply for {job['title']} position at {job['company']} in {job['location']}. {job['description'][:150]}...",
                     "keywords": [job['title'], job['company'], job['location'], "healthcare jobs", "medical careers"],
-                    "og_image": f"https://healthcare-board.preview.emergentagent.com/api/og-image/job/{job_id}",
-                    "canonical": f"https://healthcare-board.preview.emergentagent.com/jobs/{job_id}"
+                    "og_image": f"https://medical-careers-1.preview.emergentagent.com/api/og-image/job/{job_id}",
+                    "canonical": f"https://medical-careers-1.preview.emergentagent.com/jobs/{job_id}"
                 }
         
         elif page_type == "blog" and blog_slug:
@@ -2035,8 +2035,8 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
                     "title": post.get('seo_title') or f"{post['title']} | Jobslly Health Hub",
                     "description": post.get('seo_description') or post['excerpt'],
                     "keywords": post.get('seo_keywords', []) + [post['category'], "healthcare", "careers"],
-                    "og_image": post.get('featured_image') or f"https://healthcare-board.preview.emergentagent.com/api/og-image/blog/{blog_slug}",
-                    "canonical": f"https://healthcare-board.preview.emergentagent.com/blog/{blog_slug}"
+                    "og_image": post.get('featured_image') or f"https://medical-careers-1.preview.emergentagent.com/api/og-image/blog/{blog_slug}",
+                    "canonical": f"https://medical-careers-1.preview.emergentagent.com/blog/{blog_slug}"
                 }
     
     except Exception as e:
@@ -2047,8 +2047,8 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
         "title": "Jobslly - Future of Healthcare Careers",
         "description": "Discover healthcare opportunities for doctors, nurses, pharmacists, dentists, and physiotherapists with AI-powered career matching.",
         "keywords": ["healthcare jobs", "medical careers", "doctor jobs", "nurse jobs"],
-        "og_image": "https://healthcare-board.preview.emergentagent.com/og-image-default.jpg",
-        "canonical": "https://healthcare-board.preview.emergentagent.com"
+        "og_image": "https://medical-careers-1.preview.emergentagent.com/og-image-default.jpg",
+        "canonical": "https://medical-careers-1.preview.emergentagent.com"
     }
 
 # Include the router

@@ -2,12 +2,12 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Backend Tests](https://img.shields.io/badge/Backend%20Tests-29%2F29%20Passing-brightgreen)](https://github.com)
-[![Platform Status](https://img.shields.io/badge/Platform%20Status-Production%20Ready-success)](https://healthcare-board.preview.emergentagent.com)
+[![Platform Status](https://img.shields.io/badge/Platform%20Status-Production%20Ready-success)](https://medical-careers-1.preview.emergentagent.com)
 [![AI Features](https://img.shields.io/badge/AI%20Features-Enabled-blue)](https://github.com)
 
 > **Connecting healthcare professionals worldwide with their dream careers through AI-powered technology and comprehensive recruitment solutions.**
 
-**Live Platform:** [https://healthcare-board.preview.emergentagent.com](https://healthcare-board.preview.emergentagent.com)
+**Live Platform:** [https://medical-careers-1.preview.emergentagent.com](https://medical-careers-1.preview.emergentagent.com)
 
 ---
 
@@ -336,7 +336,7 @@ Content-Type: application/json
 ```
 
 ### Complete API Reference
-- **Base URL**: `https://healthcare-board.preview.emergentagent.com/api`
+- **Base URL**: `https://medical-careers-1.preview.emergentagent.com/api`
 - **Authentication**: JWT Bearer tokens
 - **Rate Limiting**: 1000 requests/hour for authenticated users
 - **Documentation**: Available at `/docs` endpoint with Swagger UI
@@ -386,7 +386,7 @@ const enhanceJobDescription = async (jobData) => {
 
 ### Production Environment (Emergent Platform)
 ```yaml
-Platform URL: https://healthcare-board.preview.emergentagent.com
+Platform URL: https://medical-careers-1.preview.emergentagent.com
 Infrastructure: Kubernetes cluster with auto-scaling
 Container Runtime: Docker with supervisor process management
 Database: MongoDB (local instance)
@@ -412,7 +412,7 @@ CORS_ORIGINS="*"
 
 **Frontend `.env` (pre-configured)**
 ```bash
-REACT_APP_BACKEND_URL="https://healthcare-board.preview.emergentagent.com"
+REACT_APP_BACKEND_URL="https://medical-careers-1.preview.emergentagent.com"
 WDS_SOCKET_PORT=443
 ```
 
@@ -462,13 +462,13 @@ tail -n 100 /var/log/supervisor/frontend.out.log
 #### Step 4: Health Checks
 ```bash
 # Backend health check
-curl https://healthcare-board.preview.emergentagent.com/api/health
+curl https://medical-careers-1.preview.emergentagent.com/api/health
 
 # Expected response:
 # {"status": "healthy", "timestamp": "2025-10-05T10:30:00Z"}
 
 # Check backend API documentation
-# Visit: https://healthcare-board.preview.emergentagent.com/docs
+# Visit: https://medical-careers-1.preview.emergentagent.com/docs
 ```
 
 #### Step 5: Troubleshooting Deployment
@@ -784,7 +784,7 @@ cat /app/backend/.env | grep EMERGENT_LLM_KEY
 # Check browser console for 403 errors
 
 # Test AI endpoint manually
-curl -X POST https://healthcare-board.preview.emergentagent.com/api/ai/enhance-job-description \
+curl -X POST https://medical-careers-1.preview.emergentagent.com/api/ai/enhance-job-description \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"text": "Test job description"}'
@@ -865,7 +865,7 @@ use test_database
 db.users.findOne({email: "admin@gmail.com"})
 
 # Test login endpoint
-curl -X POST https://healthcare-board.preview.emergentagent.com/api/auth/login \
+curl -X POST https://medical-careers-1.preview.emergentagent.com/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@gmail.com","password":"password"}'
 
@@ -914,7 +914,7 @@ sudo supervisorctl tail -f backend stderr
 **1. Slow page load times**
 ```bash
 # Check backend response time
-curl -w "@-" -o /dev/null -s https://healthcare-board.preview.emergentagent.com/api/health <<'EOF'
+curl -w "@-" -o /dev/null -s https://medical-careers-1.preview.emergentagent.com/api/health <<'EOF'
 time_namelookup:  %{time_namelookup}\n
 time_connect:  %{time_connect}\n
 time_total:  %{time_total}\n
@@ -954,7 +954,7 @@ tail -n 100 /var/log/supervisor/backend.err.log
 tail -n 100 /var/log/supervisor/frontend.out.log
 
 # Test basic connectivity
-curl https://healthcare-board.preview.emergentagent.com/api/health
+curl https://medical-careers-1.preview.emergentagent.com/api/health
 ```
 
 ### Getting Help
