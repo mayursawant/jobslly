@@ -250,7 +250,7 @@ const Footer = () => {
             
             <div className="mt-4 pt-4 border-t border-gray-700">
               <Link
-                to="/blog"
+                to="/blogs"
                 className="text-emerald-400 hover:text-emerald-300 text-sm font-medium flex items-center space-x-2"
               >
                 <span>Read All Articles</span>
