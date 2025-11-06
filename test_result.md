@@ -299,6 +299,18 @@ backend:
           comment: "Added Google Analytics tracking code (gtag.js with ID G-83738B3H6W) immediately after <head> tag in index.html. GA will automatically track all pages across the site."
 
 frontend:
+  - task: "Contact Form Page (/contact-us)"
+    implemented: true
+    working: "NA"
+    file: "components/ContactUs.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Implemented complete contact form page at /contact-us route. Form includes all required fields (name, email, phone, subject dropdown with 6 options, message textarea), form validation, loading states, success/error toast notifications, and success screen. Updated API endpoint from /contact to /contact-us to match backend. Contact information cards show email (contact@academically.com), phone (08071722349), and locations (Australia & India)."
+
   - task: "AI Enhancement Modal integration"
     implemented: true
     working: true
