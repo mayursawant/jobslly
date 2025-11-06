@@ -410,7 +410,7 @@ const Home = () => {
                       ))}
                     </div>
 
-                    <Link to={`/jobs/${job.id}`}>
+                    <Link to={`/jobs/${job.slug || job.id}`}>
                       <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md" data-testid={`apply-job-${job.id}`}>
                         View Details
                       </Button>
