@@ -167,6 +167,9 @@ const Navbar = () => {
             <Link to="/blogs" className="block nav-link" onClick={() => setIsMobileMenuOpen(false)}>
               Health Hub
             </Link>
+            <Link to="/contact" className="block nav-link" onClick={() => setIsMobileMenuOpen(false)}>
+              Contact
+            </Link>
             
             {isAuthenticated ? (
               <>
