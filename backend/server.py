@@ -1934,6 +1934,9 @@ Crawl-delay: 1
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 0
+"""
+    
+    return PlainTextResponse(content=robots_content)
 
 
 # Migration endpoint to generate slugs for existing jobs (admin only)
