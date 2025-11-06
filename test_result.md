@@ -286,6 +286,18 @@ backend:
           agent: "testing"
           comment: "Sample data validation completed successfully: Found 15 jobs (including 3 external jobs with redirect URLs), 10 published blog posts, and 3 test users with correct roles (admin@gmail.com as admin, hr@gmail.com as employer, doctor@gmail.com as job_seeker). All sample data properly structured and accessible via APIs. External jobs flow tested and working correctly with lead collection and redirect functionality."
 
+  - task: "Google Analytics Integration"
+    implemented: true
+    working: "NA"
+    file: "public/index.html"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Added Google Analytics tracking code (gtag.js with ID G-83738B3H6W) immediately after <head> tag in index.html. GA will automatically track all pages across the site."
+
 frontend:
   - task: "AI Enhancement Modal integration"
     implemented: true
