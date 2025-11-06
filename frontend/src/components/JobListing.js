@@ -231,7 +231,7 @@ const JobListing = () => {
                     </div>
 
                     <div className="flex flex-col gap-2 md:ml-6 md:flex-shrink-0">
-                      <Link to={`/jobs/${job.id}`}>
+                      <Link to={`/jobs/${job.slug || job.id}`}>
                         <Button className="w-full md:w-32 bg-blue-600 hover:bg-blue-700 text-white" data-testid={`view-job-${job.id}`}>
                           View Details
                         </Button>
