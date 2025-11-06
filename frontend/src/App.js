@@ -20,6 +20,7 @@ import Register from './components/Register';
 import JobSeekerDashboard from './components/JobSeekerDashboard';
 import Blog from './components/Blog';
 import BlogPost from './components/BlogPost';
+import ContactUs from './components/ContactUs';
 {/* ChatBot component removed as per user request */}
 {/* LeadChatbot removed as per user request */}
 import ScrollToTop from './components/ScrollToTop';
