@@ -1987,7 +1987,7 @@ class ContactMessage(BaseModel):
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     status: str = "new"  # new, read, replied
 
-@api_router.post("/contact")
+@api_router.post("/contact-us")
 async def submit_contact_form(contact: ContactMessage):
     """
     Submit contact form inquiry
