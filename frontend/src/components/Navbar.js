@@ -62,6 +62,15 @@ const Navbar = () => {
               <div className="absolute inset-x-0 -bottom-2 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
             </Link>
             
+            <Link 
+              to="/contact" 
+              className={`nav-link ${isActive('/contact') ? 'active' : ''} relative group`}
+              data-testid="nav-contact"
+            >
+              <span className="relative z-10">Contact</span>
+              <div className="absolute inset-x-0 -bottom-2 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+            </Link>
+            
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
                 <Link 
