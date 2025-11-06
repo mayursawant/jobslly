@@ -98,7 +98,7 @@ const ContactUs = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">support@jobslly.com</p>
+                <p className="text-gray-600">contact@academically.com</p>
                 <p className="text-sm text-gray-500 mt-2">
                   We typically respond within 24 hours
                 </p>
@@ -113,9 +113,9 @@ const ContactUs = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">+1 (555) 123-4567</p>
+                <p className="text-gray-600">08071722349</p>
                 <p className="text-sm text-gray-500 mt-2">
-                  Mon-Fri: 9:00 AM - 6:00 PM EST
+                  Mon-Fri: 9:00 AM - 6:00 PM IST
                 </p>
               </CardContent>
             </Card>
@@ -124,15 +124,25 @@ const ContactUs = () => {
               <CardHeader>
                 <CardTitle className="flex items-center text-teal-700">
                   <MapPin className="w-5 h-5 mr-2" />
-                  Visit Us
+                  Our Locations
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">
-                  123 Healthcare Blvd<br />
-                  Suite 456<br />
-                  Medical City, MC 12345
-                </p>
+              <CardContent className="space-y-4">
+                <div>
+                  <p className="font-semibold text-gray-700 mb-1">Australia</p>
+                  <p className="text-gray-600 text-sm">
+                    Suite 207A/30 Campbell St<br />
+                    Blacktown NSW 2148
+                  </p>
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-700 mb-1">India</p>
+                  <p className="text-gray-600 text-sm">
+                    Plot A2, IT Park, Sahastradhara Rd<br />
+                    Doon IT Park, Sidcul<br />
+                    Dehradun, Uttarakhand 248001
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </div>
