@@ -114,7 +114,7 @@ const Blog = () => {
               </div>
               <div className="grid md:grid-cols-3 gap-8">
                 {featuredPosts.map((post, index) => (
-                  <Link key={post.id} to={`/blog/${post.slug}`} className="block">
+                  <Link key={post.id} to={`/blogs/${post.slug}`} className="block">
                     <Card className="group bg-white border border-teal-100 hover:border-teal-300 hover:shadow-2xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-2 h-full">
                       <CardContent className="p-0 overflow-hidden rounded-lg">
                         {post.featured_image ? (
@@ -183,7 +183,7 @@ const Blog = () => {
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredPosts.map((post, index) => (
-                  <Link key={post.id} to={`/blog/${post.slug}`} className="block">
+                  <Link key={post.id} to={`/blogs/${post.slug}`} className="block">
                     <Card className="group bg-white border border-gray-200 hover:border-teal-300 hover:shadow-xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-1 h-full">
                       <CardContent className="p-0 overflow-hidden rounded-lg">
                         {post.featured_image ? (
