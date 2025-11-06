@@ -262,6 +262,9 @@ function App() {
               <Route path="/admin" element={
                 user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/cms-login" />
               } />
+              
+              {/* 404 Catch-all Route - Must be last */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
           <Footer />
