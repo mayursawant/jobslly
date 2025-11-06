@@ -555,6 +555,11 @@ async def create_job(job_data: JobCreate, current_user: User = Depends(get_curre
             )
     
     job = Job(**job_data.dict(), employer_id=current_user.id)
+    
+    # Generate unique slug from title
+    base_slug = generate_slug(job.title)
+    job.slug = await ensure_unique_slug(base_slug)
+    
     job_dict = job.dict()
     job_dict['created_at'] = job_dict['created_at'].isoformat()
     if job_dict.get('expires_at'):
