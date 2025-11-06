@@ -510,7 +510,7 @@ const Home = () => {
           </div>
 
           <div className="text-center">
-            <Link to="/blog">
+            <Link to="/blogs">
               <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3 rounded-md">
                 Explore Health Hub
               </Button>
