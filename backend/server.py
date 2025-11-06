@@ -82,6 +82,7 @@ class UserLogin(BaseModel):
 class Job(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     title: str
+    slug: Optional[str] = None  # SEO-friendly URL slug
     description: str
     company: str
     location: str
