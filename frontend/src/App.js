@@ -242,6 +242,7 @@ function App() {
               <Route path="/jobs/:jobId" element={<JobDetails />} />
               <Route path="/blogs" element={<Blog />} />
               <Route path="/blogs/:slug" element={<BlogPost />} />
+              <Route path="/contact" element={<ContactUs />} />
               <Route path="/sitemap" element={<Sitemap />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
