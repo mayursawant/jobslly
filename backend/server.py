@@ -603,12 +603,12 @@ async def get_job(job_identifier: str, authorization: str = Header(None)):
     if current_user:
         # Check in applications collection
         existing_application = await db.applications.find_one({
-            "job_id": job_id,
+            "job_id": job['id'],
             "applicant_id": current_user.id
         })
         # Also check in job_leads collection (for users who applied before logging in)
         existing_lead = await db.job_leads.find_one({
-            "job_id": job_id,
+            "job_id": job['id'],
             "email": current_user.email
         })
         has_applied = bool(existing_application or existing_lead)
