@@ -239,8 +239,8 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/jobs" element={<JobListing />} />
               <Route path="/jobs/:jobId" element={<JobDetails />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/blogs" element={<Blog />} />
+              <Route path="/blogs/:slug" element={<BlogPost />} />
               <Route path="/sitemap" element={<Sitemap />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
