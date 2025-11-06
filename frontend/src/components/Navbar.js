@@ -54,7 +54,7 @@ const Navbar = () => {
             </Link>
             
             <Link 
-              to="/blog" 
+              to="/blogs" 
               className={`nav-link ${isActive('/blog') ? 'active' : ''} relative group`}
               data-testid="nav-blog"
             >
