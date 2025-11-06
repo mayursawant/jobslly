@@ -324,6 +324,39 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+
+def generate_slug(title: str) -> str:
+    """Generate SEO-friendly slug from job title"""
+    import re
+    # Convert to lowercase and replace spaces with hyphens
+    slug = title.lower()
+    # Remove special characters
+    slug = re.sub(r'[^a-z0-9\s-]', '', slug)
+    # Replace spaces and multiple hyphens with single hyphen
+    slug = re.sub(r'[\s-]+', '-', slug)
+    # Remove leading/trailing hyphens
+    slug = slug.strip('-')
+    return slug
+
+async def ensure_unique_slug(base_slug: str, job_id: str = None) -> str:
+    """Ensure slug is unique by appending number if necessary"""
+    slug = base_slug
+    counter = 1
+    
+    while True:
+        # Check if slug exists (excluding current job if updating)
+        query = {"slug": slug}
+        if job_id:
+            query["id"] = {"$ne": job_id}
+        
+        existing = await db.jobs.find_one(query)
+        if not existing:
+            return slug
+        
+        # Slug exists, append counter
+        slug = f"{base_slug}-{counter}"
+        counter += 1
+
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     try:
         payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
