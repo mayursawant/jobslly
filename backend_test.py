@@ -927,6 +927,9 @@ class HealthcareJobsAPITester:
         self.test_external_jobs_flow()
         self.test_blog_management()
         
+        # Priority 4: Contact Form API (NEW)
+        self.test_contact_form_api()
+        
         # Print summary
         print("=" * 80)
         print("📊 COMPREHENSIVE TEST SUMMARY")
