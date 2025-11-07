@@ -9,8 +9,8 @@ const Sitemap = () => {
       links: [
         { name: 'Home', path: '/', description: 'Main landing page with healthcare job search' },
         { name: 'Job Opportunities', path: '/jobs', description: 'Browse all healthcare job listings' },
-        { name: 'Health Hub (Blog)', path: '/blog', description: 'Healthcare insights and career advice' },
-        { name: 'About Us', path: '/about', description: 'Learn about Jobslly and our mission' },
+        { name: 'Health Hub (Blog)', path: '/blogs', description: 'Healthcare insights and career advice' },
+        { name: 'Contact Us', path: '/contact-us', description: 'Get in touch with our support team' },
       ]
     },
     {
@@ -18,9 +18,10 @@ const Sitemap = () => {
       links: [
         { name: 'Doctor Jobs', path: '/jobs?category=doctors', description: 'Medical physician opportunities' },
         { name: 'Nursing Jobs', path: '/jobs?category=nurses', description: 'Registered nurse positions' },
-        { name: 'Pharmacy Jobs', path: '/jobs?category=pharmacy', description: 'Pharmacist and pharmacy tech roles' },
-        { name: 'Dentist Jobs', path: '/jobs?category=dentist', description: 'Dental professional opportunities' },
-        { name: 'Physiotherapy Jobs', path: '/jobs?category=physiotherapy', description: 'Physical therapy positions' },
+        { name: 'Pharmacy Jobs', path: '/jobs?category=pharmacists', description: 'Pharmacist and pharmacy tech roles' },
+        { name: 'Dentist Jobs', path: '/jobs?category=dentists', description: 'Dental professional opportunities' },
+        { name: 'Physiotherapy Jobs', path: '/jobs?category=physiotherapists', description: 'Physical therapy positions' },
+        { name: 'Medical Lab Technician Jobs', path: '/jobs?category=medical-lab-technicians', description: 'Lab technician positions' },
       ]
     },
     {
@@ -32,19 +33,12 @@ const Sitemap = () => {
       ]
     },
     {
-      category: 'Resources',
-      links: [
-        { name: 'Career Guidance', path: '/blog?category=career', description: 'Professional development articles' },
-        { name: 'Industry News', path: '/blog?category=news', description: 'Latest healthcare industry updates' },
-        { name: 'Healthcare Trends', path: '/blog?category=trends', description: 'Emerging trends in healthcare' },
-      ]
-    },
-    {
       category: 'Legal & Support',
       links: [
         { name: 'Privacy Policy', path: '/privacy-policy', description: 'How we protect your data' },
         { name: 'Terms of Service', path: '/terms-of-service', description: 'Platform usage terms and conditions' },
-        { name: 'Contact Us', path: '/contact', description: 'Get in touch with our support team' },
+        { name: 'Cookie Policy', path: '/cookies', description: 'Information about cookies we use' },
+        { name: 'Sitemap', path: '/sitemap', description: 'Navigate all pages on our platform' },
       ]
     }
   ];
