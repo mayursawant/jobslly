@@ -1903,36 +1903,12 @@ async def get_sitemap():
 async def get_robots_txt():
     """
     Generate robots.txt for search engine crawling
+    Simple and clean - allow all content
     """
-    base_url = os.environ.get('FRONTEND_URL', 'https://medical-careers-1.preview.emergentagent.com')
-    
-    robots_content = f"""User-agent: *
+    robots_content = """User-agent: *
 Allow: /
-Allow: /jobs
-Allow: /blog
-Allow: /job-seeker-login
-Allow: /employer-login
-Allow: /register
 
-# Disallow admin and private areas
-Disallow: /admin
-Disallow: /cms-login
-Disallow: /dashboard
-Disallow: /api/
-
-# Allow specific API endpoints for better indexing
-Allow: /api/jobs
-Allow: /api/blog
-
-# Sitemap location
-Sitemap: {base_url}/api/sitemap.xml
-
-# Crawl delay to be respectful
-Crawl-delay: 1
-
-# Additional directives for better SEO
-User-agent: Googlebot
-Allow: /
+Sitemap: https://jobslly.com/sitemap.xml
 Crawl-delay: 0
 """
     
