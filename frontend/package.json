@@ -59,7 +59,30 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
+    "postbuild": "react-snap",
     "test": "craco test"
+  },
+  "reactSnap": {
+    "include": [
+      "/",
+      "/jobs",
+      "/blogs",
+      "/contact-us",
+      "/login",
+      "/register",
+      "/dashboard",
+      "/privacy-policy",
+      "/terms-of-service",
+      "/cookies"
+    ],
+    "minifyHtml": {
+      "collapseWhitespace": true,
+      "removeComments": true
+    },
+    "puppeteerArgs": [
+      "--no-sandbox",
+      "--disable-setuid-sandbox"
+    ]
   },
   "browserslist": {
     "production": [
