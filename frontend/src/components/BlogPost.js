@@ -104,7 +104,7 @@ const BlogPost = () => {
             {/* Back Button */}
             <Button 
               variant="ghost" 
-              onClick={() => navigate('/blog')}
+              onClick={() => navigate('/blogs')}
               className="mb-6 text-white hover:text-teal-100 hover:bg-white/10 border border-white/20"
             >
               ← Back to Health Hub
