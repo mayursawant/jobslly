@@ -1,8 +1,9 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File, Form, Header
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File, Form, Header, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi.responses import Response, PlainTextResponse
+from fastapi.responses import Response, PlainTextResponse, RedirectResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import hashlib
 from pydantic import BaseModel, Field, EmailStr
