@@ -63,8 +63,8 @@ const Navbar = () => {
             </Link>
             
             <Link 
-              to="/contact" 
-              className={`nav-link ${isActive('/contact') ? 'active' : ''} relative group`}
+              to="/contact-us" 
+              className={`nav-link ${isActive('/contact-us') ? 'active' : ''} relative group`}
               data-testid="nav-contact"
             >
               <span className="relative z-10">Contact</span>
