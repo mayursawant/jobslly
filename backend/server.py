@@ -1842,14 +1842,19 @@ async def get_sitemap():
     
     base_url = os.environ.get('FRONTEND_URL', 'https://medical-careers-1.preview.emergentagent.com')
     
-    # Static pages
+    # Static pages with trailing slashes for consistency
     static_pages = [
         ('/', '1.0', 'daily'),
-        ('/jobs', '0.9', 'daily'),
-        ('/blog', '0.8', 'daily'),
-        ('/job-seeker-login', '0.6', 'weekly'),
-        ('/employer-login', '0.6', 'weekly'),
-        ('/register', '0.6', 'weekly'),
+        ('/jobs/', '0.9', 'daily'),
+        ('/blogs/', '0.8', 'daily'),
+        ('/login/', '0.7', 'weekly'),
+        ('/register/', '0.7', 'weekly'),
+        ('/dashboard/', '0.6', 'weekly'),
+        ('/contact-us/', '0.7', 'weekly'),
+        ('/privacy-policy/', '0.5', 'monthly'),
+        ('/terms-of-service/', '0.5', 'monthly'),
+        ('/cookies/', '0.5', 'monthly'),
+        ('/sitemap/', '0.5', 'monthly'),
     ]
     
     for path, priority, changefreq in static_pages:
