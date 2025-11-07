@@ -11,7 +11,51 @@ This document describes the Nginx-based implementation of 301 permanent redirect
 
 ## Implementation Layers
 
-### 1. Backend Middleware (FastAPI) ✅
+### 1. **Nginx Server (Primary - RECOMMENDED)** ✅
+**File**: `/etc/nginx/sites-available/jobslly`
+
+**Implementation**:
+```nginx
+# WWW to Non-WWW Redirect (301 Permanent)
+server {
+    listen 80;
+    listen [::]:80;
+    
+    # Match www subdomain explicitly
+    server_name ~^www\.(.+)$;
+    
+    # 301 Permanent Redirect to non-www
+    if ($host ~* ^www\.(.+)$) {
+        return 301 $scheme://$1$request_uri;
+    }
+}
+
+# Main server block for non-www
+server {
+    listen 80;
+    listen [::]:80;
+    
+    server_name jobslly.com medical-careers-1.preview.emergentagent.com;
+    
+    # ... rest of configuration
+}
+```
+
+**Benefits**:
+- **Fastest**: Handled at web server level before reaching application
+- **Most efficient**: No application processing needed
+- **Industry standard**: Nginx designed for this purpose
+- **True 301**: Proper HTTP status code recognized by all crawlers
+- **Preserves everything**: Query params, paths, fragments maintained
+
+**Testing**:
+```bash
+curl -I -H "Host: www.jobslly.com" http://localhost
+# Returns: HTTP/1.1 301 Moved Permanently
+# Location: http://jobslly.com/
+```
+
+### 2. Backend Middleware (FastAPI) ✅ (Backup Layer)
 **File**: `/app/backend/server.py`
 
 **Implementation**:
