@@ -1,7 +1,7 @@
-# WWW to Non-WWW Redirect Implementation
+# WWW to Non-WWW Redirect Implementation (Nginx)
 
 ## Overview
-This document describes the implementation of 301 permanent redirects from www subdomain to non-www domain for SEO consistency and to prevent duplicate content issues.
+This document describes the Nginx-based implementation of 301 permanent redirects from www subdomain to non-www domain for SEO consistency and to prevent duplicate content issues.
 
 ## Why This Matters for SEO
 - **Duplicate Content**: Search engines may treat `www.jobslly.com` and `jobslly.com` as separate sites
