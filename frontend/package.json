@@ -67,17 +67,12 @@
       "/",
       "/jobs",
       "/blogs",
-      "/contact-us",
-      "/login",
-      "/register",
-      "/dashboard",
-      "/privacy-policy",
-      "/terms-of-service",
-      "/cookies"
+      "/contact-us"
     ],
+    "concurrency": 1,
     "minifyHtml": {
-      "collapseWhitespace": true,
-      "removeComments": true
+      "collapseWhitespace": false,
+      "removeComments": false
     },
     "puppeteerExecutablePath": "/usr/bin/chromium",
     "puppeteerArgs": [
@@ -85,8 +80,14 @@
       "--disable-setuid-sandbox",
       "--disable-dev-shm-usage",
       "--disable-accelerated-2d-canvas",
-      "--disable-gpu"
-    ]
+      "--disable-gpu",
+      "--single-process",
+      "--no-zygote"
+    ],
+    "skipThirdPartyRequests": true,
+    "cacheAjaxRequests": false,
+    "removeBlobs": true,
+    "asyncScriptTags": true
   },
   "browserslist": {
     "production": [
