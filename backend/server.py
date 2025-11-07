@@ -2073,6 +2073,9 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
 # Include the router
 app.include_router(api_router)
 
+# Add WWW to non-WWW redirect middleware (must be added before CORS)
+app.add_middleware(WWWRedirectMiddleware)
+
 # CORS Middleware
 app.add_middleware(
     CORSMiddleware,
