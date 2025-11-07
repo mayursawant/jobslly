@@ -1129,6 +1129,11 @@ async def update_job_admin(
     update_data = job_data.dict(exclude_unset=True)
     update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
     
+    # Regenerate slug if title is being updated
+    if 'title' in update_data:
+        base_slug = generate_slug(update_data['title'])
+        update_data['slug'] = await ensure_unique_slug(base_slug, job_id)
+    
     await db.jobs.update_one(
         {"id": job_id},
         {"$set": update_data}
