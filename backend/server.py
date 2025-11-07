@@ -40,6 +40,31 @@ app = FastAPI(title="HealthCare Jobs API", version="1.0.0")
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+# WWW to non-WWW redirect middleware
+class WWWRedirectMiddleware(BaseHTTPMiddleware):
+    """
+    Middleware to redirect www subdomain to non-www for SEO consistency.
+    Returns 301 Permanent Redirect for all www requests.
+    """
+    async def dispatch(self, request: Request, call_next):
+        host = request.headers.get("host", "")
+        
+        # Check if host starts with www.
+        if host.startswith("www."):
+            # Remove www. prefix
+            new_host = host[4:]
+            # Construct new URL with non-www domain
+            new_url = f"{request.url.scheme}://{new_host}{request.url.path}"
+            if request.url.query:
+                new_url += f"?{request.url.query}"
+            
+            # Return 301 Permanent Redirect
+            return RedirectResponse(url=new_url, status_code=301)
+        
+        # Continue with normal request processing
+        response = await call_next(request)
+        return response
+
 # Security
 SECRET_KEY = os.environ.get('JWT_SECRET', 'your-secret-key-change-this')
 ALGORITHM = "HS256"
