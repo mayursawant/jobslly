@@ -1864,12 +1864,14 @@ async def get_sitemap():
         ET.SubElement(url_elem, "changefreq").text = changefreq
         ET.SubElement(url_elem, "priority").text = priority
     
-    # Dynamic job pages
+    # Dynamic job pages - use slugs with trailing slashes
     try:
         jobs = await db.jobs.find({"is_approved": True}).to_list(length=None)
         for job in jobs:
             url_elem = ET.SubElement(urlset, "url")
-            ET.SubElement(url_elem, "loc").text = f"{base_url}/jobs/{job['id']}"
+            # Use slug if available, fallback to ID
+            job_identifier = job.get('slug', job['id'])
+            ET.SubElement(url_elem, "loc").text = f"{base_url}/jobs/{job_identifier}/"
             
             # Use job creation date or current date
             lastmod = job.get('created_at', datetime.now(timezone.utc))
@@ -1877,16 +1879,16 @@ async def get_sitemap():
                 lastmod = datetime.fromisoformat(lastmod)
             ET.SubElement(url_elem, "lastmod").text = lastmod.strftime('%Y-%m-%d')
             ET.SubElement(url_elem, "changefreq").text = "weekly"
-            ET.SubElement(url_elem, "priority").text = "0.7"
+            ET.SubElement(url_elem, "priority").text = "0.8"
     except Exception as e:
         logger.error(f"Error fetching jobs for sitemap: {e}")
     
-    # Dynamic blog pages
+    # Dynamic blog pages - use slugs with trailing slashes
     try:
         blog_posts = await db.blog_posts.find({"is_published": True}).to_list(length=None)
         for post in blog_posts:
             url_elem = ET.SubElement(urlset, "url")
-            ET.SubElement(url_elem, "loc").text = f"{base_url}/blog/{post['slug']}"
+            ET.SubElement(url_elem, "loc").text = f"{base_url}/blogs/{post['slug']}/"
             
             # Use published date or creation date
             lastmod = post.get('published_at') or post.get('created_at', datetime.now(timezone.utc))
@@ -1894,7 +1896,7 @@ async def get_sitemap():
                 lastmod = datetime.fromisoformat(lastmod)
             ET.SubElement(url_elem, "lastmod").text = lastmod.strftime('%Y-%m-%d')
             ET.SubElement(url_elem, "changefreq").text = "monthly"
-            ET.SubElement(url_elem, "priority").text = "0.6"
+            ET.SubElement(url_elem, "priority").text = "0.7"
     except Exception as e:
         logger.error(f"Error fetching blog posts for sitemap: {e}")
     
