@@ -117,7 +117,7 @@ const Footer = () => {
                 alt="Jobslly Logo" 
                 className="h-16 w-auto object-contain"
               />
-              <p className="text-sm text-gray-400 mt-2">by Academically Global</p>
+              <p className="text-sm text-gray-400 mt-2">By Academically Global</p>
             </div>
             
             <p className="text-gray-300 text-sm leading-relaxed">
