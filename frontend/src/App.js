@@ -236,32 +236,58 @@ function App() {
             </script>
           </Helmet>
           <ScrollToTop />
+          <TrailingSlashRedirect />
           <Navbar />
           <main className="pt-16">
             <Routes>
               <Route path="/" element={<Home />} />
+              
+              {/* Jobs - Support both with and without trailing slash */}
               <Route path="/jobs" element={<JobListing />} />
+              <Route path="/jobs/" element={<JobListing />} />
               <Route path="/jobs/:jobId" element={<JobDetails />} />
+              <Route path="/jobs/:jobId/" element={<JobDetails />} />
+              
+              {/* Blogs - Support both with and without trailing slash */}
               <Route path="/blogs" element={<Blog />} />
+              <Route path="/blogs/" element={<Blog />} />
               <Route path="/blogs/:slug" element={<BlogPost />} />
+              <Route path="/blogs/:slug/" element={<BlogPost />} />
+              
+              {/* Other pages - Support both with and without trailing slash */}
               <Route path="/contact-us" element={<ContactUs />} />
+              <Route path="/contact-us/" element={<ContactUs />} />
               <Route path="/sitemap" element={<Sitemap />} />
+              <Route path="/sitemap/" element={<Sitemap />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/privacy-policy/" element={<PrivacyPolicy />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/terms-of-service/" element={<TermsOfService />} />
               <Route path="/cookies" element={<CookiePolicy />} />
-              <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
-              <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
-              {/* Removed separate login routes - consolidated to /login */}
+              <Route path="/cookies/" element={<CookiePolicy />} />
+              
+              {/* Auth routes - Support both with and without trailing slash */}
+              <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard/" />} />
+              <Route path="/login/" element={!user ? <Login /> : <Navigate to="/dashboard/" />} />
+              <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard/" />} />
+              <Route path="/register/" element={!user ? <Register /> : <Navigate to="/dashboard/" />} />
+              
               {/* Redirect old routes to new unified login */}
-              <Route path="/job-seeker-login" element={<Navigate to="/login" replace />} />
-              <Route path="/cms-login" element={<Navigate to="/login" replace />} />
+              <Route path="/job-seeker-login" element={<Navigate to="/login/" replace />} />
+              <Route path="/cms-login" element={<Navigate to="/login/" replace />} />
               
               {/* Protected Routes */}
               <Route path="/dashboard" element={user ? (
                 user.role === 'job_seeker' ? <JobSeekerDashboard /> : <Dashboard />
-              ) : <Navigate to="/job-seeker-login" />} />
+              ) : <Navigate to="/login/" />} />
+              <Route path="/dashboard/" element={user ? (
+                user.role === 'job_seeker' ? <JobSeekerDashboard /> : <Dashboard />
+              ) : <Navigate to="/login/" />} />
               <Route path="/admin" element={
-                user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/cms-login" />
+                user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/login/" />
+              } />
+              <Route path="/admin/" element={
+                user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/login/" />
               } />
               
               {/* 404 Catch-all Route - Must be last */}
