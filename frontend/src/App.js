@@ -25,6 +25,7 @@ import NotFound from './components/NotFound';
 {/* ChatBot component removed as per user request */}
 {/* LeadChatbot removed as per user request */}
 import ScrollToTop from './components/ScrollToTop';
+import TrailingSlashRedirect from './components/TrailingSlashRedirect';
 import Sitemap from './components/Sitemap';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
