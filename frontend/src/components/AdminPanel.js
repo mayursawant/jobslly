@@ -14,6 +14,23 @@ import JoditEditor from 'jodit-react';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Helper function to check if salary value should show currency symbol
+const shouldShowCurrency = (value) => {
+  if (!value) return false;
+  // Check if value contains any digit
+  return /\d/.test(value);
+};
+
+// Helper function to format salary with currency
+const formatSalary = (value, currency) => {
+  if (!value) return '';
+  if (shouldShowCurrency(value)) {
+    const symbol = currency === 'USD' ? '$' : '₹';
+    return `${symbol}${value}`;
+  }
+  return value; // Return as-is for pure text like "Negotiable"
+};
+
 const AdminPanel = () => {
   const { user } = useContext(AuthContext);
   const [stats, setStats] = useState({});
