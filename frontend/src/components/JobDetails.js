@@ -220,8 +220,8 @@ const JobDetails = () => {
                   <div className="text-right">
                     {job.salary_min && (
                       <div className="text-lg font-semibold text-emerald-600">
-                        {job.currency === 'USD' ? '$' : '₹'}{job.salary_min.toLocaleString()}
-                        {job.salary_max && ` - ${job.currency === 'USD' ? '$' : '₹'}${job.salary_max.toLocaleString()}`}
+                        {job.salary_min}
+                        {job.salary_max && ` - ${job.salary_max}`}
                       </div>
                     )}
                     <div className="text-sm text-gray-500">per year</div>
