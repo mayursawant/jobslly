@@ -116,9 +116,9 @@ const InteractiveCourseSection = () => {
             return (
               <div
                 key={key}
-                onMouseEnter={() => !isMobile && setHoveredCategory(key)}
-                onMouseLeave={() => !isMobile && setHoveredCategory(null)}
-                onClick={() => isMobile && setHoveredCategory(isHovered ? null : key)}
+                onMouseEnter={() => setHoveredCategory(key)}
+                onMouseLeave={() => setHoveredCategory(null)}
+                onClick={() => setHoveredCategory(isHovered ? null : key)}
                 className={`
                   relative flex-1 cursor-pointer transition-all duration-500 ease-out
                   ${!hoveredCategory ? 'breathing' : ''}
