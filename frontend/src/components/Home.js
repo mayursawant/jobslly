@@ -181,8 +181,8 @@ const Home = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-emerald-400 rounded-3xl transform rotate-3 animate-pulse"></div>
                 <div className="relative bg-white rounded-3xl shadow-2xl p-1 transform -rotate-1 hover:rotate-0 transition-transform duration-700">
                   <img 
-                    src="https://images.unsplash.com/photo-1536064479547-7ee40b74b807?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzB8MHwxfHNlYXJjaHwxfHxoZWFsdGhjYXJlJTIwcHJvZmVzc2lvbmFsc3xlbnwwfHx8Ymx1ZXwxNzU5OTQxNzQzfDA&ixlib=rb-4.1.0&q=85" 
-                    alt="Healthcare Professionals - Your Future Career Awaits" 
+                    src="https://customer-assets.emergentagent.com/job_a4ce02d4-d988-4bcc-bfe4-80f85b655205/artifacts/67arpex4_jobslly.jpg" 
+                    alt="Jobslly - Connect Healthcare Professionals with Opportunities" 
                     className="w-full h-auto rounded-3xl object-cover"
                   />
                   <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-sm rounded-2xl p-4 transform translate-y-2 hover:translate-y-0 transition-transform duration-300">
