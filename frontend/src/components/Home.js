@@ -430,9 +430,12 @@ const Home = () => {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-              {featuredJobs.slice(0, 6).map((job) => (
-                <Card key={job.id} className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 cursor-pointer" data-testid={`featured-job-${job.id}`}>
-                  <CardContent className="p-6">
+              {featuredJobs.slice(0, 6).map((job, index) => (
+                <Card key={job.id} className="bg-white border border-gray-200 hover:border-teal-400 hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 hover:scale-105 group animate-slide-up" style={{animationDelay: `${index * 0.1}s`}} data-testid={`featured-job-${job.id}`}>
+                  <CardContent className="p-6 relative overflow-hidden">
+                    {/* Animated Background Gradient on Hover */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-teal-50 to-emerald-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative z-10">
                     <div className="flex justify-between items-start mb-3">
                       <Badge className="bg-blue-100 text-blue-800 text-xs">
                         {job.job_type.replace('_', ' ').toUpperCase()}
