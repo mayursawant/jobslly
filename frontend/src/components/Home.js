@@ -32,13 +32,34 @@ const formatSalary = (value, currency) => {
 const InteractiveCourseSection = () => {
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const hoverTimeoutRef = React.useRef(null);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    };
   }, []);
+
+  const handleMouseEnter = (key) => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    setHoveredCategory(key);
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    // Add 250ms delay before hiding
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoveredCategory(null);
+    }, 250);
+  };
 
   const categories = {
     licensing: {
