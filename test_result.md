@@ -120,6 +120,60 @@ backend:
           agent: "testing"
           comment: "CONTACT FORM API TESTING COMPLETE: ✅ All 6 contact form tests passed (100% success rate). POST /api/contact-us endpoint working perfectly: 1) Valid submissions accepted with proper response format (success: true, message, message_id as UUID), 2) Unique message IDs generated for each submission (UUID format verified), 3) Proper validation for missing required fields (name, email, message) returning 422 status codes, 4) Data persistence verified with multiple submissions creating unique contact records in MongoDB contact_messages collection. Endpoint accepts healthcare professional inquiries without authentication as designed. Contact form ready for production use."
 
+
+backend:
+  - task: "Sitemap.xml Domain Fix"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Updated sitemap.xml endpoint to use 'https://jobslly.com' as the base URL instead of emergent domain. Changed line 1879 in server.py to hardcode the correct domain."
+
+backend:
+  - task: "Currency Field in Job Schema"
+    implemented: true
+    working: true
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Added 'currency' field to Job model (default: 'INR') and JobCreate model. Currency options are INR (₹) and USD ($). Field will be stored in database for all new jobs."
+
+frontend:
+  - task: "Currency Selector in Admin Panel"
+    implemented: true
+    working: true
+    file: "components/AdminPanel.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Added currency dropdown selector in both Create Job and Edit Job forms in admin panel. Dropdown shows '₹ INR (Indian Rupee)' and '$ USD (US Dollar)' options. Added currency to newJob state with default 'INR'."
+
+frontend:
+  - task: "Dynamic Currency Display in Job Listings"
+    implemented: true
+    working: true
+    file: "components/JobListing.js, JobDetails.js, Home.js, AdminPanel.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Updated all salary display locations to show dynamic currency symbol based on job.currency field. Uses conditional rendering: {job.currency === 'USD' ? '$' : '₹'}. Updated 4 files: JobListing.js (job cards), JobDetails.js (job detail page - 2 locations), Home.js (featured jobs), AdminPanel.js (admin job management - 2 locations)."
+
+
 backend:
   - task: "Job listing API endpoint"
     implemented: true
