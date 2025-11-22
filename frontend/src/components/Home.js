@@ -127,8 +127,8 @@ const InteractiveCourseSection = () => {
           </p>
         </div>
 
-        {/* Interactive Category Blocks */}
-        <div className="flex flex-col md:flex-row gap-6 mb-8 max-w-5xl mx-auto">
+        {/* Interactive Category Blocks - Each with its own hover container */}
+        <div className="flex flex-col md:flex-row gap-6 max-w-5xl mx-auto">
           {Object.entries(categories).map(([key, category]) => {
             const isHovered = hoveredCategory === key;
             const isOtherHovered = hoveredCategory && hoveredCategory !== key;
@@ -136,80 +136,94 @@ const InteractiveCourseSection = () => {
             return (
               <div
                 key={key}
-                onMouseEnter={() => setHoveredCategory(key)}
-                onMouseLeave={() => setHoveredCategory(null)}
-                onClick={() => setHoveredCategory(isHovered ? null : key)}
-                className={`
-                  relative flex-1 cursor-pointer transition-all duration-500 ease-out
-                  ${!hoveredCategory ? 'breathing' : ''}
-                  ${isHovered ? 'md:scale-110 z-10' : ''}
-                  ${isOtherHovered ? 'md:scale-90 blur-sm opacity-60' : ''}
-                `}
-                style={{
-                  transformOrigin: 'center',
-                  transition: 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease, filter 0.5s ease'
-                }}
+                className="flex-1"
               >
-                <div className={`
-                  relative p-8 rounded-2xl bg-gradient-to-br ${category.color} 
-                  text-white shadow-xl hover:shadow-2xl transition-all duration-500
-                  ${isHovered ? 'ring-4 ring-white ring-opacity-50' : ''}
-                `}>
-                  {/* Animated Background Gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  
-                  <div className="relative z-10">
-                    <div className="text-6xl mb-4 transform transition-transform duration-300 group-hover:scale-110">
-                      {category.icon}
+                {/* Parent container that maintains hover for both block and tiles */}
+                <div
+                  onMouseEnter={() => handleMouseEnter(key)}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={() => isMobile && setHoveredCategory(isHovered ? null : key)}
+                  className="relative"
+                >
+                  {/* Category Block */}
+                  <div
+                    className={`
+                      relative cursor-pointer transition-all ease-out
+                      ${!hoveredCategory ? 'breathing' : ''}
+                      ${isHovered ? 'md:scale-110 z-10' : ''}
+                      ${isOtherHovered ? 'md:scale-90 blur-sm opacity-60' : ''}
+                    `}
+                    style={{
+                      transformOrigin: 'center',
+                      transition: 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease, filter 0.5s ease'
+                    }}
+                  >
+                    <div className={`
+                      relative p-8 rounded-2xl bg-gradient-to-br ${category.color} 
+                      text-white shadow-xl hover:shadow-2xl transition-all duration-500
+                      ${isHovered ? 'ring-4 ring-white ring-opacity-50' : ''}
+                    `}>
+                      {/* Animated Background Gradient */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                      
+                      <div className="relative z-10">
+                        <div className="text-6xl mb-4 transform transition-transform duration-300">
+                          {category.icon}
+                        </div>
+                        <h3 className="text-2xl md:text-3xl font-bold mb-2">
+                          {category.title}
+                        </h3>
+                        <p className="text-white/80 text-sm">
+                          {isHovered ? 'Explore courses below ↓' : 'Hover to explore courses'}
+                        </p>
+                      </div>
+
+                      {/* Pulse Effect */}
+                      {!hoveredCategory && (
+                        <div className="absolute inset-0 rounded-2xl bg-white/10 animate-pulse"></div>
+                      )}
                     </div>
-                    <h3 className="text-2xl md:text-3xl font-bold mb-2">
-                      {category.title}
-                    </h3>
-                    <p className="text-white/80 text-sm">
-                      Tap to explore courses
-                    </p>
                   </div>
 
-                  {/* Pulse Effect */}
-                  {!hoveredCategory && (
-                    <div className="absolute inset-0 rounded-2xl bg-white/10 animate-pulse"></div>
+                  {/* Course Tiles - Appear below when this category is hovered */}
+                  {isHovered && (
+                    <div className="mt-6">
+                      <div className="grid grid-cols-1 gap-4">
+                        {category.courses.map((course, index) => (
+                          <a
+                            key={index}
+                            href={course.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="course-tile group"
+                          >
+                            <Card className="h-full bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-teal-50 border-2 border-gray-200 hover:border-blue-400 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                              <CardContent className="p-6">
+                                <div className="flex items-center gap-4">
+                                  <div className="text-4xl transform transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12">
+                                    {course.emoji}
+                                  </div>
+                                  <div className="flex-1">
+                                    <h4 className="text-base font-semibold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
+                                      {course.name}
+                                    </h4>
+                                    <div className="mt-2 text-blue-600 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                      Learn More →
+                                    </div>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>
             );
           })}
         </div>
-
-        {/* Course Tiles - Appear below active category */}
-        {hoveredCategory && (
-          <div className="max-w-5xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {categories[hoveredCategory].courses.map((course, index) => (
-                <a
-                  key={index}
-                  href={course.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="course-tile group"
-                >
-                  <Card className="h-full bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-teal-50 border-2 border-gray-200 hover:border-blue-400 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-                    <CardContent className="p-6 text-center">
-                      <div className="text-4xl mb-3 transform transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12">
-                        {course.emoji}
-                      </div>
-                      <h4 className="text-base font-semibold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
-                        {course.name}
-                      </h4>
-                      <div className="mt-4 text-blue-600 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        Learn More →
-                      </div>
-                    </CardContent>
-                  </Card>
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </section>
   );
