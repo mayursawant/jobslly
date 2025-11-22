@@ -256,11 +256,10 @@ class JobCreate(BaseModel):
     description: str
     company: str
     location: str
-    salary_min: Optional[int] = None
-    salary_max: Optional[int] = None
-    currency: str = "INR"  # INR or USD
+    salary_min: Optional[str] = None  # Changed to text to support "Negotiable", "Competitive", etc.
+    salary_max: Optional[str] = None  # Changed to text to support "Negotiable", "Competitive", etc.
     job_type: str = "full_time"
-    category: Optional[str] = None  # doctors, pharmacists, dentists, physiotherapists, nurses
+    categories: List[str] = []  # Changed from category to categories (multiple)
     requirements: List[str] = []
     benefits: List[str] = []
     # Third-party job features
