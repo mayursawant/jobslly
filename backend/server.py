@@ -112,10 +112,11 @@ class Job(BaseModel):
     description: str
     company: str
     location: str
-    salary_min: Optional[str] = None  # Changed to text to support "Negotiable", "Competitive", etc.
-    salary_max: Optional[str] = None  # Changed to text to support "Negotiable", "Competitive", etc.
+    salary_min: Optional[str] = None  # Text field to support "Negotiable", "Competitive", numeric values, etc.
+    salary_max: Optional[str] = None  # Text field to support "Negotiable", "Competitive", numeric values, etc.
+    currency: str = "INR"  # Currency for salary - INR or USD
     job_type: str = "full_time"  # full_time, part_time, contract
-    categories: List[str] = []  # Changed from category to categories (multiple) - doctors, pharmacists, dentists, physiotherapists, nurses
+    categories: List[str] = []  # Multiple categories - doctors, pharmacists, dentists, physiotherapists, nurses
     requirements: List[str] = []
     benefits: List[str] = []
     employer_id: str
