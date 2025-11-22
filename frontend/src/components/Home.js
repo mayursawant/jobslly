@@ -69,8 +69,8 @@ const InteractiveCourseSection = () => {
     <section className="py-20 px-4 bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 overflow-hidden">
       <style>{`
         @keyframes breathing {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.02); }
+          0%, 100% { transform: scale(1); box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+          50% { transform: scale(1.01); box-shadow: 0 15px 50px rgba(0,0,0,0.15); }
         }
         @keyframes fadeInUp {
           from {
@@ -83,7 +83,8 @@ const InteractiveCourseSection = () => {
           }
         }
         .breathing {
-          animation: breathing 3s ease-in-out infinite;
+          animation: breathing 4s ease-in-out infinite;
+          will-change: transform;
         }
         .course-tile {
           animation: fadeInUp 0.6s ease-out forwards;
