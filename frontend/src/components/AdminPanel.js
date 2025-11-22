@@ -963,35 +963,26 @@ const AdminPanel = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Currency</label>
-                    <select
-                      value={newJob.currency}
-                      onChange={(e) => setNewJob(prev => ({...prev, currency: e.target.value}))}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                    >
-                      <option value="INR">₹ INR (Indian Rupee)</option>
-                      <option value="USD">$ USD (US Dollar)</option>
-                    </select>
-                  </div>
-                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Salary</label>
                     <input
-                      type="number"
+                      type="text"
                       value={newJob.salary_min}
                       onChange={(e) => setNewJob(prev => ({...prev, salary_min: e.target.value}))}
-                      placeholder="75000"
+                      placeholder="e.g., 75000, Negotiable, Competitive"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                     />
+                    <p className="text-xs text-gray-500 mt-1">Can be number or text like "Negotiable", "Competitive", etc.</p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Maximum Salary</label>
                     <input
-                      type="number"
+                      type="text"
                       value={newJob.salary_max}
                       onChange={(e) => setNewJob(prev => ({...prev, salary_max: e.target.value}))}
-                      placeholder="120000"
+                      placeholder="e.g., 120000, Based on experience"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                     />
+                    <p className="text-xs text-gray-500 mt-1">Can be number or text like "Based on experience", etc.</p>
                   </div>
                 </div>
 
