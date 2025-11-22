@@ -64,9 +64,15 @@ const JobListing = () => {
   const sortedJobs = [...filteredJobs].sort((a, b) => {
     switch (sortBy) {
       case 'salary_high':
-        return (b.salary_max || 0) - (a.salary_max || 0);
+        // Convert text to numbers for sorting, treat non-numeric as 0
+        const bMax = parseFloat(b.salary_max) || 0;
+        const aMax = parseFloat(a.salary_max) || 0;
+        return bMax - aMax;
       case 'salary_low':
-        return (a.salary_min || 0) - (b.salary_min || 0);
+        // Convert text to numbers for sorting, treat non-numeric as 0
+        const aMin = parseFloat(a.salary_min) || 0;
+        const bMin = parseFloat(b.salary_min) || 0;
+        return aMin - bMin;
       case 'company':
         return a.company.localeCompare(b.company);
       case 'newest':
