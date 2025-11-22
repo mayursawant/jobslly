@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: Comprehensive testing and validation of Jobslly healthcare job platform including AI job enhancement features, external job redirection, complete footer with sitemap, and all core functionalities. Update documentation with PRD and code documentation. NEW TASKS: Add Google Analytics tracking, implement contact form with database storage at /contact-us endpoint.
+user_problem_statement: Comprehensive testing and validation of Jobslly healthcare job platform including AI job enhancement features, external job redirection, complete footer with sitemap, and all core functionalities. Update documentation with PRD and code documentation. NEW TASKS: 1) Fix sitemap.xml domain to use jobslly.com instead of emergent domain, 2) Add currency selector for job postings with INR (₹) and USD ($) options, store currency in database, display correct currency symbol throughout the application.
 
 backend:
   - task: "Contact Form API endpoint (/api/contact-us)"
