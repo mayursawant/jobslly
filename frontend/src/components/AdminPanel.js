@@ -806,35 +806,26 @@ const AdminPanel = () => {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Currency</label>
-                      <select
-                        value={editingJob.currency || 'INR'}
-                        onChange={(e) => setEditingJob(prev => ({...prev, currency: e.target.value}))}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                      >
-                        <option value="INR">₹ INR (Indian Rupee)</option>
-                        <option value="USD">$ USD (US Dollar)</option>
-                      </select>
-                    </div>
-                    <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Salary</label>
                       <input
-                        type="number"
+                        type="text"
                         value={editingJob.salary_min || ''}
-                        onChange={(e) => setEditingJob(prev => ({...prev, salary_min: parseInt(e.target.value) || null}))}
+                        onChange={(e) => setEditingJob(prev => ({...prev, salary_min: e.target.value}))}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                        placeholder="50000"
+                        placeholder="e.g., 50000, Negotiable, Competitive"
                       />
+                      <p className="text-xs text-gray-500 mt-1">Can be number or text</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Maximum Salary</label>
                       <input
-                        type="number"
+                        type="text"
                         value={editingJob.salary_max || ''}
-                        onChange={(e) => setEditingJob(prev => ({...prev, salary_max: parseInt(e.target.value) || null}))}
+                        onChange={(e) => setEditingJob(prev => ({...prev, salary_max: e.target.value}))}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                        placeholder="100000"
+                        placeholder="e.g., 100000, Based on experience"
                       />
+                      <p className="text-xs text-gray-500 mt-1">Can be number or text</p>
                     </div>
                   </div>
 
