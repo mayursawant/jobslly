@@ -467,10 +467,11 @@ const Home = () => {
                     </div>
 
                     <Link to={`/jobs/${job.slug || job.id}`}>
-                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md" data-testid={`apply-job-${job.id}`}>
-                        View Details
+                      <Button className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-medium rounded-md group-hover:shadow-lg transition-all duration-300" data-testid={`apply-job-${job.id}`}>
+                        View Details →
                       </Button>
                     </Link>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
