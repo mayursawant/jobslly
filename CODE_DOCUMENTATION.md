@@ -2122,7 +2122,7 @@ cd /app/frontend && yarn install
 sudo supervisorctl restart all
 
 # 4. Verify deployment
-curl https://medijobs-3.preview.emergentagent.com/api/health
+curl https://jobslly.com/api/health
 
 # 5. Check logs for errors
 sudo supervisorctl tail -f backend stderr
@@ -2135,7 +2135,7 @@ sudo supervisorctl tail -f frontend stdout
 #### Health Checks
 ```bash
 # Backend health endpoint
-curl https://medijobs-3.preview.emergentagent.com/api/health
+curl https://jobslly.com/api/health
 # Expected: {"status":"healthy","timestamp":"..."}
 
 # Frontend accessibility
@@ -2147,7 +2147,7 @@ mongosh --eval "db.adminCommand('ping')"
 # Expected: { ok: 1 }
 
 # API documentation
-# Visit: https://medijobs-3.preview.emergentagent.com/docs
+# Visit: https://jobslly.com/docs
 ```
 
 #### Troubleshooting Common Issues
