@@ -595,8 +595,13 @@ async def create_job(job_data: JobCreate, current_user: User = Depends(get_curre
     return job
 
 @api_router.get("/jobs", response_model=List[Job])
-async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True):
+async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True, category: str = None):
     query = {"is_approved": True, "is_deleted": {"$ne": True}} if approved_only else {"is_deleted": {"$ne": True}}
+    
+    # Add category filter if provided (matches ANY category in the categories array)
+    if category:
+        query["categories"] = category
+    
     jobs = await db.jobs.find(query).skip(skip).limit(limit).to_list(length=None)
     
     for job in jobs:
