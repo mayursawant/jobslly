@@ -1145,6 +1145,333 @@ class HealthcareJobsAPITester:
             except Exception as e:
                 self.log_result("Individual Job Currency - USD", False, f"Exception: {str(e)}")
     
+    def test_text_salary_job_creation(self):
+        """Test 18: Text-Based Salary Job Creation - Test creating jobs with text salary values"""
+        print("💬 Testing Text-Based Salary Job Creation...")
+        
+        if not self.admin_token:
+            self.log_result("Text Salary Job Creation", False, "No admin token available")
+            return
+        
+        headers = {"Authorization": f"Bearer {self.admin_token}"}
+        
+        # Test 1: Create job with text salary values and multiple categories
+        try:
+            job_data_text_salary = {
+                "title": "Senior Healthcare Specialist - Multi-Disciplinary",
+                "description": "Exciting opportunity for experienced healthcare professional to work across multiple specialties. Competitive compensation package with excellent growth opportunities.",
+                "company": "Premier Healthcare Group",
+                "location": "Sydney, Australia",
+                "salary_min": "Negotiable",
+                "salary_max": "Based on experience",
+                "currency": "INR",
+                "job_type": "full_time",
+                "categories": ["doctors", "nurses"],  # Multiple categories
+                "requirements": ["Healthcare degree", "5+ years experience", "Multi-specialty knowledge"],
+                "benefits": ["Health insurance", "Professional development", "Flexible schedule"]
+            }
+            
+            response = requests.post(f"{self.base_url}/admin/jobs", json=job_data_text_salary, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                # Verify text salary fields
+                if (data.get("salary_min") == "Negotiable" and 
+                    data.get("salary_max") == "Based on experience" and
+                    data.get("categories") == ["doctors", "nurses"]):
+                    self.test_job_text_salary_id = data.get("id")
+                    self.log_result("Text Salary Job Creation - Multiple Categories", True, 
+                                  f"Successfully created job with text salary and multiple categories. Job ID: {self.test_job_text_salary_id}")
+                else:
+                    self.log_result("Text Salary Job Creation - Multiple Categories", False, 
+                                  f"Salary or categories mismatch. Min: {data.get('salary_min')}, Max: {data.get('salary_max')}, Categories: {data.get('categories')}")
+            else:
+                self.log_result("Text Salary Job Creation - Multiple Categories", False, 
+                              f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Text Salary Job Creation - Multiple Categories", False, f"Exception: {str(e)}")
+        
+        # Test 2: Create job with different text salary values
+        try:
+            job_data_competitive = {
+                "title": "Pharmacy Manager - Competitive Package",
+                "description": "Lead pharmacy operations with competitive compensation and benefits.",
+                "company": "City Pharmacy Network",
+                "location": "Melbourne, Australia",
+                "salary_min": "Competitive",
+                "salary_max": "Excellent benefits package",
+                "currency": "USD",
+                "job_type": "full_time",
+                "categories": ["pharmacy"],  # Single category
+                "requirements": ["Pharmacy degree", "Management experience"],
+                "benefits": ["Performance bonus", "Health coverage"]
+            }
+            
+            response = requests.post(f"{self.base_url}/admin/jobs", json=job_data_competitive, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if (data.get("salary_min") == "Competitive" and 
+                    data.get("salary_max") == "Excellent benefits package"):
+                    self.log_result("Text Salary Job Creation - Competitive", True, 
+                                  f"Successfully created job with 'Competitive' salary text")
+                else:
+                    self.log_result("Text Salary Job Creation - Competitive", False, 
+                                  f"Salary mismatch. Min: {data.get('salary_min')}, Max: {data.get('salary_max')}")
+            else:
+                self.log_result("Text Salary Job Creation - Competitive", False, 
+                              f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Text Salary Job Creation - Competitive", False, f"Exception: {str(e)}")
+        
+        # Test 3: Create job with numeric salary values (should still work)
+        try:
+            job_data_numeric = {
+                "title": "Staff Nurse - Fixed Salary",
+                "description": "Nursing position with clearly defined salary range.",
+                "company": "Regional Hospital",
+                "location": "Brisbane, Australia",
+                "salary_min": "50000",
+                "salary_max": "75000",
+                "currency": "USD",
+                "job_type": "full_time",
+                "categories": ["pharmacy"],  # Single category for filtering test
+                "requirements": ["Nursing degree", "Registration"],
+                "benefits": ["Health insurance", "Paid leave"]
+            }
+            
+            response = requests.post(f"{self.base_url}/admin/jobs", json=job_data_numeric, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if (data.get("salary_min") == "50000" and 
+                    data.get("salary_max") == "75000"):
+                    self.test_job_numeric_salary_id = data.get("id")
+                    self.log_result("Numeric Salary Job Creation", True, 
+                                  f"Successfully created job with numeric salary strings. Job ID: {self.test_job_numeric_salary_id}")
+                else:
+                    self.log_result("Numeric Salary Job Creation", False, 
+                                  f"Salary mismatch. Min: {data.get('salary_min')}, Max: {data.get('salary_max')}")
+            else:
+                self.log_result("Numeric Salary Job Creation", False, 
+                              f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Numeric Salary Job Creation", False, f"Exception: {str(e)}")
+    
+    def test_category_filtering(self):
+        """Test 19: Category Filtering - Test that GET /api/jobs?category=X returns jobs with that category"""
+        print("🔍 Testing Category Filtering...")
+        
+        # Test 1: Filter by 'doctors' category
+        try:
+            response = requests.get(f"{self.base_url}/jobs?category=doctors")
+            
+            if response.status_code == 200:
+                jobs = response.json()
+                if isinstance(jobs, list):
+                    # Check if all returned jobs have 'doctors' in their categories
+                    doctors_jobs = []
+                    invalid_jobs = []
+                    
+                    for job in jobs:
+                        categories = job.get("categories", [])
+                        if "doctors" in categories:
+                            doctors_jobs.append(job)
+                        else:
+                            invalid_jobs.append(job.get("title", "Unknown"))
+                    
+                    if len(doctors_jobs) > 0 and len(invalid_jobs) == 0:
+                        self.log_result("Category Filtering - Doctors", True, 
+                                      f"Found {len(doctors_jobs)} jobs with 'doctors' category, all valid")
+                    elif len(doctors_jobs) > 0:
+                        self.log_result("Category Filtering - Doctors", False, 
+                                      f"Found {len(doctors_jobs)} valid jobs but {len(invalid_jobs)} invalid jobs: {invalid_jobs}")
+                    else:
+                        self.log_result("Category Filtering - Doctors", False, 
+                                      "No jobs found with 'doctors' category")
+                else:
+                    self.log_result("Category Filtering - Doctors", False, 
+                                  "Response is not a list", jobs)
+            else:
+                self.log_result("Category Filtering - Doctors", False, 
+                              f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Category Filtering - Doctors", False, f"Exception: {str(e)}")
+        
+        # Test 2: Filter by 'nurses' category
+        try:
+            response = requests.get(f"{self.base_url}/jobs?category=nurses")
+            
+            if response.status_code == 200:
+                jobs = response.json()
+                if isinstance(jobs, list):
+                    nurses_jobs = [job for job in jobs if "nurses" in job.get("categories", [])]
+                    
+                    if len(nurses_jobs) > 0:
+                        self.log_result("Category Filtering - Nurses", True, 
+                                      f"Found {len(nurses_jobs)} jobs with 'nurses' category")
+                    else:
+                        self.log_result("Category Filtering - Nurses", False, 
+                                      "No jobs found with 'nurses' category")
+                else:
+                    self.log_result("Category Filtering - Nurses", False, 
+                                  "Response is not a list")
+            else:
+                self.log_result("Category Filtering - Nurses", False, 
+                              f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Category Filtering - Nurses", False, f"Exception: {str(e)}")
+        
+        # Test 3: Filter by 'pharmacy' category
+        try:
+            response = requests.get(f"{self.base_url}/jobs?category=pharmacy")
+            
+            if response.status_code == 200:
+                jobs = response.json()
+                if isinstance(jobs, list):
+                    pharmacy_jobs = [job for job in jobs if "pharmacy" in job.get("categories", [])]
+                    
+                    if len(pharmacy_jobs) > 0:
+                        self.log_result("Category Filtering - Pharmacy", True, 
+                                      f"Found {len(pharmacy_jobs)} jobs with 'pharmacy' category")
+                    else:
+                        self.log_result("Category Filtering - Pharmacy", False, 
+                                      "No jobs found with 'pharmacy' category")
+                else:
+                    self.log_result("Category Filtering - Pharmacy", False, 
+                                  "Response is not a list")
+            else:
+                self.log_result("Category Filtering - Pharmacy", False, 
+                              f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Category Filtering - Pharmacy", False, f"Exception: {str(e)}")
+        
+        # Test 4: Test that jobs with multiple categories appear in both filters
+        try:
+            # Get jobs with 'doctors' category
+            doctors_response = requests.get(f"{self.base_url}/jobs?category=doctors")
+            nurses_response = requests.get(f"{self.base_url}/jobs?category=nurses")
+            
+            if doctors_response.status_code == 200 and nurses_response.status_code == 200:
+                doctors_jobs = doctors_response.json()
+                nurses_jobs = nurses_response.json()
+                
+                # Find jobs that appear in both lists (should have both categories)
+                doctors_titles = {job.get("title") for job in doctors_jobs}
+                nurses_titles = {job.get("title") for job in nurses_jobs}
+                common_titles = doctors_titles.intersection(nurses_titles)
+                
+                if len(common_titles) > 0:
+                    self.log_result("Multiple Category Jobs", True, 
+                                  f"Found {len(common_titles)} jobs appearing in both doctors and nurses categories: {list(common_titles)}")
+                else:
+                    self.log_result("Multiple Category Jobs", True, 
+                                  "No jobs found with multiple categories (this is acceptable)")
+            else:
+                self.log_result("Multiple Category Jobs", False, 
+                              "Could not fetch both category lists for comparison")
+        
+        except Exception as e:
+            self.log_result("Multiple Category Jobs", False, f"Exception: {str(e)}")
+    
+    def test_job_retrieval_with_text_salary(self):
+        """Test 20: Job Retrieval with Text Salary - Verify text salary fields are returned correctly"""
+        print("📄 Testing Job Retrieval with Text Salary...")
+        
+        # Test 1: Retrieve job with text salary via job listings
+        try:
+            response = requests.get(f"{self.base_url}/jobs")
+            
+            if response.status_code == 200:
+                jobs = response.json()
+                text_salary_jobs = []
+                
+                for job in jobs:
+                    salary_min = job.get("salary_min", "")
+                    salary_max = job.get("salary_max", "")
+                    
+                    # Check if salary fields contain text (not just numbers)
+                    if (isinstance(salary_min, str) and not salary_min.isdigit() and salary_min != "" or
+                        isinstance(salary_max, str) and not salary_max.isdigit() and salary_max != ""):
+                        text_salary_jobs.append({
+                            "title": job.get("title"),
+                            "salary_min": salary_min,
+                            "salary_max": salary_max,
+                            "categories": job.get("categories", [])
+                        })
+                
+                if len(text_salary_jobs) > 0:
+                    self.log_result("Text Salary in Job Listings", True, 
+                                  f"Found {len(text_salary_jobs)} jobs with text-based salary fields")
+                    
+                    # Log examples
+                    for job in text_salary_jobs[:3]:  # Show first 3 examples
+                        print(f"   Example: {job['title']} - {job['salary_min']} to {job['salary_max']}")
+                else:
+                    self.log_result("Text Salary in Job Listings", False, 
+                                  "No jobs found with text-based salary fields")
+            else:
+                self.log_result("Text Salary in Job Listings", False, 
+                              f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Text Salary in Job Listings", False, f"Exception: {str(e)}")
+        
+        # Test 2: Retrieve specific job with text salary if we created one
+        if hasattr(self, 'test_job_text_salary_id') and self.test_job_text_salary_id:
+            try:
+                response = requests.get(f"{self.base_url}/jobs/{self.test_job_text_salary_id}")
+                
+                if response.status_code == 200:
+                    job = response.json()
+                    salary_min = job.get("salary_min")
+                    salary_max = job.get("salary_max")
+                    categories = job.get("categories", [])
+                    
+                    if (salary_min == "Negotiable" and 
+                        salary_max == "Based on experience" and
+                        "doctors" in categories and "nurses" in categories):
+                        self.log_result("Individual Text Salary Job", True, 
+                                      f"Text salary job correctly retrieved: {salary_min} - {salary_max}, Categories: {categories}")
+                    else:
+                        self.log_result("Individual Text Salary Job", False, 
+                                      f"Mismatch in retrieved job. Min: {salary_min}, Max: {salary_max}, Categories: {categories}")
+                else:
+                    self.log_result("Individual Text Salary Job", False, 
+                                  f"Status: {response.status_code}", response.text)
+            
+            except Exception as e:
+                self.log_result("Individual Text Salary Job", False, f"Exception: {str(e)}")
+        
+        # Test 3: Verify numeric salary jobs still work
+        if hasattr(self, 'test_job_numeric_salary_id') and self.test_job_numeric_salary_id:
+            try:
+                response = requests.get(f"{self.base_url}/jobs/{self.test_job_numeric_salary_id}")
+                
+                if response.status_code == 200:
+                    job = response.json()
+                    salary_min = job.get("salary_min")
+                    salary_max = job.get("salary_max")
+                    
+                    if salary_min == "50000" and salary_max == "75000":
+                        self.log_result("Individual Numeric Salary Job", True, 
+                                      f"Numeric salary job correctly retrieved: {salary_min} - {salary_max}")
+                    else:
+                        self.log_result("Individual Numeric Salary Job", False, 
+                                      f"Mismatch in numeric salary job. Min: {salary_min}, Max: {salary_max}")
+                else:
+                    self.log_result("Individual Numeric Salary Job", False, 
+                                  f"Status: {response.status_code}", response.text)
+            
+            except Exception as e:
+                self.log_result("Individual Numeric Salary Job", False, f"Exception: {str(e)}")
+    
     def run_all_tests(self):
         """Run all test suites"""
         print("🚀 Starting Comprehensive Healthcare Jobs API Testing Suite")
