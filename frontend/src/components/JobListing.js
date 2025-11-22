@@ -53,7 +53,10 @@ const JobListing = () => {
     
     const matchesType = jobType === 'all' || job.job_type === jobType;
     
-    const matchesCategory = category === 'all' || (job.category && job.category.toLowerCase() === category);
+    // Updated to work with categories array (matches if category is in the array)
+    const matchesCategory = category === 'all' || 
+                           (job.categories && Array.isArray(job.categories) && job.categories.includes(category)) ||
+                           (job.category && job.category.toLowerCase() === category); // Backward compatibility
     
     return matchesSearch && matchesType && matchesCategory;
   });
