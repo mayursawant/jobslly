@@ -114,6 +114,7 @@ class Job(BaseModel):
     location: str
     salary_min: Optional[int] = None
     salary_max: Optional[int] = None
+    currency: str = "INR"  # INR or USD
     job_type: str = "full_time"  # full_time, part_time, contract
     category: Optional[str] = None  # doctors, pharmacists, dentists, physiotherapists, nurses
     requirements: List[str] = []
