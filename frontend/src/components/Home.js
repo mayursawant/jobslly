@@ -418,46 +418,49 @@ const Home = () => {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
               {featuredJobs.slice(0, 6).map((job, index) => (
-                <Card key={job.id} className="bg-white border border-gray-200 hover:border-teal-400 hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 hover:scale-105 group animate-slide-up" style={{animationDelay: `${index * 0.1}s`}} data-testid={`featured-job-${job.id}`}>
-                  <CardContent className="p-6 relative overflow-hidden">
+                <Card key={job.id} className="bg-white border border-gray-200 hover:border-teal-400 hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 hover:scale-105 group animate-slide-up h-full flex flex-col" style={{animationDelay: `${index * 0.1}s`}} data-testid={`featured-job-${job.id}`}>
+                  <CardContent className="p-6 relative overflow-hidden flex flex-col h-full">
                     {/* Animated Background Gradient on Hover */}
                     <div className="absolute inset-0 bg-gradient-to-br from-teal-50 to-emerald-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div className="relative z-10">
-                    <div className="flex justify-between items-start mb-3">
-                      <Badge className="bg-blue-100 text-blue-800 text-xs">
-                        {job.job_type.replace('_', ' ').toUpperCase()}
-                      </Badge>
-                      {job.salary_min && (
-                        <span className="text-sm font-semibold text-green-600">
-                          {job.currency === 'USD' ? '$' : '₹'}{job.salary_min}+
-                        </span>
-                      )}
-                    </div>
-                    
-                    <h3 className="text-lg font-semibold mb-1 text-gray-900 hover:text-blue-600 transition-colors">{job.title}</h3>
-                    <p className="text-blue-600 font-medium mb-1 text-sm">{job.company}</p>
-                    <p className="text-gray-500 mb-3 flex items-center text-sm">
-                      <MapPin className="h-3 w-3 mr-1" />
-                      {job.location}
-                    </p>
-                    
-                    <p className="text-gray-600 mb-4 line-clamp-2 text-sm">
-                      {job.description.substring(0, 100)}...
-                    </p>
-
-                    <div className="flex flex-wrap gap-1 mb-4">
-                      {job.requirements.slice(0, 2).map((req, index) => (
-                        <Badge key={index} variant="outline" className="text-xs border-gray-200 text-gray-600">
-                          {req}
+                    <div className="relative z-10 flex flex-col h-full">
+                      <div className="flex justify-between items-start mb-3">
+                        <Badge className="bg-blue-100 text-blue-800 text-xs">
+                          {job.job_type.replace('_', ' ').toUpperCase()}
                         </Badge>
-                      ))}
-                    </div>
+                        {job.salary_min && (
+                          <span className="text-sm font-semibold text-green-600">
+                            {job.currency === 'USD' ? '$' : '₹'}{job.salary_min}+
+                          </span>
+                        )}
+                      </div>
+                      
+                      <h3 className="text-lg font-semibold mb-1 text-gray-900 hover:text-blue-600 transition-colors">{job.title}</h3>
+                      <p className="text-blue-600 font-medium mb-1 text-sm">{job.company}</p>
+                      <p className="text-gray-500 mb-3 flex items-center text-sm">
+                        <MapPin className="h-3 w-3 mr-1" />
+                        {job.location}
+                      </p>
+                      
+                      <p className="text-gray-600 mb-4 line-clamp-2 text-sm">
+                        {job.description.substring(0, 100)}...
+                      </p>
 
-                    <Link to={`/jobs/${job.slug || job.id}`}>
-                      <Button className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-medium rounded-md group-hover:shadow-lg transition-all duration-300" data-testid={`apply-job-${job.id}`}>
-                        View Details →
-                      </Button>
-                    </Link>
+                      <div className="flex flex-wrap gap-1 mb-4">
+                        {job.requirements.slice(0, 2).map((req, index) => (
+                          <Badge key={index} variant="outline" className="text-xs border-gray-200 text-gray-600">
+                            {req}
+                          </Badge>
+                        ))}
+                      </div>
+
+                      {/* Spacer to push button to bottom */}
+                      <div className="flex-grow"></div>
+
+                      <Link to={`/jobs/${job.slug || job.id}`} className="mt-auto">
+                        <Button className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-medium rounded-md group-hover:shadow-lg transition-all duration-300" data-testid={`apply-job-${job.id}`}>
+                          View Details →
+                        </Button>
+                      </Link>
                     </div>
                   </CardContent>
                 </Card>
