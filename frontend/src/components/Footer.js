@@ -224,7 +224,7 @@ const Footer = () => {
                 recentBlogs.map((blog) => (
                   <Link
                     key={blog.id}
-                    to={`/blog/${blog.slug}`}
+                    to={`/blogs/${blog.slug}`}
                     className="block group"
                   >
                     <h5 className="text-sm font-medium text-gray-300 group-hover:text-emerald-400 transition-colors leading-tight line-clamp-2">
