@@ -107,13 +107,13 @@ const InteractiveCourseSection = () => {
           animation: breathing 3s ease-in-out infinite;
         }
         .course-tile {
-          animation: fadeInUp 0.6s ease-out forwards;
+          animation: fadeInUp 0.5s ease-out forwards;
           opacity: 0;
         }
-        .course-tile:nth-child(1) { animation-delay: 0.1s; }
-        .course-tile:nth-child(2) { animation-delay: 0.2s; }
-        .course-tile:nth-child(3) { animation-delay: 0.3s; }
-        .course-tile:nth-child(4) { animation-delay: 0.4s; }
+        .course-tile:nth-child(1) { animation-delay: 0.05s; }
+        .course-tile:nth-child(2) { animation-delay: 0.1s; }
+        .course-tile:nth-child(3) { animation-delay: 0.15s; }
+        .course-tile:nth-child(4) { animation-delay: 0.2s; }
       `}</style>
 
       <div className="max-w-7xl mx-auto">
