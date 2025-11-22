@@ -386,7 +386,7 @@ const Home = () => {
                       </Badge>
                       {job.salary_min && (
                         <span className="text-sm font-semibold text-green-600">
-                          {job.currency === 'USD' ? '$' : '₹'}{job.salary_min.toLocaleString()}+
+                          {job.salary_min}+
                         </span>
                       )}
                     </div>
