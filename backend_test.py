@@ -23,6 +23,8 @@ class HealthcareJobsAPITester:
         self.employer_token = None
         self.admin_token = None
         self.test_job_id = None
+        self.test_job_id_inr = None
+        self.test_job_id_usd = None
         self.results = {
             "passed": 0,
             "failed": 0,
