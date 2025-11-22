@@ -1506,6 +1506,11 @@ class HealthcareJobsAPITester:
         self.test_currency_job_creation()
         self.test_currency_job_retrieval()
         
+        # Priority 6: Text Salary and Multiple Categories Testing (REVIEW REQUEST)
+        self.test_text_salary_job_creation()
+        self.test_category_filtering()
+        self.test_job_retrieval_with_text_salary()
+        
         # Print summary
         print("=" * 80)
         print("📊 COMPREHENSIVE TEST SUMMARY")
