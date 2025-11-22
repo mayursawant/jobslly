@@ -1878,7 +1878,7 @@ async def get_sitemap():
     urlset = ET.Element("urlset")
     urlset.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
     
-    base_url = os.environ.get('FRONTEND_URL', 'https://medijobs-3.preview.emergentagent.com')
+    base_url = 'https://jobslly.com'
     
     # Static pages with trailing slashes for consistency
     static_pages = [
