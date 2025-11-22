@@ -1083,21 +1083,8 @@ const AdminPanel = () => {
                     if (!newJob.location.trim()) errors.push('Location is required');
                     if (!newJob.description.trim()) errors.push('Job description is required');
                     
-                    // Validate salary fields (only numeric)
-                    const salaryMinNum = newJob.salary_min ? parseFloat(newJob.salary_min) : 0;
-                    const salaryMaxNum = newJob.salary_max ? parseFloat(newJob.salary_max) : 0;
-                    
-                    if (newJob.salary_min && isNaN(salaryMinNum)) {
-                      errors.push('Minimum salary must be a valid number');
-                    }
-                    if (newJob.salary_max && isNaN(salaryMaxNum)) {
-                      errors.push('Maximum salary must be a valid number');
-                    }
-                    
-                    // Check salary range logic
-                    if (salaryMinNum > 0 && salaryMaxNum > 0 && salaryMaxNum < salaryMinNum) {
-                      errors.push('Maximum salary cannot be less than minimum salary');
-                    }
+                    // Salary fields can now be text or numbers, so no strict validation needed
+                    // Users can enter "Negotiable", "Competitive", or numeric values
                     
                     // External job validation
                     if (newJob.is_external && !newJob.external_url.trim()) {
