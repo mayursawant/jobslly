@@ -701,8 +701,8 @@ const AdminPanel = () => {
                             Posted {new Date(job.created_at).toLocaleDateString()}
                             {job.salary_min && (
                               <span className="ml-4">
-                                {job.salary_min}
-                                {job.salary_max && ` - ${job.salary_max}`}
+                                {job.currency === 'USD' ? '$' : '₹'}{job.salary_min}
+                                {job.salary_max && ` - ${job.currency === 'USD' ? '$' : '₹'}${job.salary_max}`}
                               </span>
                             )}
                           </div>
