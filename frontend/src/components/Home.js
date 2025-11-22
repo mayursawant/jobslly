@@ -583,28 +583,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Call to Action - Courses Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-blue-600 to-teal-600">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to Advance Your Healthcare Career?</h2>
-          <p className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
-            Explore our wide ranges of courses for your healthcare career growth
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="https://academically.com/all-courses/" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-50 font-semibold px-8 py-3 rounded-md" data-testid="cta-licensing-exams">
-                🎓 Foreign Licensing Exams
-              </Button>
-            </a>
-            <a href="https://academically.com/job-assistance-course/" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 font-semibold px-8 py-3 rounded-md" data-testid="cta-job-assistance">
-                💼 Job Assistance Programs
-              </Button>
-            </a>
-          </div>
-        </div>
-      </section>
+      {/* Call to Action - Interactive Courses Section */}
+      <InteractiveCourseSection />
     </div>
   );
 };
