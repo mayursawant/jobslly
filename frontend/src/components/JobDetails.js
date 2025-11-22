@@ -401,8 +401,8 @@ const JobDetails = () => {
                   <div>
                     <div className="text-sm text-gray-500">Salary Range</div>
                     <div className="font-medium text-gray-800">
-                      {job.salary_min}
-                      {job.salary_max && ` - ${job.salary_max}`}
+                      {job.currency === 'USD' ? '$' : '₹'}{job.salary_min}
+                      {job.salary_max && ` - ${job.currency === 'USD' ? '$' : '₹'}${job.salary_max}`}
                     </div>
                   </div>
                 )}
