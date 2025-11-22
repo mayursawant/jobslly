@@ -34,6 +34,7 @@ const AdminPanel = () => {
     description: '',
     salary_min: '',
     salary_max: '',
+    currency: 'INR',
     job_type: 'full_time',
     categories: [],
     requirements: [],
