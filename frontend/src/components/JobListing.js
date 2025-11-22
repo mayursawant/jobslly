@@ -191,8 +191,8 @@ const JobListing = () => {
                         </Badge>
                         {job.salary_min && (
                           <span className="text-sm font-semibold text-green-600">
-                            {job.salary_min}
-                            {job.salary_max && ` - ${job.salary_max}`}
+                            {job.currency === 'USD' ? '$' : '₹'}{job.salary_min}
+                            {job.salary_max && ` - ${job.currency === 'USD' ? '$' : '₹'}${job.salary_max}`}
                           </span>
                         )}
                         <span className="text-xs text-gray-500 ml-auto md:ml-0">
