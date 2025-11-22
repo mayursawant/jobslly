@@ -986,23 +986,30 @@ const AdminPanel = () => {
                   </div>
                 </div>
 
-                {/* Job Category */}
+                {/* Job Categories - Multiple Selection */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Job Category *</label>
-                  <select
-                    value={newJob.category}
-                    onChange={(e) => setNewJob(prev => ({...prev, category: e.target.value}))}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                    required
-                  >
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Job Categories * (Select multiple)</label>
+                  <div className="grid grid-cols-2 gap-3">
                     {jobCategories.map((cat) => (
-                      <option key={cat.value} value={cat.value}>
-                        {cat.label}
-                      </option>
+                      <label key={cat.value} className="flex items-center space-x-2 p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={newJob.categories.includes(cat.value)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setNewJob(prev => ({...prev, categories: [...prev.categories, cat.value]}));
+                            } else {
+                              setNewJob(prev => ({...prev, categories: prev.categories.filter(c => c !== cat.value)}));
+                            }
+                          }}
+                          className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+                        />
+                        <span className="text-sm font-medium text-gray-700">{cat.label}</span>
+                      </label>
                     ))}
-                  </select>
-                  <p className="text-sm text-gray-500 mt-1">
-                    💡 Select "All Categories" if the job is suitable for multiple healthcare specializations
+                  </div>
+                  <p className="text-sm text-gray-500 mt-2">
+                    💡 Select one or more categories that best describe this position
                   </p>
                 </div>
                 
