@@ -188,7 +188,7 @@ const InteractiveCourseSection = () => {
                   {/* Course Tiles - Appear below when this category is hovered */}
                   {isHovered && (
                     <div className="mt-6">
-                      <div className="grid grid-cols-1 gap-4">
+                      <div className="grid grid-cols-2 gap-4">
                         {category.courses.map((course, index) => (
                           <a
                             key={index}
@@ -198,19 +198,15 @@ const InteractiveCourseSection = () => {
                             className="course-tile group"
                           >
                             <Card className="h-full bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-teal-50 border-2 border-gray-200 hover:border-blue-400 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-                              <CardContent className="p-6">
-                                <div className="flex items-center gap-4">
-                                  <div className="text-4xl transform transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12">
-                                    {course.emoji}
-                                  </div>
-                                  <div className="flex-1">
-                                    <h4 className="text-base font-semibold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
-                                      {course.name}
-                                    </h4>
-                                    <div className="mt-2 text-blue-600 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                      Learn More →
-                                    </div>
-                                  </div>
+                              <CardContent className="p-5 text-center">
+                                <div className="text-4xl mb-3 transform transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12">
+                                  {course.emoji}
+                                </div>
+                                <h4 className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight min-h-[40px] flex items-center justify-center">
+                                  {course.name}
+                                </h4>
+                                <div className="mt-3 text-blue-600 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                  Learn More →
                                 </div>
                               </CardContent>
                             </Card>
