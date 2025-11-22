@@ -781,17 +781,27 @@ const AdminPanel = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                      <select
-                        value={editingJob.category || ''}
-                        onChange={(e) => setEditingJob(prev => ({...prev, category: e.target.value}))}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                      >
-                        <option value="">Select Category</option>
-                        {jobCategories.filter(cat => cat.value !== 'all').map(cat => (
-                          <option key={cat.value} value={cat.value}>{cat.label}</option>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Categories (Select multiple)</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {jobCategories.filter(cat => cat.value !== 'all').map((cat) => (
+                          <label key={cat.value} className="flex items-center space-x-2 p-2 border border-gray-300 rounded hover:bg-gray-50 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={(editingJob.categories || []).includes(cat.value)}
+                              onChange={(e) => {
+                                const currentCategories = editingJob.categories || [];
+                                if (e.target.checked) {
+                                  setEditingJob(prev => ({...prev, categories: [...currentCategories, cat.value]}));
+                                } else {
+                                  setEditingJob(prev => ({...prev, categories: currentCategories.filter(c => c !== cat.value)}));
+                                }
+                              }}
+                              className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+                            />
+                            <span className="text-sm">{cat.label}</span>
+                          </label>
                         ))}
-                      </select>
+                      </div>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Job Type</label>
