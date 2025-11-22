@@ -892,7 +892,7 @@ CORS_ORIGINS="*"
 
 **Frontend (.env):**
 ```
-REACT_APP_BACKEND_URL="https://medical-careers-1.preview.emergentagent.com"
+REACT_APP_BACKEND_URL="https://medijobs-3.preview.emergentagent.com"
 WDS_SOCKET_PORT=443
 ```
 
@@ -924,7 +924,7 @@ WDS_SOCKET_PORT=443
 3. **Service Restart (if needed):**
    - New packages: `sudo supervisorctl restart all`
    - Code changes: Hot reload handles automatically
-4. **Health Check:** `curl https://medical-careers-1.preview.emergentagent.com/api/health`
+4. **Health Check:** `curl https://medijobs-3.preview.emergentagent.com/api/health`
 5. **Verification:** Test functionality in browser
 6. **Monitor:** Check supervisor logs for errors
 

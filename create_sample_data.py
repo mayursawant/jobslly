@@ -4,7 +4,7 @@ import requests
 import json
 from datetime import datetime, timezone
 
-BACKEND_URL = "https://medical-careers-1.preview.emergentagent.com"
+BACKEND_URL = "https://medijobs-3.preview.emergentagent.com"
 ADMIN_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJleHAiOjE3NTk2OTUxMzF9.ql52oQJcPSQwvzU1AOpsviKSMmWXF-kWHPSuBjiYuGQ"
 
 def create_request(endpoint, data, token=ADMIN_TOKEN):

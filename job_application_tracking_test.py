@@ -11,7 +11,7 @@ from datetime import datetime
 import time
 
 # Configuration
-BASE_URL = "https://medical-careers-1.preview.emergentagent.com/api"
+BASE_URL = "https://medijobs-3.preview.emergentagent.com/api"
 
 class JobApplicationTrackingTester:
     def __init__(self):
