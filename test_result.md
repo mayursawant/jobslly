@@ -128,11 +128,14 @@ backend:
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Updated sitemap.xml endpoint to use 'https://jobslly.com' as the base URL instead of emergent domain. Changed line 1879 in server.py to hardcode the correct domain."
+        - working: true
+          agent: "testing"
+          comment: "SITEMAP DOMAIN FIX VERIFIED: ✅ Sitemap.xml endpoint correctly uses https://jobslly.com domain instead of emergent domain. GET /api/sitemap.xml returns valid XML sitemap (8983 chars) with proper jobslly.com URLs throughout. Domain fix successfully implemented and working correctly."
 
 backend:
   - task: "Currency Field in Job Schema"
@@ -141,11 +144,14 @@ backend:
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Added 'currency' field to Job model (default: 'INR') and JobCreate model. Currency options are INR (₹) and USD ($). Field will be stored in database for all new jobs."
+        - working: true
+          agent: "testing"
+          comment: "CURRENCY FEATURE COMPREHENSIVE TESTING COMPLETE: ✅ All currency functionality working perfectly: 1) Job Creation with Currency - Successfully created jobs with both INR and USD currency options via POST /api/admin/jobs, default currency correctly set to INR when not specified, 2) Currency Field in API Responses - All 20 jobs in GET /api/jobs include currency field, individual job details via GET /api/jobs/{slug} correctly return currency field, 3) Test Jobs Verification - Both test jobs (senior-cardiologist-mumbai-2 with INR, registered-nurse-new-york-2 with USD) correctly display currency in API responses, 4) Database Storage - Currency field properly stored and retrieved from database for all job operations. Currency feature is production-ready and fully functional."
 
 frontend:
   - task: "Currency Selector in Admin Panel"
