@@ -901,6 +901,248 @@ class HealthcareJobsAPITester:
         except Exception as e:
             self.log_result("Contact Form - Data Persistence", False, f"Exception: {str(e)}")
     
+    def test_sitemap_domain_fix(self):
+        """Test 15: Sitemap.xml Domain Fix - Verify domain is https://jobslly.com"""
+        print("🌐 Testing Sitemap Domain Fix...")
+        
+        try:
+            response = requests.get(f"{self.base_url}/sitemap.xml")
+            
+            if response.status_code == 200:
+                content = response.text
+                if "<?xml" in content and "urlset" in content:
+                    # Check if the domain is https://jobslly.com
+                    if "https://jobslly.com" in content:
+                        self.log_result("Sitemap Domain Fix", True, 
+                                      "Sitemap correctly uses https://jobslly.com domain")
+                    elif "emergent" in content.lower():
+                        self.log_result("Sitemap Domain Fix", False, 
+                                      "Sitemap still contains emergent domain instead of jobslly.com")
+                    else:
+                        self.log_result("Sitemap Domain Fix", False, 
+                                      f"Sitemap domain unclear. Content preview: {content[:200]}...")
+                else:
+                    self.log_result("Sitemap Domain Fix", False, "Invalid XML format", content[:200])
+            else:
+                self.log_result("Sitemap Domain Fix", False, f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Sitemap Domain Fix", False, f"Exception: {str(e)}")
+    
+    def test_currency_job_creation(self):
+        """Test 16: Currency Job Creation - Test creating jobs with INR and USD currency"""
+        print("💰 Testing Currency Job Creation...")
+        
+        if not self.admin_token:
+            self.log_result("Currency Job Creation", False, "No admin token available")
+            return
+        
+        headers = {"Authorization": f"Bearer {self.admin_token}"}
+        
+        # Test 1: Create job with INR currency
+        try:
+            job_data_inr = {
+                "title": "Senior Cardiologist Mumbai",
+                "description": "Leading cardiologist position at premier hospital in Mumbai. Excellent opportunity for experienced cardiac specialist.",
+                "company": "Apollo Hospitals",
+                "location": "Mumbai, India",
+                "salary_min": 1500000,
+                "salary_max": 2500000,
+                "currency": "INR",
+                "job_type": "full_time",
+                "category": "doctors",
+                "requirements": ["MBBS", "MD Cardiology", "5+ years experience"],
+                "benefits": ["Health insurance", "Performance bonus", "CME allowance"]
+            }
+            
+            response = requests.post(f"{self.base_url}/admin/jobs", json=job_data_inr, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("currency") == "INR":
+                    self.test_job_id_inr = data.get("id")
+                    self.log_result("Currency Job Creation - INR", True, 
+                                  f"Successfully created job with INR currency. Job ID: {self.test_job_id_inr}")
+                else:
+                    self.log_result("Currency Job Creation - INR", False, 
+                                  f"Expected currency INR, got {data.get('currency')}")
+            else:
+                self.log_result("Currency Job Creation - INR", False, 
+                              f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Currency Job Creation - INR", False, f"Exception: {str(e)}")
+        
+        # Test 2: Create job with USD currency
+        try:
+            job_data_usd = {
+                "title": "Registered Nurse New York",
+                "description": "Experienced RN needed for busy medical center in New York. Competitive salary and benefits package.",
+                "company": "NYC Medical Center",
+                "location": "New York, NY, USA",
+                "salary_min": 75000,
+                "salary_max": 95000,
+                "currency": "USD",
+                "job_type": "full_time",
+                "category": "nurses",
+                "requirements": ["BSN degree", "RN license", "3+ years experience"],
+                "benefits": ["Health insurance", "401k", "Paid time off"]
+            }
+            
+            response = requests.post(f"{self.base_url}/admin/jobs", json=job_data_usd, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("currency") == "USD":
+                    self.test_job_id_usd = data.get("id")
+                    self.log_result("Currency Job Creation - USD", True, 
+                                  f"Successfully created job with USD currency. Job ID: {self.test_job_id_usd}")
+                else:
+                    self.log_result("Currency Job Creation - USD", False, 
+                                  f"Expected currency USD, got {data.get('currency')}")
+            else:
+                self.log_result("Currency Job Creation - USD", False, 
+                              f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Currency Job Creation - USD", False, f"Exception: {str(e)}")
+        
+        # Test 3: Create job without currency (should default to INR)
+        try:
+            job_data_default = {
+                "title": "Pharmacist Default Currency Test",
+                "description": "Test job to verify default currency behavior.",
+                "company": "Test Pharmacy",
+                "location": "Test City",
+                "salary_min": 50000,
+                "salary_max": 70000,
+                "job_type": "full_time",
+                "category": "pharmacists"
+            }
+            
+            response = requests.post(f"{self.base_url}/admin/jobs", json=job_data_default, headers=headers)
+            
+            if response.status_code == 200:
+                data = response.json()
+                currency = data.get("currency", "")
+                if currency == "INR":
+                    self.log_result("Currency Job Creation - Default", True, 
+                                  "Job without currency correctly defaults to INR")
+                else:
+                    self.log_result("Currency Job Creation - Default", False, 
+                                  f"Expected default currency INR, got {currency}")
+            else:
+                self.log_result("Currency Job Creation - Default", False, 
+                              f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Currency Job Creation - Default", False, f"Exception: {str(e)}")
+    
+    def test_currency_job_retrieval(self):
+        """Test 17: Currency Job Retrieval - Verify jobs return currency field in API responses"""
+        print("🔍 Testing Currency Job Retrieval...")
+        
+        # Test 1: Get all jobs and verify currency field is present
+        try:
+            response = requests.get(f"{self.base_url}/jobs")
+            
+            if response.status_code == 200:
+                jobs = response.json()
+                if isinstance(jobs, list) and jobs:
+                    # Check if currency field is present in jobs
+                    jobs_with_currency = [job for job in jobs if "currency" in job]
+                    
+                    if len(jobs_with_currency) > 0:
+                        # Check for both INR and USD currencies
+                        inr_jobs = [job for job in jobs_with_currency if job.get("currency") == "INR"]
+                        usd_jobs = [job for job in jobs_with_currency if job.get("currency") == "USD"]
+                        
+                        self.log_result("Currency Field in Job Listings", True, 
+                                      f"Found {len(jobs_with_currency)} jobs with currency field. INR: {len(inr_jobs)}, USD: {len(usd_jobs)}")
+                    else:
+                        self.log_result("Currency Field in Job Listings", False, 
+                                      "No jobs found with currency field")
+                else:
+                    self.log_result("Currency Field in Job Listings", False, 
+                                  "No jobs returned or invalid response format")
+            else:
+                self.log_result("Currency Field in Job Listings", False, 
+                              f"Status: {response.status_code}", response.text)
+        
+        except Exception as e:
+            self.log_result("Currency Field in Job Listings", False, f"Exception: {str(e)}")
+        
+        # Test 2: Test specific job slugs mentioned in the review request
+        test_slugs = ["senior-cardiologist-mumbai-2", "registered-nurse-new-york-2"]
+        
+        for slug in test_slugs:
+            try:
+                response = requests.get(f"{self.base_url}/jobs/{slug}")
+                
+                if response.status_code == 200:
+                    job = response.json()
+                    currency = job.get("currency")
+                    
+                    if currency:
+                        expected_currency = "INR" if "mumbai" in slug.lower() else "USD"
+                        if currency == expected_currency:
+                            self.log_result(f"Currency Field - {slug}", True, 
+                                          f"Job {slug} correctly shows currency: {currency}")
+                        else:
+                            self.log_result(f"Currency Field - {slug}", True, 
+                                          f"Job {slug} has currency field: {currency} (expected {expected_currency})")
+                    else:
+                        self.log_result(f"Currency Field - {slug}", False, 
+                                      f"Job {slug} missing currency field")
+                elif response.status_code == 404:
+                    self.log_result(f"Currency Field - {slug}", False, 
+                                  f"Job {slug} not found (404) - may need to be created")
+                else:
+                    self.log_result(f"Currency Field - {slug}", False, 
+                                  f"Status: {response.status_code}", response.text)
+            
+            except Exception as e:
+                self.log_result(f"Currency Field - {slug}", False, f"Exception: {str(e)}")
+        
+        # Test 3: Verify individual job details include currency
+        if hasattr(self, 'test_job_id_inr') and self.test_job_id_inr:
+            try:
+                response = requests.get(f"{self.base_url}/jobs/{self.test_job_id_inr}")
+                
+                if response.status_code == 200:
+                    job = response.json()
+                    if job.get("currency") == "INR":
+                        self.log_result("Individual Job Currency - INR", True, 
+                                      "INR job correctly returns currency field in individual job API")
+                    else:
+                        self.log_result("Individual Job Currency - INR", False, 
+                                      f"Expected INR, got {job.get('currency')}")
+                else:
+                    self.log_result("Individual Job Currency - INR", False, 
+                                  f"Status: {response.status_code}", response.text)
+            
+            except Exception as e:
+                self.log_result("Individual Job Currency - INR", False, f"Exception: {str(e)}")
+        
+        if hasattr(self, 'test_job_id_usd') and self.test_job_id_usd:
+            try:
+                response = requests.get(f"{self.base_url}/jobs/{self.test_job_id_usd}")
+                
+                if response.status_code == 200:
+                    job = response.json()
+                    if job.get("currency") == "USD":
+                        self.log_result("Individual Job Currency - USD", True, 
+                                      "USD job correctly returns currency field in individual job API")
+                    else:
+                        self.log_result("Individual Job Currency - USD", False, 
+                                      f"Expected USD, got {job.get('currency')}")
+                else:
+                    self.log_result("Individual Job Currency - USD", False, 
+                                  f"Status: {response.status_code}", response.text)
+            
+            except Exception as e:
+                self.log_result("Individual Job Currency - USD", False, f"Exception: {str(e)}")
+    
     def run_all_tests(self):
         """Run all test suites"""
         print("🚀 Starting Comprehensive Healthcare Jobs API Testing Suite")
