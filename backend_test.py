@@ -930,6 +930,11 @@ class HealthcareJobsAPITester:
         # Priority 4: Contact Form API (NEW)
         self.test_contact_form_api()
         
+        # Priority 5: Currency Feature Testing (NEW)
+        self.test_sitemap_domain_fix()
+        self.test_currency_job_creation()
+        self.test_currency_job_retrieval()
+        
         # Print summary
         print("=" * 80)
         print("📊 COMPREHENSIVE TEST SUMMARY")
