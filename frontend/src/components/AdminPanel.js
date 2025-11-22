@@ -1082,6 +1082,7 @@ const AdminPanel = () => {
                     if (!newJob.company.trim()) errors.push('Company name is required');
                     if (!newJob.location.trim()) errors.push('Location is required');
                     if (!newJob.description.trim()) errors.push('Job description is required');
+                    if (!newJob.categories || newJob.categories.length === 0) errors.push('At least one job category must be selected');
                     
                     // Salary fields can now be text or numbers, so no strict validation needed
                     // Users can enter "Negotiable", "Competitive", or numeric values
