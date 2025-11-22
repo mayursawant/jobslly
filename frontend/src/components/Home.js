@@ -85,23 +85,10 @@ const Home = () => {
         
         {/* Floating Animation Elements with Enhanced Animations */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {/* Floating Medical Icons */}
-          <div className="absolute top-20 left-10 text-4xl opacity-30" style={{animation: 'float-slow 6s ease-in-out infinite'}}>💊</div>
-          <div className="absolute top-40 right-20 text-3xl opacity-25" style={{animation: 'float-slow 5s ease-in-out infinite', animationDelay: '1s'}}>🩺</div>
-          <div className="absolute bottom-32 left-20 text-3xl opacity-30" style={{animation: 'float-slow 7s ease-in-out infinite', animationDelay: '2s'}}>❤️</div>
-          <div className="absolute bottom-20 right-40 text-4xl opacity-25" style={{animation: 'float-slow 6s ease-in-out infinite', animationDelay: '3s'}}>🏥</div>
-          
           {/* Pulsing Circles */}
           <div className="absolute top-20 left-10 w-20 h-20 bg-teal-200 rounded-full opacity-20 animate-bounce"></div>
           <div className="absolute top-40 right-20 w-16 h-16 bg-emerald-200 rounded-full" style={{animation: 'pulse-glow 2s ease-in-out infinite'}}></div>
           <div className="absolute bottom-32 left-20 w-12 h-12 bg-cyan-200 rounded-full opacity-25 animate-ping"></div>
-          
-          {/* Animated Heartbeat Icon */}
-          <div className="absolute top-1/2 left-5 transform -translate-y-1/2">
-            <div className="text-red-400 text-5xl" style={{animation: 'heartbeat 1.5s ease-in-out infinite'}}>
-              ❤️
-            </div>
-          </div>
           
           {/* ECG Wave Line */}
           <svg className="absolute bottom-10 left-0 w-full h-20 opacity-10" viewBox="0 0 1000 100">
