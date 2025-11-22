@@ -953,6 +953,17 @@ const AdminPanel = () => {
                     </select>
                   </div>
                   <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Currency</label>
+                    <select
+                      value={newJob.currency}
+                      onChange={(e) => setNewJob(prev => ({...prev, currency: e.target.value}))}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    >
+                      <option value="INR">₹ INR (Indian Rupee)</option>
+                      <option value="USD">$ USD (US Dollar)</option>
+                    </select>
+                  </div>
+                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Salary</label>
                     <input
                       type="number"
