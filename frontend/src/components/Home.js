@@ -60,12 +60,61 @@ const Home = () => {
     <div className="min-h-screen bg-white">
       {/* Hero Section with Search */}
       <section className="relative py-20 px-4 bg-gradient-to-br from-teal-50 via-white to-emerald-50 overflow-hidden">
-        {/* Floating Animation Elements */}
+        {/* ECG Heartbeat Animation */}
+        <style>{`
+          @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            10% { transform: scale(1.1); }
+            20% { transform: scale(1); }
+            30% { transform: scale(1.15); }
+            40% { transform: scale(1); }
+          }
+          @keyframes ecg-line {
+            0% { stroke-dashoffset: 1000; }
+            100% { stroke-dashoffset: 0; }
+          }
+          @keyframes float-slow {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+          }
+          @keyframes pulse-glow {
+            0%, 100% { opacity: 0.4; box-shadow: 0 0 10px rgba(20, 184, 166, 0.3); }
+            50% { opacity: 0.8; box-shadow: 0 0 20px rgba(20, 184, 166, 0.6); }
+          }
+        `}</style>
+        
+        {/* Floating Animation Elements with Enhanced Animations */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Floating Medical Icons */}
+          <div className="absolute top-20 left-10 text-4xl opacity-30" style={{animation: 'float-slow 6s ease-in-out infinite'}}>💊</div>
+          <div className="absolute top-40 right-20 text-3xl opacity-25" style={{animation: 'float-slow 5s ease-in-out infinite', animationDelay: '1s'}}>🩺</div>
+          <div className="absolute bottom-32 left-20 text-3xl opacity-30" style={{animation: 'float-slow 7s ease-in-out infinite', animationDelay: '2s'}}>❤️</div>
+          <div className="absolute bottom-20 right-40 text-4xl opacity-25" style={{animation: 'float-slow 6s ease-in-out infinite', animationDelay: '3s'}}>🏥</div>
+          
+          {/* Pulsing Circles */}
           <div className="absolute top-20 left-10 w-20 h-20 bg-teal-200 rounded-full opacity-20 animate-bounce"></div>
-          <div className="absolute top-40 right-20 w-16 h-16 bg-emerald-200 rounded-full opacity-30 animate-pulse"></div>
+          <div className="absolute top-40 right-20 w-16 h-16 bg-emerald-200 rounded-full" style={{animation: 'pulse-glow 2s ease-in-out infinite'}}></div>
           <div className="absolute bottom-32 left-20 w-12 h-12 bg-cyan-200 rounded-full opacity-25 animate-ping"></div>
-          <div className="absolute bottom-20 right-40 w-14 h-14 bg-green-200 rounded-full opacity-20 animate-bounce" style={{animationDelay: '1s'}}></div>
+          
+          {/* Animated Heartbeat Icon */}
+          <div className="absolute top-1/2 left-5 transform -translate-y-1/2">
+            <div className="text-red-400 text-5xl" style={{animation: 'heartbeat 1.5s ease-in-out infinite'}}>
+              ❤️
+            </div>
+          </div>
+          
+          {/* ECG Wave Line */}
+          <svg className="absolute bottom-10 left-0 w-full h-20 opacity-10" viewBox="0 0 1000 100">
+            <path
+              d="M 0 50 L 200 50 L 220 30 L 240 70 L 260 20 L 280 50 L 400 50 L 420 30 L 440 70 L 460 20 L 480 50 L 600 50 L 620 30 L 640 70 L 660 20 L 680 50 L 1000 50"
+              stroke="#14B8A6"
+              strokeWidth="3"
+              fill="none"
+              strokeDasharray="1000"
+              strokeDashoffset="1000"
+              style={{animation: 'ecg-line 3s linear infinite'}}
+            />
+          </svg>
         </div>
 
         <div className="max-w-7xl mx-auto relative">
