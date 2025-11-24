@@ -301,10 +301,15 @@ const JobListing = () => {
         )}
 
         {/* Load More */}
-        {sortedJobs.length >= 50 && (
+        {hasMore && sortedJobs.length > 0 && (
           <div className="text-center mt-12">
-            <Button onClick={fetchJobs} variant="outline" size="lg">
-              Load More Jobs
+            <Button 
+              onClick={handleLoadMore} 
+              variant="outline" 
+              size="lg"
+              disabled={loadingMore}
+            >
+              {loadingMore ? 'Loading...' : 'Load More Jobs'}
             </Button>
           </div>
         )}
