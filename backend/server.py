@@ -635,6 +635,12 @@ async def get_job(job_identifier: str, authorization: str = Header(None)):
     if job.get('expires_at') and isinstance(job.get('expires_at'), str):
         job['expires_at'] = datetime.fromisoformat(job['expires_at'])
     
+    # Convert integer salaries to strings for backward compatibility
+    if job.get('salary_min') is not None and isinstance(job.get('salary_min'), int):
+        job['salary_min'] = str(job['salary_min'])
+    if job.get('salary_max') is not None and isinstance(job.get('salary_max'), int):
+        job['salary_max'] = str(job['salary_max'])
+    
     # Check if user has applied for this job (for logged-in users)
     has_applied = False
     current_user = await get_current_user_optional(authorization)
