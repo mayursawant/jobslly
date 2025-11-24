@@ -33,6 +33,9 @@ const JobListing = () => {
   const { user, isAuthenticated } = useContext(AuthContext);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [skip, setSkip] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [jobType, setJobType] = useState('all');
   const [category, setCategory] = useState('all');
@@ -48,18 +51,45 @@ const JobListing = () => {
   ];
 
   useEffect(() => {
-    fetchJobs();
+    fetchJobs(true); // true = initial load
   }, []);
 
-  const fetchJobs = async () => {
+  const fetchJobs = async (isInitial = false) => {
     try {
-      const response = await axios.get(`${API}/jobs?limit=50`);
-      setJobs(response.data);
+      if (isInitial) {
+        setLoading(true);
+      } else {
+        setLoadingMore(true);
+      }
+
+      const currentSkip = isInitial ? 0 : skip;
+      const limit = 20; // Load 20 jobs at a time
+      
+      const response = await axios.get(`${API}/jobs?skip=${currentSkip}&limit=${limit}`);
+      const newJobs = response.data;
+
+      if (isInitial) {
+        setJobs(newJobs);
+        setSkip(limit);
+      } else {
+        setJobs(prevJobs => [...prevJobs, ...newJobs]);
+        setSkip(currentSkip + limit);
+      }
+
+      // If we got fewer jobs than the limit, there are no more jobs
+      setHasMore(newJobs.length === limit);
     } catch (error) {
       console.error('Failed to fetch jobs:', error);
       toast.error('Failed to load jobs');
     } finally {
       setLoading(false);
+      setLoadingMore(false);
+    }
+  };
+
+  const handleLoadMore = () => {
+    if (!loadingMore && hasMore) {
+      fetchJobs(false);
     }
   };
 
@@ -271,10 +301,15 @@ const JobListing = () => {
         )}
 
         {/* Load More */}
-        {sortedJobs.length >= 50 && (
+        {hasMore && sortedJobs.length > 0 && (
           <div className="text-center mt-12">
-            <Button onClick={fetchJobs} variant="outline" size="lg">
-              Load More Jobs
+            <Button 
+              onClick={handleLoadMore} 
+              variant="outline" 
+              size="lg"
+              disabled={loadingMore}
+            >
+              {loadingMore ? 'Loading...' : 'Load More Jobs'}
             </Button>
           </div>
         )}
