@@ -604,7 +604,8 @@ async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True, c
     if category:
         query["categories"] = category
     
-    jobs = await db.jobs.find(query).skip(skip).limit(limit).to_list(length=None)
+    # Sort by created_at descending (newest first)
+    jobs = await db.jobs.find(query).sort("created_at", -1).skip(skip).limit(limit).to_list(length=None)
     
     for job in jobs:
         if isinstance(job.get('created_at'), str):
