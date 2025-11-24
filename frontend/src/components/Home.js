@@ -28,6 +28,203 @@ const formatSalary = (value, currency) => {
   return value; // Return as-is for pure text like "Negotiable"
 };
 
+// Interactive Course Section Component
+const InteractiveCourseSection = () => {
+  const [hoveredCategory, setHoveredCategory] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const hoverTimeoutRef = React.useRef(null);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    };
+  }, []);
+
+  const handleMouseEnter = (key) => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    setHoveredCategory(key);
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    // Add 250ms delay before hiding
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoveredCategory(null);
+    }, 250);
+  };
+
+  const categories = {
+    licensing: {
+      title: 'Foreign Licensing Exams',
+      icon: '🎓',
+      color: 'from-blue-600 to-cyan-600',
+      courses: [
+        { name: 'AMC Exam Prep for Doctors', emoji: '🩺', url: 'https://academically.com/all-courses/' },
+        { name: 'OPRA Exam Prep for Pharmacists', emoji: '💊', url: 'https://academically.com/all-courses/' },
+        { name: 'APC Exam Prep for Physio', emoji: '🏃‍♂️', url: 'https://academically.com/all-courses/' },
+        { name: 'ADC Exam Prep for Dental', emoji: '🦷', url: 'https://academically.com/all-courses/' }
+      ]
+    },
+    assistance: {
+      title: 'Job Assistance Program',
+      icon: '💼',
+      color: 'from-teal-600 to-emerald-600',
+      courses: [
+        { name: 'MSL Certification Course', emoji: '🔬', url: 'https://academically.com/job-assistance-course/' },
+        { name: 'HEOR Certification Course', emoji: '📊', url: 'https://academically.com/job-assistance-course/' },
+        { name: 'Pharmacovigilance Certification Course', emoji: '💉', url: 'https://academically.com/job-assistance-course/' },
+        { name: 'Clinical Data Management Certification Course', emoji: '📋', url: 'https://academically.com/job-assistance-course/' }
+      ]
+    }
+  };
+
+  return (
+    <section className="py-20 px-4 bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 overflow-hidden">
+      <style>{`
+        @keyframes breathing {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.02); }
+        }
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .breathing {
+          animation: breathing 3s ease-in-out infinite;
+        }
+        .course-tile {
+          animation: fadeInUp 0.5s ease-out forwards;
+          opacity: 0;
+        }
+        .course-tile:nth-child(1) { animation-delay: 0.05s; }
+        .course-tile:nth-child(2) { animation-delay: 0.1s; }
+        .course-tile:nth-child(3) { animation-delay: 0.15s; }
+        .course-tile:nth-child(4) { animation-delay: 0.2s; }
+      `}</style>
+
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            Ready to Advance Your Healthcare Career?
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Explore our wide ranges of courses for your healthcare career growth
+          </p>
+        </div>
+
+        {/* Interactive Category Blocks - Each with its own hover container */}
+        <div className="flex flex-col md:flex-row gap-6 max-w-5xl mx-auto">
+          {Object.entries(categories).map(([key, category]) => {
+            const isHovered = hoveredCategory === key;
+            const isOtherHovered = hoveredCategory && hoveredCategory !== key;
+
+            return (
+              <div
+                key={key}
+                className="flex-1"
+              >
+                {/* Parent container that maintains hover for both block and tiles */}
+                <div
+                  onMouseEnter={() => handleMouseEnter(key)}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={() => isMobile && setHoveredCategory(isHovered ? null : key)}
+                  className="relative"
+                >
+                  {/* Category Block */}
+                  <div
+                    className={`
+                      relative cursor-pointer transition-all ease-out
+                      ${!hoveredCategory ? 'breathing' : ''}
+                      ${isHovered ? 'md:scale-110 z-10' : ''}
+                      ${isOtherHovered ? 'md:scale-90 blur-sm opacity-60' : ''}
+                    `}
+                    style={{
+                      transformOrigin: 'center',
+                      transition: 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease, filter 0.5s ease'
+                    }}
+                  >
+                    <div className={`
+                      relative p-8 rounded-2xl bg-gradient-to-br ${category.color} 
+                      text-white shadow-xl hover:shadow-2xl transition-all duration-500
+                      ${isHovered ? 'ring-4 ring-white ring-opacity-50' : ''}
+                    `}>
+                      {/* Animated Background Gradient */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                      
+                      <div className="relative z-10">
+                        <div className="text-6xl mb-4 transform transition-transform duration-300">
+                          {category.icon}
+                        </div>
+                        <h3 className="text-2xl md:text-3xl font-bold mb-2">
+                          {category.title}
+                        </h3>
+                        <p className="text-white/80 text-sm">
+                          {isHovered ? 'Explore courses below ↓' : 'Hover to explore courses'}
+                        </p>
+                      </div>
+
+                      {/* Pulse Effect */}
+                      {!hoveredCategory && (
+                        <div className="absolute inset-0 rounded-2xl bg-white/10 animate-pulse"></div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Course Tiles - Appear below when this category is hovered */}
+                  {isHovered && (
+                    <div className="mt-6">
+                      <div className="grid grid-cols-2 gap-4">
+                        {category.courses.map((course, index) => (
+                          <a
+                            key={index}
+                            href={course.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="course-tile group"
+                          >
+                            <Card className="h-full bg-white hover:bg-gradient-to-br hover:from-blue-50 hover:to-teal-50 border-2 border-gray-200 hover:border-blue-400 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                              <CardContent className="p-5 text-center">
+                                <div className="text-4xl mb-3 transform transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12">
+                                  {course.emoji}
+                                </div>
+                                <h4 className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight min-h-[40px] flex items-center justify-center">
+                                  {course.name}
+                                </h4>
+                                <div className="mt-3 text-blue-600 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                  Learn More →
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const Home = () => {
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -583,28 +780,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Call to Action - Courses Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-blue-600 to-teal-600">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to Advance Your Healthcare Career?</h2>
-          <p className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
-            Explore our wide ranges of courses for your healthcare career growth
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="https://academically.com/all-courses/" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-50 font-semibold px-8 py-3 rounded-md" data-testid="cta-licensing-exams">
-                🎓 Foreign Licensing Exams
-              </Button>
-            </a>
-            <a href="https://academically.com/job-assistance-course/" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 font-semibold px-8 py-3 rounded-md" data-testid="cta-job-assistance">
-                💼 Job Assistance Programs
-              </Button>
-            </a>
-          </div>
-        </div>
-      </section>
+      {/* Call to Action - Interactive Courses Section */}
+      <InteractiveCourseSection />
     </div>
   );
 };
