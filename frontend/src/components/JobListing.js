@@ -52,7 +52,7 @@ const JobListing = () => {
 
   useEffect(() => {
     fetchJobs(true); // true = initial load
-  }, []);
+  }, [category]); // Refetch when category changes
 
   const fetchJobs = async (isInitial = false) => {
     try {
@@ -63,9 +63,17 @@ const JobListing = () => {
       }
 
       const currentSkip = isInitial ? 0 : skip;
-      const limit = 20; // Load 20 jobs at a time
+      const limit = 50; // Load 50 jobs at a time
       
-      const response = await axios.get(`${API}/jobs?skip=${currentSkip}&limit=${limit}`);
+      // Build query params
+      let url = `${API}/jobs?skip=${currentSkip}&limit=${limit}`;
+      
+      // Add category filter to API call if not "all"
+      if (category !== 'all') {
+        url += `&category=${category}`;
+      }
+      
+      const response = await axios.get(url);
       const newJobs = response.data;
 
       if (isInitial) {
