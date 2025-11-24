@@ -876,6 +876,12 @@ async def get_pending_jobs(current_user: User = Depends(get_current_user)):
             job['created_at'] = datetime.fromisoformat(job['created_at'])
         if job.get('expires_at') and isinstance(job.get('expires_at'), str):
             job['expires_at'] = datetime.fromisoformat(job['expires_at'])
+        
+        # Convert integer salaries to strings for backward compatibility
+        if job.get('salary_min') is not None and isinstance(job.get('salary_min'), int):
+            job['salary_min'] = str(job['salary_min'])
+        if job.get('salary_max') is not None and isinstance(job.get('salary_max'), int):
+            job['salary_max'] = str(job['salary_max'])
     
     return [Job(**job) for job in jobs]
 
@@ -1129,6 +1135,12 @@ async def get_all_jobs_admin(
             job['created_at'] = datetime.fromisoformat(job['created_at'])
         if job.get('expires_at') and isinstance(job.get('expires_at'), str):
             job['expires_at'] = datetime.fromisoformat(job['expires_at'])
+        
+        # Convert integer salaries to strings for backward compatibility
+        if job.get('salary_min') is not None and isinstance(job.get('salary_min'), int):
+            job['salary_min'] = str(job['salary_min'])
+        if job.get('salary_max') is not None and isinstance(job.get('salary_max'), int):
+            job['salary_max'] = str(job['salary_max'])
     
     return [Job(**job) for job in jobs]
 
@@ -1146,6 +1158,12 @@ async def get_job_by_id_admin(job_id: str, current_user: User = Depends(get_curr
         job['created_at'] = datetime.fromisoformat(job['created_at'])
     if job.get('expires_at') and isinstance(job.get('expires_at'), str):
         job['expires_at'] = datetime.fromisoformat(job['expires_at'])
+    
+    # Convert integer salaries to strings for backward compatibility
+    if job.get('salary_min') is not None and isinstance(job.get('salary_min'), int):
+        job['salary_min'] = str(job['salary_min'])
+    if job.get('salary_max') is not None and isinstance(job.get('salary_max'), int):
+        job['salary_max'] = str(job['salary_max'])
     
     return Job(**job)
 
