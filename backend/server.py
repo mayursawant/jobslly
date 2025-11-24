@@ -611,6 +611,12 @@ async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True, c
             job['created_at'] = datetime.fromisoformat(job['created_at'])
         if job.get('expires_at') and isinstance(job.get('expires_at'), str):
             job['expires_at'] = datetime.fromisoformat(job['expires_at'])
+        
+        # Convert integer salaries to strings for backward compatibility
+        if job.get('salary_min') is not None and isinstance(job.get('salary_min'), int):
+            job['salary_min'] = str(job['salary_min'])
+        if job.get('salary_max') is not None and isinstance(job.get('salary_max'), int):
+            job['salary_max'] = str(job['salary_max'])
     
     return [Job(**job) for job in jobs]
 
