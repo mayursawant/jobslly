@@ -1153,6 +1153,12 @@ async def get_job_by_id_admin(job_id: str, current_user: User = Depends(get_curr
     if job.get('expires_at') and isinstance(job.get('expires_at'), str):
         job['expires_at'] = datetime.fromisoformat(job['expires_at'])
     
+    # Convert integer salaries to strings for backward compatibility
+    if job.get('salary_min') is not None and isinstance(job.get('salary_min'), int):
+        job['salary_min'] = str(job['salary_min'])
+    if job.get('salary_max') is not None and isinstance(job.get('salary_max'), int):
+        job['salary_max'] = str(job['salary_max'])
+    
     return Job(**job)
 
 @api_router.put("/admin/jobs/{job_id}", response_model=Job)
