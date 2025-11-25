@@ -1057,3 +1057,15 @@ agent_communication:
     - agent: "main"
       message: "CRITICAL BUG FIXES for job application tracking: 1) Fixed 'Job not found' error for non-logged-in users - Backend GET /api/jobs/{job_id} was requiring authentication. Created get_current_user_optional function and updated endpoint to accept optional Authorization header, allowing both authenticated and unauthenticated access. 2) Fixed applications not showing in dashboard - JobSeekerDashboard was only fetching applications if list was empty (line 565). Changed to fetch applications every time 'My Applications' tab is clicked, ensuring fresh data after new applications. Backend testing confirmed all endpoints working: job details without auth, application submission, has_applied field tracking, applications list with job details, lead merging on login."
 
+
+  - task: "Category Migration - Fix Empty Categories and Add Physiotherapists"
+    implemented: true
+    working: true
+    file: "migrate_fix_categories.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Created and executed migration script to fix job categories. Found 21 jobs with empty categories arrays and assigned appropriate categories based on job titles and descriptions. Added 'physiotherapists' category to 2 jobs. Final distribution: doctors (31 jobs), nurses (6 jobs), pharmacists (6 jobs), dentists (3 jobs), physiotherapists (2 jobs). All 42 jobs now have proper categories. Migration verified successful with 0 jobs having empty categories."
