@@ -1017,6 +1017,12 @@ async def create_blog_post(
             # Continue without image if upload fails
             featured_image_url = None
     
+    # Parse FAQs from JSON string
+    try:
+        faqs_list = json.loads(faqs) if faqs else []
+    except:
+        faqs_list = []
+    
     # Create blog post
     blog_data = {
         "title": title,
@@ -1027,6 +1033,7 @@ async def create_blog_post(
         "is_featured": is_featured,
         "seo_title": seo_title,
         "seo_description": seo_description,
+        "faqs": faqs_list,
         "featured_image": featured_image_url,
         "author_id": current_user.id,
         "slug": slug,
