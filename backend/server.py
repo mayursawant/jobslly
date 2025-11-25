@@ -299,6 +299,10 @@ class ChatMessage(BaseModel):
     user_id: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+class FAQItem(BaseModel):
+    question: str
+    answer: str
+
 class BlogPost(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     title: str
@@ -314,6 +318,7 @@ class BlogPost(BaseModel):
     seo_title: Optional[str] = None
     seo_description: Optional[str] = None
     seo_keywords: List[str] = []
+    faqs: List[FAQItem] = []
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: Optional[datetime] = None
     published_at: Optional[datetime] = None
@@ -330,6 +335,7 @@ class BlogPostCreate(BaseModel):
     seo_title: Optional[str] = None
     seo_description: Optional[str] = None
     seo_keywords: List[str] = []
+    faqs: List[FAQItem] = []
 
 class SEOSettings(BaseModel):
     page_type: str  # home, jobs, blog, etc.
