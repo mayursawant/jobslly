@@ -783,8 +783,7 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Currency Feature Testing Complete"
-    - "Sitemap Domain Fix Testing Complete"
+    - "Category Filtering Functionality Testing Complete"
   stuck_tasks: 
     - "Chatbot auto-open functionality"
   test_all: false
