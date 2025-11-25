@@ -988,6 +988,7 @@ async def create_blog_post(
     is_featured: bool = Form(False),
     seo_title: str = Form(""),
     seo_description: str = Form(""),
+    faqs: str = Form("[]"),
     featured_image: Optional[UploadFile] = File(None),
     current_user: User = Depends(get_current_user)
 ):
