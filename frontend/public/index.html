@@ -78,29 +78,232 @@
           }
         }
         </script>
-        <div id="root"></div>
-        <!-- Static SEO content for crawlers - will be removed by React -->
-        <noscript>
-            <div style="max-width: 1200px; margin: 0 auto; padding: 20px; font-family: system-ui, sans-serif;">
-                <h1>Jobslly - Healthcare Jobs & Career Opportunities</h1>
-                <p>India's Largest Healthcare Community</p>
-                <h2>Find Your Next Healthcare Career</h2>
-                <p>Jobslly connects healthcare professionals with opportunities across India and worldwide.</p>
-                <h3>Popular Categories</h3>
-                <ul>
-                    <li>Doctors - 150+ positions</li>
-                    <li>Pharmacists - 200+ positions</li>
-                    <li>Nurses - 100+ positions</li>
-                    <li>Dentists - 75+ positions</li>
-                    <li>Physiotherapists - 50+ positions</li>
-                </ul>
-                <nav>
-                    <a href="/jobs">Browse Jobs</a>
-                    <a href="/blogs">Health Hub</a>
-                    <a href="/contact-us">Contact Us</a>
-                </nav>
+        <div id="root">
+            <!-- Static SEO content - visible to crawlers, will be replaced by React on load -->
+            <div style="max-width: 1200px; margin: 0 auto; padding: 20px; font-family: system-ui, sans-serif; line-height: 1.6;">
+                
+                <!-- Header / Navigation -->
+                <header style="border-bottom: 2px solid #14b8a6; padding-bottom: 20px; margin-bottom: 30px;">
+                    <h1 style="color: #14b8a6; font-size: 32px; margin: 0;">Jobslly</h1>
+                    <p style="color: #666; margin: 10px 0 0 0;">India's Largest Healthcare Community</p>
+                    <nav style="margin-top: 15px;">
+                        <a href="/" style="margin-right: 20px; color: #14b8a6; text-decoration: none;">Home</a>
+                        <a href="/jobs" style="margin-right: 20px; color: #14b8a6; text-decoration: none;">Opportunities</a>
+                        <a href="/blog" style="margin-right: 20px; color: #14b8a6; text-decoration: none;">Health Hub</a>
+                        <a href="/contact-us" style="margin-right: 20px; color: #14b8a6; text-decoration: none;">Contact</a>
+                        <a href="/login" style="margin-right: 20px; color: #14b8a6; text-decoration: none;">Login</a>
+                        <a href="/register" style="color: #fff; background: #14b8a6; padding: 8px 16px; border-radius: 5px; text-decoration: none;">Signup</a>
+                    </nav>
+                </header>
+
+                <!-- Hero Section -->
+                <section style="background: linear-gradient(135deg, #f0fdfa 0%, #fff 100%); padding: 40px 20px; border-radius: 10px; margin-bottom: 40px;">
+                    <div style="text-align: center;">
+                        <div style="background: #ccfbf1; display: inline-block; padding: 8px 16px; border-radius: 20px; margin-bottom: 20px;">
+                            <span style="color: #0f766e; font-weight: 600;">🏥 Trusted by 75,000+ Healthcare Professionals</span>
+                        </div>
+                        <h2 style="font-size: 48px; font-weight: bold; margin: 20px 0; color: #111;">
+                            Explore The Best<br/>
+                            <span style="color: #14b8a6;">Healthcare Jobs</span><br/>
+                            In Your Dream Country
+                        </h2>
+                        <p style="font-size: 20px; color: #666; margin: 20px 0;">
+                            AI-Powered Job Recommendations • Customised Search Filters • Dedicated Portal for Healthcare Professionals
+                        </p>
+                        <div style="margin-top: 30px;">
+                            <a href="/register" style="background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); color: white; padding: 15px 30px; border-radius: 10px; text-decoration: none; font-weight: 600; margin-right: 15px; display: inline-block;">Get Started Free</a>
+                            <a href="/jobs" style="background: white; color: #14b8a6; padding: 15px 30px; border-radius: 10px; text-decoration: none; font-weight: 600; border: 2px solid #14b8a6; display: inline-block;">Browse Jobs</a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Trust Statistics -->
+                <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; text-align: center;">
+                    <div style="padding: 20px; background: #f0fdfa; border-radius: 10px;">
+                        <div style="font-size: 36px; font-weight: bold; color: #14b8a6;">11,000+</div>
+                        <div style="color: #666;">Active Job Listings</div>
+                    </div>
+                    <div style="padding: 20px; background: #fef3c7; border-radius: 10px;">
+                        <div style="font-size: 36px; font-weight: bold; color: #d97706;">2,000+</div>
+                        <div style="color: #666;">Healthcare Companies</div>
+                    </div>
+                    <div style="padding: 20px; background: #dbeafe; border-radius: 10px;">
+                        <div style="font-size: 36px; font-weight: bold; color: #2563eb;">75,000+</div>
+                        <div style="color: #666;">Registered Professionals</div>
+                    </div>
+                    <div style="padding: 20px; background: #fce7f3; border-radius: 10px;">
+                        <div style="font-size: 36px; font-weight: bold; color: #db2777;">95%</div>
+                        <div style="color: #666;">Success Rate</div>
+                    </div>
+                </section>
+
+                <!-- Healthcare Categories -->
+                <section style="margin-bottom: 40px;">
+                    <h2 style="font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 30px;">Explore Healthcare Opportunities</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        
+                        <div style="border: 2px solid #e5e7eb; border-radius: 10px; padding: 25px; transition: all 0.3s;">
+                            <div style="font-size: 48px; margin-bottom: 15px;">🩺</div>
+                            <h3 style="font-size: 22px; font-weight: bold; margin-bottom: 10px; color: #111;">Doctors</h3>
+                            <p style="color: #666; margin-bottom: 15px;">35+ open positions worldwide</p>
+                            <a href="/jobs?category=doctors" style="color: #14b8a6; text-decoration: none; font-weight: 600;">Explore Jobs →</a>
+                        </div>
+
+                        <div style="border: 2px solid #e5e7eb; border-radius: 10px; padding: 25px; transition: all 0.3s;">
+                            <div style="font-size: 48px; margin-bottom: 15px;">💊</div>
+                            <h3 style="font-size: 22px; font-weight: bold; margin-bottom: 10px; color: #111;">Pharmacists</h3>
+                            <p style="color: #666; margin-bottom: 15px;">21+ open positions worldwide</p>
+                            <a href="/jobs?category=pharmacists" style="color: #14b8a6; text-decoration: none; font-weight: 600;">Explore Jobs →</a>
+                        </div>
+
+                        <div style="border: 2px solid #e5e7eb; border-radius: 10px; padding: 25px; transition: all 0.3s;">
+                            <div style="font-size: 48px; margin-bottom: 15px;">🦷</div>
+                            <h3 style="font-size: 22px; font-weight: bold; margin-bottom: 10px; color: #111;">Dentists</h3>
+                            <p style="color: #666; margin-bottom: 15px;">10+ open positions worldwide</p>
+                            <a href="/jobs?category=dentists" style="color: #14b8a6; text-decoration: none; font-weight: 600;">Explore Jobs →</a>
+                        </div>
+
+                        <div style="border: 2px solid #e5e7eb; border-radius: 10px; padding: 25px; transition: all 0.3s;">
+                            <div style="font-size: 48px; margin-bottom: 15px;">🏃‍♂️</div>
+                            <h3 style="font-size: 22px; font-weight: bold; margin-bottom: 10px; color: #111;">Physiotherapists</h3>
+                            <p style="color: #666; margin-bottom: 15px;">2+ open positions worldwide</p>
+                            <a href="/jobs?category=physiotherapists" style="color: #14b8a6; text-decoration: none; font-weight: 600;">Explore Jobs →</a>
+                        </div>
+
+                        <div style="border: 2px solid #e5e7eb; border-radius: 10px; padding: 25px; transition: all 0.3s;">
+                            <div style="font-size: 48px; margin-bottom: 15px;">👩‍⚕️</div>
+                            <h3 style="font-size: 22px; font-weight: bold; margin-bottom: 10px; color: #111;">Nurses</h3>
+                            <p style="color: #666; margin-bottom: 15px;">1+ open positions worldwide</p>
+                            <a href="/jobs?category=nurses" style="color: #14b8a6; text-decoration: none; font-weight: 600;">Explore Jobs →</a>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Features Section -->
+                <section style="margin-bottom: 40px; background: #f9fafb; padding: 40px 20px; border-radius: 10px;">
+                    <h2 style="font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 30px;">Why Choose Jobslly?</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
+                        
+                        <div>
+                            <div style="font-size: 40px; margin-bottom: 10px;">🎯</div>
+                            <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">AI-Powered Matching</h3>
+                            <p style="color: #666;">Our advanced AI algorithm matches you with the perfect healthcare opportunities based on your skills, experience, and preferences.</p>
+                        </div>
+
+                        <div>
+                            <div style="font-size: 40px; margin-bottom: 10px;">🌍</div>
+                            <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">Global Opportunities</h3>
+                            <p style="color: #666;">Access healthcare job opportunities across India and internationally in countries like Australia, USA, UK, Canada, and Middle East.</p>
+                        </div>
+
+                        <div>
+                            <div style="font-size: 40px; margin-bottom: 10px;">🎓</div>
+                            <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">Career Development</h3>
+                            <p style="color: #666;">Access courses for licensing exams (AMC, OPRA, ADC, APC) and certification programs (MSL, HEOR, Pharmacovigilance).</p>
+                        </div>
+
+                        <div>
+                            <div style="font-size: 40px; margin-bottom: 10px;">💼</div>
+                            <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">Job Assistance</h3>
+                            <p style="color: #666;">Get comprehensive job assistance with resume building, interview preparation, and placement support from our expert team.</p>
+                        </div>
+
+                        <div>
+                            <div style="font-size: 40px; margin-bottom: 10px;">🏥</div>
+                            <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">Healthcare Focused</h3>
+                            <p style="color: #666;">Dedicated exclusively to healthcare professionals - doctors, nurses, pharmacists, dentists, and physiotherapists.</p>
+                        </div>
+
+                        <div>
+                            <div style="font-size: 40px; margin-bottom: 10px;">✅</div>
+                            <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">Verified Employers</h3>
+                            <p style="color: #666;">All job postings are from verified healthcare organizations including top hospitals, clinics, and pharmaceutical companies.</p>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- How It Works -->
+                <section style="margin-bottom: 40px;">
+                    <h2 style="font-size: 32px; font-weight: bold; text-align: center; margin-bottom: 30px;">How It Works</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: center;">
+                        
+                        <div style="padding: 20px;">
+                            <div style="background: #14b8a6; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 24px; font-weight: bold;">1</div>
+                            <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">Create Your Profile</h3>
+                            <p style="color: #666; font-size: 14px;">Sign up and build your professional healthcare profile with your skills, experience, and qualifications.</p>
+                        </div>
+
+                        <div style="padding: 20px;">
+                            <div style="background: #14b8a6; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 24px; font-weight: bold;">2</div>
+                            <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">Browse & Apply</h3>
+                            <p style="color: #666; font-size: 14px;">Search through thousands of verified healthcare job opportunities and apply with one click.</p>
+                        </div>
+
+                        <div style="padding: 20px;">
+                            <div style="background: #14b8a6; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 24px; font-weight: bold;">3</div>
+                            <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">Get Hired</h3>
+                            <p style="color: #666; font-size: 14px;">Connect with employers, ace your interviews, and land your dream healthcare job.</p>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- CTA Section -->
+                <section style="background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); color: white; padding: 50px 20px; border-radius: 10px; text-align: center; margin-bottom: 40px;">
+                    <h2 style="font-size: 36px; font-weight: bold; margin-bottom: 15px;">Ready to Start Your Healthcare Career Journey?</h2>
+                    <p style="font-size: 18px; margin-bottom: 30px; opacity: 0.9;">Join 75,000+ healthcare professionals who trust Jobslly for their career growth</p>
+                    <a href="/register" style="background: white; color: #14b8a6; padding: 15px 40px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 18px; display: inline-block;">Create Free Account</a>
+                </section>
+
+                <!-- Footer -->
+                <footer style="border-top: 2px solid #e5e7eb; padding-top: 30px; margin-top: 40px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px;">
+                        
+                        <div>
+                            <h3 style="font-weight: bold; margin-bottom: 15px; color: #14b8a6;">About Jobslly</h3>
+                            <p style="color: #666; font-size: 14px;">India's Largest Healthcare Community connecting healthcare professionals with opportunities worldwide.</p>
+                        </div>
+
+                        <div>
+                            <h3 style="font-weight: bold; margin-bottom: 15px;">Quick Links</h3>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <a href="/jobs" style="color: #666; text-decoration: none; font-size: 14px;">Browse Jobs</a>
+                                <a href="/blog" style="color: #666; text-decoration: none; font-size: 14px;">Health Hub</a>
+                                <a href="/contact-us" style="color: #666; text-decoration: none; font-size: 14px;">Contact Us</a>
+                                <a href="/about" style="color: #666; text-decoration: none; font-size: 14px;">About Us</a>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 style="font-weight: bold; margin-bottom: 15px;">Job Categories</h3>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <a href="/jobs?category=doctors" style="color: #666; text-decoration: none; font-size: 14px;">Doctors (35+ jobs)</a>
+                                <a href="/jobs?category=pharmacists" style="color: #666; text-decoration: none; font-size: 14px;">Pharmacists (21+ jobs)</a>
+                                <a href="/jobs?category=dentists" style="color: #666; text-decoration: none; font-size: 14px;">Dentists (10+ jobs)</a>
+                                <a href="/jobs?category=nurses" style="color: #666; text-decoration: none; font-size: 14px;">Nurses (1+ jobs)</a>
+                                <a href="/jobs?category=physiotherapists" style="color: #666; text-decoration: none; font-size: 14px;">Physiotherapists (2+ jobs)</a>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 style="font-weight: bold; margin-bottom: 15px;">Legal</h3>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <a href="/privacy-policy" style="color: #666; text-decoration: none; font-size: 14px;">Privacy Policy</a>
+                                <a href="/terms-of-service" style="color: #666; text-decoration: none; font-size: 14px;">Terms of Service</a>
+                                <a href="/cookies" style="color: #666; text-decoration: none; font-size: 14px;">Cookie Policy</a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div style="text-align: center; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #666; font-size: 14px;">
+                        © 2024 Jobslly. All rights reserved. | India's Largest Healthcare Community
+                    </div>
+                </footer>
+
             </div>
-        </noscript>
+        </div>
         <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
