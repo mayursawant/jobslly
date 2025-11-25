@@ -1991,9 +1991,9 @@ async def submit_contact_form(contact: ContactMessage):
         print(f"❌ Error saving contact message: {e}")
         raise HTTPException(status_code=500, detail="Failed to submit contact form")
 
-# Dynamic Sitemap.xml - Auto-updates with jobs/blogs
+# Dynamic Sitemap.xml - Main route at /sitemap.xml
 @app.get("/sitemap.xml", response_class=Response)
-async def get_sitemap():
+async def get_sitemap_root():
     """
     Generate fully dynamic sitemap.xml for SEO
     Auto-updates when jobs are added/updated/deleted/expired
