@@ -1246,6 +1246,9 @@ async def soft_delete_job(job_id: str, current_user: User = Depends(get_current_
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Job not found")
     
+    # Auto-regenerate sitemap after job deletion
+    regenerate_sitemap_async()
+    
     return {"message": "Job deleted successfully"}
 
 @api_router.post("/admin/jobs/{job_id}/restore")
