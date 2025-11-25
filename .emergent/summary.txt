@@ -1,103 +1,76 @@
 <analysis>
-The previous AI engineer's work spanned several iterations, evolving the Jobslly platform from initial UI/UX fixes to complex feature implementations and persistent bug resolutions. Key phases included addressing frontend rendering issues (blog images, clickability), implementing a robust job application tracking system (for both logged-in and logged-out users, including dashboard integration), and upgrading the blog CMS with an advanced rich text editor. The work also focused on SEO improvements (URL restructuring, job slugs, 404 page), fixing numerous backend syntax errors, and resolving database connectivity issues. The trajectory demonstrates a systematic approach to debugging and feature development, prioritizing user feedback and ensuring end-to-end functionality.
+The trajectory documents an extensive, multi-sprint development cycle on the Jobslly application, starting from a baseline with SEO and URL standardization fixes. The work was highly iterative, driven by a continuous stream of user feedback and evolving requirements.
+
+Initially, the focus was on adding a currency selector (USD/INR) and fixing the sitemap domain. This evolved into a more complex set of requirements: allowing jobs to have multiple categories and converting salary fields from numeric to flexible text inputs. This change introduced a  in the backend due to a data type mismatch (Pydantic models expecting  but receiving  from the database), which was a recurring issue and had to be fixed in multiple API endpoints by casting integers to strings.
+
+Subsequently, the user requested re-introducing a currency selector alongside the text-based salary, leading to the implementation of a smart currency symbol display logic in the frontend. Significant effort was then dedicated to major UI/UX enhancements on the homepage, including a custom-branded hero image and a highly interactive, animated Courses section built with complex CSS and React state management. This section went through several iterations to perfect its hover/click behavior, animation smoothness, and layout.
+
+The final phase involved debugging and refining the job listing functionality, implementing pagination with a Load More button, ensuring jobs are sorted by date, and fixing server-side category filtering. The very last interaction identified the root cause of a persistent filter bug: inconsistent category naming within the MongoDB database. The user's primary language is English; future responses should be in English.
 </analysis>
 
 <product_requirements>
-The Jobslly platform, an AI-powered healthcare job board, aims to connect healthcare professionals with opportunities, inspired by 's UI/UX. The initial phase focused on a Swaasa-inspired redesign, integrating AI for lead generation and job description enhancement (though a chatbot was later removed).
+The product is Jobslly, an AI-powered healthcare job board inspired by , designed to connect healthcare professionals with employers.
 
-Implemented features include:
--   **User Management**: Unified login, phone number collection, role-based redirects.
--   **Job Management**: Category filters, soft-delete, conditional application flow, admin job management, HTTPS URL validation.
--   **Blog Management**: Image uploads, resolution fixes, full tile clickability, and an advanced rich text editor for content creation.
--   **Job Seeker Dashboard**: Revamped profile display, profile completion syncing with backend, and a dedicated section to view applied jobs.
--   **SEO**: Transitioning  to , creating SEO-friendly job URLs (slugs), a functional contact form, and a custom 404 error page.
--   **System Fixes**: Resolved authentication token mismatches, Nginx 404s, MongoDB connection issues, and various backend syntax errors.
+**Implemented Core Functionality:**
+-   **Job & Blog Platform:** A full-stack application with a React frontend and FastAPI backend, featuring job listings, a blog/CMS, and an admin panel for content management.
+-   **Multi-Category Job Postings:** Jobs can be assigned to multiple categories (e.g., Doctors, Nurses). The frontend job board supports filtering by these categories.
+-   **Flexible Salary Fields:** Job salaries are stored as text to accommodate both numeric ranges (e.g., 1,500,000 - 2,500,000) and descriptive text (e.g., Negotiable). A currency selector (INR/USD) is available. The frontend intelligently displays a currency symbol (₹ or $) only when the salary text contains numbers.
+-   **Interactive Homepage:** The homepage features an updated hero image and a highly engaging, animated Courses section. This section has two interactive blocks that, on hover, expand and reveal a 2x2 grid of relevant course tiles linking to an external site.
+-   **Paginated Job Listings:** The main job board fetches jobs in batches (limit of 50) and includes a Load More button for infinite scrolling. Jobs are sorted with the newest first.
 </product_requirements>
 
 <key_technical_concepts>
--   **Full-stack Architecture**: React (frontend), FastAPI (backend), MongoDB (database).
--   **UI/Styling**: Shadcn UI, Tailwind CSS, custom CSS, Jodit React (for rich text editing).
--   **Authentication/Authorization**: JWT tokens, .
--   **Routing**: , Nginx for client-side routing, FastAPI routers.
--   **Data Handling**: , UUIDs, ISO datetime strings,  for temporary state.
--   **Deployment**: Supervisor, Kubernetes ingress, AWS.
+- **Full-stack:** React (frontend), FastAPI (Python backend), MongoDB (database).
+- **Data Modeling & Validation:** Pydantic models for API data validation, which required careful handling of data type mismatches (int vs. str) between the database and application logic.
+- **Frontend State Management:** Extensive use of React Hooks (, ) to manage complex UI state for animations, hover effects, and data fetching with pagination.
+- **Advanced CSS & Animations:** Custom CSS animations (), transitions, and hover-based interactions to create a dynamic and premium user experience in the Courses section.
+- **API Development:** REST API design including pagination (, ), sorting, and filtering logic for fetching job data.
 </key_technical_concepts>
 
 <code_architecture>
-**High-Level Architecture**:
-The application leverages a MERN-like stack with React for the frontend, FastAPI for the backend, and MongoDB for data persistence. Frontend and backend communicate via RESTful APIs, with backend routes prefixed by  to align with Kubernetes ingress rules. Backend handles all database interactions using environment variables for connection. Nginx serves the React application and acts as a reverse proxy for backend API calls, also managing client-side routing.
+The application uses a React frontend, a FastAPI backend, and a MongoDB database. Nginx serves as the web server.
 
-**Detailed Directory Structure**:
+- ****:
+    - **Importance**: The core backend application. It defines all API endpoints, Pydantic data models, and database interactions.
+    - **Summary of Changes**:
+        - **Job Model**: The  Pydantic model was heavily modified.  and  were changed from  to . A single  field was replaced with . A  field was added.
+        - ** Endpoint**: Updated to accept a  query parameter to filter jobs. Added pagination (, ) and sorting (, descending).
+        - **Data Type Casting**: Added  casting logic to all job-fetching endpoints (, , , etc.) to prevent Pydantic  when retrieving older jobs with integer-based salaries.
 
+- ****:
+    - **Importance**: The main landing page component. It was significantly overhauled for UI/UX.
+    - **Summary of Changes**:
+        - **Hero Image**: The main hero image was updated to a user-provided branded image.
+        - **Interactive Course Section**: A new, complex component () was created and added. It features two side-by-side blocks with hover-activated animations that reveal a 2x2 grid of course tiles. This involved custom CSS animations, group-hover logic, and React state management for the hover interactions.
+        - **Job Card Alignment**: The Latest Jobs section was updated with Flexbox to ensure all job cards have equal height and their View Details buttons are aligned at the bottom.
+        - **Salary Display**: Implemented a  helper function to intelligently show/hide currency symbols.
 
-**Key Files and Changes**:
+- ****:
+    - **Importance**: Displays the main list of jobs with filters. It was updated to handle pagination and fix filtering.
+    - **Summary of Changes**:
+        - **Pagination**: Implemented  state and a  function. The API call was updated to use  and . The Load More button now appends new jobs to the list and hides when no more jobs are available. The default limit was set to 50.
+        - **Category Filtering**: The  hook that fetches jobs was updated to pass the selected category to the backend API, offloading the filtering logic from the client to the server. The local filtering logic was removed.
+        - **Salary Display**: Added the  helper function to handle smart currency symbol display.
 
-*   :
-    *   **Importance**: Central backend logic.
-    *   **Changes**: Added  field to  model; implemented slug generation and migration endpoint ();  endpoint now supports lookup by uid=0(root) gid=0(root) groups=0(root) or . Implemented  endpoint. Modified  endpoint to save applications. Added logic to merge anonymous  applications to  upon user login. Added new  model and  endpoint for form submissions. Fixed numerous syntax errors (unterminated strings, mismatched docstrings, duplicate code) throughout the file. Database client now explicitly connects to  from  (resolved to ).
-*   :
-    *   **Importance**: Frontend environment variables.
-    *   **Changes**:  is configured for the production external URL.
-*   :
-    *   **Importance**: Main React component, routing.
-    *   **Changes**: Updated routes from  to  and  to . Added new routes for  (previously ) and  (NotFound component), with a catch-all route redirecting to . Imported  and  components.
-*   :
-    *   **Importance**: Admin interface for CMS.
-    *   **Changes**: Integrated  to replace the plain textarea for blog content, enabling rich text editing.  was attempted but replaced due to React 18 incompatibility.
-*   :
-    *   **Importance**: Displays blog list.
-    *   **Changes**: Improved image resolution; ensured entire blog tile is clickable to navigate to . Updated internal links from  to .
-*   :
-    *   **Importance**: Displays single blog post.
-    *   **Changes**: Modified to properly render HTML content (from rich text editor) using  with a  CSS class. Fixed image resolution.
-*   :
-    *   **Importance**: New page for lead generation.
-    *   **Changes**: New component created to house the contact form. Updated contact information.
-*   :
-    *   **Importance**: Application footer.
-    *   **Changes**: Updated  links to . Removed specific copyright tagline, retaining only the generic copyright.
-*   :
-    *   **Importance**: Homepage.
-    *   **Changes**: Updated Health Hub button link from  to .
-*   :
-    *   **Importance**: Displays single job details.
-    *   **Changes**: Fetches  status from backend for logged-in users. For non-logged-in users, checks  for applied status.  now updates .
-*   :
-    *   **Importance**: Displays job list.
-    *   **Changes**: Updated job links to use SEO-friendly  instead of  for navigation.
-*   :
-    *   **Importance**: Job seeker dashboard.
-    *   **Changes**: Added a My Applications tab in the . Implemented  function to retrieve applied jobs. Modified the  for applications to fetch data every time the tab is clicked, removing a previous caching issue. Resolved rendering issues due to broken, leftover HTML structure.
-*   :
-    *   **Importance**: Modal for lead collection.
-    *   **Changes**:  now saves applied job IDs to  for anonymous users.
-*   :
-    *   **Importance**: Navigation bar.
-    *   **Changes**: Updated  links to . Added Contact Us link to both desktop and mobile navigation, linking to .
-*   :
-    *   **Importance**: New component for 404.
-    *   **Changes**: New component created to handle 404 errors.
-*   :
-    *   **Importance**: Global styles.
-    *   **Changes**: Added custom CSS for Jodit editor styling and  class for formatted blog posts. Fixed a CSS syntax error (extra closing brace).
+- ****:
+    - **Importance**: The interface for creating and managing jobs.
+    - **Summary of Changes**:
+        - **Form Fields**: The job creation and editing forms were updated to use a multi-select component for  and a text input for /, alongside a  dropdown.
+        - **Validation**: Numeric validation for salary was removed. A check was added to ensure at least one category is selected. A bug ( not defined) was fixed by sending the salary text directly to the API.
 </code_architecture>
 
 <pending_tasks>
--   Implement the full employer dashboard with features for shortlisting candidates, viewing resumes, and analytics (mentioned as pending, not explicitly requested to work on in this trajectory).
--   Complete frontend E2E testing and user flow validation (automated frontend testing was not explicitly run for all changes).
--   Implement backend API endpoint and frontend integration for the contact form to actually send emails or store messages (backend endpoint is created, but no email sending or storage logic).
--   Address crawling issues and integrate GA & Search Console verification/tracking codes.
+- Standardize the job category names in the MongoDB database to fix the filtering issue on the Opportunities page. This involves creating and running a migration script to consolidate inconsistent names (e.g., merge  and  into a single, standard name like ).
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer was tasked with and has just begun working on two new items:
-1.  **URL Structure Update**: Change the  route to  for uniformity.
-2.  **GA & Search Console Setup**: Implement Google Analytics and Search Console verification and tracking codes on all pages to improve crawlability and SEO performance. The user provided the specific Google tag script for implementation.
+The most recent task was debugging why category filters on the Opportunities page were not working for pharmacists, physiotherapists, and dentists, and why doctors and nurses filters showed incomplete results.
 
-The AI engineer has successfully changed the  route to  in the frontend (App.js, Navbar) and backend (server.py) but has not yet fully integrated the contact form's submission logic or started on the GA/Search Console setup. The  component has been created, and the route updated, but the form itself is only a placeholder. The primary focus of the previous actions was to fix several critical bugs related to job loading, login credentials, and blog display that emerged after the previous set of major changes (URL restructuring, contact form, job slugs, 404 page). The AI successfully fixed multiple Python syntax errors in  and confirmed that core APIs for jobs, blogs, and login are now functioning correctly.
+The previous engineer correctly diagnosed the root cause of this problem. By querying the database for all unique category values, it was discovered that the data was inconsistent. For example, the database contained jobs with both  and  as categories, and  and . The frontend filter was only using one version of the name, causing jobs with the other version to be missed.
+
+The last action taken was identifying these inconsistencies. The immediate next step is to clean and standardize this data in the database to ensure the filters work reliably.
 </current_work>
 
 <optional_next_step>
-I will continue working on the Contact Form by implementing the backend logic to process submissions for the  endpoint and then integrate the Google Analytics tracking code into the frontend.
+Create and execute a Python script to migrate and standardize all  values in the MongoDB  collection to resolve the filtering inconsistencies.
 </optional_next_step>
-

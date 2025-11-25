@@ -1938,22 +1938,40 @@ async def get_sitemap():
         ET.SubElement(url_elem, "changefreq").text = changefreq
         ET.SubElement(url_elem, "priority").text = priority
     
-    # Dynamic job pages - use slugs with trailing slashes
+    # Dynamic job pages - fully dynamic, auto-updates when jobs are added/updated/deleted
     try:
-        jobs = await db.jobs.find({"is_approved": True}).to_list(length=None)
+        # Only include approved, non-deleted, non-expired jobs
+        query = {
+            "is_approved": True,
+            "is_deleted": {"$ne": True}
+        }
+        
+        # Exclude expired jobs
+        current_time = datetime.now(timezone.utc)
+        query["$or"] = [
+            {"expires_at": None},
+            {"expires_at": {"$gt": current_time}}
+        ]
+        
+        jobs = await db.jobs.find(query).to_list(length=None)
+        
         for job in jobs:
             url_elem = ET.SubElement(urlset, "url")
-            # Use slug if available, fallback to ID
-            job_identifier = job.get('slug', job['id'])
-            ET.SubElement(url_elem, "loc").text = f"{base_url}/jobs/{job_identifier}/"
             
-            # Use job creation date or current date
-            lastmod = job.get('created_at', datetime.now(timezone.utc))
+            # Use slug if available, fallback to ID (without trailing slash for job detail pages)
+            job_identifier = job.get('slug', job['id'])
+            ET.SubElement(url_elem, "loc").text = f"{base_url}/jobs/{job_identifier}"
+            
+            # Use updated_at if available, fallback to created_at
+            lastmod = job.get('updated_at') or job.get('created_at', datetime.now(timezone.utc))
             if isinstance(lastmod, str):
                 lastmod = datetime.fromisoformat(lastmod)
             ET.SubElement(url_elem, "lastmod").text = lastmod.strftime('%Y-%m-%d')
-            ET.SubElement(url_elem, "changefreq").text = "weekly"
-            ET.SubElement(url_elem, "priority").text = "0.8"
+            
+            # As per requirements
+            ET.SubElement(url_elem, "changefreq").text = "daily"
+            ET.SubElement(url_elem, "priority").text = "0.80"
+            
     except Exception as e:
         logger.error(f"Error fetching jobs for sitemap: {e}")
     
@@ -2105,7 +2123,7 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
         "description": "Discover healthcare opportunities for doctors, nurses, pharmacists, dentists, and physiotherapists with AI-powered career matching.",
         "keywords": ["healthcare jobs", "medical careers", "doctor jobs", "nurse jobs"],
         "og_image": "https://jobslly.com/og-image-default.jpg",
-        "canonical": "https://medijobs-3.preview.emergentagent.com"
+        "canonical": "https://jobslly.com"
     }
 
 # Include the router
