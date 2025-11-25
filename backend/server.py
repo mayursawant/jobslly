@@ -35,6 +35,18 @@ client = AsyncIOMotorClient(
 )
 db = client[os.environ['DB_NAME']]
 
+# Helper function to regenerate sitemap
+def regenerate_sitemap_async():
+    """Trigger sitemap regeneration in background"""
+    try:
+        subprocess.Popen(
+            ['python3', '/app/backend/update_sitemap.py'],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+    except Exception as e:
+        logger.error(f"Failed to regenerate sitemap: {e}")
+
 # Create the main app
 app = FastAPI(title="HealthCare Jobs API", version="1.0.0")
 
