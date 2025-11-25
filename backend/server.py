@@ -607,6 +607,10 @@ async def create_job(job_data: JobCreate, current_user: User = Depends(get_curre
         job_dict['expires_at'] = job_dict['expires_at'].isoformat()
     
     await db.jobs.insert_one(job_dict)
+    
+    # Auto-regenerate sitemap after new job
+    regenerate_sitemap_async()
+    
     return job
 
 @api_router.get("/jobs", response_model=List[Job])
@@ -961,6 +965,10 @@ async def admin_create_job(job_data: JobCreate, current_user: User = Depends(get
         job_dict['expires_at'] = job_dict['expires_at'].isoformat()
     
     await db.jobs.insert_one(job_dict)
+    
+    # Auto-regenerate sitemap after new job
+    regenerate_sitemap_async()
+    
     return job
 
 # Blog Management Routes
