@@ -81,7 +81,8 @@ const AdminPanel = () => {
     featured_image: null,
     seo_title: '',
     seo_description: '',
-    seo_keywords: []
+    seo_keywords: [],
+    faqs: []
   });
   
   // Jodit Editor ref and config
