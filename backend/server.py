@@ -2177,6 +2177,92 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
     
     return Response(content=xml_formatted, media_type="application/xml")
 
+# Dynamic Sitemap.xml at /sitemap.xml - Auto-updates with jobs
+@app.get("/sitemap.xml", response_class=Response)
+async def get_sitemap_root():
+    """
+    Generate fully dynamic sitemap.xml for SEO at /sitemap.xml
+    Auto-updates when jobs are added/updated/deleted/expired
+    """
+    # Create XML root element
+    urlset = ET.Element("urlset")
+    urlset.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
+    
+    base_url = 'https://jobslly.com'
+    
+    # Static pages
+    static_pages = [
+        ('/', '1.0', 'daily'),
+        ('/jobs/', '0.9', 'daily'),
+        ('/blogs/', '0.8', 'daily'),
+        ('/login/', '0.7', 'weekly'),
+        ('/register/', '0.7', 'weekly'),
+        ('/dashboard/', '0.6', 'weekly'),
+        ('/contact-us/', '0.7', 'weekly'),
+        ('/privacy-policy/', '0.5', 'monthly'),
+        ('/terms-of-service/', '0.5', 'monthly'),
+        ('/cookies/', '0.5', 'monthly'),
+        ('/sitemap/', '0.5', 'monthly'),
+    ]
+    
+    for path, priority, changefreq in static_pages:
+        url_elem = ET.SubElement(urlset, "url")
+        ET.SubElement(url_elem, "loc").text = f"{base_url}{path}"
+        ET.SubElement(url_elem, "lastmod").text = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+        ET.SubElement(url_elem, "changefreq").text = changefreq
+        ET.SubElement(url_elem, "priority").text = priority
+    
+    # Dynamic job pages
+    try:
+        query = {
+            "is_approved": True,
+            "is_deleted": {"$ne": True}
+        }
+        
+        current_time = datetime.now(timezone.utc)
+        query["$or"] = [
+            {"expires_at": None},
+            {"expires_at": {"$gt": current_time}}
+        ]
+        
+        jobs = await db.jobs.find(query).to_list(length=None)
+        
+        for job in jobs:
+            url_elem = ET.SubElement(urlset, "url")
+            job_identifier = job.get('slug', job['id'])
+            ET.SubElement(url_elem, "loc").text = f"{base_url}/jobs/{job_identifier}"
+            
+            lastmod = job.get('updated_at') or job.get('created_at', datetime.now(timezone.utc))
+            if isinstance(lastmod, str):
+                lastmod = datetime.fromisoformat(lastmod)
+            ET.SubElement(url_elem, "lastmod").text = lastmod.strftime('%Y-%m-%d')
+            ET.SubElement(url_elem, "changefreq").text = "daily"
+            ET.SubElement(url_elem, "priority").text = "0.80"
+            
+    except Exception as e:
+        logger.error(f"Error fetching jobs for sitemap: {e}")
+    
+    # Dynamic blog pages
+    try:
+        blog_posts = await db.blog_posts.find({"is_published": True}).to_list(length=None)
+        for post in blog_posts:
+            url_elem = ET.SubElement(urlset, "url")
+            ET.SubElement(url_elem, "loc").text = f"{base_url}/blogs/{post['slug']}/"
+            
+            lastmod = post.get('published_at') or post.get('created_at', datetime.now(timezone.utc))
+            if isinstance(lastmod, str):
+                lastmod = datetime.fromisoformat(lastmod)
+            ET.SubElement(url_elem, "lastmod").text = lastmod.strftime('%Y-%m-%d')
+            ET.SubElement(url_elem, "changefreq").text = "monthly"
+            ET.SubElement(url_elem, "priority").text = "0.7"
+    except Exception as e:
+        logger.error(f"Error fetching blog posts for sitemap: {e}")
+    
+    xml_str = ET.tostring(urlset, encoding='unicode', method='xml')
+    xml_formatted = f'<?xml version="1.0" encoding="UTF-8"?>\n{xml_str}'
+    
+    return Response(content=xml_formatted, media_type="application/xml")
+
 # SEO Meta Tags API for dynamic pages
 @app.get("/api/seo/meta/{page_type}")
 async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None):
