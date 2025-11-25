@@ -1111,6 +1111,12 @@ async def update_blog_post(
             # Keep existing image if upload fails
             featured_image_url = existing_post.get('featured_image')
     
+    # Parse FAQs from JSON string
+    try:
+        faqs_list = json.loads(faqs) if faqs else []
+    except:
+        faqs_list = []
+    
     update_data = {
         "title": title,
         "excerpt": excerpt,
@@ -1120,6 +1126,7 @@ async def update_blog_post(
         "is_featured": is_featured,
         "seo_title": seo_title,
         "seo_description": seo_description,
+        "faqs": faqs_list,
         "featured_image": featured_image_url,
         "slug": slug,
         "updated_at": datetime.now(timezone.utc).isoformat()
