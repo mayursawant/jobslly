@@ -15,6 +15,7 @@ import jwt
 import uuid
 import json
 import xml.etree.ElementTree as ET
+import subprocess
 
 # Load environment variables
 from pathlib import Path
@@ -33,6 +34,18 @@ client = AsyncIOMotorClient(
     socketTimeoutMS=30000
 )
 db = client[os.environ['DB_NAME']]
+
+# Helper function to regenerate sitemap
+def regenerate_sitemap_async():
+    """Trigger sitemap regeneration in background"""
+    try:
+        subprocess.Popen(
+            ['python3', '/app/backend/update_sitemap.py'],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+    except Exception as e:
+        logger.error(f"Failed to regenerate sitemap: {e}")
 
 # Create the main app
 app = FastAPI(title="HealthCare Jobs API", version="1.0.0")
@@ -594,6 +607,10 @@ async def create_job(job_data: JobCreate, current_user: User = Depends(get_curre
         job_dict['expires_at'] = job_dict['expires_at'].isoformat()
     
     await db.jobs.insert_one(job_dict)
+    
+    # Auto-regenerate sitemap after new job
+    regenerate_sitemap_async()
+    
     return job
 
 @api_router.get("/jobs", response_model=List[Job])
@@ -948,6 +965,10 @@ async def admin_create_job(job_data: JobCreate, current_user: User = Depends(get
         job_dict['expires_at'] = job_dict['expires_at'].isoformat()
     
     await db.jobs.insert_one(job_dict)
+    
+    # Auto-regenerate sitemap after new job
+    regenerate_sitemap_async()
+    
     return job
 
 # Blog Management Routes
@@ -1209,6 +1230,9 @@ async def update_job_admin(
     if updated_job.get('expires_at') and isinstance(updated_job.get('expires_at'), str):
         updated_job['expires_at'] = datetime.fromisoformat(updated_job['expires_at'])
     
+    # Auto-regenerate sitemap after job update
+    regenerate_sitemap_async()
+    
     return Job(**updated_job)
 
 @api_router.delete("/admin/jobs/{job_id}")
@@ -1224,6 +1248,9 @@ async def soft_delete_job(job_id: str, current_user: User = Depends(get_current_
     
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Auto-regenerate sitemap after job deletion
+    regenerate_sitemap_async()
     
     return {"message": "Job deleted successfully"}
 
@@ -1903,13 +1930,97 @@ async def get_job_seeker_stats(current_user: User = Depends(get_current_user)):
         "conversion_rate": round((registered_users / total_job_seekers * 100), 2) if total_job_seekers > 0 else 0
     }
 
-# SEO Routes - Dynamic Sitemap and Robots.txt
-@api_router.get("/sitemap.xml", response_class=Response)
-async def get_sitemap():
+# SEO Routes - Robots.txt
+@api_router.get("/robots.txt", response_class=PlainTextResponse)
+async def get_robots_txt():
     """
-    Generate dynamic sitemap.xml for SEO
-    Includes all published blog posts and job listings
+    Generate robots.txt for search engine crawling
+    Simple and clean - allow all content
     """
+    robots_content = """User-agent: *
+Allow: /
+
+Sitemap: https://jobslly.com/sitemap.xml
+Crawl-delay: 0
+"""
+    
+    return PlainTextResponse(content=robots_content)
+
+
+# Migration endpoint to generate slugs for existing jobs (admin only)
+@api_router.post("/admin/migrate-job-slugs")
+async def migrate_job_slugs(current_user: User = Depends(get_current_user)):
+    """
+    Generate slugs for all existing jobs that do not have one
+    """
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    try:
+        # Find all jobs without slugs
+        jobs_without_slugs = await db.jobs.find({"slug": {"$in": [None, ""]}}).to_list(length=None)
+        
+        updated_count = 0
+        for job in jobs_without_slugs:
+            # Generate slug from title
+            base_slug = generate_slug(job['title'])
+            unique_slug = await ensure_unique_slug(base_slug, job['id'])
+            
+            # Update job with slug
+            await db.jobs.update_one(
+                {"id": job['id']},
+                {"$set": {"slug": unique_slug}}
+            )
+            updated_count += 1
+            print(f"✅ Generated slug '{unique_slug}' for job: {job['title']}")
+        
+        return {
+            "success": True,
+            "message": f"Successfully generated slugs for {updated_count} jobs",
+            "updated_count": updated_count
+        }
+    except Exception as e:
+        print(f"❌ Error migrating slugs: {e}")
+        raise HTTPException(status_code=500, detail=f"Migration failed: {str(e)}")
+
+
+# Contact Form Submission
+class ContactMessage(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    email: str
+    phone: str
+    subject: str
+    message: str
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    status: str = "new"  # new, read, replied
+
+@api_router.post("/contact-us")
+async def submit_contact_form(contact: ContactMessage):
+    """
+    Submit contact form inquiry
+    """
+    try:
+        print(f"📧 New contact form submission from: {contact.name} ({contact.email})")
+        
+        # Save to database
+        contact_dict = contact.dict()
+        await db.contact_messages.insert_one(contact_dict)
+        
+        print(f"✅ Contact message saved with ID: {contact.id}")
+        
+        return {
+            "success": True,
+            "message": "Thank you for contacting us! We'll get back to you within 24 hours.",
+            "message_id": contact.id
+        }
+    except Exception as e:
+        print(f"❌ Error saving contact message: {e}")
+        raise HTTPException(status_code=500, detail="Failed to submit contact form")
+
+# SEO Meta Tags API for dynamic pages
+@app.get("/api/seo/meta/{page_type}")
+async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None):
     # Create XML root element
     urlset = ET.Element("urlset")
     urlset.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
@@ -1998,92 +2109,91 @@ async def get_sitemap():
     
     return Response(content=xml_formatted, media_type="application/xml")
 
-@api_router.get("/robots.txt", response_class=PlainTextResponse)
-async def get_robots_txt():
+# Dynamic Sitemap.xml at /sitemap.xml - Auto-updates with jobs
+@app.get("/sitemap.xml", response_class=Response)
+async def get_sitemap_root():
     """
-    Generate robots.txt for search engine crawling
-    Simple and clean - allow all content
+    Generate fully dynamic sitemap.xml for SEO at /sitemap.xml
+    Auto-updates when jobs are added/updated/deleted/expired
     """
-    robots_content = """User-agent: *
-Allow: /
-
-Sitemap: https://jobslly.com/sitemap.xml
-Crawl-delay: 0
-"""
+    # Create XML root element
+    urlset = ET.Element("urlset")
+    urlset.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
     
-    return PlainTextResponse(content=robots_content)
-
-
-# Migration endpoint to generate slugs for existing jobs (admin only)
-@api_router.post("/admin/migrate-job-slugs")
-async def migrate_job_slugs(current_user: User = Depends(get_current_user)):
-    """
-    Generate slugs for all existing jobs that do not have one
-    """
-    if current_user.role != UserRole.ADMIN:
-        raise HTTPException(status_code=403, detail="Admin access required")
+    base_url = 'https://jobslly.com'
     
+    # Static pages
+    static_pages = [
+        ('/', '1.0', 'daily'),
+        ('/jobs/', '0.9', 'daily'),
+        ('/blogs/', '0.8', 'daily'),
+        ('/login/', '0.7', 'weekly'),
+        ('/register/', '0.7', 'weekly'),
+        ('/dashboard/', '0.6', 'weekly'),
+        ('/contact-us/', '0.7', 'weekly'),
+        ('/privacy-policy/', '0.5', 'monthly'),
+        ('/terms-of-service/', '0.5', 'monthly'),
+        ('/cookies/', '0.5', 'monthly'),
+        ('/sitemap/', '0.5', 'monthly'),
+    ]
+    
+    for path, priority, changefreq in static_pages:
+        url_elem = ET.SubElement(urlset, "url")
+        ET.SubElement(url_elem, "loc").text = f"{base_url}{path}"
+        ET.SubElement(url_elem, "lastmod").text = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+        ET.SubElement(url_elem, "changefreq").text = changefreq
+        ET.SubElement(url_elem, "priority").text = priority
+    
+    # Dynamic job pages
     try:
-        # Find all jobs without slugs
-        jobs_without_slugs = await db.jobs.find({"slug": {"$in": [None, ""]}}).to_list(length=None)
+        query = {
+            "is_approved": True,
+            "is_deleted": {"$ne": True}
+        }
         
-        updated_count = 0
-        for job in jobs_without_slugs:
-            # Generate slug from title
-            base_slug = generate_slug(job['title'])
-            unique_slug = await ensure_unique_slug(base_slug, job['id'])
+        current_time = datetime.now(timezone.utc)
+        query["$or"] = [
+            {"expires_at": None},
+            {"expires_at": {"$gt": current_time}}
+        ]
+        
+        jobs = await db.jobs.find(query).to_list(length=None)
+        
+        for job in jobs:
+            url_elem = ET.SubElement(urlset, "url")
+            job_identifier = job.get('slug', job['id'])
+            ET.SubElement(url_elem, "loc").text = f"{base_url}/jobs/{job_identifier}"
             
-            # Update job with slug
-            await db.jobs.update_one(
-                {"id": job['id']},
-                {"$set": {"slug": unique_slug}}
-            )
-            updated_count += 1
-            print(f"✅ Generated slug '{unique_slug}' for job: {job['title']}")
-        
-        return {
-            "success": True,
-            "message": f"Successfully generated slugs for {updated_count} jobs",
-            "updated_count": updated_count
-        }
+            lastmod = job.get('updated_at') or job.get('created_at', datetime.now(timezone.utc))
+            if isinstance(lastmod, str):
+                lastmod = datetime.fromisoformat(lastmod)
+            ET.SubElement(url_elem, "lastmod").text = lastmod.strftime('%Y-%m-%d')
+            ET.SubElement(url_elem, "changefreq").text = "daily"
+            ET.SubElement(url_elem, "priority").text = "0.80"
+            
     except Exception as e:
-        print(f"❌ Error migrating slugs: {e}")
-        raise HTTPException(status_code=500, detail=f"Migration failed: {str(e)}")
-
-
-# Contact Form Submission
-class ContactMessage(BaseModel):
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    name: str
-    email: str
-    phone: str
-    subject: str
-    message: str
-    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    status: str = "new"  # new, read, replied
-
-@api_router.post("/contact-us")
-async def submit_contact_form(contact: ContactMessage):
-    """
-    Submit contact form inquiry
-    """
+        logger.error(f"Error fetching jobs for sitemap: {e}")
+    
+    # Dynamic blog pages
     try:
-        print(f"📧 New contact form submission from: {contact.name} ({contact.email})")
-        
-        # Save to database
-        contact_dict = contact.dict()
-        await db.contact_messages.insert_one(contact_dict)
-        
-        print(f"✅ Contact message saved with ID: {contact.id}")
-        
-        return {
-            "success": True,
-            "message": "Thank you for contacting us! We'll get back to you within 24 hours.",
-            "message_id": contact.id
-        }
+        blog_posts = await db.blog_posts.find({"is_published": True}).to_list(length=None)
+        for post in blog_posts:
+            url_elem = ET.SubElement(urlset, "url")
+            ET.SubElement(url_elem, "loc").text = f"{base_url}/blogs/{post['slug']}/"
+            
+            lastmod = post.get('published_at') or post.get('created_at', datetime.now(timezone.utc))
+            if isinstance(lastmod, str):
+                lastmod = datetime.fromisoformat(lastmod)
+            ET.SubElement(url_elem, "lastmod").text = lastmod.strftime('%Y-%m-%d')
+            ET.SubElement(url_elem, "changefreq").text = "monthly"
+            ET.SubElement(url_elem, "priority").text = "0.7"
     except Exception as e:
-        print(f"❌ Error saving contact message: {e}")
-        raise HTTPException(status_code=500, detail="Failed to submit contact form")
+        logger.error(f"Error fetching blog posts for sitemap: {e}")
+    
+    xml_str = ET.tostring(urlset, encoding='unicode', method='xml')
+    xml_formatted = f'<?xml version="1.0" encoding="UTF-8"?>\n{xml_str}'
+    
+    return Response(content=xml_formatted, media_type="application/xml")
 
 # SEO Meta Tags API for dynamic pages
 @app.get("/api/seo/meta/{page_type}")
