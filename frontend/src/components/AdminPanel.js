@@ -1498,6 +1498,7 @@ const AdminPanel = () => {
                       formData.append('is_featured', newBlog.is_featured);
                       formData.append('seo_title', newBlog.seo_title);
                       formData.append('seo_description', newBlog.seo_description);
+                      formData.append('faqs', JSON.stringify(newBlog.faqs));
                       
                       // Check if we're editing or creating
                       const isEditing = newBlog.id;
