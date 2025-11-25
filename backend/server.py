@@ -15,6 +15,7 @@ import jwt
 import uuid
 import json
 import xml.etree.ElementTree as ET
+import subprocess
 
 # Load environment variables
 from pathlib import Path
