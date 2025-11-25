@@ -1230,6 +1230,9 @@ async def update_job_admin(
     if updated_job.get('expires_at') and isinstance(updated_job.get('expires_at'), str):
         updated_job['expires_at'] = datetime.fromisoformat(updated_job['expires_at'])
     
+    # Auto-regenerate sitemap after job update
+    regenerate_sitemap_async()
+    
     return Job(**updated_job)
 
 @api_router.delete("/admin/jobs/{job_id}")
