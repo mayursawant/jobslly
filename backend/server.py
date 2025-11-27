@@ -47,6 +47,41 @@ def regenerate_sitemap_async():
     except Exception as e:
         logger.error(f"Failed to regenerate sitemap: {e}")
 
+# Meta Tag Injection Middleware for SEO
+class MetaTagInjectionMiddleware(BaseHTTPMiddleware):
+    """Inject dynamic meta tags into HTML responses for SEO"""
+    
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        
+        # Only process HTML responses
+        if response.status_code == 200 and request.url.path != '/api/sitemap.xml':
+            content_type = response.headers.get('content-type', '')
+            
+            if 'text/html' in content_type:
+                # Read response body
+                body = b""
+                async for chunk in response.body_iterator:
+                    body += chunk
+                
+                html_content = body.decode('utf-8')
+                
+                # Inject meta tags if it's a detail page
+                path = request.url.path
+                if path.startswith('/jobs/') or path.startswith('/blogs/'):
+                    from meta_injector import inject_meta_tags
+                    html_content = await inject_meta_tags(html_content, path)
+                
+                # Return modified response
+                return StarletteResponse(
+                    content=html_content,
+                    status_code=response.status_code,
+                    headers=dict(response.headers),
+                    media_type=response.media_type
+                )
+        
+        return response
+
 # Create the main app
 app = FastAPI(title="HealthCare Jobs API", version="1.0.0")
 
