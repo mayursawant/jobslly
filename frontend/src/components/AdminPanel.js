@@ -102,7 +102,36 @@ const AdminPanel = () => {
     ],
     removeButtons: ['file', 'about'],
     uploader: {
-      insertImageAsBase64URI: true
+      url: `${API}/admin/upload-image`,
+      insertImageAsBase64URI: false,
+      imagesExtensions: ['jpg', 'png', 'jpeg', 'gif', 'webp'],
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      format: 'json',
+      method: 'POST',
+      prepareData: function (formData) {
+        return formData;
+      },
+      isSuccess: function (resp) {
+        return resp && resp.success;
+      },
+      getMessage: function (resp) {
+        return resp.message;
+      },
+      process: function (resp) {
+        return {
+          files: [resp.url],
+          path: '',
+          baseurl: '',
+          error: resp.error || null,
+          message: resp.message || ''
+        };
+      },
+      error: function (e) {
+        console.error('Upload error:', e);
+        return e.message || 'Upload failed';
+      }
     },
     toolbarAdaptive: false
   }), []);

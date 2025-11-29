@@ -892,7 +892,7 @@ CORS_ORIGINS="*"
 
 **Frontend (.env):**
 ```
-REACT_APP_BACKEND_URL="https://medijobs-portal.preview.emergentagent.com"
+REACT_APP_BACKEND_URL="https://seo-upload-fixes.preview.emergentagent.com"
 WDS_SOCKET_PORT=443
 ```
 

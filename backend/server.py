@@ -957,6 +957,9 @@ async def approve_job(job_id: str, current_user: User = Depends(get_current_user
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Job not found")
     
+    # Auto-regenerate sitemap after job approval (now visible in sitemap)
+    regenerate_sitemap_async()
+    
     return {"message": "Job approved successfully"}
 
 @api_router.get("/admin/stats")
@@ -1040,13 +1043,25 @@ async def create_blog_post(
         try:
             # Read the image file
             contents = await featured_image.read()
-            # Store as base64 encoded string in database
-            import base64
-            encoded_image = base64.b64encode(contents).decode('utf-8')
-            # Get file extension
-            file_ext = featured_image.filename.split('.')[-1]
-            # Create data URL
-            featured_image_url = f"data:image/{file_ext};base64,{encoded_image}"
+            
+            # Validate file size (max 5MB)
+            if len(contents) > 5 * 1024 * 1024:
+                raise HTTPException(status_code=400, detail="Featured image too large. Maximum size is 5MB")
+            
+            # Save file to disk instead of storing as base64
+            filename = f"{uuid.uuid4()}_{featured_image.filename}"
+            file_path = f"/app/frontend/public/uploads/{filename}"
+            
+            # Create uploads directory if it doesn't exist
+            os.makedirs("/app/frontend/public/uploads", exist_ok=True)
+            
+            with open(file_path, "wb") as f:
+                f.write(contents)
+            
+            # Return URL path instead of base64
+            featured_image_url = f"/uploads/{filename}"
+        except HTTPException:
+            raise
         except Exception as e:
             print(f"Error processing image: {e}")
             # Continue without image if upload fails
@@ -1081,6 +1096,10 @@ async def create_blog_post(
         blog_data["published_at"] = datetime.now(timezone.utc).isoformat()
     
     await db.blog_posts.insert_one(blog_data)
+    
+    # Auto-regenerate sitemap after new blog post (if published)
+    if is_published:
+        regenerate_sitemap_async()
     
     # Return the created blog post
     return BlogPost(**blog_data)
@@ -1134,13 +1153,25 @@ async def update_blog_post(
         try:
             # Read the image file
             contents = await featured_image.read()
-            # Store as base64 encoded string in database
-            import base64
-            encoded_image = base64.b64encode(contents).decode('utf-8')
-            # Get file extension
-            file_ext = featured_image.filename.split('.')[-1]
-            # Create data URL
-            featured_image_url = f"data:image/{file_ext};base64,{encoded_image}"
+            
+            # Validate file size (max 5MB)
+            if len(contents) > 5 * 1024 * 1024:
+                raise HTTPException(status_code=400, detail="Featured image too large. Maximum size is 5MB")
+            
+            # Save file to disk instead of storing as base64
+            filename = f"{uuid.uuid4()}_{featured_image.filename}"
+            file_path = f"/app/frontend/public/uploads/{filename}"
+            
+            # Create uploads directory if it doesn't exist
+            os.makedirs("/app/frontend/public/uploads", exist_ok=True)
+            
+            with open(file_path, "wb") as f:
+                f.write(contents)
+            
+            # Return URL path instead of base64
+            featured_image_url = f"/uploads/{filename}"
+        except HTTPException:
+            raise
         except Exception as e:
             print(f"Error processing image: {e}")
             # Keep existing image if upload fails
@@ -1172,6 +1203,10 @@ async def update_blog_post(
     
     await db.blog_posts.update_one({"id": post_id}, {"$set": update_data})
     
+    # Auto-regenerate sitemap if blog post is published
+    if is_published or existing_post.get('is_published'):
+        regenerate_sitemap_async()
+    
     updated_post = await db.blog_posts.find_one({"id": post_id})
     if updated_post.get('created_at') and isinstance(updated_post.get('created_at'), str):
         updated_post['created_at'] = datetime.fromisoformat(updated_post['created_at'])
@@ -1182,6 +1217,44 @@ async def update_blog_post(
     
     return BlogPost(**updated_post)
 
+@api_router.post("/admin/upload-image")
+async def upload_image(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user)
+):
+    """Upload image for blog content or featured image"""
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Validate file type
+    allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif']
+    if file.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail="Invalid file type. Only JPEG, PNG, WebP and GIF allowed")
+    
+    # Validate file size (max 5MB)
+    contents = await file.read()
+    if len(contents) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File too large. Maximum size is 5MB")
+    
+    # Save file
+    filename = f"{uuid.uuid4()}_{file.filename}"
+    file_path = f"/app/frontend/public/uploads/{filename}"
+    
+    # Create uploads directory if it doesn't exist
+    os.makedirs("/app/frontend/public/uploads", exist_ok=True)
+    
+    with open(file_path, "wb") as f:
+        f.write(contents)
+    
+    # Return URL
+    image_url = f"/uploads/{filename}"
+    
+    return {
+        "success": True,
+        "url": image_url,
+        "filename": filename
+    }
+
 @api_router.delete("/admin/blog/{post_id}")
 async def delete_blog_post(post_id: str, current_user: User = Depends(get_current_user)):
     if current_user.role != UserRole.ADMIN:
@@ -1190,6 +1263,9 @@ async def delete_blog_post(post_id: str, current_user: User = Depends(get_curren
     result = await db.blog_posts.delete_one({"id": post_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Blog post not found")
+    
+    # Auto-regenerate sitemap after blog deletion
+    regenerate_sitemap_async()
     
     return {"message": "Blog post deleted successfully"}
 
@@ -1324,6 +1400,9 @@ async def restore_job(job_id: str, current_user: User = Depends(get_current_user
     
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Auto-regenerate sitemap after job restoration
+    regenerate_sitemap_async()
     
     return {"message": "Job restored successfully"}
 

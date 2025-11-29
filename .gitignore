@@ -60,6 +60,9 @@ chainlit.md
 
 # Deployment
 .vercel
+.emergent/
+emergent.yml
+.emergent.yml
 
 # Data and databases
 agenthub/agents/youtube/db
@@ -191,6 +194,14 @@ frontend/node_modules/.cache/default-development/13.pack
 *.env
 *.env.*
 frontend/node_modules/.cache/default-development/14.pack
+-e 
+# Environment files
+*.env
+*.env.*
+-e 
+# Environment files
+*.env
+*.env.*
 -e 
 # Environment files
 *.env
