@@ -1208,13 +1208,11 @@ const AdminPanel = () => {
                       <span>AI Enhance</span>
                     </button>
                   </div>
-                  <textarea
+                  <JoditEditor
                     value={newJob.description}
-                    onChange={(e) => setNewJob(prev => ({...prev, description: e.target.value}))}
-                    placeholder="Detailed job description and responsibilities..."
-                    rows={6}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                    required
+                    config={jobDescConfig}
+                    onBlur={newContent => setNewJob(prev => ({...prev, description: newContent}))}
+                    onChange={() => {}}
                   />
                 </div>
                 <Button 
