@@ -38,6 +38,9 @@ function escapeHtml(text) {
 app.use(async (req, res) => {
   const requestPath = req.path;
   
+  // Check if this is the homepage
+  const isHomepage = requestPath === '/' || requestPath === '/index.html';
+  
   let metaData = null;
   
   try {
@@ -66,9 +69,11 @@ app.use(async (req, res) => {
       }
     }
     
-    // Blog detail pages
-    else if (requestPath.startsWith('/blogs/') && requestPath !== '/blogs' && requestPath !== '/blogs/') {
-      const slug = requestPath.replace('/blogs/', '').replace(/\/$/, '');
+    // Blog detail pages (handle both /blog/ and /blogs/)
+    else if ((requestPath.startsWith('/blog/') || requestPath.startsWith('/blogs/')) && 
+             requestPath !== '/blog' && requestPath !== '/blog/' && 
+             requestPath !== '/blogs' && requestPath !== '/blogs/') {
+      const slug = requestPath.replace('/blogs/', '').replace('/blog/', '').replace(/\/$/, '');
       
       try {
         console.log(`Fetching blog: ${slug}`);
@@ -100,6 +105,28 @@ app.use(async (req, res) => {
     if (err) {
       console.error('Error reading index.html:', err);
       return res.status(500).send('Error loading page');
+    }
+    
+    // Remove static homepage content from ALL non-homepage pages
+    if (!isHomepage) {
+      // Find the static content inside <div id="root"> and remove it
+      const rootStart = html.indexOf('<div id="root">');
+      const bodyEnd = html.indexOf('</body>');
+      
+      if (rootStart !== -1 && bodyEnd !== -1) {
+        // Find the last </div> before </body> - this closes the root div
+        const beforeBody = html.substring(0, bodyEnd);
+        const lastDivClose = beforeBody.lastIndexOf('</div>');
+        
+        if (lastDivClose > rootStart) {
+          // Keep everything before root div content and after root div close
+          const beforeContent = html.substring(0, rootStart + '<div id="root">'.length);
+          const afterContent = html.substring(lastDivClose);
+          
+          // Combine: before + empty root + after
+          html = beforeContent + afterContent;
+        }
+      }
     }
     
     // Inject meta tags if we have data
@@ -151,13 +178,6 @@ app.use(async (req, res) => {
       html = html.replace(
         /<meta name="twitter:description" content="[^"]*"\s*\/?>/,
         `<meta name="twitter:description" content="${metaData.og_description}"/>`
-      );
-      
-      // CRITICAL: Hide static SEO content on non-homepage pages
-      // Replace the opening <div id="root"> to hide the static content
-      html = html.replace(
-        '<div id="root">',
-        '<div id="root" style="display: block;"><style>#root > div:first-child { display: none !important; }</style>'
       );
     }
     

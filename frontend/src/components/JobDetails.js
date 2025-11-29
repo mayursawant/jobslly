@@ -268,7 +268,10 @@ const JobDetails = () => {
                 <div>
                   <h3 className="text-xl font-semibold mb-3 text-gray-800">Job Description</h3>
                   <div className="prose prose-emerald max-w-none">
-                    <p className="text-gray-700 whitespace-pre-line">{job.description}</p>
+                    <div 
+                      className="text-gray-700 prose prose-sm max-w-none"
+                      dangerouslySetInnerHTML={{ __html: job.description }}
+                    />
                   </div>
                 </div>
 
