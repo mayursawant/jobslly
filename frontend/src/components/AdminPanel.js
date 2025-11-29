@@ -977,13 +977,11 @@ const AdminPanel = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Job Description *</label>
-                    <textarea
+                    <JoditEditor
                       value={editingJob.description}
-                      onChange={(e) => setEditingJob(prev => ({...prev, description: e.target.value}))}
-                      rows={6}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                      placeholder="Detailed job description..."
-                      required
+                      config={jobDescConfig}
+                      onBlur={newContent => setEditingJob(prev => ({...prev, description: newContent}))}
+                      onChange={() => {}}
                     />
                   </div>
 
