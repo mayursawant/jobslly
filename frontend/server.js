@@ -10,6 +10,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://seo-upload-fixes.preview.emergentagent.com/api';
 
+// Serve uploaded images from public/uploads (these are not part of the build)
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+
 // Serve static files (JS, CSS, images, etc.)
 app.use(express.static(path.join(__dirname, 'build'), {
   index: false // Don't auto-serve index.html
