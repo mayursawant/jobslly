@@ -1360,22 +1360,26 @@ const AdminPanel = () => {
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const file = e.target.files[0];
                         if (file) {
-                          // Validate file size (max 5MB)
-                          if (file.size > 5 * 1024 * 1024) {
-                            toast.error('Image must be less than 5MB');
-                            return;
-                          }
-                          
                           // Validate file type
                           if (!file.type.startsWith('image/')) {
                             toast.error('Please select a valid image file');
                             return;
                           }
 
-                          setNewBlog(prev => ({...prev, featured_image: file}));
+                          try {
+                            toast.info('Compressing image...');
+                            // Compress image to under 800KB
+                            const compressedFile = await compressImage(file, 800);
+                            console.log(`Original size: ${(file.size / 1024).toFixed(2)}KB, Compressed: ${(compressedFile.size / 1024).toFixed(2)}KB`);
+                            toast.success(`Image compressed: ${(compressedFile.size / 1024).toFixed(2)}KB`);
+                            setNewBlog(prev => ({...prev, featured_image: compressedFile}));
+                          } catch (error) {
+                            console.error('Image compression failed:', error);
+                            toast.error('Failed to compress image. Please try a different image.');
+                          }
                         }
                       }}
                       className="hidden"
