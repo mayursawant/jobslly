@@ -153,9 +153,6 @@ const JobListing = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Job Opportunities</h1>
-          <p className="text-gray-600">
-            {jobs.length}+ healthcare positions available
-          </p>
         </div>
 
         {/* Search and Filters */}
@@ -219,11 +216,6 @@ const JobListing = () => {
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-
-            {/* Results count */}
-            <div className="text-sm text-gray-600" data-testid="jobs-count">
-              Showing {sortedJobs.length} of {jobs.length} positions
             </div>
           </div>
         </div>
