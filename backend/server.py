@@ -1257,7 +1257,8 @@ async def upload_image(
         raise HTTPException(status_code=400, detail="File too large. Maximum size is 5MB")
     
     # Save file
-    filename = f"{uuid.uuid4()}_{file.filename}"
+    sanitized_name = sanitize_filename(file.filename)
+    filename = f"{uuid.uuid4()}_{sanitized_name}"
     file_path = f"/app/frontend/public/uploads/{filename}"
     
     # Create uploads directory if it doesn't exist
