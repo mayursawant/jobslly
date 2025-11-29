@@ -81,7 +81,8 @@ const AdminPanel = () => {
     featured_image: null,
     seo_title: '',
     seo_description: '',
-    seo_keywords: []
+    seo_keywords: [],
+    faqs: []
   });
   
   // Jodit Editor ref and config
@@ -369,6 +370,7 @@ const AdminPanel = () => {
       is_featured: blog.is_featured || false,
       seo_title: blog.seo_title || '',
       seo_description: blog.seo_description || '',
+      faqs: blog.faqs || [],
       featured_image: null, // Will be set when new image uploaded
       existing_image_url: blog.featured_image || null // Store existing image URL
     });
@@ -1388,6 +1390,66 @@ const AdminPanel = () => {
                   />
                   <p className="text-xs text-gray-500 mt-1">{newBlog.seo_description.length}/160 characters</p>
                 </div>
+                
+                {/* FAQ Section */}
+                <div className="border-t pt-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <label className="block text-sm font-medium text-gray-700">FAQs (Frequently Asked Questions)</label>
+                    <button
+                      type="button"
+                      onClick={() => setNewBlog(prev => ({
+                        ...prev,
+                        faqs: [...prev.faqs, { question: '', answer: '' }]
+                      }))}
+                      className="px-3 py-1 bg-teal-600 text-white rounded-lg hover:bg-teal-700 text-sm"
+                    >
+                      + Add FAQ
+                    </button>
+                  </div>
+                  {newBlog.faqs.map((faq, index) => (
+                    <div key={index} className="mb-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-gray-600">FAQ #{index + 1}</span>
+                        <button
+                          type="button"
+                          onClick={() => setNewBlog(prev => ({
+                            ...prev,
+                            faqs: prev.faqs.filter((_, i) => i !== index)
+                          }))}
+                          className="text-red-600 hover:text-red-800 text-sm"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        value={faq.question}
+                        onChange={(e) => {
+                          const updatedFaqs = [...newBlog.faqs];
+                          updatedFaqs[index].question = e.target.value;
+                          setNewBlog(prev => ({ ...prev, faqs: updatedFaqs }));
+                        }}
+                        placeholder="Question"
+                        className="w-full p-2 border border-gray-300 rounded-lg mb-2 focus:ring-2 focus:ring-emerald-500"
+                      />
+                      <textarea
+                        value={faq.answer}
+                        onChange={(e) => {
+                          const updatedFaqs = [...newBlog.faqs];
+                          updatedFaqs[index].answer = e.target.value;
+                          setNewBlog(prev => ({ ...prev, faqs: updatedFaqs }));
+                        }}
+                        placeholder="Answer"
+                        rows={3}
+                        className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                      />
+                    </div>
+                  ))}
+                  {newBlog.faqs.length === 0 && (
+                    <p className="text-sm text-gray-500 italic">No FAQs added yet. Click "+ Add FAQ" to add questions and answers.</p>
+                  )}
+                </div>
+                
                 <div className="flex items-center space-x-6">
                   <label className="flex items-center">
                     <input
@@ -1437,6 +1499,7 @@ const AdminPanel = () => {
                       formData.append('is_featured', newBlog.is_featured);
                       formData.append('seo_title', newBlog.seo_title);
                       formData.append('seo_description', newBlog.seo_description);
+                      formData.append('faqs', JSON.stringify(newBlog.faqs));
                       
                       // Check if we're editing or creating
                       const isEditing = newBlog.id;
@@ -1477,7 +1540,8 @@ const AdminPanel = () => {
                         featured_image: null, 
                         seo_title: '', 
                         seo_description: '', 
-                        seo_keywords: []
+                        seo_keywords: [],
+                        faqs: []
                       });
                       
                       fetchAdminData();

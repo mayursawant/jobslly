@@ -47,6 +47,41 @@ def regenerate_sitemap_async():
     except Exception as e:
         logger.error(f"Failed to regenerate sitemap: {e}")
 
+# Meta Tag Injection Middleware for SEO
+class MetaTagInjectionMiddleware(BaseHTTPMiddleware):
+    """Inject dynamic meta tags into HTML responses for SEO"""
+    
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        
+        # Only process HTML responses
+        if response.status_code == 200 and request.url.path != '/api/sitemap.xml':
+            content_type = response.headers.get('content-type', '')
+            
+            if 'text/html' in content_type:
+                # Read response body
+                body = b""
+                async for chunk in response.body_iterator:
+                    body += chunk
+                
+                html_content = body.decode('utf-8')
+                
+                # Inject meta tags if it's a detail page
+                path = request.url.path
+                if path.startswith('/jobs/') or path.startswith('/blogs/'):
+                    from meta_injector import inject_meta_tags
+                    html_content = await inject_meta_tags(html_content, path)
+                
+                # Return modified response
+                return StarletteResponse(
+                    content=html_content,
+                    status_code=response.status_code,
+                    headers=dict(response.headers),
+                    media_type=response.media_type
+                )
+        
+        return response
+
 # Create the main app
 app = FastAPI(title="HealthCare Jobs API", version="1.0.0")
 
@@ -299,6 +334,10 @@ class ChatMessage(BaseModel):
     user_id: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+class FAQItem(BaseModel):
+    question: str
+    answer: str
+
 class BlogPost(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     title: str
@@ -314,6 +353,7 @@ class BlogPost(BaseModel):
     seo_title: Optional[str] = None
     seo_description: Optional[str] = None
     seo_keywords: List[str] = []
+    faqs: List[FAQItem] = []
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: Optional[datetime] = None
     published_at: Optional[datetime] = None
@@ -330,6 +370,7 @@ class BlogPostCreate(BaseModel):
     seo_title: Optional[str] = None
     seo_description: Optional[str] = None
     seo_keywords: List[str] = []
+    faqs: List[FAQItem] = []
 
 class SEOSettings(BaseModel):
     page_type: str  # home, jobs, blog, etc.
@@ -982,6 +1023,7 @@ async def create_blog_post(
     is_featured: bool = Form(False),
     seo_title: str = Form(""),
     seo_description: str = Form(""),
+    faqs: str = Form("[]"),
     featured_image: Optional[UploadFile] = File(None),
     current_user: User = Depends(get_current_user)
 ):
@@ -1010,6 +1052,12 @@ async def create_blog_post(
             # Continue without image if upload fails
             featured_image_url = None
     
+    # Parse FAQs from JSON string
+    try:
+        faqs_list = json.loads(faqs) if faqs else []
+    except:
+        faqs_list = []
+    
     # Create blog post
     blog_data = {
         "title": title,
@@ -1020,6 +1068,7 @@ async def create_blog_post(
         "is_featured": is_featured,
         "seo_title": seo_title,
         "seo_description": seo_description,
+        "faqs": faqs_list,
         "featured_image": featured_image_url,
         "author_id": current_user.id,
         "slug": slug,
@@ -1064,6 +1113,7 @@ async def update_blog_post(
     is_featured: bool = Form(False),
     seo_title: str = Form(""),
     seo_description: str = Form(""),
+    faqs: str = Form("[]"),
     featured_image: Optional[UploadFile] = File(None),
     current_user: User = Depends(get_current_user)
 ):
@@ -1096,6 +1146,12 @@ async def update_blog_post(
             # Keep existing image if upload fails
             featured_image_url = existing_post.get('featured_image')
     
+    # Parse FAQs from JSON string
+    try:
+        faqs_list = json.loads(faqs) if faqs else []
+    except:
+        faqs_list = []
+    
     update_data = {
         "title": title,
         "excerpt": excerpt,
@@ -1105,6 +1161,7 @@ async def update_blog_post(
         "is_featured": is_featured,
         "seo_title": seo_title,
         "seo_description": seo_description,
+        "faqs": faqs_list,
         "featured_image": featured_image_url,
         "slug": slug,
         "updated_at": datetime.now(timezone.utc).isoformat()
@@ -2109,91 +2166,45 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
     
     return Response(content=xml_formatted, media_type="application/xml")
 
-# Dynamic Sitemap.xml at /sitemap.xml - Auto-updates with jobs
+# Dynamic Sitemap.xml at /sitemap.xml - Generated on-demand
 @app.get("/sitemap.xml", response_class=Response)
 async def get_sitemap_root():
     """
-    Generate fully dynamic sitemap.xml for SEO at /sitemap.xml
-    Auto-updates when jobs are added/updated/deleted/expired
+    Serve dynamic sitemap.xml - regenerates on every request for true real-time updates
+    For performance, you can add caching with TTL if needed
     """
-    # Create XML root element
-    urlset = ET.Element("urlset")
-    urlset.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
+    import asyncio
     
-    base_url = 'https://jobslly.com'
+    # Regenerate sitemap file
+    subprocess.run(['python3', '/app/backend/update_sitemap.py'], check=False)
     
-    # Static pages
-    static_pages = [
-        ('/', '1.0', 'daily'),
-        ('/jobs/', '0.9', 'daily'),
-        ('/blogs/', '0.8', 'daily'),
-        ('/login/', '0.7', 'weekly'),
-        ('/register/', '0.7', 'weekly'),
-        ('/dashboard/', '0.6', 'weekly'),
-        ('/contact-us/', '0.7', 'weekly'),
-        ('/privacy-policy/', '0.5', 'monthly'),
-        ('/terms-of-service/', '0.5', 'monthly'),
-        ('/cookies/', '0.5', 'monthly'),
-        ('/sitemap/', '0.5', 'monthly'),
-    ]
-    
-    for path, priority, changefreq in static_pages:
-        url_elem = ET.SubElement(urlset, "url")
-        ET.SubElement(url_elem, "loc").text = f"{base_url}{path}"
-        ET.SubElement(url_elem, "lastmod").text = datetime.now(timezone.utc).strftime('%Y-%m-%d')
-        ET.SubElement(url_elem, "changefreq").text = changefreq
-        ET.SubElement(url_elem, "priority").text = priority
-    
-    # Dynamic job pages
+    # Read and serve the generated sitemap
     try:
-        query = {
-            "is_approved": True,
-            "is_deleted": {"$ne": True}
-        }
+        with open('/app/frontend/public/sitemap.xml', 'r') as f:
+            xml_content = f.read()
+        return Response(content=xml_content, media_type="application/xml")
+    except FileNotFoundError:
+        # Fallback: generate inline if file doesn't exist
+        urlset = ET.Element("urlset")
+        urlset.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
         
-        current_time = datetime.now(timezone.utc)
-        query["$or"] = [
-            {"expires_at": None},
-            {"expires_at": {"$gt": current_time}}
+        base_url = 'https://jobslly.com'
+        static_pages = [
+            ('/', '1.0', 'daily'),
+            ('/jobs/', '0.9', 'daily'),
+            ('/blogs/', '0.8', 'daily'),
         ]
         
-        jobs = await db.jobs.find(query).to_list(length=None)
+        for path, priority, changefreq in static_pages:
+            url_elem = ET.SubElement(urlset, "url")
+            ET.SubElement(url_elem, "loc").text = f"{base_url}{path}"
+            ET.SubElement(url_elem, "lastmod").text = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+            ET.SubElement(url_elem, "changefreq").text = changefreq
+            ET.SubElement(url_elem, "priority").text = priority
         
-        for job in jobs:
-            url_elem = ET.SubElement(urlset, "url")
-            job_identifier = job.get('slug', job['id'])
-            ET.SubElement(url_elem, "loc").text = f"{base_url}/jobs/{job_identifier}"
-            
-            lastmod = job.get('updated_at') or job.get('created_at', datetime.now(timezone.utc))
-            if isinstance(lastmod, str):
-                lastmod = datetime.fromisoformat(lastmod)
-            ET.SubElement(url_elem, "lastmod").text = lastmod.strftime('%Y-%m-%d')
-            ET.SubElement(url_elem, "changefreq").text = "daily"
-            ET.SubElement(url_elem, "priority").text = "0.80"
-            
-    except Exception as e:
-        logger.error(f"Error fetching jobs for sitemap: {e}")
-    
-    # Dynamic blog pages
-    try:
-        blog_posts = await db.blog_posts.find({"is_published": True}).to_list(length=None)
-        for post in blog_posts:
-            url_elem = ET.SubElement(urlset, "url")
-            ET.SubElement(url_elem, "loc").text = f"{base_url}/blogs/{post['slug']}/"
-            
-            lastmod = post.get('published_at') or post.get('created_at', datetime.now(timezone.utc))
-            if isinstance(lastmod, str):
-                lastmod = datetime.fromisoformat(lastmod)
-            ET.SubElement(url_elem, "lastmod").text = lastmod.strftime('%Y-%m-%d')
-            ET.SubElement(url_elem, "changefreq").text = "monthly"
-            ET.SubElement(url_elem, "priority").text = "0.7"
-    except Exception as e:
-        logger.error(f"Error fetching blog posts for sitemap: {e}")
-    
-    xml_str = ET.tostring(urlset, encoding='unicode', method='xml')
-    xml_formatted = f'<?xml version="1.0" encoding="UTF-8"?>\n{xml_str}'
-    
-    return Response(content=xml_formatted, media_type="application/xml")
+        xml_str = ET.tostring(urlset, encoding='unicode', method='xml')
+        xml_formatted = f'<?xml version="1.0" encoding="UTF-8"?>\n{xml_str}'
+        return Response(content=xml_formatted, media_type="application/xml")
 
 # SEO Meta Tags API for dynamic pages
 @app.get("/api/seo/meta/{page_type}")
@@ -2238,6 +2249,9 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
 
 # Include the router
 app.include_router(api_router)
+
+# Add Meta Tag Injection Middleware for SEO (must be first)
+app.add_middleware(MetaTagInjectionMiddleware)
 
 # Add WWW to non-WWW redirect middleware (must be added before CORS)
 app.add_middleware(WWWRedirectMiddleware)

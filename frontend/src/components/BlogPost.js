@@ -88,6 +88,23 @@ const BlogPost = () => {
             "dateModified": post.updated_at || post.published_at
           })}
         </script>
+        {/* FAQ Schema for SEO */}
+        {post.faqs && post.faqs.length > 0 && (
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": post.faqs.map(faq => ({
+                "@type": "Question",
+                "name": faq.question,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": faq.answer
+                }
+              }))
+            })}
+          </script>
+        )}
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-emerald-50">
@@ -176,6 +193,34 @@ const BlogPost = () => {
                 />
               </CardContent>
             </Card>
+
+            {/* FAQs Section */}
+            {post.faqs && post.faqs.length > 0 && (
+              <Card className="bg-white shadow-xl border border-gray-100 mb-16">
+                <CardContent className="p-8 md:p-12">
+                  <div className="mb-8 text-center">
+                    <span className="text-4xl mb-3 block">❓</span>
+                    <h3 className="text-3xl font-bold text-gray-900 mb-2">Frequently Asked Questions</h3>
+                    <div className="w-20 h-1 bg-gradient-to-r from-teal-500 to-emerald-500 mx-auto rounded-full"></div>
+                  </div>
+                  <div className="space-y-4">
+                    {post.faqs.map((faq, index) => (
+                      <details key={index} className="group bg-teal-50/50 border border-teal-100 rounded-lg overflow-hidden hover:shadow-md transition-all duration-300">
+                        <summary className="px-6 py-4 cursor-pointer font-semibold text-gray-900 flex justify-between items-center hover:bg-teal-50 transition-colors">
+                          <span className="flex-1">{faq.question}</span>
+                          <svg className="w-5 h-5 text-teal-600 transform transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </summary>
+                        <div className="px-6 py-4 text-gray-700 bg-white border-t border-teal-100">
+                          {faq.answer}
+                        </div>
+                      </details>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Article Actions */}
             <Card className="bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-100 mb-16">
