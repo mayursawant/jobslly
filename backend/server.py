@@ -1182,6 +1182,44 @@ async def update_blog_post(
     
     return BlogPost(**updated_post)
 
+@api_router.post("/admin/upload-image")
+async def upload_image(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user)
+):
+    """Upload image for blog content or featured image"""
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Validate file type
+    allowed_types = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif']
+    if file.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail="Invalid file type. Only JPEG, PNG, WebP and GIF allowed")
+    
+    # Validate file size (max 5MB)
+    contents = await file.read()
+    if len(contents) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File too large. Maximum size is 5MB")
+    
+    # Save file
+    filename = f"{uuid.uuid4()}_{file.filename}"
+    file_path = f"/app/frontend/public/uploads/{filename}"
+    
+    # Create uploads directory if it doesn't exist
+    os.makedirs("/app/frontend/public/uploads", exist_ok=True)
+    
+    with open(file_path, "wb") as f:
+        f.write(contents)
+    
+    # Return URL
+    image_url = f"/uploads/{filename}"
+    
+    return {
+        "success": True,
+        "url": image_url,
+        "filename": filename
+    }
+
 @api_router.delete("/admin/blog/{post_id}")
 async def delete_blog_post(post_id: str, current_user: User = Depends(get_current_user)):
     if current_user.role != UserRole.ADMIN:
