@@ -8,16 +8,33 @@ const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://medijobs-portal.preview.emergentagent.com/api';
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'build')));
+// Serve static files (JS, CSS, images, etc.)
+app.use(express.static(path.join(__dirname, 'build'), {
+  index: false // Don't auto-serve index.html
+}));
 
-// Meta tag injection middleware
-app.get('*', async (req, res, next) => {
+// Serve sitemap directly
+app.get('/sitemap.xml', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'sitemap.xml'));
+});
+
+// Helper function to escape HTML
+function escapeHtml(text) {
+  if (!text) return '';
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// Meta tag injection middleware for ALL routes
+app.get('*', async (req, res) => {
   const requestPath = req.path;
   
-  // Only inject for detail pages
   let metaData = null;
   
   try {
@@ -26,14 +43,21 @@ app.get('*', async (req, res, next) => {
       const slug = requestPath.replace('/jobs/', '').replace(/\/$/, '');
       
       try {
-        const jobResponse = await axios.get(`${BACKEND_URL}/api/jobs/${slug}`, { timeout: 2000 });
+        console.log(`Fetching job: ${slug}`);
+        const jobResponse = await axios.get(`${BACKEND_URL}/jobs/${slug}`, { 
+          timeout: 3000,
+          headers: { 'Accept': 'application/json' }
+        });
         const job = jobResponse.data;
         
         metaData = {
-          title: `${job.title} - ${job.company || 'Healthcare Jobs'} | Jobslly`,
-          description: (job.description || '').substring(0, 160) + '...',
-          keywords: `${job.title}, ${job.company || ''}, ${job.location || ''}, healthcare jobs`
+          title: escapeHtml(`${job.title} - ${job.company || 'Healthcare Jobs'} | Jobslly`),
+          description: escapeHtml((job.description || '').substring(0, 160) + '...'),
+          keywords: escapeHtml(`${job.title}, ${job.company || ''}, ${job.location || ''}, healthcare jobs, medical careers`),
+          og_title: escapeHtml(job.title),
+          og_description: escapeHtml((job.description || '').substring(0, 160))
         };
+        console.log(`✓ Injected meta for job: ${job.title}`);
       } catch (err) {
         console.log(`Job not found: ${slug}`);
       }
@@ -44,14 +68,21 @@ app.get('*', async (req, res, next) => {
       const slug = requestPath.replace('/blogs/', '').replace(/\/$/, '');
       
       try {
-        const blogResponse = await axios.get(`${BACKEND_URL}/api/blog/${slug}`, { timeout: 2000 });
+        console.log(`Fetching blog: ${slug}`);
+        const blogResponse = await axios.get(`${BACKEND_URL}/blog/${slug}`, { 
+          timeout: 3000,
+          headers: { 'Accept': 'application/json' }
+        });
         const blog = blogResponse.data;
         
         metaData = {
-          title: blog.seo_title || `${blog.title} | Jobslly Health Hub`,
-          description: blog.seo_description || (blog.excerpt || '').substring(0, 160),
-          keywords: (blog.seo_keywords || []).join(', ')
+          title: escapeHtml(blog.seo_title || `${blog.title} | Jobslly Health Hub`),
+          description: escapeHtml(blog.seo_description || (blog.excerpt || '').substring(0, 160)),
+          keywords: escapeHtml((blog.seo_keywords || []).join(', ')),
+          og_title: escapeHtml(blog.title),
+          og_description: escapeHtml(blog.excerpt || '')
         };
+        console.log(`✓ Injected meta for blog: ${blog.title}`);
       } catch (err) {
         console.log(`Blog not found: ${slug}`);
       }
@@ -64,6 +95,7 @@ app.get('*', async (req, res, next) => {
   const indexPath = path.join(__dirname, 'build', 'index.html');
   fs.readFile(indexPath, 'utf8', (err, html) => {
     if (err) {
+      console.error('Error reading index.html:', err);
       return res.status(500).send('Error loading page');
     }
     
@@ -77,7 +109,7 @@ app.get('*', async (req, res, next) => {
       
       // Replace description
       html = html.replace(
-        /<meta name="description" content=".*?" \/>/,
+        /<meta name="description" content="[^"]*" \/>/,
         `<meta name="description" content="${metaData.description}" />`
       );
       
@@ -85,26 +117,37 @@ app.get('*', async (req, res, next) => {
       if (metaData.keywords) {
         if (html.includes('name="keywords"')) {
           html = html.replace(
-            /<meta name="keywords" content=".*?" \/>/,
+            /<meta name="keywords" content="[^"]*" \/>/,
             `<meta name="keywords" content="${metaData.keywords}" />`
           );
         } else {
           html = html.replace(
-            '</head>',
-            `  <meta name="keywords" content="${metaData.keywords}" />\n  </head>`
+            '<meta name="viewport"',
+            `<meta name="keywords" content="${metaData.keywords}" />\n    <meta name="viewport"`
           );
         }
       }
       
       // Replace OG tags
       html = html.replace(
-        /<meta property="og:title" content=".*?" \/>/,
-        `<meta property="og:title" content="${metaData.title}" />`
+        /<meta property="og:title" content="[^"]*" \/>/,
+        `<meta property="og:title" content="${metaData.og_title}" />`
       );
       
       html = html.replace(
-        /<meta property="og:description" content=".*?" \/>/,
-        `<meta property="og:description" content="${metaData.description}" />`
+        /<meta property="og:description" content="[^"]*" \/>/,
+        `<meta property="og:description" content="${metaData.og_description}" />`
+      );
+      
+      // Replace Twitter card tags
+      html = html.replace(
+        /<meta name="twitter:title" content="[^"]*" \/>/,
+        `<meta name="twitter:title" content="${metaData.og_title}" />`
+      );
+      
+      html = html.replace(
+        /<meta name="twitter:description" content="[^"]*" \/>/,
+        `<meta name="twitter:description" content="${metaData.og_description}" />`
       );
     }
     
@@ -112,6 +155,7 @@ app.get('*', async (req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`✓ Frontend server with SEO meta injection running on port ${PORT}`);
+  console.log(`✓ Backend API: ${BACKEND_URL}`);
 });
