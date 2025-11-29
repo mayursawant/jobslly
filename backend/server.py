@@ -1094,6 +1094,10 @@ async def create_blog_post(
     
     await db.blog_posts.insert_one(blog_data)
     
+    # Auto-regenerate sitemap after new blog post (if published)
+    if is_published:
+        regenerate_sitemap_async()
+    
     # Return the created blog post
     return BlogPost(**blog_data)
 
@@ -1195,6 +1199,10 @@ async def update_blog_post(
         update_data["published_at"] = datetime.now(timezone.utc).isoformat()
     
     await db.blog_posts.update_one({"id": post_id}, {"$set": update_data})
+    
+    # Auto-regenerate sitemap if blog post is published
+    if is_published or existing_post.get('is_published'):
+        regenerate_sitemap_async()
     
     updated_post = await db.blog_posts.find_one({"id": post_id})
     if updated_post.get('created_at') and isinstance(updated_post.get('created_at'), str):
