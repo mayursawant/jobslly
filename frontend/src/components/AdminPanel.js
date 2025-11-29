@@ -68,6 +68,63 @@ const AdminPanel = () => {
     { value: 'physiotherapy', label: '🏃‍♂️ Physiotherapy' },
     { value: 'all', label: '🏥 All Categories' }
   ];
+
+  // Image compression utility
+  const compressImage = (file, maxSizeKB = 800) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Resize if image is too large (max dimension 1200px)
+          const maxDimension = 1200;
+          if (width > maxDimension || height > maxDimension) {
+            if (width > height) {
+              height = (height / width) * maxDimension;
+              width = maxDimension;
+            } else {
+              width = (width / height) * maxDimension;
+              height = maxDimension;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Try different quality levels to get under maxSizeKB
+          let quality = 0.9;
+          const tryCompress = () => {
+            canvas.toBlob((blob) => {
+              if (blob.size <= maxSizeKB * 1024 || quality <= 0.5) {
+                // Create a new File object from the blob
+                const compressedFile = new File([blob], file.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now()
+                });
+                resolve(compressedFile);
+              } else {
+                quality -= 0.1;
+                tryCompress();
+              }
+            }, 'image/jpeg', quality);
+          };
+          
+          tryCompress();
+        };
+        img.onerror = reject;
+      };
+      reader.onerror = reject;
+    });
+  };
   
   // Blog Creation State
   const [newBlog, setNewBlog] = useState({
