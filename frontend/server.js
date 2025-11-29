@@ -153,12 +153,21 @@ app.use(async (req, res) => {
         `<meta name="twitter:description" content="${metaData.og_description}"/>`
       );
       
-      // CRITICAL: Hide static SEO content on non-homepage pages
-      // Replace the opening <div id="root"> to hide the static content
-      html = html.replace(
-        '<div id="root">',
-        '<div id="root" style="display: block;"><style>#root > div:first-child { display: none !important; }</style>'
-      );
+      // CRITICAL: Remove static SEO content on non-homepage pages
+      // Extract everything between <div id="root"> and </div></body>
+      const rootStartRegex = /<div id="root">/;
+      const rootEndRegex = /<\/div>\s*<\/body>/;
+      
+      const rootStartMatch = html.match(rootStartRegex);
+      const rootEndMatch = html.match(rootEndRegex);
+      
+      if (rootStartMatch && rootEndMatch) {
+        const beforeRoot = html.substring(0, rootStartMatch.index + rootStartMatch[0].length);
+        const afterRoot = html.substring(html.lastIndexOf('</div></body>'));
+        
+        // Replace with empty root div for non-homepage pages
+        html = beforeRoot + afterRoot;
+      }
     }
     
     res.send(html);
