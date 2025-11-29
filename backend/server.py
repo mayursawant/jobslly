@@ -1401,6 +1401,9 @@ async def restore_job(job_id: str, current_user: User = Depends(get_current_user
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Job not found")
     
+    # Auto-regenerate sitemap after job restoration
+    regenerate_sitemap_async()
+    
     return {"message": "Job restored successfully"}
 
 # Public Blog Routes
