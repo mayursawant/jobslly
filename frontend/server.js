@@ -8,7 +8,7 @@ const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://medijobs-portal.preview.emergentagent.com/api';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://seo-upload-fixes.preview.emergentagent.com/api';
 
 // Serve static files (JS, CSS, images, etc.)
 app.use(express.static(path.join(__dirname, 'build'), {
