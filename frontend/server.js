@@ -31,8 +31,8 @@ function escapeHtml(text) {
     .replace(/'/g, '&#039;');
 }
 
-// Meta tag injection middleware for ALL routes
-app.get('/*', async (req, res) => {
+// Meta tag injection middleware for ALL other routes
+app.use(async (req, res) => {
   const requestPath = req.path;
   
   let metaData = null;
