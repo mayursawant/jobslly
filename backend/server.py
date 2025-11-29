@@ -1040,13 +1040,25 @@ async def create_blog_post(
         try:
             # Read the image file
             contents = await featured_image.read()
-            # Store as base64 encoded string in database
-            import base64
-            encoded_image = base64.b64encode(contents).decode('utf-8')
-            # Get file extension
-            file_ext = featured_image.filename.split('.')[-1]
-            # Create data URL
-            featured_image_url = f"data:image/{file_ext};base64,{encoded_image}"
+            
+            # Validate file size (max 5MB)
+            if len(contents) > 5 * 1024 * 1024:
+                raise HTTPException(status_code=400, detail="Featured image too large. Maximum size is 5MB")
+            
+            # Save file to disk instead of storing as base64
+            filename = f"{uuid.uuid4()}_{featured_image.filename}"
+            file_path = f"/app/frontend/public/uploads/{filename}"
+            
+            # Create uploads directory if it doesn't exist
+            os.makedirs("/app/frontend/public/uploads", exist_ok=True)
+            
+            with open(file_path, "wb") as f:
+                f.write(contents)
+            
+            # Return URL path instead of base64
+            featured_image_url = f"/uploads/{filename}"
+        except HTTPException:
+            raise
         except Exception as e:
             print(f"Error processing image: {e}")
             # Continue without image if upload fails
@@ -1134,13 +1146,25 @@ async def update_blog_post(
         try:
             # Read the image file
             contents = await featured_image.read()
-            # Store as base64 encoded string in database
-            import base64
-            encoded_image = base64.b64encode(contents).decode('utf-8')
-            # Get file extension
-            file_ext = featured_image.filename.split('.')[-1]
-            # Create data URL
-            featured_image_url = f"data:image/{file_ext};base64,{encoded_image}"
+            
+            # Validate file size (max 5MB)
+            if len(contents) > 5 * 1024 * 1024:
+                raise HTTPException(status_code=400, detail="Featured image too large. Maximum size is 5MB")
+            
+            # Save file to disk instead of storing as base64
+            filename = f"{uuid.uuid4()}_{featured_image.filename}"
+            file_path = f"/app/frontend/public/uploads/{filename}"
+            
+            # Create uploads directory if it doesn't exist
+            os.makedirs("/app/frontend/public/uploads", exist_ok=True)
+            
+            with open(file_path, "wb") as f:
+                f.write(contents)
+            
+            # Return URL path instead of base64
+            featured_image_url = f"/uploads/{filename}"
+        except HTTPException:
+            raise
         except Exception as e:
             print(f"Error processing image: {e}")
             # Keep existing image if upload fails
