@@ -154,19 +154,23 @@ app.use(async (req, res) => {
       );
       
       // CRITICAL: Remove static SEO content on non-homepage pages
-      // Extract everything between <div id="root"> and </div></body>
-      const rootStartRegex = /<div id="root">/;
-      const rootEndRegex = /<\/div>\s*<\/body>/;
+      // Find the static content inside <div id="root"> and remove it
+      const rootStart = html.indexOf('<div id="root">');
+      const bodyEnd = html.indexOf('</body>');
       
-      const rootStartMatch = html.match(rootStartRegex);
-      const rootEndMatch = html.match(rootEndRegex);
-      
-      if (rootStartMatch && rootEndMatch) {
-        const beforeRoot = html.substring(0, rootStartMatch.index + rootStartMatch[0].length);
-        const afterRoot = html.substring(html.lastIndexOf('</div></body>'));
+      if (rootStart !== -1 && bodyEnd !== -1) {
+        // Find the last </div> before </body> - this closes the root div
+        const beforeBody = html.substring(0, bodyEnd);
+        const lastDivClose = beforeBody.lastIndexOf('</div>');
         
-        // Replace with empty root div for non-homepage pages
-        html = beforeRoot + afterRoot;
+        if (lastDivClose > rootStart) {
+          // Keep everything before root div content and after root div close
+          const beforeContent = html.substring(0, rootStart + '<div id="root">'.length);
+          const afterContent = html.substring(lastDivClose);
+          
+          // Combine: before + empty root + after
+          html = beforeContent + afterContent;
+        }
       }
     }
     
