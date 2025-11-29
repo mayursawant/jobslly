@@ -149,6 +149,13 @@ app.use(async (req, res) => {
         /<meta name="twitter:description" content="[^"]*"\s*\/?>/,
         `<meta name="twitter:description" content="${metaData.og_description}"/>`
       );
+      
+      // CRITICAL: Hide static SEO content on non-homepage pages
+      // Replace the opening <div id="root"> to hide the static content
+      html = html.replace(
+        '<div id="root">',
+        '<div id="root" style="display: block;"><style>#root > div:first-child { display: none !important; }</style>'
+      );
     }
     
     res.send(html);
