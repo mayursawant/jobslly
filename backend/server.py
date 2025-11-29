@@ -1067,7 +1067,8 @@ async def create_blog_post(
                 raise HTTPException(status_code=400, detail="Featured image too large. Maximum size is 5MB")
             
             # Save file to disk instead of storing as base64
-            filename = f"{uuid.uuid4()}_{featured_image.filename}"
+            sanitized_name = sanitize_filename(featured_image.filename)
+            filename = f"{uuid.uuid4()}_{sanitized_name}"
             file_path = f"/app/frontend/public/uploads/{filename}"
             
             # Create uploads directory if it doesn't exist
@@ -1177,7 +1178,8 @@ async def update_blog_post(
                 raise HTTPException(status_code=400, detail="Featured image too large. Maximum size is 5MB")
             
             # Save file to disk instead of storing as base64
-            filename = f"{uuid.uuid4()}_{featured_image.filename}"
+            sanitized_name = sanitize_filename(featured_image.filename)
+            filename = f"{uuid.uuid4()}_{sanitized_name}"
             file_path = f"/app/frontend/public/uploads/{filename}"
             
             # Create uploads directory if it doesn't exist
