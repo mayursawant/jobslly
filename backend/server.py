@@ -957,6 +957,9 @@ async def approve_job(job_id: str, current_user: User = Depends(get_current_user
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Job not found")
     
+    # Auto-regenerate sitemap after job approval (now visible in sitemap)
+    regenerate_sitemap_async()
+    
     return {"message": "Job approved successfully"}
 
 @api_router.get("/admin/stats")
