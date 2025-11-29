@@ -88,6 +88,23 @@ const BlogPost = () => {
             "dateModified": post.updated_at || post.published_at
           })}
         </script>
+        {/* FAQ Schema for SEO */}
+        {post.faqs && post.faqs.length > 0 && (
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": post.faqs.map(faq => ({
+                "@type": "Question",
+                "name": faq.question,
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": faq.answer
+                }
+              }))
+            })}
+          </script>
+        )}
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-emerald-50">
