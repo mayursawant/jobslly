@@ -1261,6 +1261,9 @@ async def delete_blog_post(post_id: str, current_user: User = Depends(get_curren
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Blog post not found")
     
+    # Auto-regenerate sitemap after blog deletion
+    regenerate_sitemap_async()
+    
     return {"message": "Blog post deleted successfully"}
 
 # Admin Job Management Routes
