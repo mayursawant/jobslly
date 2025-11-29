@@ -12,6 +12,13 @@ import { toast } from 'sonner';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Helper function to strip HTML tags from text
+const stripHtml = (html) => {
+  const tmp = document.createElement('DIV');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+};
+
 // Helper function to check if salary value should show currency symbol
 const shouldShowCurrency = (value) => {
   if (!value) return false;
@@ -267,7 +274,7 @@ const JobListing = () => {
                       </p>
                       
                       <p className="text-gray-600 mb-3 line-clamp-2">
-                        {job.description.substring(0, 200)}...
+                        {stripHtml(job.description).substring(0, 200)}...
                       </p>
 
                       {job.requirements && job.requirements.length > 0 && (
