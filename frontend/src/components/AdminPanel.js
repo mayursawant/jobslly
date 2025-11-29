@@ -192,6 +192,25 @@ const AdminPanel = () => {
     },
     toolbarAdaptive: false
   }), []);
+
+  // Simplified Jodit config for job descriptions
+  const jobDescConfig = useMemo(() => ({
+    readonly: false,
+    placeholder: 'Write the job description here...',
+    minHeight: 300,
+    buttons: [
+      'bold', 'italic', 'underline',
+      '|', 'ul', 'ol',
+      '|', 'paragraph',
+      '|', 'link',
+      '|', 'align', 'undo', 'redo'
+    ],
+    removeButtons: ['file', 'about', 'video', 'table', 'image'],
+    toolbarAdaptive: false,
+    uploader: {
+      insertImageAsBase64URI: false
+    }
+  }), []);
   
   // AI Enhancement State
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
