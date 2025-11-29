@@ -22,6 +22,24 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+# Helper function to sanitize filenames
+def sanitize_filename(filename):
+    """Remove/replace characters that cause issues in URLs"""
+    # Get the name and extension
+    name_parts = filename.rsplit('.', 1)
+    if len(name_parts) == 2:
+        name, ext = name_parts
+    else:
+        name = filename
+        ext = ''
+    
+    # Replace spaces and special characters
+    name = name.replace(' ', '_')
+    name = ''.join(c for c in name if c.isalnum() or c in ('_', '-'))
+    
+    # Reconstruct filename
+    return f"{name}.{ext}" if ext else name
+
 # MongoDB connection
 import ssl
 mongo_url = os.environ['MONGO_URL']
