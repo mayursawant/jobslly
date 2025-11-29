@@ -11,6 +11,13 @@ import axios from 'axios';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Helper function to strip HTML tags from text
+const stripHtml = (html) => {
+  const tmp = document.createElement('DIV');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+};
+
 // Helper function to check if salary value should show currency symbol
 const shouldShowCurrency = (value) => {
   if (!value) return false;
@@ -651,7 +658,7 @@ const Home = () => {
                       </p>
                       
                       <p className="text-gray-600 mb-4 line-clamp-2 text-sm">
-                        {job.description.substring(0, 100)}...
+                        {stripHtml(job.description).substring(0, 100)}...
                       </p>
 
                       <div className="flex flex-wrap gap-1 mb-4">
