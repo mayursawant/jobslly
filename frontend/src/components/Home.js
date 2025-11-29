@@ -641,11 +641,6 @@ const Home = () => {
                         <Badge className="bg-blue-100 text-blue-800 text-xs">
                           {job.job_type.replace('_', ' ').toUpperCase()}
                         </Badge>
-                        {job.salary_min && (
-                          <span className="text-sm font-semibold text-green-600">
-                            {formatSalary(job.salary_min, job.currency)}+
-                          </span>
-                        )}
                       </div>
                       
                       <h3 className="text-lg font-semibold mb-1 text-gray-900 hover:text-blue-600 transition-colors">{job.title}</h3>

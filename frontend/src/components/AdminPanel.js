@@ -68,6 +68,63 @@ const AdminPanel = () => {
     { value: 'physiotherapy', label: '🏃‍♂️ Physiotherapy' },
     { value: 'all', label: '🏥 All Categories' }
   ];
+
+  // Image compression utility
+  const compressImage = (file, maxSizeKB = 800) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          
+          // Resize if image is too large (max dimension 1200px)
+          const maxDimension = 1200;
+          if (width > maxDimension || height > maxDimension) {
+            if (width > height) {
+              height = (height / width) * maxDimension;
+              width = maxDimension;
+            } else {
+              width = (width / height) * maxDimension;
+              height = maxDimension;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Try different quality levels to get under maxSizeKB
+          let quality = 0.9;
+          const tryCompress = () => {
+            canvas.toBlob((blob) => {
+              if (blob.size <= maxSizeKB * 1024 || quality <= 0.5) {
+                // Create a new File object from the blob
+                const compressedFile = new File([blob], file.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now()
+                });
+                resolve(compressedFile);
+              } else {
+                quality -= 0.1;
+                tryCompress();
+              }
+            }, 'image/jpeg', quality);
+          };
+          
+          tryCompress();
+        };
+        img.onerror = reject;
+      };
+      reader.onerror = reject;
+    });
+  };
   
   // Blog Creation State
   const [newBlog, setNewBlog] = useState({
@@ -134,6 +191,25 @@ const AdminPanel = () => {
       }
     },
     toolbarAdaptive: false
+  }), []);
+
+  // Simplified Jodit config for job descriptions
+  const jobDescConfig = useMemo(() => ({
+    readonly: false,
+    placeholder: 'Write the job description here...',
+    minHeight: 300,
+    buttons: [
+      'bold', 'italic', 'underline',
+      '|', 'ul', 'ol',
+      '|', 'paragraph',
+      '|', 'link',
+      '|', 'align', 'undo', 'redo'
+    ],
+    removeButtons: ['file', 'about', 'video', 'table', 'image'],
+    toolbarAdaptive: false,
+    uploader: {
+      insertImageAsBase64URI: false
+    }
   }), []);
   
   // AI Enhancement State
@@ -901,13 +977,11 @@ const AdminPanel = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Job Description *</label>
-                    <textarea
+                    <JoditEditor
                       value={editingJob.description}
-                      onChange={(e) => setEditingJob(prev => ({...prev, description: e.target.value}))}
-                      rows={6}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
-                      placeholder="Detailed job description..."
-                      required
+                      config={jobDescConfig}
+                      onBlur={newContent => setEditingJob(prev => ({...prev, description: newContent}))}
+                      onChange={() => {}}
                     />
                   </div>
 
@@ -1134,13 +1208,11 @@ const AdminPanel = () => {
                       <span>AI Enhance</span>
                     </button>
                   </div>
-                  <textarea
+                  <JoditEditor
                     value={newJob.description}
-                    onChange={(e) => setNewJob(prev => ({...prev, description: e.target.value}))}
-                    placeholder="Detailed job description and responsibilities..."
-                    rows={6}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                    required
+                    config={jobDescConfig}
+                    onBlur={newContent => setNewJob(prev => ({...prev, description: newContent}))}
+                    onChange={() => {}}
                   />
                 </div>
                 <Button 
@@ -1303,22 +1375,26 @@ const AdminPanel = () => {
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const file = e.target.files[0];
                         if (file) {
-                          // Validate file size (max 5MB)
-                          if (file.size > 5 * 1024 * 1024) {
-                            toast.error('Image must be less than 5MB');
-                            return;
-                          }
-                          
                           // Validate file type
                           if (!file.type.startsWith('image/')) {
                             toast.error('Please select a valid image file');
                             return;
                           }
 
-                          setNewBlog(prev => ({...prev, featured_image: file}));
+                          try {
+                            toast.info('Compressing image...');
+                            // Compress image to under 800KB
+                            const compressedFile = await compressImage(file, 800);
+                            console.log(`Original size: ${(file.size / 1024).toFixed(2)}KB, Compressed: ${(compressedFile.size / 1024).toFixed(2)}KB`);
+                            toast.success(`Image compressed: ${(compressedFile.size / 1024).toFixed(2)}KB`);
+                            setNewBlog(prev => ({...prev, featured_image: compressedFile}));
+                          } catch (error) {
+                            console.error('Image compression failed:', error);
+                            toast.error('Failed to compress image. Please try a different image.');
+                          }
                         }
                       }}
                       className="hidden"

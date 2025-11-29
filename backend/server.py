@@ -22,6 +22,24 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+# Helper function to sanitize filenames
+def sanitize_filename(filename):
+    """Remove/replace characters that cause issues in URLs"""
+    # Get the name and extension
+    name_parts = filename.rsplit('.', 1)
+    if len(name_parts) == 2:
+        name, ext = name_parts
+    else:
+        name = filename
+        ext = ''
+    
+    # Replace spaces and special characters
+    name = name.replace(' ', '_')
+    name = ''.join(c for c in name if c.isalnum() or c in ('_', '-'))
+    
+    # Reconstruct filename
+    return f"{name}.{ext}" if ext else name
+
 # MongoDB connection
 import ssl
 mongo_url = os.environ['MONGO_URL']
@@ -1049,7 +1067,8 @@ async def create_blog_post(
                 raise HTTPException(status_code=400, detail="Featured image too large. Maximum size is 5MB")
             
             # Save file to disk instead of storing as base64
-            filename = f"{uuid.uuid4()}_{featured_image.filename}"
+            sanitized_name = sanitize_filename(featured_image.filename)
+            filename = f"{uuid.uuid4()}_{sanitized_name}"
             file_path = f"/app/frontend/public/uploads/{filename}"
             
             # Create uploads directory if it doesn't exist
@@ -1159,7 +1178,8 @@ async def update_blog_post(
                 raise HTTPException(status_code=400, detail="Featured image too large. Maximum size is 5MB")
             
             # Save file to disk instead of storing as base64
-            filename = f"{uuid.uuid4()}_{featured_image.filename}"
+            sanitized_name = sanitize_filename(featured_image.filename)
+            filename = f"{uuid.uuid4()}_{sanitized_name}"
             file_path = f"/app/frontend/public/uploads/{filename}"
             
             # Create uploads directory if it doesn't exist
@@ -1237,7 +1257,8 @@ async def upload_image(
         raise HTTPException(status_code=400, detail="File too large. Maximum size is 5MB")
     
     # Save file
-    filename = f"{uuid.uuid4()}_{file.filename}"
+    sanitized_name = sanitize_filename(file.filename)
+    filename = f"{uuid.uuid4()}_{sanitized_name}"
     file_path = f"/app/frontend/public/uploads/{filename}"
     
     # Create uploads directory if it doesn't exist
