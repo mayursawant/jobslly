@@ -107,47 +107,47 @@ app.use(async (req, res) => {
         `<title>${metaData.title}</title>`
       );
       
-      // Replace description
+      // Replace description (handle both /> and />)
       html = html.replace(
-        /<meta name="description" content="[^"]*" \/>/,
-        `<meta name="description" content="${metaData.description}" />`
+        /<meta name="description" content="[^"]*"\s*\/?>/,
+        `<meta name="description" content="${metaData.description}"/>`
       );
       
       // Replace/add keywords
       if (metaData.keywords) {
         if (html.includes('name="keywords"')) {
           html = html.replace(
-            /<meta name="keywords" content="[^"]*" \/>/,
-            `<meta name="keywords" content="${metaData.keywords}" />`
+            /<meta name="keywords" content="[^"]*"\s*\/?>/,
+            `<meta name="keywords" content="${metaData.keywords}"/>`
           );
         } else {
           html = html.replace(
             '<meta name="viewport"',
-            `<meta name="keywords" content="${metaData.keywords}" />\n    <meta name="viewport"`
+            `<meta name="keywords" content="${metaData.keywords}"/><meta name="viewport"`
           );
         }
       }
       
       // Replace OG tags
       html = html.replace(
-        /<meta property="og:title" content="[^"]*" \/>/,
-        `<meta property="og:title" content="${metaData.og_title}" />`
+        /<meta property="og:title" content="[^"]*"\s*\/?>/,
+        `<meta property="og:title" content="${metaData.og_title}"/>`
       );
       
       html = html.replace(
-        /<meta property="og:description" content="[^"]*" \/>/,
-        `<meta property="og:description" content="${metaData.og_description}" />`
+        /<meta property="og:description" content="[^"]*"\s*\/?>/,
+        `<meta property="og:description" content="${metaData.og_description}"/>`
       );
       
       // Replace Twitter card tags
       html = html.replace(
-        /<meta name="twitter:title" content="[^"]*" \/>/,
-        `<meta name="twitter:title" content="${metaData.og_title}" />`
+        /<meta name="twitter:title" content="[^"]*"\s*\/?>/,
+        `<meta name="twitter:title" content="${metaData.og_title}"/>`
       );
       
       html = html.replace(
-        /<meta name="twitter:description" content="[^"]*" \/>/,
-        `<meta name="twitter:description" content="${metaData.og_description}" />`
+        /<meta name="twitter:description" content="[^"]*"\s*\/?>/,
+        `<meta name="twitter:description" content="${metaData.og_description}"/>`
       );
     }
     
