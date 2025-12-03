@@ -1744,23 +1744,28 @@ async def track_job_application(email: str, job_id: str):
 async def apply_for_job(job_id: str, application_data: dict, current_user: User = Depends(get_current_user)):
     print(f"🎯 Application attempt - Job ID: {job_id}, User ID: {current_user.id}, User Email: {current_user.email}")
     
-    # Check if job exists
-    job = await db.jobs.find_one({"id": job_id})
+    # Check if job exists (try slug first, then ID for backward compatibility)
+    job = await db.jobs.find_one({"slug": job_id, "is_deleted": {"$ne": True}})
+    if not job:
+        job = await db.jobs.find_one({"id": job_id, "is_deleted": {"$ne": True}})
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     
+    # Use actual job ID from database, not slug
+    actual_job_id = job['id']
+    
     # Check if user already applied for this job
     existing_application = await db.applications.find_one({
-        "job_id": job_id,
+        "job_id": actual_job_id,
         "applicant_id": current_user.id
     })
     if existing_application:
-        print(f"⚠️ Duplicate application detected for user {current_user.id} on job {job_id}")
+        print(f"⚠️ Duplicate application detected for user {current_user.id} on job {actual_job_id}")
         raise HTTPException(status_code=400, detail="You have already applied for this job")
     
     # Create job application
     application = JobApplication(
-        job_id=job_id,
+        job_id=actual_job_id,
         applicant_id=current_user.id,
         cover_letter=application_data.get('cover_letter', ''),
         resume_url=application_data.get('resume_url')
@@ -1775,7 +1780,7 @@ async def apply_for_job(job_id: str, application_data: dict, current_user: User 
     
     # Update job application count
     await db.jobs.update_one(
-        {"id": job_id},
+        {"id": actual_job_id},
         {"$inc": {"application_count": 1}}
     )
     
@@ -1788,8 +1793,10 @@ async def apply_for_job(job_id: str, application_data: dict, current_user: User 
 # Enhanced Job Application with Lead Collection
 @api_router.post("/jobs/{job_id}/apply-lead", response_model=Dict)
 async def apply_with_lead_collection(job_id: str, lead_data: JobLeadCreate):
-    # Check if job exists
-    job = await db.jobs.find_one({"id": job_id})
+    # Check if job exists (try slug first, then ID for backward compatibility)
+    job = await db.jobs.find_one({"slug": job_id, "is_deleted": {"$ne": True}})
+    if not job:
+        job = await db.jobs.find_one({"id": job_id, "is_deleted": {"$ne": True}})
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     
@@ -1805,12 +1812,13 @@ async def apply_with_lead_collection(job_id: str, lead_data: JobLeadCreate):
     
     job_seeker_profile = await create_or_update_job_seeker_profile(profile_data)
     
-    # Track the application
-    await track_job_application(lead_data.email, job_id)
+    # Track the application (use actual job ID from database, not slug)
+    actual_job_id = job['id']
+    await track_job_application(lead_data.email, actual_job_id)
     
     # Create job lead for backward compatibility
     lead = JobLead(
-        job_id=job_id,
+        job_id=actual_job_id,
         job_seeker_id=job_seeker_profile.id,
         name=lead_data.name,
         email=lead_data.email,
