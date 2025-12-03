@@ -254,24 +254,6 @@ const Home = () => {
       
       // Enhanced stats for healthcare professionals
       setStats({
-
-
-  const fetchFeaturedBlogs = async () => {
-    try {
-      const response = await axios.get(`${API}/blog?featured_only=true&limit=3`);
-      setFeaturedBlogs(response.data);
-    } catch (error) {
-      console.error('Error fetching featured blogs:', error);
-      // If no featured blogs, fetch latest blogs as fallback
-      try {
-        const fallbackResponse = await axios.get(`${API}/blog?limit=3`);
-        setFeaturedBlogs(fallbackResponse.data);
-      } catch (fallbackError) {
-        console.error('Error fetching fallback blogs:', fallbackError);
-      }
-    }
-  };
-
         jobs: response.data.length * 25,
         companies: Math.floor(response.data.length * 8.5),
         applications: response.data.length * 150,
