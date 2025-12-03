@@ -454,6 +454,44 @@ const AdminPanel = () => {
       
       toast.success('Job deleted successfully!');
       fetchAllJobs(); // Refresh the jobs list
+
+
+  const archiveJob = async (jobId) => {
+    if (!window.confirm('Are you sure you want to archive this job? The deadline will be marked as over.')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API}/admin/jobs/${jobId}/archive`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Job archived successfully');
+      fetchAllJobs();
+    } catch (error) {
+      console.error('Error archiving job:', error);
+      toast.error(error.response?.data?.detail || 'Failed to archive job');
+    }
+  };
+
+  const unarchiveJob = async (jobId) => {
+    if (!window.confirm('Are you sure you want to unarchive this job?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API}/admin/jobs/${jobId}/unarchive`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Job unarchived successfully');
+      fetchAllJobs();
+    } catch (error) {
+      console.error('Error unarchiving job:', error);
+      toast.error(error.response?.data?.detail || 'Failed to unarchive job');
+    }
+  };
+
     } catch (error) {
       console.error('Failed to delete job:', error);
       const errorMessage = error.response?.data?.detail || 'Failed to delete job';
