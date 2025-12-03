@@ -236,6 +236,7 @@ const Home = () => {
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const [featuredJobs, setFeaturedJobs] = useState([]);
+  const [featuredBlogs, setFeaturedBlogs] = useState([]);
   const [stats, setStats] = useState({ jobs: 0, companies: 0, applications: 0, professionals: 0 });
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -243,6 +244,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchFeaturedJobs();
+    fetchFeaturedBlogs();
   }, []);
 
   const fetchFeaturedJobs = async () => {
@@ -263,6 +265,23 @@ const Home = () => {
       setLoading(false);
     }
   };
+
+  const fetchFeaturedBlogs = async () => {
+    try {
+      const response = await axios.get(`${API}/blog?featured_only=true&limit=3`);
+      setFeaturedBlogs(response.data);
+    } catch (error) {
+      console.error('Error fetching featured blogs:', error);
+      // If no featured blogs, fetch latest blogs as fallback
+      try {
+        const fallbackResponse = await axios.get(`${API}/blog?limit=3`);
+        setFeaturedBlogs(fallbackResponse.data);
+      } catch (fallbackError) {
+        console.error('Error fetching fallback blogs:', fallbackError);
+      }
+    }
+  };
+
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -705,71 +724,49 @@ const Home = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 mb-12">
-            <Card className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 cursor-pointer">
-              <CardContent className="p-6">
-                <Badge className="bg-green-100 text-green-800 text-xs mb-3">
-                  Healthcare Trends
-                </Badge>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
-                  AI Revolution in Healthcare: What It Means for Your Career
-                </h3>
-                <p className="text-gray-600 mb-4 text-sm line-clamp-3">
-                  Discover how artificial intelligence is transforming healthcare delivery and creating new career opportunities...
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-500">5 min read</span>
-                  <Link to="/blogs">
-                    <Button size="sm" variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
-                      Read More
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 cursor-pointer">
-              <CardContent className="p-6">
-                <Badge className="bg-blue-100 text-blue-800 text-xs mb-3">
-                  Career Development
-                </Badge>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
-                  Telehealth Opportunities: The Future of Remote Healthcare
-                </h3>
-                <p className="text-gray-600 mb-4 text-sm line-clamp-3">
-                  Explore the growing field of telehealth and how healthcare professionals can transition to remote work...
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-500">7 min read</span>
-                  <Link to="/blogs">
-                    <Button size="sm" variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
-                      Read More
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 cursor-pointer">
-              <CardContent className="p-6">
-                <Badge className="bg-purple-100 text-purple-800 text-xs mb-3">
-                  Industry News
-                </Badge>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
-                  Mental Health Careers: Meeting Growing Demand
-                </h3>
-                <p className="text-gray-600 mb-4 text-sm line-clamp-3">
-                  Understanding the surge in mental health awareness and the career opportunities it creates...
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-500">6 min read</span>
-                  <Link to="/blogs">
-                    <Button size="sm" variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
-                      Read More
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
+            {featuredBlogs.length > 0 ? (
+              featuredBlogs.map((blog, index) => (
+                <Card key={blog.id || index} className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 h-full">
+                  {blog.featured_image && (
+                    <div className="w-full h-48 overflow-hidden">
+                      <img 
+                        src={blog.featured_image} 
+                        alt={blog.title}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {e.target.style.display='none'}}
+                      />
+                    </div>
+                  )}
+                  <CardContent className="p-6">
+                    <Badge className="bg-blue-100 text-blue-800 text-xs mb-3">
+                      {blog.category || 'Healthcare'}
+                    </Badge>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors line-clamp-2">
+                      {blog.title}
+                    </h3>
+                    <p className="text-gray-600 mb-4 text-sm line-clamp-3">
+                      {blog.seo_description || stripHtml(blog.content).substring(0, 150) + '...'}
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-500">{blog.read_time || '5 min read'}</span>
+                      <Link to="/blogs">
+                        <Button size="sm" variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
+                          Read More
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              // Fallback content if no featured blogs
+              <div className="col-span-3 text-center text-gray-500 py-8">
+                <p>No featured articles available at the moment.</p>
+                <Link to="/blogs">
+                  <Button size="sm" className="mt-4" variant="outline">View All Articles</Button>
+                </Link>
+              </div>
+            )}
           </div>
 
           <div className="text-center">
