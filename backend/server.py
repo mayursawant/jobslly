@@ -1744,8 +1744,10 @@ async def track_job_application(email: str, job_id: str):
 async def apply_for_job(job_id: str, application_data: dict, current_user: User = Depends(get_current_user)):
     print(f"🎯 Application attempt - Job ID: {job_id}, User ID: {current_user.id}, User Email: {current_user.email}")
     
-    # Check if job exists
-    job = await db.jobs.find_one({"id": job_id})
+    # Check if job exists (try slug first, then ID for backward compatibility)
+    job = await db.jobs.find_one({"slug": job_id, "is_deleted": {"$ne": True}})
+    if not job:
+        job = await db.jobs.find_one({"id": job_id, "is_deleted": {"$ne": True}})
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     
