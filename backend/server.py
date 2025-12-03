@@ -1809,12 +1809,13 @@ async def apply_with_lead_collection(job_id: str, lead_data: JobLeadCreate):
     
     job_seeker_profile = await create_or_update_job_seeker_profile(profile_data)
     
-    # Track the application
-    await track_job_application(lead_data.email, job_id)
+    # Track the application (use actual job ID from database, not slug)
+    actual_job_id = job['id']
+    await track_job_application(lead_data.email, actual_job_id)
     
     # Create job lead for backward compatibility
     lead = JobLead(
-        job_id=job_id,
+        job_id=actual_job_id,
         job_seeker_id=job_seeker_profile.id,
         name=lead_data.name,
         email=lead_data.email,
