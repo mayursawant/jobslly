@@ -497,13 +497,6 @@ const AdminPanel = () => {
     }
   };
 
-    } catch (error) {
-      console.error('Failed to delete job:', error);
-      const errorMessage = error.response?.data?.detail || 'Failed to delete job';
-      toast.error(errorMessage);
-    }
-  };
-
   /**
    * Handle blog editing
    */
