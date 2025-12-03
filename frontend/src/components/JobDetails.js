@@ -307,6 +307,31 @@ const JobDetails = () => {
                 )}
               </CardContent>
             </Card>
+
+            {/* Bottom Apply Button */}
+            {!hasApplied && (
+              <Card className="card mt-6">
+                <CardContent className="p-6">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                      <h3 className="font-semibold text-gray-800 text-lg mb-1">
+                        Ready to Apply?
+                      </h3>
+                      <p className="text-gray-600 text-sm">
+                        Submit your application and start your journey with {job.company}
+                      </p>
+                    </div>
+                    <Button 
+                      onClick={handleApplyClick}
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 whitespace-nowrap"
+                      disabled={applying}
+                    >
+                      {applying ? 'Processing...' : '🚀 Apply Now'}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Sidebar */}
