@@ -841,6 +841,27 @@ const AdminPanel = () => {
                             >
                               Edit
                             </Button>
+                            {job.is_archived ? (
+                              <Button
+                                onClick={() => unarchiveJob(job.id)}
+                                size="sm"
+                                variant="outline"
+                                className="text-green-600 border-green-300 hover:bg-green-50"
+                                data-testid={`unarchive-job-${job.id}`}
+                              >
+                                Unarchive
+                              </Button>
+                            ) : (
+                              <Button
+                                onClick={() => archiveJob(job.id)}
+                                size="sm"
+                                variant="outline"
+                                className="text-orange-600 border-orange-300 hover:bg-orange-50"
+                                data-testid={`archive-job-${job.id}`}
+                              >
+                                Archive
+                              </Button>
+                            )}
                             <Button
                               onClick={() => deleteJob(job.id)}
                               size="sm"
