@@ -241,7 +241,6 @@ const JobDetails = () => {
                         {job.salary_max && ` - ${formatSalary(job.salary_max, job.currency)}`}
                       </div>
                     )}
-                    <div className="text-sm text-gray-500">per year</div>
                   </div>
                 </div>
                 
