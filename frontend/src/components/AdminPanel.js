@@ -454,7 +454,12 @@ const AdminPanel = () => {
       
       toast.success('Job deleted successfully!');
       fetchAllJobs(); // Refresh the jobs list
-
+    } catch (error) {
+      console.error('Failed to delete job:', error);
+      const errorMessage = error.response?.data?.detail || 'Failed to delete job';
+      toast.error(errorMessage);
+    }
+  };
 
   const archiveJob = async (jobId) => {
     if (!window.confirm('Are you sure you want to archive this job? The deadline will be marked as over.')) {
