@@ -236,6 +236,7 @@ const Home = () => {
   const { isAuthenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const [featuredJobs, setFeaturedJobs] = useState([]);
+  const [featuredBlogs, setFeaturedBlogs] = useState([]);
   const [stats, setStats] = useState({ jobs: 0, companies: 0, applications: 0, professionals: 0 });
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -243,6 +244,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchFeaturedJobs();
+    fetchFeaturedBlogs();
   }, []);
 
   const fetchFeaturedJobs = async () => {
