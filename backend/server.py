@@ -1788,8 +1788,10 @@ async def apply_for_job(job_id: str, application_data: dict, current_user: User 
 # Enhanced Job Application with Lead Collection
 @api_router.post("/jobs/{job_id}/apply-lead", response_model=Dict)
 async def apply_with_lead_collection(job_id: str, lead_data: JobLeadCreate):
-    # Check if job exists
-    job = await db.jobs.find_one({"id": job_id})
+    # Check if job exists (try slug first, then ID for backward compatibility)
+    job = await db.jobs.find_one({"slug": job_id, "is_deleted": {"$ne": True}})
+    if not job:
+        job = await db.jobs.find_one({"id": job_id, "is_deleted": {"$ne": True}})
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     
