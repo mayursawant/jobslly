@@ -342,7 +342,17 @@ const JobDetails = () => {
                 <CardTitle className="text-lg text-gray-800">Apply for this Position</CardTitle>
               </CardHeader>
               <CardContent>
-                {hasApplied ? (
+                {job.is_archived ? (
+                  <div className="text-center py-6">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <h3 className="font-semibold text-gray-800 mb-2">Application Deadline Over</h3>
+                    <p className="text-gray-600 text-sm">This job posting is no longer accepting applications.</p>
+                  </div>
+                ) : hasApplied ? (
                   <div className="text-center py-6">
                     <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <svg className="w-8 h-8 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
