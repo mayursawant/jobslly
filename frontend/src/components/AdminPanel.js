@@ -846,6 +846,11 @@ const AdminPanel = () => {
                             <Badge variant="outline" className={job.is_approved ? "bg-green-50 text-green-700 border-green-200" : "bg-yellow-50 text-yellow-700 border-yellow-200"}>
                               {job.is_approved ? 'Approved' : 'Pending'}
                             </Badge>
+                            {job.is_archived && (
+                              <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-400">
+                                Archived
+                              </Badge>
+                            )}
                             {job.is_external && (
                               <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
                                 External
