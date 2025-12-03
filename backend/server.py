@@ -1751,18 +1751,21 @@ async def apply_for_job(job_id: str, application_data: dict, current_user: User 
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     
+    # Use actual job ID from database, not slug
+    actual_job_id = job['id']
+    
     # Check if user already applied for this job
     existing_application = await db.applications.find_one({
-        "job_id": job_id,
+        "job_id": actual_job_id,
         "applicant_id": current_user.id
     })
     if existing_application:
-        print(f"⚠️ Duplicate application detected for user {current_user.id} on job {job_id}")
+        print(f"⚠️ Duplicate application detected for user {current_user.id} on job {actual_job_id}")
         raise HTTPException(status_code=400, detail="You have already applied for this job")
     
     # Create job application
     application = JobApplication(
-        job_id=job_id,
+        job_id=actual_job_id,
         applicant_id=current_user.id,
         cover_letter=application_data.get('cover_letter', ''),
         resume_url=application_data.get('resume_url')
@@ -1777,7 +1780,7 @@ async def apply_for_job(job_id: str, application_data: dict, current_user: User 
     
     # Update job application count
     await db.jobs.update_one(
-        {"id": job_id},
+        {"id": actual_job_id},
         {"$inc": {"application_count": 1}}
     )
     
