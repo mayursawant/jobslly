@@ -461,6 +461,42 @@ const AdminPanel = () => {
     }
   };
 
+  const archiveJob = async (jobId) => {
+    if (!window.confirm('Are you sure you want to archive this job? The deadline will be marked as over.')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API}/admin/jobs/${jobId}/archive`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Job archived successfully');
+      fetchAllJobs();
+    } catch (error) {
+      console.error('Error archiving job:', error);
+      toast.error(error.response?.data?.detail || 'Failed to archive job');
+    }
+  };
+
+  const unarchiveJob = async (jobId) => {
+    if (!window.confirm('Are you sure you want to unarchive this job?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API}/admin/jobs/${jobId}/unarchive`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Job unarchived successfully');
+      fetchAllJobs();
+    } catch (error) {
+      console.error('Error unarchiving job:', error);
+      toast.error(error.response?.data?.detail || 'Failed to unarchive job');
+    }
+  };
+
   /**
    * Handle blog editing
    */
@@ -808,6 +844,11 @@ const AdminPanel = () => {
                             <Badge variant="outline" className={job.is_approved ? "bg-green-50 text-green-700 border-green-200" : "bg-yellow-50 text-yellow-700 border-yellow-200"}>
                               {job.is_approved ? 'Approved' : 'Pending'}
                             </Badge>
+                            {job.is_archived && (
+                              <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-400">
+                                Archived
+                              </Badge>
+                            )}
                             {job.is_external && (
                               <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
                                 External
@@ -841,6 +882,27 @@ const AdminPanel = () => {
                             >
                               Edit
                             </Button>
+                            {job.is_archived ? (
+                              <Button
+                                onClick={() => unarchiveJob(job.id)}
+                                size="sm"
+                                variant="outline"
+                                className="text-green-600 border-green-300 hover:bg-green-50"
+                                data-testid={`unarchive-job-${job.id}`}
+                              >
+                                Unarchive
+                              </Button>
+                            ) : (
+                              <Button
+                                onClick={() => archiveJob(job.id)}
+                                size="sm"
+                                variant="outline"
+                                className="text-orange-600 border-orange-300 hover:bg-orange-50"
+                                data-testid={`archive-job-${job.id}`}
+                              >
+                                Archive
+                              </Button>
+                            )}
                             <Button
                               onClick={() => deleteJob(job.id)}
                               size="sm"
