@@ -1407,6 +1407,45 @@ async def soft_delete_job(job_id: str, current_user: User = Depends(get_current_
     # Auto-regenerate sitemap after job deletion
     regenerate_sitemap_async()
     
+
+@api_router.post("/admin/jobs/{job_id}/archive")
+async def archive_job(job_id: str, current_user: User = Depends(get_current_user)):
+    """Archive a job posting (deadline over)"""
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.jobs.update_one(
+        {"id": job_id},
+        {"$set": {"is_archived": True, "archived_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Auto-regenerate sitemap after job archival
+    regenerate_sitemap_async()
+    
+    return {"message": "Job archived successfully"}
+
+@api_router.post("/admin/jobs/{job_id}/unarchive")
+async def unarchive_job(job_id: str, current_user: User = Depends(get_current_user)):
+    """Unarchive a job posting"""
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.jobs.update_one(
+        {"id": job_id},
+        {"$set": {"is_archived": False}, "$unset": {"archived_at": ""}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Auto-regenerate sitemap after job unarchival
+    regenerate_sitemap_async()
+    
+    return {"message": "Job unarchived successfully"}
+
     return {"message": "Job deleted successfully"}
 
 @api_router.post("/admin/jobs/{job_id}/restore")
