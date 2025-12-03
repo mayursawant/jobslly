@@ -90,9 +90,19 @@ async def update_sitemap():
     xml_str = ET.tostring(urlset, encoding='unicode', method='xml')
     xml_formatted = f'<?xml version="1.0" encoding="UTF-8"?>\n{xml_str}'
     
-    sitemap_path = '/app/frontend/public/sitemap.xml'
-    with open(sitemap_path, 'w') as f:
+    # Write sitemap to both public and build directories
+    sitemap_path_public = '/app/frontend/public/sitemap.xml'
+    sitemap_path_build = '/app/frontend/build/sitemap.xml'
+    
+    with open(sitemap_path_public, 'w') as f:
         f.write(xml_formatted)
+    
+    # Also copy to build directory for production serving
+    try:
+        with open(sitemap_path_build, 'w') as f:
+            f.write(xml_formatted)
+    except Exception as e:
+        print(f"Note: Could not write to build directory: {e}")
     
     return len(jobs)
 

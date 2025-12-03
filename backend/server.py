@@ -57,12 +57,15 @@ db = client[os.environ['DB_NAME']]
 def regenerate_sitemap_async():
     """Trigger sitemap regeneration in background"""
     try:
-        subprocess.Popen(
+        print("🔄 Triggering sitemap regeneration...")
+        result = subprocess.Popen(
             ['python3', '/app/backend/update_sitemap.py'],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
         )
+        print(f"✓ Sitemap regeneration triggered (PID: {result.pid})")
     except Exception as e:
+        print(f"❌ Failed to regenerate sitemap: {e}")
         logger.error(f"Failed to regenerate sitemap: {e}")
 
 # Meta Tag Injection Middleware for SEO
@@ -1063,23 +1066,27 @@ async def create_blog_post(
             # Read the image file
             contents = await featured_image.read()
             
-            # Validate file size (max 5MB)
-            if len(contents) > 5 * 1024 * 1024:
-                raise HTTPException(status_code=400, detail="Featured image too large. Maximum size is 5MB")
+            # Validate file size (max 1MB for database storage)
+            if len(contents) > 1 * 1024 * 1024:
+                raise HTTPException(status_code=400, detail="Featured image too large. Maximum size is 1MB. Please compress the image.")
             
-            # Save file to disk instead of storing as base64
-            sanitized_name = sanitize_filename(featured_image.filename)
-            filename = f"{uuid.uuid4()}_{sanitized_name}"
-            file_path = f"/app/frontend/public/uploads/{filename}"
+            # Store as base64 in database
+            import base64
+            encoded_image = base64.b64encode(contents).decode('utf-8')
             
-            # Create uploads directory if it doesn't exist
-            os.makedirs("/app/frontend/public/uploads", exist_ok=True)
+            # Get file extension
+            file_ext = featured_image.filename.split('.')[-1].lower()
             
-            with open(file_path, "wb") as f:
-                f.write(contents)
+            # Create data URL for browser display
+            mime_type = {
+                'jpg': 'image/jpeg',
+                'jpeg': 'image/jpeg',
+                'png': 'image/png',
+                'gif': 'image/gif',
+                'webp': 'image/webp'
+            }.get(file_ext, 'image/jpeg')
             
-            # Return URL path instead of base64
-            featured_image_url = f"/uploads/{filename}"
+            featured_image_url = f"data:{mime_type};base64,{encoded_image}"
         except HTTPException:
             raise
         except Exception as e:
@@ -1174,23 +1181,27 @@ async def update_blog_post(
             # Read the image file
             contents = await featured_image.read()
             
-            # Validate file size (max 5MB)
-            if len(contents) > 5 * 1024 * 1024:
-                raise HTTPException(status_code=400, detail="Featured image too large. Maximum size is 5MB")
+            # Validate file size (max 1MB for database storage)
+            if len(contents) > 1 * 1024 * 1024:
+                raise HTTPException(status_code=400, detail="Featured image too large. Maximum size is 1MB. Please compress the image.")
             
-            # Save file to disk instead of storing as base64
-            sanitized_name = sanitize_filename(featured_image.filename)
-            filename = f"{uuid.uuid4()}_{sanitized_name}"
-            file_path = f"/app/frontend/public/uploads/{filename}"
+            # Store as base64 in database
+            import base64
+            encoded_image = base64.b64encode(contents).decode('utf-8')
             
-            # Create uploads directory if it doesn't exist
-            os.makedirs("/app/frontend/public/uploads", exist_ok=True)
+            # Get file extension
+            file_ext = featured_image.filename.split('.')[-1].lower()
             
-            with open(file_path, "wb") as f:
-                f.write(contents)
+            # Create data URL for browser display
+            mime_type = {
+                'jpg': 'image/jpeg',
+                'jpeg': 'image/jpeg',
+                'png': 'image/png',
+                'gif': 'image/gif',
+                'webp': 'image/webp'
+            }.get(file_ext, 'image/jpeg')
             
-            # Return URL path instead of base64
-            featured_image_url = f"/uploads/{filename}"
+            featured_image_url = f"data:{mime_type};base64,{encoded_image}"
         except HTTPException:
             raise
         except Exception as e:
@@ -1252,29 +1263,33 @@ async def upload_image(
     if file.content_type not in allowed_types:
         raise HTTPException(status_code=400, detail="Invalid file type. Only JPEG, PNG, WebP and GIF allowed")
     
-    # Validate file size (max 5MB)
+    # Validate file size (max 500KB for inline images in blog content)
     contents = await file.read()
-    if len(contents) > 5 * 1024 * 1024:
-        raise HTTPException(status_code=400, detail="File too large. Maximum size is 5MB")
+    if len(contents) > 500 * 1024:
+        raise HTTPException(status_code=400, detail="File too large. Maximum size is 500KB for inline images")
     
-    # Save file
-    sanitized_name = sanitize_filename(file.filename)
-    filename = f"{uuid.uuid4()}_{sanitized_name}"
-    file_path = f"/app/frontend/public/uploads/{filename}"
+    # Store as base64 data URL
+    import base64
+    encoded_image = base64.b64encode(contents).decode('utf-8')
     
-    # Create uploads directory if it doesn't exist
-    os.makedirs("/app/frontend/public/uploads", exist_ok=True)
+    # Get file extension
+    file_ext = file.filename.split('.')[-1].lower()
     
-    with open(file_path, "wb") as f:
-        f.write(contents)
+    # Create data URL for browser display
+    mime_type = {
+        'jpg': 'image/jpeg',
+        'jpeg': 'image/jpeg',
+        'png': 'image/png',
+        'gif': 'image/gif',
+        'webp': 'image/webp'
+    }.get(file_ext, 'image/jpeg')
     
-    # Return URL
-    image_url = f"/uploads/{filename}"
+    data_url = f"data:{mime_type};base64,{encoded_image}"
     
     return {
         "success": True,
-        "url": image_url,
-        "filename": filename
+        "url": data_url,
+        "filename": file.filename
     }
 
 @api_router.delete("/admin/blog/{post_id}")
