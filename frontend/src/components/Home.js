@@ -726,37 +726,37 @@ const Home = () => {
           <div className="grid md:grid-cols-3 gap-6 mb-12">
             {featuredBlogs.length > 0 ? (
               featuredBlogs.map((blog, index) => (
-                <Link to={`/blog/${blog.slug}`} key={blog.id || index}>
-                  <Card className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 cursor-pointer h-full">
-                    {blog.featured_image && (
-                      <div className="w-full h-48 overflow-hidden">
-                        <img 
-                          src={blog.featured_image} 
-                          alt={blog.title}
-                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                          onError={(e) => {e.target.style.display='none'}}
-                        />
-                      </div>
-                    )}
-                    <CardContent className="p-6">
-                      <Badge className="bg-blue-100 text-blue-800 text-xs mb-3">
-                        {blog.category || 'Healthcare'}
-                      </Badge>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors line-clamp-2">
-                        {blog.title}
-                      </h3>
-                      <p className="text-gray-600 mb-4 text-sm line-clamp-3">
-                        {blog.seo_description || stripHtml(blog.content).substring(0, 150) + '...'}
-                      </p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs text-gray-500">{blog.read_time || '5 min read'}</span>
+                <Card key={blog.id || index} className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 h-full">
+                  {blog.featured_image && (
+                    <div className="w-full h-48 overflow-hidden">
+                      <img 
+                        src={blog.featured_image} 
+                        alt={blog.title}
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {e.target.style.display='none'}}
+                      />
+                    </div>
+                  )}
+                  <CardContent className="p-6">
+                    <Badge className="bg-blue-100 text-blue-800 text-xs mb-3">
+                      {blog.category || 'Healthcare'}
+                    </Badge>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-blue-600 transition-colors line-clamp-2">
+                      {blog.title}
+                    </h3>
+                    <p className="text-gray-600 mb-4 text-sm line-clamp-3">
+                      {blog.seo_description || stripHtml(blog.content).substring(0, 150) + '...'}
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-500">{blog.read_time || '5 min read'}</span>
+                      <Link to="/blogs">
                         <Button size="sm" variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50">
                           Read More
                         </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
               ))
             ) : (
               // Fallback content if no featured blogs
