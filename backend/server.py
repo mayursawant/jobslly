@@ -57,12 +57,15 @@ db = client[os.environ['DB_NAME']]
 def regenerate_sitemap_async():
     """Trigger sitemap regeneration in background"""
     try:
-        subprocess.Popen(
+        print("🔄 Triggering sitemap regeneration...")
+        result = subprocess.Popen(
             ['python3', '/app/backend/update_sitemap.py'],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
         )
+        print(f"✓ Sitemap regeneration triggered (PID: {result.pid})")
     except Exception as e:
+        print(f"❌ Failed to regenerate sitemap: {e}")
         logger.error(f"Failed to regenerate sitemap: {e}")
 
 # Meta Tag Injection Middleware for SEO
