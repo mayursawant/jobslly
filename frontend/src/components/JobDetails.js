@@ -309,7 +309,7 @@ const JobDetails = () => {
             </Card>
 
             {/* Bottom Apply Button */}
-            {!hasApplied && (
+            {!hasApplied && !job.is_archived && (
               <Card className="card mt-6">
                 <CardContent className="p-6">
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
