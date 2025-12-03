@@ -28,15 +28,20 @@ def update_sitemap():
         print(f"[{datetime.now()}] ❌ Error updating sitemap: {e}")
 
 if __name__ == "__main__":
-    print(f"[{datetime.now()}] Starting sitemap scheduler...")
-    print("Will update sitemap every hour")
+    print(f"[{datetime.now()}] Starting sitemap scheduler...", flush=True)
+    print("Will update sitemap every hour", flush=True)
+    
+    # Update immediately on start
+    update_sitemap()
     
     while True:
         try:
-            update_sitemap()
             # Wait 1 hour (3600 seconds)
-            print(f"[{datetime.now()}] Sleeping for 1 hour...")
+            print(f"[{datetime.now()}] Sleeping for 1 hour...", flush=True)
             time.sleep(3600)
+            
+            # Then update again
+            update_sitemap()
         except KeyboardInterrupt:
             print(f"\n[{datetime.now()}] Sitemap scheduler stopped")
             break
