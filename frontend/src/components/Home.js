@@ -266,6 +266,23 @@ const Home = () => {
     }
   };
 
+  const fetchFeaturedBlogs = async () => {
+    try {
+      const response = await axios.get(`${API}/blog?featured_only=true&limit=3`);
+      setFeaturedBlogs(response.data);
+    } catch (error) {
+      console.error('Error fetching featured blogs:', error);
+      // If no featured blogs, fetch latest blogs as fallback
+      try {
+        const fallbackResponse = await axios.get(`${API}/blog?limit=3`);
+        setFeaturedBlogs(fallbackResponse.data);
+      } catch (fallbackError) {
+        console.error('Error fetching fallback blogs:', fallbackError);
+      }
+    }
+  };
+
+
   const handleSearch = (e) => {
     e.preventDefault();
     navigate(`/jobs?search=${encodeURIComponent(searchTerm)}&location=${encodeURIComponent(searchLocation)}`);
