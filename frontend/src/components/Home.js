@@ -254,6 +254,17 @@ const Home = () => {
       
       // Enhanced stats for healthcare professionals
       setStats({
+
+
+  const fetchFeaturedBlogs = async () => {
+    try {
+      const response = await axios.get(`${API}/blog?featured=true&limit=3`);
+      setFeaturedBlogs(response.data);
+    } catch (error) {
+      console.error('Error fetching featured blogs:', error);
+    }
+  };
+
         jobs: response.data.length * 25,
         companies: Math.floor(response.data.length * 8.5),
         applications: response.data.length * 150,
