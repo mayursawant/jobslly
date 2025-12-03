@@ -10,12 +10,14 @@ from datetime import datetime
 def update_sitemap():
     """Run sitemap update script"""
     try:
-        print(f"[{datetime.now()}] Starting sitemap update...")
+        print(f"[{datetime.now()}] Starting sitemap update...", flush=True)
         result = subprocess.run(
             ['python3', '/app/backend/update_sitemap.py'],
             capture_output=True,
             text=True,
-            timeout=60
+            timeout=60,
+            cwd='/app/backend',
+            env={'PATH': '/usr/local/bin:/usr/bin:/bin', 'PYTHONPATH': '/app/backend'}
         )
         
         if result.returncode == 0:
