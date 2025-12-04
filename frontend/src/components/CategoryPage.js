@@ -7,6 +7,23 @@ import { Badge } from './ui/badge';
 import { Select } from './ui/select';
 import { MapPin, Briefcase, DollarSign, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 
+// Helper function to check if salary value should show currency symbol
+const shouldShowCurrency = (value) => {
+  if (!value) return false;
+  // Check if value contains any digit
+  return /\d/.test(value);
+};
+
+// Helper function to format salary with currency
+const formatSalary = (value, currency) => {
+  if (!value) return '';
+  if (shouldShowCurrency(value)) {
+    const symbol = currency === 'USD' ? '$' : '₹';
+    return `${symbol}${value}`;
+  }
+  return value; // Return as-is for pure text like "Negotiable"
+};
+
 const CategoryPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
