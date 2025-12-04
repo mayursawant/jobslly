@@ -40,6 +40,22 @@ async def update_sitemap():
         ('/sitemap/', '0.5', 'monthly'),
     ]
     
+    # Category pages
+    category_pages = [
+        ('/jobs/doctor', '0.9', 'daily'),
+        ('/jobs/nursing', '0.9', 'daily'),
+        ('/jobs/pharmacy', '0.9', 'daily'),
+        ('/jobs/dentist', '0.9', 'daily'),
+        ('/jobs/physiotherapy', '0.9', 'daily'),
+        ('/jobs/medical-lab-technician', '0.9', 'daily'),
+        ('/jobs/medical-science-liaison', '0.9', 'daily'),
+        ('/jobs/pharmacovigilance', '0.9', 'daily'),
+        ('/jobs/clinical-research', '0.9', 'daily'),
+        ('/jobs/non-clinical-jobs', '0.9', 'daily'),
+    ]
+    
+    static_pages.extend(category_pages)
+    
     for path, priority, changefreq in static_pages:
         url_elem = ET.SubElement(urlset, "url")
         ET.SubElement(url_elem, "loc").text = f"{base_url}{path}"
