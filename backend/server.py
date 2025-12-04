@@ -829,13 +829,24 @@ async def get_all_categories():
     categories_with_counts = []
     
     for slug, metadata in CATEGORY_METADATA.items():
-        # Count jobs in this category using DB mapping
-        db_categories = CATEGORY_DB_MAPPING.get(slug, [slug])
-        count = await db.jobs.count_documents({
-            "categories": {"$in": db_categories},
-            "is_approved": True,
-            "is_deleted": {"$ne": True}
-        })
+        # Check if this category uses title-based filtering
+        if slug in TITLE_BASED_CATEGORIES:
+            # Filter by job title keywords
+            title_keywords = TITLE_BASED_CATEGORIES[slug]
+            title_regex = "|".join(title_keywords)
+            count = await db.jobs.count_documents({
+                "title": {"$regex": title_regex, "$options": "i"},
+                "is_approved": True,
+                "is_deleted": {"$ne": True}
+            })
+        else:
+            # Count jobs in this category using DB mapping
+            db_categories = CATEGORY_DB_MAPPING.get(slug, [slug])
+            count = await db.jobs.count_documents({
+                "categories": {"$in": db_categories},
+                "is_approved": True,
+                "is_deleted": {"$ne": True}
+            })
         
         categories_with_counts.append({
             "slug": slug,
