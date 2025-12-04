@@ -114,11 +114,11 @@ const CategoryPage = () => {
 
       <div className="min-h-screen bg-gray-50">
         {/* Header Section */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-12">
+        <div className="bg-gradient-to-r from-green-600 to-green-800 text-white py-12">
           <div className="container mx-auto px-4">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">{categoryData.h1}</h1>
             <p className="text-lg md:text-xl opacity-90">
-              Find your dream job from {categoryData.job_count || 0} latest openings
+              Explore {categoryData.total_count || 0} job opportunities in {categoryData.name.replace(' Jobs', '')}
             </p>
           </div>
         </div>
