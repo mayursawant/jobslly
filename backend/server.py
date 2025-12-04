@@ -433,7 +433,7 @@ def generate_slug(title: str, company: str = None, location: str = None) -> str:
     """Generate SEO-friendly slug from job title, company, and location"""
     import re
     
-    def clean_text(text: str) -> str:
+    def clean_text(text: str, max_length: int = None) -> str:
         """Clean and convert text to slug format"""
         if not text:
             return ""
@@ -445,12 +445,17 @@ def generate_slug(title: str, company: str = None, location: str = None) -> str:
         text = re.sub(r'[\s-]+', '-', text)
         # Remove leading/trailing hyphens
         text = text.strip('-')
+        
+        # Truncate if too long
+        if max_length and len(text) > max_length:
+            text = text[:max_length].rsplit('-', 1)[0]  # Cut at word boundary
+        
         return text
     
-    # Clean each component
-    title_slug = clean_text(title)
-    company_slug = clean_text(company) if company else ""
-    location_slug = clean_text(location) if location else ""
+    # Clean each component with length limits
+    title_slug = clean_text(title, max_length=80)  # Max 80 chars for title
+    company_slug = clean_text(company, max_length=50) if company else ""  # Max 50 for company
+    location_slug = clean_text(location, max_length=40) if location else ""  # Max 40 for location
     
     # Build slug in format: [job-name]-job-at-[company-name]-in-[location]
     slug_parts = [title_slug]
@@ -463,9 +468,11 @@ def generate_slug(title: str, company: str = None, location: str = None) -> str:
     
     slug = "-".join(slug_parts)
     
-    # Ensure slug is not empty
+    # Ensure slug is not empty and not too long (max 200 chars total)
     if not slug:
         slug = "job"
+    elif len(slug) > 200:
+        slug = slug[:200].rsplit('-', 1)[0]  # Truncate at word boundary
     
     return slug
 
