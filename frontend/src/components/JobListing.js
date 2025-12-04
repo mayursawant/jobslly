@@ -257,6 +257,11 @@ const JobListing = () => {
                         <Badge className="bg-blue-100 text-blue-800 text-xs">
                           {job.job_type.replace('_', ' ').toUpperCase()}
                         </Badge>
+                        {job.is_archived && (
+                          <Badge className="bg-gray-100 text-gray-600 text-xs">
+                            ARCHIVED
+                          </Badge>
+                        )}
                         {job.salary_min && (
                           <span className="text-sm font-semibold text-green-600">
                             {formatSalary(job.salary_min, job.currency)}
