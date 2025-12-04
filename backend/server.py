@@ -736,6 +736,20 @@ async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True, c
     return [Job(**job) for job in jobs]
 
 
+# Map URL slugs to database category values
+CATEGORY_DB_MAPPING = {
+    "doctor": ["doctors", "doctor"],  # DB has "doctors" (plural)
+    "nursing": ["nurses", "nursing"],  # DB has "nurses" (plural)
+    "pharmacy": ["pharmacy", "pharmacists"],
+    "dentist": ["dentist", "dentists"],
+    "physiotherapy": ["physiotherapy", "physiotherapists"],
+    "medical-lab-technician": ["medical-lab-technician"],
+    "medical-science-liaison": ["medical-science-liaison"],
+    "pharmacovigilance": ["pharmacovigilance"],
+    "clinical-research": ["clinical-research"],
+    "non-clinical-jobs": ["non-clinical-jobs", "all"]
+}
+
 # Category metadata mapping
 CATEGORY_METADATA = {
     "doctor": {
