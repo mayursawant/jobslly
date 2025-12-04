@@ -162,7 +162,7 @@ const CategoryPage = () => {
                 <input
                   type="number"
                   placeholder="e.g. 5"
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   value={filters.experience}
                   onChange={(e) => handleFilterChange('experience', e.target.value)}
                 />
