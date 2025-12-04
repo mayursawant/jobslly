@@ -876,15 +876,22 @@ async def get_category_jobs(
     if category_slug not in CATEGORY_METADATA:
         raise HTTPException(status_code=404, detail="Category not found")
     
-    # Get database category values for this slug
-    db_categories = CATEGORY_DB_MAPPING.get(category_slug, [category_slug])
-    
-    # Build query
+    # Build base query
     query = {
-        "categories": {"$in": db_categories},
         "is_approved": True,
         "is_deleted": {"$ne": True}
     }
+    
+    # Check if this category uses title-based filtering
+    if category_slug in TITLE_BASED_CATEGORIES:
+        # Filter by job title keywords
+        title_keywords = TITLE_BASED_CATEGORIES[category_slug]
+        title_regex = "|".join(title_keywords)
+        query["title"] = {"$regex": title_regex, "$options": "i"}
+    else:
+        # Get database category values for this slug
+        db_categories = CATEGORY_DB_MAPPING.get(category_slug, [category_slug])
+        query["categories"] = {"$in": db_categories}
     
     # Add filters
     if location:
