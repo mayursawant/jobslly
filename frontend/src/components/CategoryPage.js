@@ -45,7 +45,7 @@ const CategoryPage = () => {
         throw new Error('Category not found');
       }
       const data = await response.json();
-      setCategoryData(data.category);
+      setCategoryData({ ...data.category, total_count: data.total_count });
       setJobs(data.jobs);
     } catch (error) {
       console.error('Error fetching category jobs:', error);
