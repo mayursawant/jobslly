@@ -8,9 +8,12 @@ import { Select } from './ui/select';
 import { MapPin, Briefcase, DollarSign, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const CategoryPage = () => {
-  const { category } = useParams();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  
+  // Extract category from URL path
+  const pathname = window.location.pathname;
+  const category = pathname.split('/jobs/')[1]?.replace(/\/$/, '') || '';
   
   const [categoryData, setCategoryData] = useState(null);
   const [jobs, setJobs] = useState([]);
