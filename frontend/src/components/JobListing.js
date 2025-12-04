@@ -124,6 +124,11 @@ const JobListing = () => {
   });
 
   const sortedJobs = [...filteredJobs].sort((a, b) => {
+    // ALWAYS keep archived jobs at the bottom, regardless of sort
+    if (a.is_archived && !b.is_archived) return 1;
+    if (!a.is_archived && b.is_archived) return -1;
+    
+    // If both archived or both not archived, sort by selected criteria
     switch (sortBy) {
       case 'salary_high':
         // Convert text to numbers for sorting, treat non-numeric as 0
