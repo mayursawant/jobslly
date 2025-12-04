@@ -213,7 +213,7 @@ const CategoryPage = () => {
                   >
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                       <div className="flex-1">
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2 hover:text-blue-600">
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2 hover:text-green-600">
                           {job.title}
                         </h3>
                         <p className="text-gray-700 font-medium mb-3">{job.company}</p>
