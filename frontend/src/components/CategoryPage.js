@@ -248,16 +248,11 @@ const CategoryPage = () => {
                               <span className="capitalize">{job.job_type.replace('_', ' ')}</span>
                             </div>
                           )}
-                          {(job.salary_min || job.salary_max) && (
-                            <div className="flex items-center gap-1">
-                              <DollarSign className="w-4 h-4" />
-                              <span>
-                                {job.salary_min && `₹${parseInt(job.salary_min).toLocaleString()}`}
-                                {job.salary_min && job.salary_max && ' - '}
-                                {job.salary_max && `₹${parseInt(job.salary_max).toLocaleString()}`}
-                                {job.currency && job.currency !== 'INR' && ` ${job.currency}`}
-                              </span>
-                            </div>
+                          {job.salary_min && (
+                            <span className="text-sm font-semibold text-green-600">
+                              {formatSalary(job.salary_min, job.currency)}
+                              {job.salary_max && ` - ${formatSalary(job.salary_max, job.currency)}`}
+                            </span>
                           )}
                           {job.experience_years !== null && (
                             <div className="flex items-center gap-1">
