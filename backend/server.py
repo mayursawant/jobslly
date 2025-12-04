@@ -1508,6 +1508,44 @@ async def restore_job(job_id: str, current_user: User = Depends(get_current_user
     
     return {"message": "Job restored successfully"}
 
+@api_router.post("/admin/jobs/{job_id}/regenerate-slug")
+async def regenerate_job_slug(job_id: str, current_user: User = Depends(get_current_user)):
+    """Manually regenerate slug for a job (use cautiously - will change URL)"""
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    job = await db.jobs.find_one({"id": job_id})
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Generate new slug
+    title = job.get('title', 'Job')
+    company = job.get('company', '')
+    location = job.get('location', '')
+    
+    old_slug = job.get('slug', '')
+    base_slug = generate_slug(title, company, location)
+    new_slug = await ensure_unique_slug(base_slug, job_id)
+    
+    # Update the slug
+    await db.jobs.update_one(
+        {"id": job_id},
+        {"$set": {"slug": new_slug, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    # Regenerate sitemap
+    regenerate_sitemap_async()
+    
+    return {
+        "message": "Slug regenerated successfully",
+        "old_slug": old_slug,
+        "new_slug": new_slug,
+        "old_url": f"/jobs/{old_slug}",
+        "new_url": f"/jobs/{new_slug}",
+        "warning": "Old URL will no longer work. Update any external links."
+    }
+
+
 # Public Blog Routes
 @api_router.get("/blog", response_model=List[BlogPost])
 async def get_blog_posts(featured_only: bool = False, limit: int = 10, skip: int = 0):
