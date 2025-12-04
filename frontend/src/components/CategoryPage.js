@@ -98,7 +98,7 @@ const CategoryPage = () => {
     return null;
   }
 
-  const totalPages = Math.ceil(categoryData.total_count / jobsPerPage);
+  const totalPages = categoryData ? Math.ceil(categoryData.total_count / jobsPerPage) : 0;
 
   return (
     <>
