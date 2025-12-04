@@ -856,9 +856,12 @@ async def get_category_jobs(
     if category_slug not in CATEGORY_METADATA:
         raise HTTPException(status_code=404, detail="Category not found")
     
+    # Get database category values for this slug
+    db_categories = CATEGORY_DB_MAPPING.get(category_slug, [category_slug])
+    
     # Build query
     query = {
-        "categories": category_slug,
+        "categories": {"$in": db_categories},
         "is_approved": True,
         "is_deleted": {"$ne": True}
     }
