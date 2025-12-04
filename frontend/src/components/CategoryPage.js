@@ -187,7 +187,7 @@ const CategoryPage = () => {
           {/* Jobs List */}
           <div className="mb-8">
             <p className="text-gray-600 mb-6">
-              Showing {jobs.length} of {categoryData.job_count || 0} jobs
+              Showing {jobs.length} of {categoryData.total_count || 0} jobs
             </p>
 
             {jobs.length === 0 ? (
