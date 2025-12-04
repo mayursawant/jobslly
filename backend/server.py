@@ -429,17 +429,44 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     return encoded_jwt
 
 
-def generate_slug(title: str) -> str:
-    """Generate SEO-friendly slug from job title"""
+def generate_slug(title: str, company: str = None, location: str = None) -> str:
+    """Generate SEO-friendly slug from job title, company, and location"""
     import re
-    # Convert to lowercase and replace spaces with hyphens
-    slug = title.lower()
-    # Remove special characters
-    slug = re.sub(r'[^a-z0-9\s-]', '', slug)
-    # Replace spaces and multiple hyphens with single hyphen
-    slug = re.sub(r'[\s-]+', '-', slug)
-    # Remove leading/trailing hyphens
-    slug = slug.strip('-')
+    
+    def clean_text(text: str) -> str:
+        """Clean and convert text to slug format"""
+        if not text:
+            return ""
+        # Convert to lowercase
+        text = text.lower()
+        # Remove special characters, keep only alphanumeric, spaces, and hyphens
+        text = re.sub(r'[^a-z0-9\s-]', '', text)
+        # Replace spaces and multiple hyphens with single hyphen
+        text = re.sub(r'[\s-]+', '-', text)
+        # Remove leading/trailing hyphens
+        text = text.strip('-')
+        return text
+    
+    # Clean each component
+    title_slug = clean_text(title)
+    company_slug = clean_text(company) if company else ""
+    location_slug = clean_text(location) if location else ""
+    
+    # Build slug in format: [job-name]-job-at-[company-name]-in-[location]
+    slug_parts = [title_slug]
+    
+    if company_slug:
+        slug_parts.extend(["job-at", company_slug])
+    
+    if location_slug:
+        slug_parts.extend(["in", location_slug])
+    
+    slug = "-".join(slug_parts)
+    
+    # Ensure slug is not empty
+    if not slug:
+        slug = "job"
+    
     return slug
 
 async def ensure_unique_slug(base_slug: str, job_id: str = None) -> str:
