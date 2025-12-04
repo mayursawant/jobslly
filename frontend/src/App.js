@@ -30,6 +30,7 @@ import Sitemap from './components/Sitemap';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import CookiePolicy from './components/CookiePolicy';
+import CategoryPage from './components/CategoryPage';
 import { Toaster } from './components/ui/sonner';
 import { Helmet } from 'react-helmet';
 
