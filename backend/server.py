@@ -750,6 +750,15 @@ CATEGORY_DB_MAPPING = {
     "non-clinical-jobs": ["non-clinical-jobs", "all"]
 }
 
+# Categories that should filter by job title instead of category field
+TITLE_BASED_CATEGORIES = {
+    "medical-lab-technician": ["medical lab technician", "mlt", "lab technician"],
+    "medical-science-liaison": ["medical science liaison", "msl"],
+    "pharmacovigilance": ["pharmacovigilance", "drug safety", "pv specialist", "pv associate"],
+    "clinical-research": ["clinical research", "clinical trial", "cra", "crc", "clinical data"],
+    "non-clinical-jobs": ["non clinical", "admin", "hr", "manager", "operations", "marketing"]
+}
+
 # Category metadata mapping
 CATEGORY_METADATA = {
     "doctor": {
