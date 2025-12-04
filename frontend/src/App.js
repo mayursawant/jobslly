@@ -246,6 +246,19 @@ function App() {
               {/* Jobs - Support both with and without trailing slash */}
               <Route path="/jobs" element={<JobListing />} />
               <Route path="/jobs/" element={<JobListing />} />
+              
+              {/* Category Pages - Must come before job details to avoid conflicts */}
+              <Route path="/jobs/doctor" element={<CategoryPage />} />
+              <Route path="/jobs/nursing" element={<CategoryPage />} />
+              <Route path="/jobs/pharmacy" element={<CategoryPage />} />
+              <Route path="/jobs/dentist" element={<CategoryPage />} />
+              <Route path="/jobs/physiotherapy" element={<CategoryPage />} />
+              <Route path="/jobs/medical-lab-technician" element={<CategoryPage />} />
+              <Route path="/jobs/medical-science-liaison" element={<CategoryPage />} />
+              <Route path="/jobs/pharmacovigilance" element={<CategoryPage />} />
+              <Route path="/jobs/clinical-research" element={<CategoryPage />} />
+              <Route path="/jobs/non-clinical-jobs" element={<CategoryPage />} />
+              
               <Route path="/jobs/:jobId" element={<JobDetails />} />
               <Route path="/jobs/:jobId/" element={<JobDetails />} />
               
