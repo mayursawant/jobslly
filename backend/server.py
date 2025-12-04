@@ -1411,15 +1411,9 @@ async def update_job_admin(
     update_data = job_data.dict(exclude_unset=True)
     update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
     
-    # Regenerate slug if title, company, or location is being updated
-    if 'title' in update_data or 'company' in update_data or 'location' in update_data:
-        # Get current values for fields not being updated
-        title = update_data.get('title', existing_job.get('title'))
-        company = update_data.get('company', existing_job.get('company'))
-        location = update_data.get('location', existing_job.get('location'))
-        
-        base_slug = generate_slug(title, company, location)
-        update_data['slug'] = await ensure_unique_slug(base_slug, job_id)
+    # DO NOT regenerate slug on edit to preserve existing URLs and SEO
+    # The slug is generated only once during job creation
+    # This prevents breaking external links, bookmarks, and search engine indexing
     
     await db.jobs.update_one(
         {"id": job_id},
