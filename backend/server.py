@@ -735,6 +735,175 @@ async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True, c
     
     return [Job(**job) for job in jobs]
 
+
+# Category metadata mapping
+CATEGORY_METADATA = {
+    "doctor": {
+        "name": "Doctor Jobs",
+        "seo_title": "[Number] Doctor Jobs in India | Latest Openings | Jobslly",
+        "meta_description": "Search [Number] doctor jobs across top hospitals and clinics in India. Apply for the latest physician, specialist, and medical officer openings with Jobslly.",
+        "h1": "[Number] Doctor Jobs in India – Latest Openings"
+    },
+    "nursing": {
+        "name": "Nursing Jobs",
+        "seo_title": "[Number] Nursing Jobs in India | Apply Today | Jobslly",
+        "meta_description": "Explore [Number] nursing jobs in leading hospitals and healthcare centers across India. Apply today for staff nurse, GNM, and RN vacancies with Jobslly.",
+        "h1": "[Number] Nursing Jobs in India – Latest Openings"
+    },
+    "pharmacy": {
+        "name": "Pharmacy Jobs",
+        "seo_title": "[Number] Pharmacy Jobs in India | Latest Pharma Openings | Jobslly",
+        "meta_description": "Find [Number] pharmacy jobs in top pharma companies, hospitals, and medical stores across India. Apply for pharmacist and pharma career roles with Jobslly.",
+        "h1": "[Number] Pharmacy Jobs in India – Latest Openings"
+    },
+    "dentist": {
+        "name": "Dentist Jobs",
+        "seo_title": "[Number] Dentist Jobs in Hospitals & Dental Clinics in India | Jobslly",
+        "meta_description": "Browse [number] dentist jobs in hospitals and dental clinics across India. Apply for the latest dental vacancies and grow your career with Jobslly today.",
+        "h1": "[Number] Dentist Jobs in India – Latest Openings"
+    },
+    "physiotherapy": {
+        "name": "Physiotherapy Jobs",
+        "seo_title": "[Number] Physiotherapy Jobs in Hospitals & Rehab Centers | Jobslly",
+        "meta_description": "Explore [number] physiotherapy jobs in hospitals and rehab centers across India. Apply for the latest physiotherapist openings with Jobslly.",
+        "h1": "[Number] Physiotherapy Jobs in India – Latest Openings"
+    },
+    "medical-lab-technician": {
+        "name": "Medical Lab Technician",
+        "seo_title": "[Number] Medical Lab Technician Jobs in Diagnostic Centers | Jobslly",
+        "meta_description": "Find [number] medical lab technician jobs in top diagnostic centers across India. Apply for latest MLT vacancies and start your career today.",
+        "h1": "[Number] Medical Lab Technician Jobs in India – Latest Openings"
+    },
+    "medical-science-liaison": {
+        "name": "Medical Science Liaison",
+        "seo_title": "[Number] Medical Science Liaison Jobs in Pharma Companies | Jobslly",
+        "meta_description": "Discover [number] medical science liaison jobs in leading pharma companies across India. Apply now for MSL roles with Jobslly.",
+        "h1": "[Number] Medical Science Liaison Jobs in India – Latest Openings"
+    },
+    "pharmacovigilance": {
+        "name": "Pharmacovigilance",
+        "seo_title": "[Number] Pharmacovigilance Jobs in Pharma & CRO Companies | Jobslly",
+        "meta_description": "Search [number] pharmacovigilance jobs in pharma and CRO companies across India. Apply for drug safety and PV roles with Jobslly.",
+        "h1": "[Number] Pharmacovigilance Jobs in India – Latest Openings"
+    },
+    "clinical-research": {
+        "name": "Clinical Research",
+        "seo_title": "[Number] Clinical Research Jobs in CROs & Research Organizations | Jobslly",
+        "meta_description": "Browse [number] clinical research jobs in CROs and research organizations across India. Apply for CRA and CRC positions with Jobslly.",
+        "h1": "[Number] Clinical Research Jobs in India – Latest Openings"
+    },
+    "non-clinical-jobs": {
+        "name": "Non Clinical Jobs",
+        "seo_title": "[Number] Non-Clinical Healthcare Jobs in Hospitals & Corporate | Jobslly",
+        "meta_description": "Explore [number] non-clinical healthcare jobs in hospitals and corporate offices across India. Apply for admin, HR, and management roles.",
+        "h1": "[Number] Non-Clinical Healthcare Jobs in India – Latest Openings"
+    }
+}
+
+@api_router.get("/categories")
+async def get_all_categories():
+    """Get all available job categories with job counts"""
+    categories_with_counts = []
+    
+    for slug, metadata in CATEGORY_METADATA.items():
+        # Count jobs in this category
+        count = await db.jobs.count_documents({
+            "categories": slug,
+            "is_approved": True,
+            "is_deleted": {"$ne": True}
+        })
+        
+        categories_with_counts.append({
+            "slug": slug,
+            "name": metadata["name"],
+            "job_count": count,
+            "seo_title": metadata["seo_title"].replace("[Number]", str(count)).replace("[number]", str(count)),
+            "meta_description": metadata["meta_description"].replace("[Number]", str(count)).replace("[number]", str(count)),
+            "h1": metadata["h1"].replace("[Number]", str(count)).replace("[Category Name]", metadata["name"].replace(" Jobs", ""))
+        })
+    
+    return categories_with_counts
+
+@api_router.get("/categories/{category_slug}")
+async def get_category_jobs(
+    category_slug: str,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
+    location: str = Query(None),
+    job_type: str = Query(None),
+    experience: str = Query(None),
+    salary_min: int = Query(None),
+    salary_max: int = Query(None)
+):
+    """Get jobs for a specific category with filters and pagination"""
+    
+    # Validate category exists
+    if category_slug not in CATEGORY_METADATA:
+        raise HTTPException(status_code=404, detail="Category not found")
+    
+    # Build query
+    query = {
+        "categories": category_slug,
+        "is_approved": True,
+        "is_deleted": {"$ne": True}
+    }
+    
+    # Add filters
+    if location:
+        query["location"] = {"$regex": location, "$options": "i"}
+    
+    if job_type:
+        query["job_type"] = job_type
+    
+    if experience:
+        query["experience_years"] = {"$lte": int(experience)}
+    
+    if salary_min or salary_max:
+        salary_query = {}
+        if salary_min:
+            salary_query["$gte"] = salary_min
+        if salary_max:
+            salary_query["$lte"] = salary_max
+        query["salary_max"] = salary_query
+    
+    # Get total count for pagination
+    total_count = await db.jobs.count_documents(query)
+    
+    # Get jobs
+    jobs = await db.jobs.find(query).sort([("created_at", -1), ("is_archived", 1)]).skip(skip).limit(limit).to_list(length=None)
+    
+    # Process jobs
+    for job in jobs:
+        if isinstance(job.get('created_at'), str):
+            job['created_at'] = datetime.fromisoformat(job['created_at'])
+        if job.get('expires_at') and isinstance(job.get('expires_at'), str):
+            job['expires_at'] = datetime.fromisoformat(job['expires_at'])
+        
+        # Convert integer salaries to strings
+        if job.get('salary_min') is not None and isinstance(job.get('salary_min'), int):
+            job['salary_min'] = str(job['salary_min'])
+        if job.get('salary_max') is not None and isinstance(job.get('salary_max'), int):
+            job['salary_max'] = str(job['salary_max'])
+    
+    # Get category metadata with dynamic count
+    metadata = CATEGORY_METADATA[category_slug].copy()
+    metadata["seo_title"] = metadata["seo_title"].replace("[Number]", str(total_count)).replace("[number]", str(total_count))
+    metadata["meta_description"] = metadata["meta_description"].replace("[Number]", str(total_count)).replace("[number]", str(total_count))
+    metadata["h1"] = metadata["h1"].replace("[Number]", str(total_count)).replace("[Category Name]", metadata["name"].replace(" Jobs", ""))
+    
+    return {
+        "category": {
+            "slug": category_slug,
+            "name": metadata["name"],
+            **metadata
+        },
+        "jobs": [Job(**job) for job in jobs],
+        "total_count": total_count,
+        "page": skip // limit + 1,
+        "total_pages": (total_count + limit - 1) // limit,
+        "has_more": skip + limit < total_count
+    }
+
 @api_router.get("/jobs/{job_identifier}")
 async def get_job(job_identifier: str, authorization: str = Header(None)):
     # Try to find by slug first, then by ID (backward compatibility)
