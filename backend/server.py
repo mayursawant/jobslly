@@ -1048,8 +1048,8 @@ async def admin_create_job(job_data: JobCreate, current_user: User = Depends(get
     
     job = Job(**job_data.dict(), employer_id=current_user.id, is_approved=True)
     
-    # Generate unique slug from title
-    base_slug = generate_slug(job.title)
+    # Generate unique slug from title, company, and location
+    base_slug = generate_slug(job.title, job.company, job.location)
     job.slug = await ensure_unique_slug(base_slug)
     
     job_dict = job.dict()
