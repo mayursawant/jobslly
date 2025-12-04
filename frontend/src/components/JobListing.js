@@ -258,7 +258,10 @@ const JobListing = () => {
                           {job.job_type.replace('_', ' ').toUpperCase()}
                         </Badge>
                         {job.is_archived && (
-                          <Badge className="bg-gray-100 text-gray-600 text-xs">
+                          <Badge className="bg-red-100 text-red-700 text-xs flex items-center gap-1">
+                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clipRule="evenodd" />
+                            </svg>
                             ARCHIVED
                           </Badge>
                         )}
