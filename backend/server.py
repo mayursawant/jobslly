@@ -429,8 +429,8 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     return encoded_jwt
 
 
-def generate_slug(title: str, company: str = None, location: str = None) -> str:
-    """Generate SEO-friendly slug from job title, company, and location"""
+def generate_slug(title: str, company: str = None, location: str = None, job_id: str = None) -> str:
+    """Generate SEO-friendly slug from job title, company, location, and job ID"""
     import re
     
     def clean_text(text: str, max_length: int = None) -> str:
@@ -457,7 +457,7 @@ def generate_slug(title: str, company: str = None, location: str = None) -> str:
     company_slug = clean_text(company, max_length=50) if company else ""  # Max 50 for company
     location_slug = clean_text(location, max_length=40) if location else ""  # Max 40 for location
     
-    # Build slug in format: [job-name]-job-at-[company-name]-in-[location]
+    # Build slug in format: [job-name]-job-at-[company-name]-in-[location]-[id]
     slug_parts = [title_slug]
     
     if company_slug:
@@ -466,13 +466,20 @@ def generate_slug(title: str, company: str = None, location: str = None) -> str:
     if location_slug:
         slug_parts.extend(["in", location_slug])
     
+    # Add job ID at the end for uniqueness (first 8 characters)
+    if job_id:
+        slug_parts.append(job_id[:8])
+    
     slug = "-".join(slug_parts)
     
     # Ensure slug is not empty and not too long (max 200 chars total)
     if not slug:
-        slug = "job"
+        slug = f"job-{job_id[:8]}" if job_id else "job"
     elif len(slug) > 200:
         slug = slug[:200].rsplit('-', 1)[0]  # Truncate at word boundary
+        # Re-add the ID at the end after truncation
+        if job_id:
+            slug = f"{slug}-{job_id[:8]}"
     
     return slug
 
