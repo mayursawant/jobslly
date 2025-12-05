@@ -15,21 +15,29 @@ async def get_job_meta(db, job_slug):
         "slug": job_slug,
         "is_approved": True,
         "is_deleted": {"$ne": True}
-    })
+    }, {"_id": 0})
     
     if not job:
         return None
     
-    title = f"{job['title']} - {job.get('company', 'Healthcare Jobs')} | Jobslly"
-    description = job.get('description', '')[:160] + '...' if job.get('description') else f"Apply for {job['title']} position in {job.get('location', 'Multiple Locations')}. Find your dream healthcare career at Jobslly."
+    # Format: [Job Name] Job at [Company Name] in [Location] | Jobslly
+    job_title = job.get('title', 'Job')
+    company = job.get('company', 'Top Company')
+    location = job.get('location', 'Multiple Locations')
+    
+    title = f"{job_title} Job at {company} in {location} | Jobslly"
+    
+    # Format: Apply for the [Job Name] job at [Company Name] in [Location]. View eligibility, salary, skills, and apply online on Jobslly. Get job assistance and expert help to land this role.
+    description = f"Apply for the {job_title} job at {company} in {location}. View eligibility, salary, skills, and apply online on Jobslly. Get job assistance and expert help to land this role."
     
     return {
         'title': title,
         'description': description,
-        'og_title': job['title'],
+        'og_title': f"{job_title} at {company}",
         'og_description': description,
         'og_type': 'article',
-        'keywords': f"{job['title']}, {job.get('company', '')}, {job.get('location', '')}, healthcare jobs, medical careers"
+        'keywords': f"{job_title}, {company}, {location}, healthcare jobs, medical careers, job opportunities",
+        'job_data': job  # Include full job data for server-side rendering
     }
 
 async def get_blog_meta(db, blog_slug):
