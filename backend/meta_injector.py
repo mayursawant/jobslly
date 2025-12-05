@@ -62,18 +62,99 @@ async def get_blog_meta(db, blog_slug):
         'keywords': ', '.join(blog.get('seo_keywords', []) + [blog.get('category', 'healthcare')])
     }
 
+def generate_job_html_content(job):
+    """Generate server-side rendered HTML for job content (SEO-friendly)"""
+    job_title = job.get('title', 'Job Opening')
+    company = job.get('company', 'Company')
+    location = job.get('location', 'Location')
+    description = job.get('description', 'No description available')
+    salary_min = job.get('salary_min', '')
+    salary_max = job.get('salary_max', '')
+    currency = job.get('currency', 'INR')
+    job_type = job.get('job_type', 'full_time').replace('_', ' ').title()
+    
+    # Format salary
+    salary_text = ''
+    if salary_min and salary_max:
+        salary_text = f"{currency} {salary_min} - {salary_max}"
+    elif salary_min:
+        salary_text = f"{currency} {salary_min}+"
+    elif salary_max:
+        salary_text = f"Up to {currency} {salary_max}"
+    else:
+        salary_text = "Competitive Salary"
+    
+    # Get categories/skills
+    categories = job.get('categories', [])
+    skills_html = ''
+    if categories:
+        skills_html = '<div class="job-skills"><h3>Categories</h3><ul>'
+        for cat in categories:
+            skills_html += f'<li>{cat}</li>'
+        skills_html += '</ul></div>'
+    
+    # Get requirements
+    requirements = job.get('requirements', [])
+    requirements_html = ''
+    if requirements:
+        requirements_html = '<div class="job-requirements"><h3>Requirements</h3><ul>'
+        for req in requirements:
+            requirements_html += f'<li>{req}</li>'
+        requirements_html += '</ul></div>'
+    
+    # Get benefits
+    benefits = job.get('benefits', [])
+    benefits_html = ''
+    if benefits:
+        benefits_html = '<div class="job-benefits"><h3>Benefits</h3><ul>'
+        for benefit in benefits:
+            benefits_html += f'<li>{benefit}</li>'
+        benefits_html += '</ul></div>'
+    
+    # Generate full HTML (hidden but crawlable)
+    ssr_content = f'''
+    <div id="ssr-job-content" style="display:none;" itemscope itemtype="https://schema.org/JobPosting">
+        <h1 itemprop="title">{job_title}</h1>
+        <div class="job-company" itemprop="hiringOrganization" itemscope itemtype="https://schema.org/Organization">
+            <span itemprop="name">{company}</span>
+        </div>
+        <div class="job-location" itemprop="jobLocation" itemscope itemtype="https://schema.org/Place">
+            <span itemprop="address">{location}</span>
+        </div>
+        <div class="job-salary" itemprop="baseSalary">
+            <span>{salary_text}</span>
+        </div>
+        <div class="job-type">
+            <span itemprop="employmentType">{job_type}</span>
+        </div>
+        <div class="job-description" itemprop="description">
+            <h2>Job Description</h2>
+            <p>{description}</p>
+        </div>
+        {skills_html}
+        {requirements_html}
+        {benefits_html}
+        <div class="job-apply">
+            <a href="/jobs/{job.get('slug', '')}" class="apply-button">Apply Now</a>
+        </div>
+    </div>
+    '''
+    return ssr_content
+
 async def inject_meta_tags(html_content, path):
-    """Inject dynamic meta tags into HTML based on path"""
+    """Inject dynamic meta tags and SSR content into HTML based on path"""
     client = AsyncIOMotorClient(MONGO_URL)
     db = client[DB_NAME]
     
     meta_data = None
+    is_job_page = False
     
     # Detect page type from path
     if path.startswith('/jobs/') and path != '/jobs/' and path != '/jobs':
         # Job detail page
         slug = path.replace('/jobs/', '').strip('/')
         meta_data = await get_job_meta(db, slug)
+        is_job_page = True
     
     elif path.startswith('/blogs/') and path != '/blogs/' and path != '/blogs':
         # Blog detail page
@@ -89,43 +170,29 @@ async def inject_meta_tags(html_content, path):
     html_content = re.sub(
         r'<title>.*?</title>',
         f'<title>{meta_data["title"]}</title>',
-        html_content
+        html_content,
+        count=1
     )
     
-    # Replace/add meta description
-    if 'description' in meta_data:
-        # Try to replace existing
-        html_content = re.sub(
-            r'<meta name="description" content=".*?" />',
-            f'<meta name="description" content="{meta_data["description"]}" />',
-            html_content
-        )
+    # Prepare meta tags to inject in head
+    meta_tags = f'''
+    <meta name="description" content="{meta_data["description"]}" />
+    <meta name="keywords" content="{meta_data["keywords"]}" />
+    <meta property="og:title" content="{meta_data["og_title"]}" />
+    <meta property="og:description" content="{meta_data["og_description"]}" />
+    <meta property="og:type" content="{meta_data["og_type"]}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{meta_data["og_title"]}" />
+    <meta name="twitter:description" content="{meta_data["og_description"]}" />
+    '''
     
-    # Replace/add meta keywords
-    if 'keywords' in meta_data:
-        html_content = re.sub(
-            r'<meta name="keywords" content=".*?" />',
-            f'<meta name="keywords" content="{meta_data["keywords"]}" />',
-            html_content
-        )
+    # Inject meta tags into <head> before </head>
+    html_content = html_content.replace('</head>', f'{meta_tags}</head>', 1)
     
-    # Replace/add OG tags
-    html_content = re.sub(
-        r'<meta property="og:title" content=".*?" />',
-        f'<meta property="og:title" content="{meta_data["og_title"]}" />',
-        html_content
-    )
-    
-    html_content = re.sub(
-        r'<meta property="og:description" content=".*?" />',
-        f'<meta property="og:description" content="{meta_data["og_description"]}" />',
-        html_content
-    )
-    
-    html_content = re.sub(
-        r'<meta property="og:type" content=".*?" />',
-        f'<meta property="og:type" content="{meta_data["og_type"]}" />',
-        html_content
-    )
+    # For job pages, inject server-side rendered content
+    if is_job_page and 'job_data' in meta_data:
+        job_html = generate_job_html_content(meta_data['job_data'])
+        # Inject SSR content right after <body> tag
+        html_content = html_content.replace('<body>', f'<body>{job_html}', 1)
     
     return html_content
