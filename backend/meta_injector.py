@@ -178,34 +178,40 @@ def generate_job_html_content(job):
 async def inject_meta_tags(html_content, path):
     """Inject dynamic meta tags and SSR content into HTML based on path"""
     # Create MongoDB client with proper connection settings
-    if not MONGO_URL:
+    if not MONGO_URL or not DB_NAME:
         return html_content
     
-    client = AsyncIOMotorClient(
-        MONGO_URL,
-        tlsAllowInvalidCertificates=True,
-        serverSelectionTimeoutMS=30000,
-        connectTimeoutMS=30000,
-        socketTimeoutMS=30000
-    )
-    db = client[DB_NAME]
-    
-    meta_data = None
-    is_job_page = False
-    
-    # Detect page type from path
-    if path.startswith('/jobs/') and path != '/jobs/' and path != '/jobs':
-        # Job detail page
-        slug = path.replace('/jobs/', '').strip('/')
-        meta_data = await get_job_meta(db, slug)
-        is_job_page = True
-    
-    elif path.startswith('/blogs/') and path != '/blogs/' and path != '/blogs':
-        # Blog detail page
-        slug = path.replace('/blogs/', '').strip('/')
-        meta_data = await get_blog_meta(db, slug)
-    
-    client.close()
+    try:
+        client = AsyncIOMotorClient(
+            MONGO_URL,
+            tlsAllowInvalidCertificates=True,
+            serverSelectionTimeoutMS=30000,
+            connectTimeoutMS=30000,
+            socketTimeoutMS=30000
+        )
+        db = client[DB_NAME]
+        
+        meta_data = None
+        is_job_page = False
+        
+        # Detect page type from path
+        if path.startswith('/jobs/') and path != '/jobs/' and path != '/jobs':
+            # Job detail page
+            slug = path.replace('/jobs/', '').strip('/')
+            meta_data = await get_job_meta(db, slug)
+            is_job_page = True
+        
+        elif path.startswith('/blogs/') and path != '/blogs/' and path != '/blogs':
+            # Blog detail page
+            slug = path.replace('/blogs/', '').strip('/')
+            meta_data = await get_blog_meta(db, slug)
+        
+        client.close()
+        
+    except Exception as e:
+        # Log error but don't crash - return original HTML
+        print(f"Meta injection error: {e}")
+        return html_content
     
     if not meta_data:
         return html_content
