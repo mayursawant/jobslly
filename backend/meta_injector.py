@@ -241,7 +241,7 @@ async def inject_meta_tags(html_content, path):
     
     html_content = re.sub(
         r'<meta property="og:type" content=".*?"[^>]*>',
-        f'<meta property="og:type" content="{meta_data["og_type"]}"/>',
+        f'<meta property="og:type" content="{html.escape(meta_data["og_type"])}"/>',
         html_content,
         count=1
     )
@@ -249,14 +249,14 @@ async def inject_meta_tags(html_content, path):
     # Replace Twitter card tags
     html_content = re.sub(
         r'<meta name="twitter:title" content=".*?"[^>]*>',
-        f'<meta name="twitter:title" content="{meta_data["og_title"]}"/>',
+        f'<meta name="twitter:title" content="{safe_og_title}"/>',
         html_content,
         count=1
     )
     
     html_content = re.sub(
         r'<meta name="twitter:description" content=".*?"[^>]*>',
-        f'<meta name="twitter:description" content="{meta_data["og_description"]}"/>',
+        f'<meta name="twitter:description" content="{safe_og_description}"/>',
         html_content,
         count=1
     )
