@@ -1278,9 +1278,8 @@ async def admin_create_job(job_data: JobCreate, current_user: User = Depends(get
     logging.info(f"[ADMIN_CREATE_JOB] Generated slug: {job.slug}")
     
     job_dict = job.dict()
-    job_dict['created_at'] = job_dict['created_at'].isoformat()
-    if job_dict.get('expires_at'):
-        job_dict['expires_at'] = job_dict['expires_at'].isoformat()
+    # Keep datetime objects as-is for MongoDB - do NOT convert to isoformat
+    # MongoDB natively supports datetime objects and the app expects them for proper sorting
     
     logging.info(f"[ADMIN_CREATE_JOB] About to insert into database...")
     
