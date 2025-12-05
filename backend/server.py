@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File, Form, Header, Request
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File, Form, Header, Request, Query
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.responses import Response, PlainTextResponse, RedirectResponse
 from dotenv import load_dotenv
@@ -429,17 +429,51 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     return encoded_jwt
 
 
-def generate_slug(title: str) -> str:
-    """Generate SEO-friendly slug from job title"""
+def generate_slug(title: str, company: str = None, location: str = None) -> str:
+    """Generate SEO-friendly slug from job title, company, and location"""
     import re
-    # Convert to lowercase and replace spaces with hyphens
-    slug = title.lower()
-    # Remove special characters
-    slug = re.sub(r'[^a-z0-9\s-]', '', slug)
-    # Replace spaces and multiple hyphens with single hyphen
-    slug = re.sub(r'[\s-]+', '-', slug)
-    # Remove leading/trailing hyphens
-    slug = slug.strip('-')
+    
+    def clean_text(text: str, max_length: int = None) -> str:
+        """Clean and convert text to slug format"""
+        if not text:
+            return ""
+        # Convert to lowercase
+        text = text.lower()
+        # Remove special characters, keep only alphanumeric, spaces, and hyphens
+        text = re.sub(r'[^a-z0-9\s-]', '', text)
+        # Replace spaces and multiple hyphens with single hyphen
+        text = re.sub(r'[\s-]+', '-', text)
+        # Remove leading/trailing hyphens
+        text = text.strip('-')
+        
+        # Truncate if too long
+        if max_length and len(text) > max_length:
+            text = text[:max_length].rsplit('-', 1)[0]  # Cut at word boundary
+        
+        return text
+    
+    # Clean each component with length limits
+    title_slug = clean_text(title, max_length=80)  # Max 80 chars for title
+    company_slug = clean_text(company, max_length=50) if company else ""  # Max 50 for company
+    location_slug = clean_text(location, max_length=40) if location else ""  # Max 40 for location
+    
+    # Build slug in format: [job-name]-job-at-[company-name]-in-[location]
+    slug_parts = [title_slug]
+    
+    if company_slug:
+        slug_parts.extend(["job-at", company_slug])
+    
+    if location_slug:
+        slug_parts.extend(["in", location_slug])
+    
+    slug = "-".join(slug_parts)
+    
+    # Ensure slug is not empty and not too long (max 200 chars total)
+    if not slug:
+        slug = "job"
+    elif len(slug) > 200:
+        slug = slug[:200].rsplit('-', 1)[0]  # Truncate at word boundary
+    
     return slug
 
 async def ensure_unique_slug(base_slug: str, job_id: str = None) -> str:
@@ -660,8 +694,8 @@ async def create_job(job_data: JobCreate, current_user: User = Depends(get_curre
     
     job = Job(**job_data.dict(), employer_id=current_user.id)
     
-    # Generate unique slug from title
-    base_slug = generate_slug(job.title)
+    # Generate unique slug from title, company, and location
+    base_slug = generate_slug(job.title, job.company, job.location)
     job.slug = await ensure_unique_slug(base_slug)
     
     job_dict = job.dict()
@@ -684,8 +718,8 @@ async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True, c
     if category:
         query["categories"] = category
     
-    # Sort: Non-archived jobs first (is_archived: 0), then by created_at descending (newest first)
-    jobs = await db.jobs.find(query).sort([("is_archived", 1), ("created_at", -1)]).skip(skip).limit(limit).to_list(length=None)
+    # Sort: By created_at descending (newest first), then archived jobs at end
+    jobs = await db.jobs.find(query).sort([("created_at", -1), ("is_archived", 1)]).skip(skip).limit(limit).to_list(length=None)
     
     for job in jobs:
         if isinstance(job.get('created_at'), str):
@@ -700,6 +734,220 @@ async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True, c
             job['salary_max'] = str(job['salary_max'])
     
     return [Job(**job) for job in jobs]
+
+
+# Map URL slugs to database category values
+CATEGORY_DB_MAPPING = {
+    "doctor": ["doctors", "doctor"],  # DB has "doctors" (plural)
+    "nursing": ["nurses", "nursing"],  # DB has "nurses" (plural)
+    "pharmacy": ["pharmacy", "pharmacists"],
+    "dentist": ["dentist", "dentists"],
+    "physiotherapy": ["physiotherapy", "physiotherapists"],
+    "medical-lab-technician": ["medical-lab-technician"],
+    "medical-science-liaison": ["medical-science-liaison"],
+    "pharmacovigilance": ["pharmacovigilance"],
+    "clinical-research": ["clinical-research"],
+    "non-clinical-jobs": ["non-clinical-jobs", "all"]
+}
+
+# Categories that should filter by job title instead of category field
+TITLE_BASED_CATEGORIES = {
+    "medical-lab-technician": ["medical lab technician", "mlt", "lab technician"],
+    "medical-science-liaison": ["medical science liaison", "msl"],
+    "pharmacovigilance": ["pharmacovigilance", "drug safety", "pv specialist", "pv associate"],
+    "clinical-research": ["clinical research", "clinical trial", "cra", "crc", "clinical data"],
+    "non-clinical-jobs": ["non clinical", "admin", "hr", "manager", "operations", "marketing"]
+}
+
+# Category metadata mapping
+CATEGORY_METADATA = {
+    "doctor": {
+        "name": "Doctor Jobs",
+        "seo_title": "[Number] Doctor Jobs in India | Latest Openings | Jobslly",
+        "meta_description": "Search [Number] doctor jobs across top hospitals and clinics in India. Apply for the latest physician, specialist, and medical officer openings with Jobslly.",
+        "h1": "[Number] Doctor Jobs in India – Latest Openings"
+    },
+    "nursing": {
+        "name": "Nursing Jobs",
+        "seo_title": "[Number] Nursing Jobs in India | Apply Today | Jobslly",
+        "meta_description": "Explore [Number] nursing jobs in leading hospitals and healthcare centers across India. Apply today for staff nurse, GNM, and RN vacancies with Jobslly.",
+        "h1": "[Number] Nursing Jobs in India – Latest Openings"
+    },
+    "pharmacy": {
+        "name": "Pharmacy Jobs",
+        "seo_title": "[Number] Pharmacy Jobs in India | Latest Pharma Openings | Jobslly",
+        "meta_description": "Find [Number] pharmacy jobs in top pharma companies, hospitals, and medical stores across India. Apply for pharmacist and pharma career roles with Jobslly.",
+        "h1": "[Number] Pharmacy Jobs in India – Latest Openings"
+    },
+    "dentist": {
+        "name": "Dentist Jobs",
+        "seo_title": "[Number] Dentist Jobs in Hospitals & Dental Clinics in India | Jobslly",
+        "meta_description": "Browse [number] dentist jobs in hospitals and dental clinics across India. Apply for the latest dental vacancies and grow your career with Jobslly today.",
+        "h1": "[Number] Dentist Jobs in India – Latest Openings"
+    },
+    "physiotherapy": {
+        "name": "Physiotherapy Jobs",
+        "seo_title": "[Number] Physiotherapy Jobs in Hospitals & Rehab Centers | Jobslly",
+        "meta_description": "Explore [number] physiotherapy jobs in hospitals and rehab centers across India. Apply for the latest physiotherapist openings with Jobslly.",
+        "h1": "[Number] Physiotherapy Jobs in India – Latest Openings"
+    },
+    "medical-lab-technician": {
+        "name": "Medical Lab Technician",
+        "seo_title": "[Number] Medical Lab Technician Jobs in Diagnostic Centers | Jobslly",
+        "meta_description": "Find [number] medical lab technician jobs in top diagnostic centers across India. Apply for latest MLT vacancies and start your career today.",
+        "h1": "[Number] Medical Lab Technician Jobs in India – Latest Openings"
+    },
+    "medical-science-liaison": {
+        "name": "Medical Science Liaison",
+        "seo_title": "[Number] Medical Science Liaison Jobs in Pharma Companies | Jobslly",
+        "meta_description": "Discover [number] medical science liaison jobs in leading pharma companies across India. Apply now for MSL roles with Jobslly.",
+        "h1": "[Number] Medical Science Liaison Jobs in India – Latest Openings"
+    },
+    "pharmacovigilance": {
+        "name": "Pharmacovigilance",
+        "seo_title": "[Number] Pharmacovigilance Jobs in Pharma & CRO Companies | Jobslly",
+        "meta_description": "Search [number] pharmacovigilance jobs in pharma and CRO companies across India. Apply for drug safety and PV roles with Jobslly.",
+        "h1": "[Number] Pharmacovigilance Jobs in India – Latest Openings"
+    },
+    "clinical-research": {
+        "name": "Clinical Research",
+        "seo_title": "[Number] Clinical Research Jobs in CROs & Research Organizations | Jobslly",
+        "meta_description": "Browse [number] clinical research jobs in CROs and research organizations across India. Apply for CRA and CRC positions with Jobslly.",
+        "h1": "[Number] Clinical Research Jobs in India – Latest Openings"
+    },
+    "non-clinical-jobs": {
+        "name": "Non Clinical Jobs",
+        "seo_title": "[Number] Non-Clinical Healthcare Jobs in Hospitals & Corporate | Jobslly",
+        "meta_description": "Explore [number] non-clinical healthcare jobs in hospitals and corporate offices across India. Apply for admin, HR, and management roles.",
+        "h1": "[Number] Non-Clinical Healthcare Jobs in India – Latest Openings"
+    }
+}
+
+@api_router.get("/categories")
+async def get_all_categories():
+    """Get all available job categories with job counts"""
+    categories_with_counts = []
+    
+    for slug, metadata in CATEGORY_METADATA.items():
+        # Check if this category uses title-based filtering
+        if slug in TITLE_BASED_CATEGORIES:
+            # Filter by job title keywords
+            title_keywords = TITLE_BASED_CATEGORIES[slug]
+            title_regex = "|".join(title_keywords)
+            count = await db.jobs.count_documents({
+                "title": {"$regex": title_regex, "$options": "i"},
+                "is_approved": True,
+                "is_deleted": {"$ne": True}
+            })
+        else:
+            # Count jobs in this category using DB mapping
+            db_categories = CATEGORY_DB_MAPPING.get(slug, [slug])
+            count = await db.jobs.count_documents({
+                "categories": {"$in": db_categories},
+                "is_approved": True,
+                "is_deleted": {"$ne": True}
+            })
+        
+        categories_with_counts.append({
+            "slug": slug,
+            "name": metadata["name"],
+            "job_count": count,
+            "seo_title": metadata["seo_title"].replace("[Number]", str(count)).replace("[number]", str(count)),
+            "meta_description": metadata["meta_description"].replace("[Number]", str(count)).replace("[number]", str(count)),
+            "h1": metadata["h1"].replace("[Number]", str(count)).replace("[Category Name]", metadata["name"].replace(" Jobs", ""))
+        })
+    
+    return categories_with_counts
+
+@api_router.get("/categories/{category_slug}")
+async def get_category_jobs(
+    category_slug: str,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
+    location: str = Query(None),
+    job_type: str = Query(None),
+    experience: str = Query(None),
+    salary_min: int = Query(None),
+    salary_max: int = Query(None)
+):
+    """Get jobs for a specific category with filters and pagination"""
+    
+    # Validate category exists
+    if category_slug not in CATEGORY_METADATA:
+        raise HTTPException(status_code=404, detail="Category not found")
+    
+    # Build base query
+    query = {
+        "is_approved": True,
+        "is_deleted": {"$ne": True}
+    }
+    
+    # Check if this category uses title-based filtering
+    if category_slug in TITLE_BASED_CATEGORIES:
+        # Filter by job title keywords
+        title_keywords = TITLE_BASED_CATEGORIES[category_slug]
+        title_regex = "|".join(title_keywords)
+        query["title"] = {"$regex": title_regex, "$options": "i"}
+    else:
+        # Get database category values for this slug
+        db_categories = CATEGORY_DB_MAPPING.get(category_slug, [category_slug])
+        query["categories"] = {"$in": db_categories}
+    
+    # Add filters
+    if location:
+        query["location"] = {"$regex": location, "$options": "i"}
+    
+    if job_type:
+        query["job_type"] = job_type
+    
+    if experience:
+        query["experience_years"] = {"$lte": int(experience)}
+    
+    if salary_min or salary_max:
+        salary_query = {}
+        if salary_min:
+            salary_query["$gte"] = salary_min
+        if salary_max:
+            salary_query["$lte"] = salary_max
+        query["salary_max"] = salary_query
+    
+    # Get total count for pagination
+    total_count = await db.jobs.count_documents(query)
+    
+    # Get jobs
+    jobs = await db.jobs.find(query).sort([("created_at", -1), ("is_archived", 1)]).skip(skip).limit(limit).to_list(length=None)
+    
+    # Process jobs
+    for job in jobs:
+        if isinstance(job.get('created_at'), str):
+            job['created_at'] = datetime.fromisoformat(job['created_at'])
+        if job.get('expires_at') and isinstance(job.get('expires_at'), str):
+            job['expires_at'] = datetime.fromisoformat(job['expires_at'])
+        
+        # Convert integer salaries to strings
+        if job.get('salary_min') is not None and isinstance(job.get('salary_min'), int):
+            job['salary_min'] = str(job['salary_min'])
+        if job.get('salary_max') is not None and isinstance(job.get('salary_max'), int):
+            job['salary_max'] = str(job['salary_max'])
+    
+    # Get category metadata with dynamic count
+    metadata = CATEGORY_METADATA[category_slug].copy()
+    metadata["seo_title"] = metadata["seo_title"].replace("[Number]", str(total_count)).replace("[number]", str(total_count))
+    metadata["meta_description"] = metadata["meta_description"].replace("[Number]", str(total_count)).replace("[number]", str(total_count))
+    metadata["h1"] = metadata["h1"].replace("[Number]", str(total_count)).replace("[Category Name]", metadata["name"].replace(" Jobs", ""))
+    
+    return {
+        "category": {
+            "slug": category_slug,
+            "name": metadata["name"],
+            **metadata
+        },
+        "jobs": [Job(**job) for job in jobs],
+        "total_count": total_count,
+        "page": skip // limit + 1,
+        "total_pages": (total_count + limit - 1) // limit,
+        "has_more": skip + limit < total_count
+    }
 
 @api_router.get("/jobs/{job_identifier}")
 async def get_job(job_identifier: str, authorization: str = Header(None)):
@@ -1021,8 +1269,8 @@ async def admin_create_job(job_data: JobCreate, current_user: User = Depends(get
     
     job = Job(**job_data.dict(), employer_id=current_user.id, is_approved=True)
     
-    # Generate unique slug from title
-    base_slug = generate_slug(job.title)
+    # Generate unique slug from title, company, and location
+    base_slug = generate_slug(job.title, job.company, job.location)
     job.slug = await ensure_unique_slug(base_slug)
     
     job_dict = job.dict()
@@ -1384,10 +1632,9 @@ async def update_job_admin(
     update_data = job_data.dict(exclude_unset=True)
     update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
     
-    # Regenerate slug if title is being updated
-    if 'title' in update_data:
-        base_slug = generate_slug(update_data['title'])
-        update_data['slug'] = await ensure_unique_slug(base_slug, job_id)
+    # DO NOT regenerate slug on edit to preserve existing URLs and SEO
+    # The slug is generated only once during job creation
+    # This prevents breaking external links, bookmarks, and search engine indexing
     
     await db.jobs.update_one(
         {"id": job_id},
@@ -1481,6 +1728,44 @@ async def restore_job(job_id: str, current_user: User = Depends(get_current_user
     regenerate_sitemap_async()
     
     return {"message": "Job restored successfully"}
+
+@api_router.post("/admin/jobs/{job_id}/regenerate-slug")
+async def regenerate_job_slug(job_id: str, current_user: User = Depends(get_current_user)):
+    """Manually regenerate slug for a job (use cautiously - will change URL)"""
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    job = await db.jobs.find_one({"id": job_id})
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Generate new slug
+    title = job.get('title', 'Job')
+    company = job.get('company', '')
+    location = job.get('location', '')
+    
+    old_slug = job.get('slug', '')
+    base_slug = generate_slug(title, company, location)
+    new_slug = await ensure_unique_slug(base_slug, job_id)
+    
+    # Update the slug
+    await db.jobs.update_one(
+        {"id": job_id},
+        {"$set": {"slug": new_slug, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    # Regenerate sitemap
+    regenerate_sitemap_async()
+    
+    return {
+        "message": "Slug regenerated successfully",
+        "old_slug": old_slug,
+        "new_slug": new_slug,
+        "old_url": f"/jobs/{old_slug}",
+        "new_url": f"/jobs/{new_slug}",
+        "warning": "Old URL will no longer work. Update any external links."
+    }
+
 
 # Public Blog Routes
 @api_router.get("/blog", response_model=List[BlogPost])

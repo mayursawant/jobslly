@@ -124,6 +124,11 @@ const JobListing = () => {
   });
 
   const sortedJobs = [...filteredJobs].sort((a, b) => {
+    // ALWAYS keep archived jobs at the bottom, regardless of sort
+    if (a.is_archived && !b.is_archived) return 1;
+    if (!a.is_archived && b.is_archived) return -1;
+    
+    // If both archived or both not archived, sort by selected criteria
     switch (sortBy) {
       case 'salary_high':
         // Convert text to numbers for sorting, treat non-numeric as 0
@@ -252,6 +257,14 @@ const JobListing = () => {
                         <Badge className="bg-blue-100 text-blue-800 text-xs">
                           {job.job_type.replace('_', ' ').toUpperCase()}
                         </Badge>
+                        {job.is_archived && (
+                          <Badge className="bg-red-100 text-red-700 text-xs flex items-center gap-1">
+                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clipRule="evenodd" />
+                            </svg>
+                            ARCHIVED
+                          </Badge>
+                        )}
                         {job.salary_min && (
                           <span className="text-sm font-semibold text-green-600">
                             {formatSalary(job.salary_min, job.currency)}

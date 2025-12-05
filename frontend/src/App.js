@@ -30,6 +30,7 @@ import Sitemap from './components/Sitemap';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import CookiePolicy from './components/CookiePolicy';
+import CategoryPage from './components/CategoryPage';
 import { Toaster } from './components/ui/sonner';
 import { Helmet } from 'react-helmet';
 
@@ -193,7 +194,7 @@ function App() {
                 "@type": "WebSite",
                 "name": "Jobslly",
                 "description": "Future of Healthcare Careers - AI-Powered Job Platform",
-                "url": "https://seo-upload-fixes.preview.emergentagent.com",
+                "url": "https://blog-job-platform.preview.emergentagent.com",
                 "potentialAction": {
                   "@type": "SearchAction",
                   "target": "https://jobslly.com/jobs?search={search_term_string}",
@@ -211,10 +212,10 @@ function App() {
               {JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "LocalBusiness",
-                "@id": "https://seo-upload-fixes.preview.emergentagent.com",
+                "@id": "https://blog-job-platform.preview.emergentagent.com",
                 "name": "Jobslly",
                 "description": "Healthcare job platform connecting medical professionals with opportunities",
-                "url": "https://seo-upload-fixes.preview.emergentagent.com",
+                "url": "https://blog-job-platform.preview.emergentagent.com",
                 "telephone": "+1-800-JOBSLLY",
                 "priceRange": "Free",
                 "openingHours": "Mo-Su 00:00-24:00",
@@ -245,6 +246,30 @@ function App() {
               {/* Jobs - Support both with and without trailing slash */}
               <Route path="/jobs" element={<JobListing />} />
               <Route path="/jobs/" element={<JobListing />} />
+              
+              {/* Category Pages */}
+              <Route path="/jobs/doctor" element={<CategoryPage />} />
+              <Route path="/jobs/doctor/" element={<CategoryPage />} />
+              <Route path="/jobs/nursing" element={<CategoryPage />} />
+              <Route path="/jobs/nursing/" element={<CategoryPage />} />
+              <Route path="/jobs/pharmacy" element={<CategoryPage />} />
+              <Route path="/jobs/pharmacy/" element={<CategoryPage />} />
+              <Route path="/jobs/dentist" element={<CategoryPage />} />
+              <Route path="/jobs/dentist/" element={<CategoryPage />} />
+              <Route path="/jobs/physiotherapy" element={<CategoryPage />} />
+              <Route path="/jobs/physiotherapy/" element={<CategoryPage />} />
+              <Route path="/jobs/medical-lab-technician" element={<CategoryPage />} />
+              <Route path="/jobs/medical-lab-technician/" element={<CategoryPage />} />
+              <Route path="/jobs/medical-science-liaison" element={<CategoryPage />} />
+              <Route path="/jobs/medical-science-liaison/" element={<CategoryPage />} />
+              <Route path="/jobs/pharmacovigilance" element={<CategoryPage />} />
+              <Route path="/jobs/pharmacovigilance/" element={<CategoryPage />} />
+              <Route path="/jobs/clinical-research" element={<CategoryPage />} />
+              <Route path="/jobs/clinical-research/" element={<CategoryPage />} />
+              <Route path="/jobs/non-clinical-jobs" element={<CategoryPage />} />
+              <Route path="/jobs/non-clinical-jobs/" element={<CategoryPage />} />
+              
+              {/* Job Details - This catches all other /jobs/... routes */}
               <Route path="/jobs/:jobId" element={<JobDetails />} />
               <Route path="/jobs/:jobId/" element={<JobDetails />} />
               
