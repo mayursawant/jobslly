@@ -2754,6 +2754,10 @@ if os.path.exists(frontend_build_path):
         Serve React frontend for all non-API routes.
         The MetaTagInjectionMiddleware will inject dynamic meta tags for job pages.
         """
+        # Skip API routes - they're handled by api_router
+        if full_path.startswith('api/'):
+            raise HTTPException(status_code=404, detail="Not found")
+        
         # Return the index.html for all frontend routes
         index_path = f"{frontend_build_path}/index.html"
         
