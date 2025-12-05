@@ -2760,9 +2760,6 @@ if os.path.exists(frontend_build_path):
         Serve React frontend for all non-API routes.
         Injects dynamic meta tags for job/blog detail pages.
         """
-        import sys
-        print(f"[CATCH-ALL] Serving: {full_path}", file=sys.stderr, flush=True)
-        
         # Skip API routes - they're handled by api_router
         if full_path.startswith('api/'):
             raise HTTPException(status_code=404, detail="Not found")
@@ -2776,13 +2773,9 @@ if os.path.exists(frontend_build_path):
             
             # Inject meta tags for job/blog pages
             path = request.url.path
-            print(f"[CATCH-ALL] Path check: {path}, starts with /jobs/: {path.startswith('/jobs/')}", file=sys.stderr, flush=True)
-            
             if path.startswith('/jobs/') or path.startswith('/blogs/'):
-                print(f"[CATCH-ALL] Injecting meta tags...", file=sys.stderr, flush=True)
                 from meta_injector import inject_meta_tags
                 html_content = await inject_meta_tags(html_content, path)
-                print(f"[CATCH-ALL] Meta tags injected! HTML length: {len(html_content)}", file=sys.stderr, flush=True)
             
             return HTMLResponse(content=html_content, status_code=200, media_type="text/html; charset=utf-8")
         else:
