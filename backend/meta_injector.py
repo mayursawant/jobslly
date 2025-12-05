@@ -5,9 +5,29 @@ Injects dynamic meta tags into HTML for SEO
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import re
+import html
 
 MONGO_URL = os.environ.get('MONGO_URL')
 DB_NAME = os.environ.get('DB_NAME')
+
+def clean_html_for_meta(text):
+    """Remove HTML tags and decode entities for meta descriptions"""
+    if not text:
+        return ""
+    
+    # Decode HTML entities (e.g., &lt; to <, &quot; to ")
+    text = html.unescape(text)
+    
+    # Remove all HTML tags
+    text = re.sub(r'<[^>]+>', '', text)
+    
+    # Remove extra whitespace and newlines
+    text = re.sub(r'\s+', ' ', text)
+    
+    # Trim
+    text = text.strip()
+    
+    return text
 
 async def get_job_meta(db, job_slug):
     """Get meta tags for a job detail page"""
