@@ -174,20 +174,58 @@ async def inject_meta_tags(html_content, path):
         count=1
     )
     
-    # Prepare meta tags to inject in head
-    meta_tags = f'''
-    <meta name="description" content="{meta_data["description"]}" />
-    <meta name="keywords" content="{meta_data["keywords"]}" />
-    <meta property="og:title" content="{meta_data["og_title"]}" />
-    <meta property="og:description" content="{meta_data["og_description"]}" />
-    <meta property="og:type" content="{meta_data["og_type"]}" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="{meta_data["og_title"]}" />
-    <meta name="twitter:description" content="{meta_data["og_description"]}" />
-    '''
+    # Replace existing meta description (handles both spaced and minified formats)
+    html_content = re.sub(
+        r'<meta name="description" content=".*?"[^>]*>',
+        f'<meta name="description" content="{meta_data["description"]}"/>',
+        html_content,
+        count=1
+    )
     
-    # Inject meta tags into <head> before </head>
-    html_content = html_content.replace('</head>', f'{meta_tags}</head>', 1)
+    # Replace existing meta keywords
+    html_content = re.sub(
+        r'<meta name="keywords" content=".*?"[^>]*>',
+        f'<meta name="keywords" content="{meta_data["keywords"]}"/>',
+        html_content,
+        count=1
+    )
+    
+    # Replace existing OG tags
+    html_content = re.sub(
+        r'<meta property="og:title" content=".*?"[^>]*>',
+        f'<meta property="og:title" content="{meta_data["og_title"]}"/>',
+        html_content,
+        count=1
+    )
+    
+    html_content = re.sub(
+        r'<meta property="og:description" content=".*?"[^>]*>',
+        f'<meta property="og:description" content="{meta_data["og_description"]}"/>',
+        html_content,
+        count=1
+    )
+    
+    html_content = re.sub(
+        r'<meta property="og:type" content=".*?"[^>]*>',
+        f'<meta property="og:type" content="{meta_data["og_type"]}"/>',
+        html_content,
+        count=1
+    )
+    
+    # Replace Twitter card tags
+    html_content = re.sub(
+        r'<meta name="twitter:title" content=".*?"[^>]*>',
+        f'<meta name="twitter:title" content="{meta_data["og_title"]}"/>',
+        html_content,
+        count=1
+    )
+    
+    html_content = re.sub(
+        r'<meta name="twitter:description" content=".*?"[^>]*>',
+        f'<meta name="twitter:description" content="{meta_data["og_description"]}"/>',
+        html_content,
+        count=1
+    )
     
     # For job pages, inject server-side rendered content
     if is_job_page and 'job_data' in meta_data:
