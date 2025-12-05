@@ -1744,13 +1744,13 @@ async def regenerate_job_slug(job_id: str, current_user: User = Depends(get_curr
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     
-    # Generate new slug
+    # Generate new slug with job ID
     title = job.get('title', 'Job')
     company = job.get('company', '')
     location = job.get('location', '')
     
     old_slug = job.get('slug', '')
-    base_slug = generate_slug(title, company, location)
+    base_slug = generate_slug(title, company, location, job_id)
     new_slug = await ensure_unique_slug(base_slug, job_id)
     
     # Update the slug
