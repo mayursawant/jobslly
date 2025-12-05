@@ -2718,7 +2718,9 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
 app.include_router(api_router)
 
 # Add Meta Tag Injection Middleware for SEO (must be first)
+print("[STARTUP] Adding MetaTagInjectionMiddleware...")
 app.add_middleware(MetaTagInjectionMiddleware)
+print("[STARTUP] Middleware added successfully")
 
 # Add WWW to non-WWW redirect middleware (must be added before CORS)
 app.add_middleware(WWWRedirectMiddleware)
