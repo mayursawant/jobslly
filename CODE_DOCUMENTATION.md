@@ -1426,7 +1426,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",  # Development
-        "https://blog-job-platform.preview.emergentagent.com"  # Production
+        "https://career-site-revamp.preview.emergentagent.com"  # Production
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
@@ -2052,7 +2052,7 @@ EMERGENT_LLM_KEY="sk-emergent-<key>"
 CORS_ORIGINS="*"
 
 # Frontend (/app/frontend/.env)
-REACT_APP_BACKEND_URL="https://blog-job-platform.preview.emergentagent.com"
+REACT_APP_BACKEND_URL="https://career-site-revamp.preview.emergentagent.com"
 WDS_SOCKET_PORT=443
 ```
 
@@ -2122,14 +2122,14 @@ cd /app/frontend && yarn install
 sudo supervisorctl restart all
 
 # 4. Verify deployment
-curl https://blog-job-platform.preview.emergentagent.com/api/health
+curl https://career-site-revamp.preview.emergentagent.com/api/health
 
 # 5. Check logs for errors
 sudo supervisorctl tail -f backend stderr
 sudo supervisorctl tail -f frontend stdout
 
 # 6. Test in browser
-# Visit: https://blog-job-platform.preview.emergentagent.com
+# Visit: https://career-site-revamp.preview.emergentagent.com
 ```
 
 #### Health Checks
@@ -2139,7 +2139,7 @@ curl https://jobslly.com/api/health
 # Expected: {"status":"healthy","timestamp":"..."}
 
 # Frontend accessibility
-curl -I https://blog-job-platform.preview.emergentagent.com
+curl -I https://career-site-revamp.preview.emergentagent.com
 # Expected: HTTP/2 200
 
 # MongoDB connectivity
@@ -2432,7 +2432,7 @@ spec:
         - containerPort: 80
         env:
         - name: REACT_APP_BACKEND_URL
-          value: "https://blog-job-platform.preview.emergentagent.com"
+          value: "https://career-site-revamp.preview.emergentagent.com"
         resources:
           requests:
             memory: "128Mi"

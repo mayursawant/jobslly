@@ -6,7 +6,7 @@ Detailed Category Check - Verify exact job counts and category distribution
 import requests
 import json
 
-BASE_URL = "https://blog-job-platform.preview.emergentagent.com/api"
+BASE_URL = "https://career-site-revamp.preview.emergentagent.com/api"
 
 def check_detailed_categories():
     print("🔍 DETAILED CATEGORY ANALYSIS")

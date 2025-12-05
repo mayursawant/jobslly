@@ -2,7 +2,7 @@
 import requests
 import json
 
-BACKEND_URL = "https://blog-job-platform.preview.emergentagent.com"
+BACKEND_URL = "https://career-site-revamp.preview.emergentagent.com"
 ADMIN_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJleHAiOjE3NTk2OTUxMzF9.ql52oQJcPSQwvzU1AOpsviKSMmWXF-kWHPSuBjiYuGQ"
 
 def create_blog_post(blog_data):

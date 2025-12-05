@@ -2,12 +2,12 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Backend Tests](https://img.shields.io/badge/Backend%20Tests-29%2F29%20Passing-brightgreen)](https://github.com)
-[![Platform Status](https://img.shields.io/badge/Platform%20Status-Production%20Ready-success)](https://blog-job-platform.preview.emergentagent.com)
+[![Platform Status](https://img.shields.io/badge/Platform%20Status-Production%20Ready-success)](https://career-site-revamp.preview.emergentagent.com)
 [![AI Features](https://img.shields.io/badge/AI%20Features-Enabled-blue)](https://github.com)
 
 > **Connecting healthcare professionals worldwide with their dream careers through AI-powered technology and comprehensive recruitment solutions.**
 
-**Live Platform:** [https://blog-job-platform.preview.emergentagent.com](https://blog-job-platform.preview.emergentagent.com)
+**Live Platform:** [https://career-site-revamp.preview.emergentagent.com](https://career-site-revamp.preview.emergentagent.com)
 
 ---
 
@@ -386,7 +386,7 @@ const enhanceJobDescription = async (jobData) => {
 
 ### Production Environment (Emergent Platform)
 ```yaml
-Platform URL: https://blog-job-platform.preview.emergentagent.com
+Platform URL: https://career-site-revamp.preview.emergentagent.com
 Infrastructure: Kubernetes cluster with auto-scaling
 Container Runtime: Docker with supervisor process management
 Database: MongoDB (local instance)
@@ -412,7 +412,7 @@ CORS_ORIGINS="*"
 
 **Frontend `.env` (pre-configured)**
 ```bash
-REACT_APP_BACKEND_URL="https://blog-job-platform.preview.emergentagent.com"
+REACT_APP_BACKEND_URL="https://career-site-revamp.preview.emergentagent.com"
 WDS_SOCKET_PORT=443
 ```
 
