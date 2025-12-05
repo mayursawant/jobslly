@@ -48,20 +48,7 @@ async def get_job_meta(db, job_slug):
     title = f"{job_title} Job at {company} in {location} | Jobslly"
     
     # Format: Apply for the [Job Name] job at [Company Name] in [Location]. View eligibility, salary, skills, and apply online on Jobslly. Get job assistance and expert help to land this role.
-    full_description = f"Apply for the {job_title} job at {company} in {location}. View eligibility, salary, skills, and apply online on Jobslly. Get job assistance and expert help to land this role."
-    
-    # Ensure description stays under 160 characters
-    if len(full_description) <= 160:
-        description = full_description
-    else:
-        # Use shorter version without the last sentence
-        short_description = f"Apply for the {job_title} job at {company} in {location}. View eligibility, salary, skills, and apply online on Jobslly."
-        
-        if len(short_description) <= 160:
-            description = short_description
-        else:
-            # Truncate at word boundary, keeping within 160 chars
-            description = short_description[:157].rsplit(' ', 1)[0] + '...'
+    description = f"Apply for the {job_title} job at {company} in {location}. View eligibility, salary, skills, and apply online on Jobslly. Get job assistance and expert help to land this role."
     
     return {
         'title': title,
