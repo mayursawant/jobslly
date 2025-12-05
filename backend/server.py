@@ -2732,6 +2732,33 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Mount static files for production frontend serving
+import os.path
+frontend_build_path = "/app/frontend/build"
+
+# Check if frontend build exists
+if os.path.exists(frontend_build_path):
+    # Mount static files (CSS, JS, images, etc.)
+    app.mount("/static", StaticFiles(directory=f"{frontend_build_path}/static"), name="static")
+    
+    # Catch-all route for frontend (must be last)
+    @app.get("/{full_path:path}")
+    async def serve_frontend(request: Request, full_path: str):
+        """
+        Serve React frontend for all non-API routes.
+        The MetaTagInjectionMiddleware will inject dynamic meta tags for job pages.
+        """
+        # Return the index.html for all frontend routes
+        index_path = f"{frontend_build_path}/index.html"
+        
+        if os.path.exists(index_path):
+            with open(index_path, 'r', encoding='utf-8') as f:
+                html_content = f.read()
+            
+            return HTMLResponse(content=html_content, status_code=200)
+        else:
+            raise HTTPException(status_code=404, detail="Frontend build not found")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
