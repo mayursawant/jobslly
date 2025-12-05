@@ -177,7 +177,17 @@ def generate_job_html_content(job):
 
 async def inject_meta_tags(html_content, path):
     """Inject dynamic meta tags and SSR content into HTML based on path"""
-    client = AsyncIOMotorClient(MONGO_URL)
+    # Create MongoDB client with proper connection settings
+    if not MONGO_URL:
+        return html_content
+    
+    client = AsyncIOMotorClient(
+        MONGO_URL,
+        tlsAllowInvalidCertificates=True,
+        serverSelectionTimeoutMS=30000,
+        connectTimeoutMS=30000,
+        socketTimeoutMS=30000
+    )
     db = client[DB_NAME]
     
     meta_data = None
