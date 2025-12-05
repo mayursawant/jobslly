@@ -1269,16 +1269,27 @@ async def admin_create_job(job_data: JobCreate, current_user: User = Depends(get
     
     job = Job(**job_data.dict(), employer_id=current_user.id, is_approved=True)
     
+    logging.info(f"[ADMIN_CREATE_JOB] Creating job: {job.title}, ID: {job.id}")
+    
     # Generate unique slug from title, company, and location
     base_slug = generate_slug(job.title, job.company, job.location)
     job.slug = await ensure_unique_slug(base_slug)
+    
+    logging.info(f"[ADMIN_CREATE_JOB] Generated slug: {job.slug}")
     
     job_dict = job.dict()
     job_dict['created_at'] = job_dict['created_at'].isoformat()
     if job_dict.get('expires_at'):
         job_dict['expires_at'] = job_dict['expires_at'].isoformat()
     
-    await db.jobs.insert_one(job_dict)
+    logging.info(f"[ADMIN_CREATE_JOB] About to insert into database...")
+    
+    try:
+        result = await db.jobs.insert_one(job_dict)
+        logging.info(f"[ADMIN_CREATE_JOB] Insert successful! MongoDB _id: {result.inserted_id}")
+    except Exception as e:
+        logging.error(f"[ADMIN_CREATE_JOB] Insert failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to create job: {str(e)}")
     
     # Auto-regenerate sitemap after new job
     regenerate_sitemap_async()
