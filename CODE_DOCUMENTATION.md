@@ -2135,7 +2135,7 @@ sudo supervisorctl tail -f frontend stdout
 #### Health Checks
 ```bash
 # Backend health endpoint
-curl https://blog-job-platform.preview.emergentagent.com/api/health
+curl https://jobslly.com/api/health
 # Expected: {"status":"healthy","timestamp":"..."}
 
 # Frontend accessibility
@@ -2147,7 +2147,7 @@ mongosh --eval "db.adminCommand('ping')"
 # Expected: { ok: 1 }
 
 # API documentation
-# Visit: https://blog-job-platform.preview.emergentagent.com/docs
+# Visit: https://jobslly.com/docs
 ```
 
 #### Troubleshooting Common Issues
