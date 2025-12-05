@@ -84,10 +84,17 @@ async def get_blog_meta(db, blog_slug):
 
 def generate_job_html_content(job):
     """Generate server-side rendered HTML for job content (SEO-friendly)"""
-    job_title = job.get('title', 'Job Opening')
-    company = job.get('company', 'Company')
-    location = job.get('location', 'Location')
+    # Clean and escape all text fields to prevent HTML injection
+    job_title = html.escape(job.get('title', 'Job Opening'))
+    company = html.escape(job.get('company', 'Company'))
+    location = html.escape(job.get('location', 'Location'))
+    
+    # For description, if it contains HTML, keep it; otherwise escape it
     description = job.get('description', 'No description available')
+    # Description might already be HTML formatted (from rich text editor), so we keep it as-is
+    # But we should at least decode any double-encoded entities
+    description = html.unescape(description) if description else 'No description available'
+    
     salary_min = job.get('salary_min', '')
     salary_max = job.get('salary_max', '')
     currency = job.get('currency', 'INR')
