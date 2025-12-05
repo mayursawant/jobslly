@@ -193,10 +193,17 @@ async def inject_meta_tags(html_content, path):
     if not meta_data:
         return html_content
     
+    # Escape all meta data to prevent HTML/quote issues in attributes
+    safe_title = html.escape(meta_data["title"])
+    safe_description = html.escape(meta_data["description"])
+    safe_keywords = html.escape(meta_data["keywords"])
+    safe_og_title = html.escape(meta_data["og_title"])
+    safe_og_description = html.escape(meta_data["og_description"])
+    
     # Replace title
     html_content = re.sub(
         r'<title>.*?</title>',
-        f'<title>{meta_data["title"]}</title>',
+        f'<title>{safe_title}</title>',
         html_content,
         count=1
     )
@@ -204,7 +211,7 @@ async def inject_meta_tags(html_content, path):
     # Replace existing meta description (handles both spaced and minified formats)
     html_content = re.sub(
         r'<meta name="description" content=".*?"[^>]*>',
-        f'<meta name="description" content="{meta_data["description"]}"/>',
+        f'<meta name="description" content="{safe_description}"/>',
         html_content,
         count=1
     )
@@ -212,7 +219,7 @@ async def inject_meta_tags(html_content, path):
     # Replace existing meta keywords
     html_content = re.sub(
         r'<meta name="keywords" content=".*?"[^>]*>',
-        f'<meta name="keywords" content="{meta_data["keywords"]}"/>',
+        f'<meta name="keywords" content="{safe_keywords}"/>',
         html_content,
         count=1
     )
@@ -220,14 +227,14 @@ async def inject_meta_tags(html_content, path):
     # Replace existing OG tags
     html_content = re.sub(
         r'<meta property="og:title" content=".*?"[^>]*>',
-        f'<meta property="og:title" content="{meta_data["og_title"]}"/>',
+        f'<meta property="og:title" content="{safe_og_title}"/>',
         html_content,
         count=1
     )
     
     html_content = re.sub(
         r'<meta property="og:description" content=".*?"[^>]*>',
-        f'<meta property="og:description" content="{meta_data["og_description"]}"/>',
+        f'<meta property="og:description" content="{safe_og_description}"/>',
         html_content,
         count=1
     )
