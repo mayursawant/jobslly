@@ -95,11 +95,15 @@ class MetaTagInjectionMiddleware(BaseHTTPMiddleware):
                     from meta_injector import inject_meta_tags
                     html_content = await inject_meta_tags(html_content, path)
                 
-                # Return modified response
+                # Return modified response with updated Content-Length
+                response_headers = dict(response.headers)
+                # Remove Content-Length header as it's recalculated by Starlette
+                response_headers.pop('content-length', None)
+                
                 return StarletteResponse(
                     content=html_content,
                     status_code=response.status_code,
-                    headers=dict(response.headers),
+                    headers=response_headers,
                     media_type=response.media_type
                 )
         
