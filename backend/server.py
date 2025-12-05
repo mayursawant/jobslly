@@ -2765,7 +2765,7 @@ if os.path.exists(frontend_build_path):
             with open(index_path, 'r', encoding='utf-8') as f:
                 html_content = f.read()
             
-            return HTMLResponse(content=html_content, status_code=200)
+            return HTMLResponse(content=html_content, status_code=200, media_type="text/html; charset=utf-8")
         else:
             raise HTTPException(status_code=404, detail="Frontend build not found")
 
