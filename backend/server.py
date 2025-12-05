@@ -77,6 +77,9 @@ class MetaTagInjectionMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         response = await call_next(request)
         
+        # Debug logging
+        print(f"[META MIDDLEWARE] Path: {request.url.path}, Status: {response.status_code}, Content-Type: {response.headers.get('content-type', 'none')}")
+        
         # Only process HTML responses
         if response.status_code == 200 and request.url.path != '/api/sitemap.xml':
             content_type = response.headers.get('content-type', '')
