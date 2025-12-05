@@ -2742,8 +2742,10 @@ frontend_build_path = "/app/frontend/build"
 
 # Check if frontend build exists
 if os.path.exists(frontend_build_path):
-    # Mount static files (CSS, JS, images, etc.)
-    app.mount("/static", StaticFiles(directory=f"{frontend_build_path}/static"), name="static")
+    # Mount static files (CSS, JS, images, etc.) - only if static directory exists
+    static_path = f"{frontend_build_path}/static"
+    if os.path.exists(static_path) and os.path.isdir(static_path):
+        app.mount("/static", StaticFiles(directory=static_path), name="static")
     
     # Catch-all route for frontend (must be last)
     @app.get("/{full_path:path}")
