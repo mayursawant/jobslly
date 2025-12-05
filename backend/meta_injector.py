@@ -198,7 +198,12 @@ async def inject_meta_tags(html_content, path):
         if path.startswith('/jobs/') and path != '/jobs/' and path != '/jobs':
             # Job detail page
             slug = path.replace('/jobs/', '').strip('/')
+            import sys
+            print(f"[META_INJECTOR] Looking for job slug: {slug}", file=sys.stderr, flush=True)
             meta_data = await get_job_meta(db, slug)
+            print(f"[META_INJECTOR] Meta data retrieved: {meta_data is not None}", file=sys.stderr, flush=True)
+            if meta_data:
+                print(f"[META_INJECTOR] Title: {meta_data.get('title', 'N/A')[:50]}", file=sys.stderr, flush=True)
             is_job_page = True
         
         elif path.startswith('/blogs/') and path != '/blogs/' and path != '/blogs':
@@ -210,7 +215,10 @@ async def inject_meta_tags(html_content, path):
         
     except Exception as e:
         # Log error but don't crash - return original HTML
-        print(f"Meta injection error: {e}")
+        import sys
+        print(f"[META_INJECTOR] Error: {e}", file=sys.stderr, flush=True)
+        import traceback
+        traceback.print_exc(file=sys.stderr)
         return html_content
     
     if not meta_data:
