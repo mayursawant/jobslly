@@ -2472,8 +2472,13 @@ async def migrate_job_slugs(current_user: User = Depends(get_current_user)):
         
         updated_count = 0
         for job in jobs_without_slugs:
-            # Generate slug from title
-            base_slug = generate_slug(job['title'])
+            # Generate slug from title, company, location, and job ID
+            base_slug = generate_slug(
+                job.get('title', 'Job'),
+                job.get('company'),
+                job.get('location'),
+                job.get('id')
+            )
             unique_slug = await ensure_unique_slug(base_slug, job['id'])
             
             # Update job with slug
