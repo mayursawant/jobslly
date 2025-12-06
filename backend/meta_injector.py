@@ -396,13 +396,25 @@ async def inject_meta_tags(html_content, path):
     # For job pages, inject JSON-LD schema and SSR content
     if is_job_page and 'job_data' in meta_data:
         # REMOVE the generic WebSite schema first (it's for homepage only)
-        # Match the entire WebSite JSON-LD script block
-        html_content = re.sub(
-            r'<script type="application/ld\+json">\s*\{[^}]*"@type":\s*"WebSite"[^}]*\{[^}]*\}[^}]*\}\s*</script>',
-            '',
-            html_content,
-            flags=re.DOTALL
-        )
+        # Find and remove the script tag containing WebSite schema
+        # This works with both formatted and minified HTML
+        start_marker = '<script type="application/ld+json">'
+        website_type = '"@type": "WebSite"'
+        
+        start_idx = html_content.find(start_marker)
+        while start_idx != -1:
+            end_idx = html_content.find('</script>', start_idx)
+            if end_idx != -1:
+                script_content = html_content[start_idx:end_idx + len('</script>')]
+                if website_type in script_content or '"@type":"WebSite"' in script_content:
+                    # This is the WebSite schema - remove it
+                    html_content = html_content[:start_idx] + html_content[end_idx + len('</script>'):]
+                    break
+                else:
+                    # This is another schema, keep looking
+                    start_idx = html_content.find(start_marker, end_idx)
+            else:
+                break
         
         # Inject JobPosting JSON-LD schema before </head>
         if 'jsonld_schema' in meta_data:
