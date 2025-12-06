@@ -46,24 +46,34 @@ def generate_job_jsonld(job):
     expires_at = job.get('expires_at')
     slug = job.get('slug', '')
     
-    # Format salary
+    # Format salary - only include if numeric
+    def is_numeric(val):
+        """Check if value is numeric (can be converted to float)"""
+        if not val:
+            return False
+        try:
+            float(str(val).replace(',', ''))
+            return True
+        except (ValueError, AttributeError):
+            return False
+    
     salary_data = {}
-    if salary_min or salary_max:
+    if (salary_min and is_numeric(salary_min)) or (salary_max and is_numeric(salary_max)):
         salary_data = {
             "@type": "MonetaryAmount",
             "currency": currency
         }
-        if salary_min and salary_max:
+        if salary_min and is_numeric(salary_min) and salary_max and is_numeric(salary_max):
             salary_data["value"] = {
                 "@type": "QuantitativeValue",
-                "minValue": float(salary_min) if salary_min else 0,
-                "maxValue": float(salary_max) if salary_max else 0,
+                "minValue": float(str(salary_min).replace(',', '')),
+                "maxValue": float(str(salary_max).replace(',', '')),
                 "unitText": "MONTH"
             }
-        elif salary_min:
+        elif salary_min and is_numeric(salary_min):
             salary_data["value"] = {
                 "@type": "QuantitativeValue",
-                "value": float(salary_min),
+                "value": float(str(salary_min).replace(',', '')),
                 "unitText": "MONTH"
             }
     
