@@ -270,11 +270,8 @@ def generate_job_html_content(job):
 
 async def inject_meta_tags(html_content, path):
     """Inject dynamic meta tags and SSR content into HTML based on path"""
-    print(f"[META INJECTOR] Called for path: {path}")
-    
     # Create MongoDB client with proper connection settings
     if not MONGO_URL or not DB_NAME:
-        print(f"[META INJECTOR] Missing MONGO_URL or DB_NAME")
         return html_content
     
     try:
