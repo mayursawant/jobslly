@@ -303,9 +303,8 @@ async def inject_meta_tags(html_content, path):
         
     except Exception as e:
         # Log error but don't crash - return original HTML
-        print(f"[META INJECTOR ERROR] Failed to inject meta tags for path {path}: {str(e)}")
-        import traceback
-        traceback.print_exc()
+        import logging
+        logging.error(f"Failed to inject meta tags for path {path}: {str(e)}")
         return html_content
     
     if not meta_data:
