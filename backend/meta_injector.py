@@ -132,16 +132,21 @@ async def get_job_meta(db, job_slug):
     
     title = f"{job_title} Job at {company} in {location} | Jobslly"
     
-    # Format: Apply for the [Job Name] job at [Company Name] in [Location]. View eligibility, salary, skills, and apply online on Jobslly. Get job assistance and expert help to land this role.
-    description = f"Apply for the {job_title} job at {company} in {location}. View eligibility, salary, skills, and apply online on Jobslly. Get job assistance and expert help to land this role."
+    # Format: Apply for the [Job Name] job at [Company Name] in [Location]. View eligibility, salary, skills, and apply online on Jobslly.
+    description = f"Apply for the {job_title} job at {company} in {location}. View eligibility, salary, skills, and apply online on Jobslly."
+    
+    # Generate JSON-LD schema
+    jsonld_schema = generate_job_jsonld(job)
     
     return {
         'title': title,
         'description': description,
         'og_title': f"{job_title} at {company}",
         'og_description': description,
-        'og_type': 'article',
+        'og_type': 'website',
+        'og_url': f"https://jobslly.com/jobs/{job.get('slug', '')}",
         'keywords': f"{job_title}, {company}, {location}, healthcare jobs, medical careers, job opportunities",
+        'jsonld_schema': jsonld_schema,
         'job_data': job  # Include full job data for server-side rendering
     }
 
