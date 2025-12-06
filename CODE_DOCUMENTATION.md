@@ -1426,7 +1426,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",  # Development
-        "https://career-site-revamp.preview.emergentagent.com"  # Production
+        "https://job-seo-overhaul.preview.emergentagent.com"  # Production
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
@@ -2052,7 +2052,7 @@ EMERGENT_LLM_KEY="sk-emergent-<key>"
 CORS_ORIGINS="*"
 
 # Frontend (/app/frontend/.env)
-REACT_APP_BACKEND_URL="https://career-site-revamp.preview.emergentagent.com"
+REACT_APP_BACKEND_URL="https://job-seo-overhaul.preview.emergentagent.com"
 WDS_SOCKET_PORT=443
 ```
 
@@ -2122,24 +2122,24 @@ cd /app/frontend && yarn install
 sudo supervisorctl restart all
 
 # 4. Verify deployment
-curl https://career-site-revamp.preview.emergentagent.com/api/health
+curl https://job-seo-overhaul.preview.emergentagent.com/api/health
 
 # 5. Check logs for errors
 sudo supervisorctl tail -f backend stderr
 sudo supervisorctl tail -f frontend stdout
 
 # 6. Test in browser
-# Visit: https://career-site-revamp.preview.emergentagent.com
+# Visit: https://job-seo-overhaul.preview.emergentagent.com
 ```
 
 #### Health Checks
 ```bash
 # Backend health endpoint
-curl https://career-site-revamp.preview.emergentagent.com/api/health
+curl https://job-seo-overhaul.preview.emergentagent.com/api/health
 # Expected: {"status":"healthy","timestamp":"..."}
 
 # Frontend accessibility
-curl -I https://career-site-revamp.preview.emergentagent.com
+curl -I https://job-seo-overhaul.preview.emergentagent.com
 # Expected: HTTP/2 200
 
 # MongoDB connectivity
@@ -2147,7 +2147,7 @@ mongosh --eval "db.adminCommand('ping')"
 # Expected: { ok: 1 }
 
 # API documentation
-# Visit: https://career-site-revamp.preview.emergentagent.com/docs
+# Visit: https://job-seo-overhaul.preview.emergentagent.com/docs
 ```
 
 #### Troubleshooting Common Issues
@@ -2432,7 +2432,7 @@ spec:
         - containerPort: 80
         env:
         - name: REACT_APP_BACKEND_URL
-          value: "https://career-site-revamp.preview.emergentagent.com"
+          value: "https://job-seo-overhaul.preview.emergentagent.com"
         resources:
           requests:
             memory: "128Mi"

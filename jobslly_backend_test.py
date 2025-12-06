@@ -11,7 +11,7 @@ from datetime import datetime
 import time
 
 # Configuration
-BASE_URL = "https://career-site-revamp.preview.emergentagent.com/api"
+BASE_URL = "https://job-seo-overhaul.preview.emergentagent.com/api"
 
 class JobsllyBackendTester:
     def __init__(self):

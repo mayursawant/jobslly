@@ -126,7 +126,7 @@ Static content includes key terms:
 
 ### 1. HTML Source Check
 ```bash
-curl -s "https://career-site-revamp.preview.emergentagent.com/" | grep -c "Explore The Best"
+curl -s "https://job-seo-overhaul.preview.emergentagent.com/" | grep -c "Explore The Best"
 # Output: 1 ✓
 ```
 
@@ -226,7 +226,7 @@ Expected improvements:
 ## Deployment
 
 Changes deployed to preview environment:
-- URL: https://career-site-revamp.preview.emergentagent.com/
+- URL: https://job-seo-overhaul.preview.emergentagent.com/
 - Status: ✅ Live and verified
 - React functionality: ✅ Working correctly
 

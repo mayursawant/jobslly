@@ -12,7 +12,7 @@ import json
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://career-site-revamp.preview.emergentagent.com/api"
+BASE_URL = "https://job-seo-overhaul.preview.emergentagent.com/api"
 
 class CategoryFilteringTester:
     def __init__(self):
