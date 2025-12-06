@@ -395,7 +395,16 @@ async def inject_meta_tags(html_content, path):
     
     # For job pages, inject JSON-LD schema and SSR content
     if is_job_page and 'job_data' in meta_data:
-        # Inject JSON-LD schema before </head>
+        # REMOVE the generic WebSite schema first (it's for homepage only)
+        # Match the entire WebSite JSON-LD script block
+        html_content = re.sub(
+            r'<script type="application/ld\+json">\s*\{[^}]*"@type":\s*"WebSite"[^}]*\{[^}]*\}[^}]*\}\s*</script>',
+            '',
+            html_content,
+            flags=re.DOTALL
+        )
+        
+        # Inject JobPosting JSON-LD schema before </head>
         if 'jsonld_schema' in meta_data:
             jsonld_script = f'<script type="application/ld+json">\n{meta_data["jsonld_schema"]}\n</script>'
             html_content = html_content.replace('</head>', f'{jsonld_script}\n</head>', 1)
