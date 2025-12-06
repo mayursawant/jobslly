@@ -366,10 +366,30 @@ async def inject_meta_tags(html_content, path):
         count=1
     )
     
-    # For job pages, inject server-side rendered content
+    # Add og:url if available
+    if 'og_url' in meta_data:
+        og_url = html.escape(meta_data['og_url'])
+        # Try to replace existing og:url or add it
+        if '<meta property="og:url"' in html_content:
+            html_content = re.sub(
+                r'<meta property="og:url" content=".*?"[^>]*>',
+                f'<meta property="og:url" content="{og_url}"/>',
+                html_content,
+                count=1
+            )
+        else:
+            # Add before </head>
+            html_content = html_content.replace('</head>', f'<meta property="og:url" content="{og_url}"/>\n</head>', 1)
+    
+    # For job pages, inject JSON-LD schema and SSR content
     if is_job_page and 'job_data' in meta_data:
-        job_html = generate_job_html_content(meta_data['job_data'])
+        # Inject JSON-LD schema before </head>
+        if 'jsonld_schema' in meta_data:
+            jsonld_script = f'<script type="application/ld+json">\n{meta_data["jsonld_schema"]}\n</script>'
+            html_content = html_content.replace('</head>', f'{jsonld_script}\n</head>', 1)
+        
         # Inject SSR content right after <body> tag
+        job_html = generate_job_html_content(meta_data['job_data'])
         html_content = html_content.replace('<body>', f'<body>{job_html}', 1)
     
     return html_content
