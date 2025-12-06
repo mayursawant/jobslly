@@ -291,9 +291,7 @@ async def inject_meta_tags(html_content, path):
         if path.startswith('/jobs/') and path != '/jobs/' and path != '/jobs':
             # Job detail page
             slug = path.replace('/jobs/', '').strip('/')
-            print(f"[META INJECTOR] Detected job page with slug: {slug}")
             meta_data = await get_job_meta(db, slug)
-            print(f"[META INJECTOR] Meta data found: {bool(meta_data)}")
             is_job_page = True
         
         elif path.startswith('/blogs/') and path != '/blogs/' and path != '/blogs':
