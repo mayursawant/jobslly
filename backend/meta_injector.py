@@ -29,6 +29,91 @@ def clean_html_for_meta(text):
     
     return text
 
+def generate_job_jsonld(job):
+    """Generate JSON-LD structured data for JobPosting schema (Google Jobs compliant)"""
+    import json
+    from datetime import datetime
+    
+    job_title = job.get('title', 'Job Opening')
+    company = job.get('company', 'Company')
+    location = job.get('location', 'Location')
+    description = clean_html_for_meta(job.get('description', 'No description available'))
+    salary_min = job.get('salary_min', '')
+    salary_max = job.get('salary_max', '')
+    currency = job.get('currency', 'INR')
+    job_type = job.get('job_type', 'FULL_TIME').upper().replace(' ', '_')
+    created_at = job.get('created_at')
+    expires_at = job.get('expires_at')
+    slug = job.get('slug', '')
+    
+    # Format salary
+    salary_data = {}
+    if salary_min or salary_max:
+        salary_data = {
+            "@type": "MonetaryAmount",
+            "currency": currency
+        }
+        if salary_min and salary_max:
+            salary_data["value"] = {
+                "@type": "QuantitativeValue",
+                "minValue": float(salary_min) if salary_min else 0,
+                "maxValue": float(salary_max) if salary_max else 0,
+                "unitText": "MONTH"
+            }
+        elif salary_min:
+            salary_data["value"] = {
+                "@type": "QuantitativeValue",
+                "value": float(salary_min),
+                "unitText": "MONTH"
+            }
+    
+    # Format dates
+    date_posted = created_at.isoformat() if hasattr(created_at, 'isoformat') else str(created_at)
+    valid_through = expires_at.isoformat() if expires_at and hasattr(expires_at, 'isoformat') else None
+    
+    # Build schema
+    schema = {
+        "@context": "https://schema.org/",
+        "@type": "JobPosting",
+        "title": job_title,
+        "description": description,
+        "datePosted": date_posted,
+        "hiringOrganization": {
+            "@type": "Organization",
+            "name": company
+        },
+        "jobLocation": {
+            "@type": "Place",
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": location,
+                "addressCountry": "IN"
+            }
+        },
+        "employmentType": job_type,
+        "url": f"https://jobslly.com/jobs/{slug}"
+    }
+    
+    # Add salary if available
+    if salary_data:
+        schema["baseSalary"] = salary_data
+    
+    # Add valid through if available
+    if valid_through:
+        schema["validThrough"] = valid_through
+    
+    # Add job benefits if available
+    benefits = job.get('benefits', [])
+    if benefits:
+        schema["jobBenefits"] = ", ".join(benefits)
+    
+    # Add qualifications if available
+    requirements = job.get('requirements', [])
+    if requirements:
+        schema["qualifications"] = " ".join(requirements)
+    
+    return json.dumps(schema, indent=2)
+
 async def get_job_meta(db, job_slug):
     """Get meta tags for a job detail page"""
     job = await db.jobs.find_one({
