@@ -8,7 +8,7 @@ const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://job-seo-overhaul.preview.emergentagent.com/api';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://seo-job-portal-2.preview.emergentagent.com/api';
 
 // Serve uploaded images from public/uploads (these are not part of the build)
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));

@@ -115,7 +115,7 @@ useEffect(() => {
 ```
 # Redirect www to non-www with 301 (permanent redirect)
 https://www.jobslly.com/* https://jobslly.com/:splat 301!
-https://www.medical-careers-1.preview.emergentagent.com/* https://job-seo-overhaul.preview.emergentagent.com/:splat 301!
+https://www.medical-careers-1.preview.emergentagent.com/* https://seo-job-portal-2.preview.emergentagent.com/:splat 301!
 
 # Fallback for client-side routing (SPA)
 /*    /index.html   200

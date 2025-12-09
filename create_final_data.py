@@ -4,7 +4,7 @@ import json
 import random
 from datetime import datetime, timezone
 
-BACKEND_URL = "https://job-seo-overhaul.preview.emergentagent.com"
+BACKEND_URL = "https://seo-job-portal-2.preview.emergentagent.com"
 ADMIN_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJleHAiOjE3NTk2OTUxMzF9.ql52oQJcPSQwvzU1AOpsviKSMmWXF-kWHPSuBjiYuGQ"
 
 def create_api_request(endpoint, data, token=None):
