@@ -492,9 +492,9 @@ def generate_category_html_content(category_slug, title, description, count, job
     </nav>
     '''
     
-    # Complete SSR content
+    # Complete SSR content (visible for search engines AND users before React loads)
     ssr_content = f'''
-    <div id="ssr-category-content" style="display:none;">
+    <div id="ssr-category-content">
         {breadcrumbs_html}
         <header class="ssr-category-header">
             <h1>{title.replace(" | Jobslly", "")}</h1>
@@ -506,7 +506,7 @@ def generate_category_html_content(category_slug, title, description, count, job
             {jobs_html}
         </section>
         <style>
-            #ssr-category-content {{ display: none; }}
+            #ssr-category-content {{ max-width: 1200px; margin: 0 auto; padding: 20px; }}
             .ssr-job-card {{ margin-bottom: 20px; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; }}
             .ssr-job-card h3 {{ margin: 0 0 10px 0; font-size: 18px; }}
             .ssr-job-card h3 a {{ color: #14b8a6; text-decoration: none; }}
