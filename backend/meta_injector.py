@@ -388,13 +388,25 @@ async def inject_meta_tags(html_content, path):
         
         meta_data = None
         is_job_page = False
+        is_category_page = False
         
         # Detect page type from path
         if path.startswith('/jobs/') and path != '/jobs/' and path != '/jobs':
-            # Job detail page
             slug = path.replace('/jobs/', '').strip('/')
-            meta_data = await get_job_meta(db, slug)
-            is_job_page = True
+            
+            # Check if it's a category page first (these are short slugs without job IDs)
+            category_slugs = ["doctor", "nursing", "pharmacy", "dentist", "physiotherapy", 
+                            "medical-lab-technician", "medical-science-liaison", 
+                            "pharmacovigilance", "clinical-research", "non-clinical-jobs"]
+            
+            if slug in category_slugs:
+                # Category page
+                meta_data = await get_category_meta(db, slug)
+                is_category_page = True
+            else:
+                # Job detail page (has a full slug with ID)
+                meta_data = await get_job_meta(db, slug)
+                is_job_page = True
         
         elif path.startswith('/blogs/') and path != '/blogs/' and path != '/blogs':
             # Blog detail page
