@@ -387,9 +387,9 @@ def generate_job_html_content(job):
             benefits_html += f'<li>{benefit}</li>'
         benefits_html += '</ul></div>'
     
-    # Generate full HTML (hidden but crawlable)
+    # Generate full HTML (visible for search engines AND users before React loads)
     ssr_content = f'''
-    <div id="ssr-job-content" style="display:none;" itemscope itemtype="https://schema.org/JobPosting">
+    <div id="ssr-job-content" itemscope itemtype="https://schema.org/JobPosting" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
         <h1 itemprop="title">{job_title}</h1>
         <div class="job-company" itemprop="hiringOrganization" itemscope itemtype="https://schema.org/Organization">
             <span itemprop="name">{company}</span>
