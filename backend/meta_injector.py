@@ -275,13 +275,57 @@ async def get_category_meta(db, category_slug):
     title = metadata["seo_title"].replace("[Number]", str(count)).replace("[number]", str(count))
     description = metadata["meta_description"].replace("[Number]", str(count)).replace("[number]", str(count))
     
+    # Fetch first 20 jobs for SSR
+    if category_slug in TITLE_BASED_CATEGORIES:
+        title_keywords = TITLE_BASED_CATEGORIES[category_slug]
+        title_regex = "|".join(title_keywords)
+        jobs_cursor = db.jobs.find({
+            "title": {"$regex": title_regex, "$options": "i"},
+            "is_approved": True,
+            "is_deleted": {"$ne": True}
+        }, {"_id": 0}).sort("created_at", -1).limit(20)
+    else:
+        db_categories = CATEGORY_DB_MAPPING.get(category_slug, [category_slug])
+        jobs_cursor = db.jobs.find({
+            "categories": {"$in": db_categories},
+            "is_approved": True,
+            "is_deleted": {"$ne": True}
+        }, {"_id": 0}).sort("created_at", -1).limit(20)
+    
+    jobs_list = await jobs_cursor.to_list(20)
+    
+    # Generate ItemList JSON-LD schema
+    import json
+    item_list_elements = []
+    for idx, job in enumerate(jobs_list, 1):
+        item_list_elements.append({
+            "@type": "ListItem",
+            "position": idx,
+            "url": f"https://jobslly.com/jobs/{job.get('slug', '')}"
+        })
+    
+    jsonld_schema = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": title,
+        "description": description,
+        "numberOfItems": count,
+        "itemListElement": item_list_elements
+    }, indent=2)
+    
+    # Generate SSR HTML content for category page
+    category_html = generate_category_html_content(category_slug, title, description, count, jobs_list)
+    
     return {
         'title': title,
         'description': description,
         'og_title': title,
         'og_description': description,
         'og_type': 'website',
-        'keywords': f"{category_slug.replace('-', ' ')}, healthcare jobs, medical jobs, job opportunities in India"
+        'keywords': f"{category_slug.replace('-', ' ')}, healthcare jobs, medical jobs, job opportunities in India",
+        'jsonld_schema': jsonld_schema,
+        'category_html': category_html,
+        'canonical': f"https://jobslly.com/jobs/{category_slug}"
     }
 
 def generate_job_html_content(job):
