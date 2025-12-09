@@ -395,27 +395,6 @@ async def inject_meta_tags(html_content, path):
     
     # For job pages, inject JSON-LD schema and SSR content
     if is_job_page and 'job_data' in meta_data:
-        # REMOVE the generic WebSite schema first (it's for homepage only)
-        # Find and remove the script tag containing WebSite schema
-        # This works with both formatted and minified HTML
-        start_marker = '<script type="application/ld+json">'
-        website_type = '"@type": "WebSite"'
-        
-        start_idx = html_content.find(start_marker)
-        while start_idx != -1:
-            end_idx = html_content.find('</script>', start_idx)
-            if end_idx != -1:
-                script_content = html_content[start_idx:end_idx + len('</script>')]
-                if website_type in script_content or '"@type":"WebSite"' in script_content:
-                    # This is the WebSite schema - remove it
-                    html_content = html_content[:start_idx] + html_content[end_idx + len('</script>'):]
-                    break
-                else:
-                    # This is another schema, keep looking
-                    start_idx = html_content.find(start_marker, end_idx)
-            else:
-                break
-        
         # Inject JobPosting JSON-LD schema before </head>
         if 'jsonld_schema' in meta_data:
             jsonld_script = f'<script type="application/ld+json">\n{meta_data["jsonld_schema"]}\n</script>'
@@ -424,5 +403,21 @@ async def inject_meta_tags(html_content, path):
         # Inject SSR content right after <body> tag
         job_html = generate_job_html_content(meta_data['job_data'])
         html_content = html_content.replace('<body>', f'<body>{job_html}', 1)
+    else:
+        # For non-job pages (homepage, etc.), inject WebSite schema
+        website_schema = '''{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Jobslly",
+  "description": "India's Largest Healthcare Community - Find healthcare jobs for doctors, nurses, pharmacists, dentists, and physiotherapists",
+  "url": "https://jobslly.com",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://jobslly.com/jobs?search={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}'''
+        website_jsonld = f'<script type="application/ld+json">\n{website_schema}\n</script>'
+        html_content = html_content.replace('</head>', f'{website_jsonld}\n</head>', 1)
     
     return html_content
