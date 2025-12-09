@@ -414,6 +414,116 @@ def generate_job_html_content(job):
     '''
     return ssr_content
 
+def generate_category_html_content(category_slug, title, description, count, jobs_list):
+    """Generate server-side rendered HTML content for category pages"""
+    
+    # Category intro texts
+    CATEGORY_INTROS = {
+        "doctor": "Find the best doctor jobs across India. Our platform connects medical professionals with top hospitals and healthcare facilities.",
+        "nursing": "Explore nursing opportunities in leading hospitals and healthcare centers. Join a community of dedicated nursing professionals.",
+        "pharmacy": "Discover pharmacy jobs in top pharmaceutical companies, hospitals, and retail chains across India.",
+        "dentist": "Browse dentist job openings in hospitals and dental clinics. Build your dental career with Jobslly.",
+        "physiotherapy": "Find physiotherapy jobs in hospitals and rehabilitation centers. Connect with leading healthcare providers.",
+        "medical-lab-technician": "Search medical lab technician positions in diagnostic centers and hospitals across India.",
+        "medical-science-liaison": "Explore MSL roles in leading pharmaceutical companies. Bridge the gap between science and business.",
+        "pharmacovigilance": "Find pharmacovigilance jobs in pharma and CRO companies. Ensure drug safety and patient protection.",
+        "clinical-research": "Discover clinical research opportunities in CROs and research organizations across India.",
+        "non-clinical-jobs": "Explore non-clinical healthcare roles in administration, HR, marketing, and management."
+    }
+    
+    intro_text = CATEGORY_INTROS.get(category_slug, "Explore the latest job opportunities in this category.")
+    category_name = category_slug.replace('-', ' ').title()
+    
+    # Generate job listing HTML
+    jobs_html = ""
+    for job in jobs_list:
+        job_title = job.get('title', 'Job Opening')
+        company = job.get('company', 'Company')
+        location = job.get('location', 'Location')
+        job_type = job.get('job_type', 'Full Time')
+        salary = f"{job.get('salary_min', '')} - {job.get('salary_max', '')}" if job.get('salary_min') else 'Competitive'
+        slug = job.get('slug', '')
+        description_snippet = clean_html_for_meta(job.get('description', ''))[:150] + '...'
+        
+        jobs_html += f'''
+        <article class="ssr-job-card" itemscope itemtype="https://schema.org/JobPosting">
+            <h3 itemprop="title"><a href="/jobs/{slug}">{job_title}</a></h3>
+            <div class="job-meta">
+                <span itemprop="hiringOrganization" itemscope itemtype="https://schema.org/Organization">
+                    <strong itemprop="name">{company}</strong>
+                </span>
+                <span itemprop="jobLocation" itemscope itemtype="https://schema.org/Place">
+                    <span itemprop="address">📍 {location}</span>
+                </span>
+            </div>
+            <div class="job-details">
+                <span class="job-type">{job_type}</span>
+                <span class="job-salary">💰 {salary}</span>
+            </div>
+            <p itemprop="description">{description_snippet}</p>
+            <a href="/jobs/{slug}" class="apply-link">View Details & Apply →</a>
+        </article>
+        '''
+    
+    # Generate breadcrumbs
+    breadcrumbs_html = f'''
+    <nav class="ssr-breadcrumbs" aria-label="Breadcrumb">
+        <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <a itemprop="item" href="/">
+                    <span itemprop="name">Home</span>
+                </a>
+                <meta itemprop="position" content="1" />
+            </li>
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <a itemprop="item" href="/jobs">
+                    <span itemprop="name">Jobs</span>
+                </a>
+                <meta itemprop="position" content="2" />
+            </li>
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span itemprop="name">{category_name} Jobs</span>
+                <meta itemprop="position" content="3" />
+            </li>
+        </ol>
+    </nav>
+    '''
+    
+    # Complete SSR content
+    ssr_content = f'''
+    <div id="ssr-category-content" style="display:none;">
+        {breadcrumbs_html}
+        <header class="ssr-category-header">
+            <h1>{title.replace(" | Jobslly", "")}</h1>
+            <p class="category-intro">{description}</p>
+            <p class="category-description">{intro_text}</p>
+        </header>
+        <section class="ssr-job-listings">
+            <h2>Latest {category_name} Job Openings</h2>
+            {jobs_html}
+        </section>
+        <style>
+            #ssr-category-content {{ display: none; }}
+            .ssr-job-card {{ margin-bottom: 20px; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; }}
+            .ssr-job-card h3 {{ margin: 0 0 10px 0; font-size: 18px; }}
+            .ssr-job-card h3 a {{ color: #14b8a6; text-decoration: none; }}
+            .ssr-job-card .job-meta {{ margin-bottom: 10px; color: #6b7280; }}
+            .ssr-job-card .job-details {{ margin-bottom: 10px; }}
+            .ssr-job-card .job-type, .ssr-job-card .job-salary {{ margin-right: 15px; font-size: 14px; }}
+            .ssr-job-card p {{ color: #4b5563; line-height: 1.6; }}
+            .ssr-job-card .apply-link {{ color: #14b8a6; text-decoration: none; font-weight: 600; }}
+            .ssr-breadcrumbs ol {{ list-style: none; padding: 0; display: flex; gap: 8px; flex-wrap: wrap; }}
+            .ssr-breadcrumbs li:not(:last-child)::after {{ content: " › "; margin-left: 8px; }}
+            .ssr-category-header {{ margin-bottom: 30px; }}
+            .ssr-category-header h1 {{ font-size: 32px; font-weight: 700; margin-bottom: 15px; }}
+            .category-intro {{ font-size: 16px; color: #6b7280; margin-bottom: 10px; }}
+            .category-description {{ font-size: 15px; color: #4b5563; line-height: 1.6; }}
+        </style>
+    </div>
+    '''
+    
+    return ssr_content
+
 async def inject_meta_tags(html_content, path):
     """Inject dynamic meta tags and SSR content into HTML based on path"""
     # Create MongoDB client with proper connection settings
