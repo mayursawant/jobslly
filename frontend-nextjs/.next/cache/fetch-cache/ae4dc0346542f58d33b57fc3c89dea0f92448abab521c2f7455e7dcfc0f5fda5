@@ -1,1 +1,0 @@
-{"kind":"FETCH","data":{"headers":{"alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","content-length":"2","content-type":"application/json","date":"Tue, 09 Dec 2025 07:43:12 GMT","server":"uvicorn","via":"1.1 google"},"body":"W10=","status":200,"url":"https://seo-job-portal-2.preview.emergentagent.com/api/jobs?category=nursing"},"revalidate":3600,"tags":[]}
