@@ -661,6 +661,24 @@ async def inject_meta_tags(html_content, path):
             # Add before </head>
             html_content = html_content.replace('</head>', f'<meta property="og:url" content="{og_url}"/>\n</head>', 1)
     
+    # Add canonical URL
+    canonical_url = meta_data.get('canonical', meta_data.get('og_url', ''))
+    if canonical_url:
+        canonical_url = html.escape(canonical_url)
+        if '<link rel="canonical"' in html_content:
+            html_content = re.sub(
+                r'<link rel="canonical" href=".*?"[^>]*>',
+                f'<link rel="canonical" href="{canonical_url}"/>',
+                html_content,
+                count=1
+            )
+        else:
+            html_content = html_content.replace('</head>', f'<link rel="canonical" href="{canonical_url}"/>\n</head>', 1)
+    
+    # Add robots meta tag (index, follow for all pages)
+    if '<meta name="robots"' not in html_content:
+        html_content = html_content.replace('</head>', '<meta name="robots" content="index, follow"/>\n</head>', 1)
+    
     # For job pages, inject JSON-LD and SSR content
     if is_job_page and 'job_data' in meta_data:
         # Inject JobPosting JSON-LD schema before </head>
