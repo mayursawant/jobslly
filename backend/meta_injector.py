@@ -182,6 +182,108 @@ async def get_blog_meta(db, blog_slug):
         'keywords': ', '.join(blog.get('seo_keywords', []) + [blog.get('category', 'healthcare')])
     }
 
+async def get_category_meta(db, category_slug):
+    """Get meta tags for a category page"""
+    # Category metadata mapping
+    CATEGORY_METADATA = {
+        "doctor": {
+            "seo_title": "[Number] Doctor Jobs in India | Latest Openings | Jobslly",
+            "meta_description": "Search [Number] doctor jobs across top hospitals and clinics in India. Apply for the latest physician, specialist, and medical officer openings with Jobslly.",
+        },
+        "nursing": {
+            "seo_title": "[Number] Nursing Jobs in India | Apply Today | Jobslly",
+            "meta_description": "Explore [Number] nursing jobs in leading hospitals and healthcare centers across India. Apply today for staff nurse, GNM, and RN vacancies with Jobslly.",
+        },
+        "pharmacy": {
+            "seo_title": "[Number] Pharmacy Jobs in India | Latest Pharma Openings | Jobslly",
+            "meta_description": "Find [Number] pharmacy jobs in top pharma companies, hospitals, and medical stores across India. Apply for pharmacist and pharma career roles with Jobslly.",
+        },
+        "dentist": {
+            "seo_title": "[Number] Dentist Jobs in Hospitals & Dental Clinics in India | Jobslly",
+            "meta_description": "Browse [number] dentist jobs in hospitals and dental clinics across India. Apply for the latest dental vacancies and grow your career with Jobslly today.",
+        },
+        "physiotherapy": {
+            "seo_title": "[Number] Physiotherapy Jobs in Hospitals & Rehab Centers | Jobslly",
+            "meta_description": "Explore [number] physiotherapy jobs in hospitals and rehab centers across India. Apply for the latest physiotherapist openings with Jobslly.",
+        },
+        "medical-lab-technician": {
+            "seo_title": "[Number] Medical Lab Technician Jobs in Diagnostic Centers | Jobslly",
+            "meta_description": "Find [number] medical lab technician jobs in top diagnostic centers across India. Apply for latest MLT vacancies and start your career today.",
+        },
+        "medical-science-liaison": {
+            "seo_title": "[Number] Medical Science Liaison Jobs in Pharma Companies | Jobslly",
+            "meta_description": "Discover [number] medical science liaison jobs in leading pharma companies across India. Apply now for MSL roles with Jobslly.",
+        },
+        "pharmacovigilance": {
+            "seo_title": "[Number] Pharmacovigilance Jobs in Pharma & CRO Companies | Jobslly",
+            "meta_description": "Search [number] pharmacovigilance jobs in pharma and CRO companies across India. Apply for drug safety and PV roles with Jobslly.",
+        },
+        "clinical-research": {
+            "seo_title": "[Number] Clinical Research Jobs in CROs & Research Organizations | Jobslly",
+            "meta_description": "Browse [number] clinical research jobs in CROs and research organizations across India. Apply for CRA and CRC positions with Jobslly.",
+        },
+        "non-clinical-jobs": {
+            "seo_title": "[Number] Non-Clinical Healthcare Jobs in Hospitals & Corporate | Jobslly",
+            "meta_description": "Explore [number] non-clinical healthcare jobs in hospitals and corporate offices across India. Apply for admin, HR, and management roles.",
+        }
+    }
+    
+    if category_slug not in CATEGORY_METADATA:
+        return None
+    
+    # Get job count for this category
+    # Map URL slugs to DB category values
+    CATEGORY_DB_MAPPING = {
+        "doctor": ["doctors", "doctor"],
+        "nursing": ["nurses", "nursing"],
+        "pharmacy": ["pharmacy", "pharmacists"],
+        "dentist": ["dentist", "dentists"],
+        "physiotherapy": ["physiotherapy", "physiotherapists"],
+        "medical-lab-technician": ["medical-lab-technician"],
+        "medical-science-liaison": ["medical-science-liaison"],
+        "pharmacovigilance": ["pharmacovigilance"],
+        "clinical-research": ["clinical-research"],
+        "non-clinical-jobs": ["non-clinical-jobs", "all"]
+    }
+    
+    TITLE_BASED_CATEGORIES = {
+        "medical-lab-technician": ["medical lab technician", "mlt", "lab technician"],
+        "medical-science-liaison": ["medical science liaison", "msl"],
+        "pharmacovigilance": ["pharmacovigilance", "drug safety", "pv specialist", "pv associate"],
+        "clinical-research": ["clinical research", "clinical trial", "cra", "crc", "clinical data"],
+        "non-clinical-jobs": ["non clinical", "admin", "hr", "manager", "operations", "marketing"]
+    }
+    
+    # Count jobs
+    if category_slug in TITLE_BASED_CATEGORIES:
+        title_keywords = TITLE_BASED_CATEGORIES[category_slug]
+        title_regex = "|".join(title_keywords)
+        count = await db.jobs.count_documents({
+            "title": {"$regex": title_regex, "$options": "i"},
+            "is_approved": True,
+            "is_deleted": {"$ne": True}
+        })
+    else:
+        db_categories = CATEGORY_DB_MAPPING.get(category_slug, [category_slug])
+        count = await db.jobs.count_documents({
+            "categories": {"$in": db_categories},
+            "is_approved": True,
+            "is_deleted": {"$ne": True}
+        })
+    
+    metadata = CATEGORY_METADATA[category_slug]
+    title = metadata["seo_title"].replace("[Number]", str(count)).replace("[number]", str(count))
+    description = metadata["meta_description"].replace("[Number]", str(count)).replace("[number]", str(count))
+    
+    return {
+        'title': title,
+        'description': description,
+        'og_title': title,
+        'og_description': description,
+        'og_type': 'website',
+        'keywords': f"{category_slug.replace('-', ' ')}, healthcare jobs, medical jobs, job opportunities in India"
+    }
+
 def generate_job_html_content(job):
     """Generate server-side rendered HTML for job content (SEO-friendly)"""
     # Clean and escape all text fields to prevent HTML injection
