@@ -1,0 +1,22 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/jobs/[slug]/page": "app/jobs/[slug]/page.js",
+  "/jobs/clinical-research/page": "app/jobs/clinical-research/page.js",
+  "/jobs/dentist/page": "app/jobs/dentist/page.js",
+  "/jobs/doctor/page": "app/jobs/doctor/page.js",
+  "/jobs/medical-lab-technician/page": "app/jobs/medical-lab-technician/page.js",
+  "/jobs/medical-science-liaison/page": "app/jobs/medical-science-liaison/page.js",
+  "/jobs/non-clinical-jobs/page": "app/jobs/non-clinical-jobs/page.js",
+  "/jobs/nursing/page": "app/jobs/nursing/page.js",
+  "/jobs/page": "app/jobs/page.js",
+  "/jobs/pharmacovigilance/page": "app/jobs/pharmacovigilance/page.js",
+  "/jobs/pharmacy/page": "app/jobs/pharmacy/page.js",
+  "/jobs/physiotherapy/page": "app/jobs/physiotherapy/page.js",
+  "/page": "app/page.js",
+  "/privacy-policy/page": "app/privacy-policy/page.js",
+  "/robots.txt/route": "app/robots.txt/route.js",
+  "/sitemap.xml/route": "app/sitemap.xml/route.js",
+  "/terms-of-service/page": "app/terms-of-service/page.js"
+}
