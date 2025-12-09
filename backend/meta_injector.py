@@ -507,10 +507,26 @@ async def inject_meta_tags(html_content, path):
             # Add before </head>
             html_content = html_content.replace('</head>', f'<meta property="og:url" content="{og_url}"/>\n</head>', 1)
     
-    # For job pages, inject SSR content (NO JSON-LD schemas as per user request)
+    # For job pages, inject JSON-LD and SSR content
     if is_job_page and 'job_data' in meta_data:
-        # Inject SSR content right after <body> tag
+        # Inject JobPosting JSON-LD schema before </head>
+        if 'jsonld_schema' in meta_data:
+            jsonld_script = f'<script type="application/ld+json">\n{meta_data["jsonld_schema"]}\n</script>'
+            html_content = html_content.replace('</head>', f'{jsonld_script}\n</head>', 1)
+        
+        # Inject full SSR job content right after <body> tag
         job_html = generate_job_html_content(meta_data['job_data'])
         html_content = html_content.replace('<body>', f'<body>{job_html}', 1)
+    
+    # For category pages, inject ItemList JSON-LD and SSR content
+    elif is_category_page and meta_data:
+        # Inject ItemList JSON-LD schema before </head>
+        if 'jsonld_schema' in meta_data:
+            jsonld_script = f'<script type="application/ld+json">\n{meta_data["jsonld_schema"]}\n</script>'
+            html_content = html_content.replace('</head>', f'{jsonld_script}\n</head>', 1)
+        
+        # Inject SSR category content right after <body> tag
+        if 'category_html' in meta_data:
+            html_content = html_content.replace('<body>', f'<body>{meta_data["category_html"]}', 1)
     
     return html_content
