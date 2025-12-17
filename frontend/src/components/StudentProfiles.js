@@ -529,8 +529,8 @@ const StudentProfiles = () => {
                               </h3>
                               <ul className="space-y-2">
                                 {profile.pvReadiness.map((item, idx) => (
-                                  <li key={idx} className="flex items-start gap-2 text-gray-300 text-sm">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-2 flex-shrink-0"></div>
+                                  <li key={idx} className="flex items-start gap-2 text-gray-700 text-sm">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-2 flex-shrink-0"></div>
                                     <span>{item}</span>
                                   </li>
                                 ))}
