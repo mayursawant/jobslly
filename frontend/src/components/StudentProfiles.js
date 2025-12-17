@@ -261,36 +261,102 @@ const StudentProfiles = () => {
   }, [searchQuery, profiles]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-white">
       <Helmet>
         <title>Premium Student Profiles | Jobslly Healthcare Talent</title>
         <meta name="description" content="Browse exceptional healthcare talent profiles. Clinical Research Associates, Pharmacovigilance Specialists, Medical Affairs professionals ready for recruitment." />
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
+      {/* Contact Modal */}
+      <Dialog open={isContactModalOpen} onOpenChange={setIsContactModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+              <Mail className="w-6 h-6 text-teal-600" />
+              Contact Recruiter
+            </DialogTitle>
+            <DialogDescription className="text-gray-600">
+              Get in touch with our recruitment team for detailed candidate information
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-6 py-4">
+            {/* Phone */}
+            <div className="flex items-start gap-4 p-4 bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl border border-teal-200">
+              <div className="flex-shrink-0 w-12 h-12 bg-teal-600 rounded-full flex items-center justify-center">
+                <Phone className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-600 mb-1">Phone Number</p>
+                <a 
+                  href="tel:8265903855" 
+                  className="text-lg font-bold text-teal-600 hover:text-teal-700 transition-colors"
+                >
+                  8265903855
+                </a>
+              </div>
+            </div>
+
+            {/* Email */}
+            <div className="flex items-start gap-4 p-4 bg-gradient-to-r from-emerald-50 to-cyan-50 rounded-xl border border-emerald-200">
+              <div className="flex-shrink-0 w-12 h-12 bg-emerald-600 rounded-full flex items-center justify-center">
+                <Mail className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-600 mb-1">Email Address</p>
+                <a 
+                  href="mailto:upskill@academically.com" 
+                  className="text-lg font-bold text-emerald-600 hover:text-emerald-700 transition-colors break-all"
+                >
+                  upskill@academically.com
+                </a>
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <Button
+                onClick={() => window.location.href = 'tel:8265903855'}
+                className="flex-1 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white"
+              >
+                <Phone className="w-4 h-4 mr-2" />
+                Call Now
+              </Button>
+              <Button
+                onClick={() => window.location.href = 'mailto:upskill@academically.com'}
+                className="flex-1 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 text-white"
+              >
+                <Mail className="w-4 h-4 mr-2" />
+                Send Email
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-purple-900 via-blue-900 to-slate-900 pt-32 pb-20">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 -left-4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
-          <div className="absolute top-0 -right-4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-700"></div>
-          <div className="absolute -bottom-8 left-20 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-1000"></div>
+      <div className="relative overflow-hidden bg-gradient-to-br from-teal-50 via-white to-emerald-50 pt-32 pb-20">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-0 -left-4 w-96 h-96 bg-teal-300 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
+          <div className="absolute top-0 -right-4 w-96 h-96 bg-emerald-300 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-700"></div>
+          <div className="absolute -bottom-8 left-20 w-96 h-96 bg-cyan-300 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-1000"></div>
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 mb-6">
-              <Sparkles className="w-4 h-4 text-yellow-400" />
-              <span className="text-sm font-medium text-white">Premium Healthcare Talent</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-100 to-emerald-100 rounded-full border border-teal-200 mb-6">
+              <Sparkles className="w-4 h-4 text-teal-600" />
+              <span className="text-sm font-medium text-teal-700">Premium Healthcare Talent</span>
             </div>
             
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
               Exceptional Student
-              <span className="block bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mt-2">
+              <span className="block bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 bg-clip-text text-transparent mt-2">
                 Profiles
               </span>
             </h1>
             
-            <p className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+            <p className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto mb-8">
               Discover highly qualified healthcare professionals ready to join your organization.
               <br className="hidden sm:block" />
               Clinical Research • Pharmacovigilance • Medical Affairs • HEOR
@@ -305,11 +371,11 @@ const StudentProfiles = () => {
                   placeholder="Search by name, role, specialization, location..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-6 text-base bg-white/10 backdrop-blur-md border-white/20 text-white placeholder:text-gray-400 rounded-2xl focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
+                  className="w-full pl-12 pr-4 py-6 text-base bg-white border-2 border-teal-200 text-gray-900 placeholder:text-gray-500 rounded-2xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 shadow-md"
                 />
               </div>
               {searchQuery && (
-                <p className="text-sm text-gray-300 mt-3">
+                <p className="text-sm text-gray-600 mt-3">
                   Found {filteredProfiles.length} {filteredProfiles.length === 1 ? 'profile' : 'profiles'}
                 </p>
               )}
