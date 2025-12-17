@@ -31,6 +31,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import CookiePolicy from './components/CookiePolicy';
 import CategoryPage from './components/CategoryPage';
+import StudentProfiles from './components/StudentProfiles';
 import { Toaster } from './components/ui/sonner';
 import { Helmet } from 'react-helmet';
 
