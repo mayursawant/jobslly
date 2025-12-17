@@ -1,9 +1,11 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File, Form, Header, Request, Query
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi.responses import Response, PlainTextResponse, RedirectResponse
+from fastapi.responses import Response, PlainTextResponse, RedirectResponse, HTMLResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response as StarletteResponse
 from motor.motor_asyncio import AsyncIOMotorClient
 import hashlib
 from pydantic import BaseModel, Field, EmailStr
@@ -75,6 +77,10 @@ class MetaTagInjectionMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         response = await call_next(request)
         
+        # Debug logging
+        import logging
+        logging.info(f"[META MIDDLEWARE] Path: {request.url.path}, Status: {response.status_code}, Content-Type: {response.headers.get('content-type', 'none')}")
+        
         # Only process HTML responses
         if response.status_code == 200 and request.url.path != '/api/sitemap.xml':
             content_type = response.headers.get('content-type', '')
@@ -93,11 +99,15 @@ class MetaTagInjectionMiddleware(BaseHTTPMiddleware):
                     from meta_injector import inject_meta_tags
                     html_content = await inject_meta_tags(html_content, path)
                 
-                # Return modified response
+                # Return modified response with updated Content-Length
+                response_headers = dict(response.headers)
+                # Remove Content-Length header as it's recalculated by Starlette
+                response_headers.pop('content-length', None)
+                
                 return StarletteResponse(
                     content=html_content,
                     status_code=response.status_code,
-                    headers=dict(response.headers),
+                    headers=response_headers,
                     media_type=response.media_type
                 )
         
@@ -429,8 +439,8 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     return encoded_jwt
 
 
-def generate_slug(title: str, company: str = None, location: str = None) -> str:
-    """Generate SEO-friendly slug from job title, company, and location"""
+def generate_slug(title: str, company: str = None, location: str = None, job_id: str = None) -> str:
+    """Generate SEO-friendly slug from job title, company, location, and job ID"""
     import re
     
     def clean_text(text: str, max_length: int = None) -> str:
@@ -457,7 +467,7 @@ def generate_slug(title: str, company: str = None, location: str = None) -> str:
     company_slug = clean_text(company, max_length=50) if company else ""  # Max 50 for company
     location_slug = clean_text(location, max_length=40) if location else ""  # Max 40 for location
     
-    # Build slug in format: [job-name]-job-at-[company-name]-in-[location]
+    # Build slug in format: [job-name]-job-at-[company-name]-in-[location]-[id]
     slug_parts = [title_slug]
     
     if company_slug:
@@ -466,13 +476,20 @@ def generate_slug(title: str, company: str = None, location: str = None) -> str:
     if location_slug:
         slug_parts.extend(["in", location_slug])
     
+    # Add job ID at the end for uniqueness (first 8 characters)
+    if job_id:
+        slug_parts.append(job_id[:8])
+    
     slug = "-".join(slug_parts)
     
     # Ensure slug is not empty and not too long (max 200 chars total)
     if not slug:
-        slug = "job"
+        slug = f"job-{job_id[:8]}" if job_id else "job"
     elif len(slug) > 200:
         slug = slug[:200].rsplit('-', 1)[0]  # Truncate at word boundary
+        # Re-add the ID at the end after truncation
+        if job_id:
+            slug = f"{slug}-{job_id[:8]}"
     
     return slug
 
@@ -694,9 +711,9 @@ async def create_job(job_data: JobCreate, current_user: User = Depends(get_curre
     
     job = Job(**job_data.dict(), employer_id=current_user.id)
     
-    # Generate unique slug from title, company, and location
-    base_slug = generate_slug(job.title, job.company, job.location)
-    job.slug = await ensure_unique_slug(base_slug)
+    # Generate unique slug from title, company, location, and job ID
+    base_slug = generate_slug(job.title, job.company, job.location, job.id)
+    job.slug = await ensure_unique_slug(base_slug, job.id)
     
     job_dict = job.dict()
     # Keep datetime objects as-is for MongoDB - do NOT convert to isoformat
@@ -1268,9 +1285,9 @@ async def admin_create_job(job_data: JobCreate, current_user: User = Depends(get
     
     job = Job(**job_data.dict(), employer_id=current_user.id, is_approved=True)
     
-    # Generate unique slug from title, company, and location
-    base_slug = generate_slug(job.title, job.company, job.location)
-    job.slug = await ensure_unique_slug(base_slug)
+    # Generate unique slug from title, company, location, and job ID
+    base_slug = generate_slug(job.title, job.company, job.location, job.id)
+    job.slug = await ensure_unique_slug(base_slug, job.id)
     
     job_dict = job.dict()
     # Keep datetime objects as-is for MongoDB - do NOT convert to isoformat
@@ -1737,13 +1754,13 @@ async def regenerate_job_slug(job_id: str, current_user: User = Depends(get_curr
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     
-    # Generate new slug
+    # Generate new slug with job ID
     title = job.get('title', 'Job')
     company = job.get('company', '')
     location = job.get('location', '')
     
     old_slug = job.get('slug', '')
-    base_slug = generate_slug(title, company, location)
+    base_slug = generate_slug(title, company, location, job_id)
     new_slug = await ensure_unique_slug(base_slug, job_id)
     
     # Update the slug
@@ -2465,8 +2482,13 @@ async def migrate_job_slugs(current_user: User = Depends(get_current_user)):
         
         updated_count = 0
         for job in jobs_without_slugs:
-            # Generate slug from title
-            base_slug = generate_slug(job['title'])
+            # Generate slug from title, company, location, and job ID
+            base_slug = generate_slug(
+                job.get('title', 'Job'),
+                job.get('company'),
+                job.get('location'),
+                job.get('id')
+            )
             unique_slug = await ensure_unique_slug(base_slug, job['id'])
             
             # Update job with slug
@@ -2696,7 +2718,7 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
 # Include the router
 app.include_router(api_router)
 
-# Add Meta Tag Injection Middleware for SEO (must be first)
+# Add Meta Tag Injection Middleware for SEO
 app.add_middleware(MetaTagInjectionMiddleware)
 
 # Add WWW to non-WWW redirect middleware (must be added before CORS)
@@ -2717,6 +2739,45 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Mount static files for production frontend serving
+import os.path
+frontend_build_path = "/app/frontend/build"
+
+# Check if frontend build exists
+if os.path.exists(frontend_build_path):
+    # Mount static files (CSS, JS, images, etc.) - only if static directory exists
+    static_path = f"{frontend_build_path}/static"
+    if os.path.exists(static_path) and os.path.isdir(static_path):
+        app.mount("/static", StaticFiles(directory=static_path), name="static")
+    
+    # Catch-all route for frontend (must be last)
+    @app.get("/{full_path:path}")
+    async def serve_frontend(request: Request, full_path: str):
+        """
+        Serve React frontend for all non-API routes.
+        Injects dynamic meta tags for job/blog detail pages.
+        """
+        # Skip API routes - they're handled by api_router
+        if full_path.startswith('api/'):
+            raise HTTPException(status_code=404, detail="Not found")
+        
+        # Return the index.html for all frontend routes
+        index_path = f"{frontend_build_path}/index.html"
+        
+        if os.path.exists(index_path):
+            with open(index_path, 'r', encoding='utf-8') as f:
+                html_content = f.read()
+            
+            # Inject meta tags for job/blog pages
+            path = request.url.path
+            if path.startswith('/jobs/') or path.startswith('/blogs/'):
+                from meta_injector import inject_meta_tags
+                html_content = await inject_meta_tags(html_content, path)
+            
+            return HTMLResponse(content=html_content, status_code=200, media_type="text/html; charset=utf-8")
+        else:
+            raise HTTPException(status_code=404, detail="Frontend build not found")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

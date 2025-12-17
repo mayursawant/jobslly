@@ -19,7 +19,7 @@ from PIL import Image
 import time
 
 # Configuration
-BASE_URL = "https://career-site-revamp.preview.emergentagent.com/api"
+BASE_URL = "https://seo-job-portal-2.preview.emergentagent.com/api"
 ADMIN_EMAIL = "developerAdmin@academically.com"
 ADMIN_PASSWORD = "password"
 

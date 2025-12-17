@@ -31,6 +31,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfService from './components/TermsOfService';
 import CookiePolicy from './components/CookiePolicy';
 import CategoryPage from './components/CategoryPage';
+import StudentProfiles from './components/StudentProfiles';
 import { Toaster } from './components/ui/sonner';
 import { Helmet } from 'react-helmet';
 
@@ -194,7 +195,7 @@ function App() {
                 "@type": "WebSite",
                 "name": "Jobslly",
                 "description": "Future of Healthcare Careers - AI-Powered Job Platform",
-                "url": "https://career-site-revamp.preview.emergentagent.com",
+                "url": "https://seo-job-portal-2.preview.emergentagent.com",
                 "potentialAction": {
                   "@type": "SearchAction",
                   "target": "https://jobslly.com/jobs?search={search_term_string}",
@@ -212,10 +213,10 @@ function App() {
               {JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "LocalBusiness",
-                "@id": "https://career-site-revamp.preview.emergentagent.com",
+                "@id": "https://seo-job-portal-2.preview.emergentagent.com",
                 "name": "Jobslly",
                 "description": "Healthcare job platform connecting medical professionals with opportunities",
-                "url": "https://career-site-revamp.preview.emergentagent.com",
+                "url": "https://seo-job-portal-2.preview.emergentagent.com",
                 "telephone": "+1-800-JOBSLLY",
                 "priceRange": "Free",
                 "openingHours": "Mo-Su 00:00-24:00",
@@ -282,6 +283,8 @@ function App() {
               {/* Other pages - Support both with and without trailing slash */}
               <Route path="/contact-us" element={<ContactUs />} />
               <Route path="/contact-us/" element={<ContactUs />} />
+              <Route path="/student-profiles" element={<StudentProfiles />} />
+              <Route path="/student-profiles/" element={<StudentProfiles />} />
               <Route path="/sitemap" element={<Sitemap />} />
               <Route path="/sitemap/" element={<Sitemap />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
