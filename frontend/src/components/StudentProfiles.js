@@ -686,27 +686,27 @@ const StudentProfiles = () => {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-gradient-to-r from-purple-900 via-blue-900 to-cyan-900 py-16">
+      <div className="bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
             Ready to Build Your Team?
           </h2>
-          <p className="text-lg text-gray-300 mb-8">
+          <p className="text-lg text-white/90 mb-8">
             Contact our recruitment specialists to discuss these exceptional candidates
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
-              className="bg-white text-purple-900 hover:bg-gray-100"
-              onClick={() => window.location.href = 'mailto:hr@jobslly.com?subject=Bulk Hiring Inquiry'}
+              className="bg-white text-teal-700 hover:bg-gray-100 shadow-xl"
+              onClick={() => setIsContactModalOpen(true)}
             >
-              <Mail className="w-5 h-5 mr-2" />
+              <Phone className="w-5 h-5 mr-2" />
               Schedule a Call
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="border-white/30 text-white hover:bg-white/10"
+              className="border-2 border-white text-white hover:bg-white/20"
               onClick={() => window.location.href = '/contact-us'}
             >
               Learn More
