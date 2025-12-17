@@ -429,34 +429,34 @@ const StudentProfiles = () => {
                     <div className="lg:w-2/3 p-6 lg:p-10">
                       {/* Header */}
                       <div className="mb-6">
-                        <Badge className="mb-3 bg-cyan-500/20 text-cyan-400 border-cyan-500/30 text-xs">
+                        <Badge className="mb-3 bg-teal-100 text-teal-700 border-teal-300 text-xs">
                           {profile.category}
                         </Badge>
                         
-                        <h2 className="text-2xl lg:text-3xl font-bold text-white mb-2">
+                        <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
                           {profile.name}
                         </h2>
                         
-                        <p className="text-base lg:text-lg text-gray-300 mb-4">
+                        <p className="text-base lg:text-lg text-gray-700 mb-4">
                           {profile.role}
                         </p>
 
                         {/* Key Info Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-                          <div className="flex items-center gap-2 text-gray-400">
-                            <GraduationCap className="w-4 h-4 text-cyan-400" />
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <GraduationCap className="w-4 h-4 text-teal-600" />
                             <span className="text-sm">{profile.education}</span>
                           </div>
-                          <div className="flex items-center gap-2 text-gray-400">
-                            <Briefcase className="w-4 h-4 text-purple-400" />
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Briefcase className="w-4 h-4 text-emerald-600" />
                             <span className="text-sm">{profile.experience} experience</span>
                           </div>
-                          <div className="flex items-center gap-2 text-gray-400">
-                            <MapPin className="w-4 h-4 text-pink-400" />
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <MapPin className="w-4 h-4 text-cyan-600" />
                             <span className="text-sm">{profile.location}</span>
                           </div>
-                          <div className="flex items-center gap-2 text-gray-400">
-                            <Award className="w-4 h-4 text-yellow-400" />
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Award className="w-4 h-4 text-teal-600" />
                             <span className="text-sm">{profile.age} years old</span>
                           </div>
                         </div>
@@ -466,7 +466,7 @@ const StudentProfiles = () => {
                           {profile.highlights.map((highlight, idx) => (
                             <Badge 
                               key={idx}
-                              className="bg-purple-500/20 text-purple-300 border-purple-500/30 text-xs"
+                              className="bg-emerald-100 text-emerald-700 border-emerald-300 text-xs"
                             >
                               {highlight}
                             </Badge>
