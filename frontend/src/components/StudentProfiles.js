@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, ChevronDown, ChevronUp, Briefcase, GraduationCap, Award, FileText, Mail, Sparkles } from 'lucide-react';
+import { Search, ChevronDown, ChevronUp, Briefcase, GraduationCap, Award, FileText, Mail, Sparkles, MapPin, Users } from 'lucide-react';
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
