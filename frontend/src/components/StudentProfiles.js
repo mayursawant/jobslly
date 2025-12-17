@@ -867,6 +867,60 @@ const StudentProfiles = () => {
                             </div>
                           )}
 
+                          {/* Research Leadership */}
+                          {profile.researchLeadership && (
+                            <div>
+                              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                <Award className="w-5 h-5 text-teal-600" />
+                                Research Leadership & Scientific Credibility
+                              </h3>
+                              <ul className="space-y-2">
+                                {profile.researchLeadership.map((item, idx) => (
+                                  <li key={idx} className="flex items-start gap-2 text-gray-700 text-sm">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mt-2 flex-shrink-0"></div>
+                                    <span>{item}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* Education & Training */}
+                          {profile.education_training && (
+                            <div>
+                              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                <GraduationCap className="w-5 h-5 text-emerald-600" />
+                                Education, Training & KOL Engagement
+                              </h3>
+                              <ul className="space-y-2">
+                                {profile.education_training.map((item, idx) => (
+                                  <li key={idx} className="flex items-start gap-2 text-gray-700 text-sm">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 flex-shrink-0"></div>
+                                    <span>{item}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* Communication */}
+                          {profile.communication && (
+                            <div>
+                              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                <FileText className="w-5 h-5 text-cyan-600" />
+                                Communication & Thought Leadership
+                              </h3>
+                              <ul className="space-y-2">
+                                {profile.communication.map((item, idx) => (
+                                  <li key={idx} className="flex items-start gap-2 text-gray-700 text-sm">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-2 flex-shrink-0"></div>
+                                    <span>{item}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
                           {/* Ideal Fit */}
                           <div className="bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl p-6 border-2 border-teal-200">
                             <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
