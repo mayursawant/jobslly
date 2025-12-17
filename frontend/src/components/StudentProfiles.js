@@ -638,7 +638,7 @@ const StudentProfiles = () => {
             {filteredProfiles.map((profile, index) => (
               <Card 
                 key={profile.id}
-                className={`group bg-white border-2 border-teal-100 hover:border-teal-400 hover:shadow-2xl transition-all duration-500 overflow-hidden ${
+                className={`profile-card group bg-white border-2 border-teal-100 hover:border-teal-400 hover:shadow-2xl transition-all duration-500 overflow-hidden card-pattern ${
                   index % 2 === 0 ? 'lg:mr-12' : 'lg:ml-12'
                 }`}
               >
