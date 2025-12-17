@@ -476,7 +476,7 @@ const StudentProfiles = () => {
 
                       {/* Summary */}
                       <div className="mb-6">
-                        <p className="text-gray-300 text-sm leading-relaxed">
+                        <p className="text-gray-700 text-sm leading-relaxed">
                           {profile.summary}
                         </p>
                       </div>
@@ -487,14 +487,14 @@ const StudentProfiles = () => {
                           {/* Core Competencies */}
                           {profile.competencies && (
                             <div>
-                              <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                                <Award className="w-5 h-5 text-cyan-400" />
+                              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                <Award className="w-5 h-5 text-teal-600" />
                                 Core Competencies
                               </h3>
                               <ul className="space-y-2">
                                 {profile.competencies.map((comp, idx) => (
-                                  <li key={idx} className="flex items-start gap-2 text-gray-300 text-sm">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-2 flex-shrink-0"></div>
+                                  <li key={idx} className="flex items-start gap-2 text-gray-700 text-sm">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mt-2 flex-shrink-0"></div>
                                     <span>{comp}</span>
                                   </li>
                                 ))}
@@ -505,14 +505,14 @@ const StudentProfiles = () => {
                           {/* Clinical Readiness */}
                           {profile.clinicalReadiness && (
                             <div>
-                              <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                                <FileText className="w-5 h-5 text-purple-400" />
+                              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                <FileText className="w-5 h-5 text-emerald-600" />
                                 Clinical Development Readiness
                               </h3>
                               <ul className="space-y-2">
                                 {profile.clinicalReadiness.map((item, idx) => (
-                                  <li key={idx} className="flex items-start gap-2 text-gray-300 text-sm">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-2 flex-shrink-0"></div>
+                                  <li key={idx} className="flex items-start gap-2 text-gray-700 text-sm">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 flex-shrink-0"></div>
                                     <span>{item}</span>
                                   </li>
                                 ))}
@@ -523,8 +523,8 @@ const StudentProfiles = () => {
                           {/* PV Readiness */}
                           {profile.pvReadiness && (
                             <div>
-                              <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                                <FileText className="w-5 h-5 text-emerald-400" />
+                              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                <FileText className="w-5 h-5 text-cyan-600" />
                                 Pharmacovigilance Role Readiness
                               </h3>
                               <ul className="space-y-2">
