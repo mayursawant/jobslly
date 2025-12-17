@@ -559,14 +559,14 @@ const StudentProfiles = () => {
                           {/* Publications */}
                           {profile.publications && (
                             <div>
-                              <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                                <FileText className="w-5 h-5 text-yellow-400" />
+                              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                <FileText className="w-5 h-5 text-emerald-600" />
                                 Publications & Scientific Output
                               </h3>
                               <ul className="space-y-2">
                                 {profile.publications.map((pub, idx) => (
-                                  <li key={idx} className="flex items-start gap-2 text-gray-300 text-sm">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 mt-2 flex-shrink-0"></div>
+                                  <li key={idx} className="flex items-start gap-2 text-gray-700 text-sm">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 flex-shrink-0"></div>
                                     <span>{pub}</span>
                                   </li>
                                 ))}
