@@ -783,7 +783,7 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Category Filtering Functionality Testing Complete"
+    - "Student Profiles Page Testing Complete"
   stuck_tasks: 
     - "Chatbot auto-open functionality"
   test_all: false
