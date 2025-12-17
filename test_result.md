@@ -798,7 +798,7 @@ frontend:
 
 test_plan:
   current_focus:
-    - "Student Profiles Page Testing Complete"
+    - "Student Profiles Page Updated Theme and Contact Modal Testing Complete"
   stuck_tasks: 
     - "Chatbot auto-open functionality"
   test_all: false
