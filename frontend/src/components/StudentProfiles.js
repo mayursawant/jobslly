@@ -1,14 +1,22 @@
 import React, { useState, useMemo } from 'react';
-import { Search, ChevronDown, ChevronUp, Briefcase, GraduationCap, Award, FileText, Mail, Sparkles, MapPin, Users } from 'lucide-react';
+import { Search, ChevronDown, ChevronUp, Briefcase, GraduationCap, Award, FileText, Mail, Sparkles, MapPin, Users, Phone, X } from 'lucide-react';
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Badge } from './ui/badge';
 import { Helmet } from 'react-helmet';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from './ui/dialog';
 
 const StudentProfiles = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedProfiles, setExpandedProfiles] = useState({});
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   const profiles = [
     {
