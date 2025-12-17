@@ -236,6 +236,155 @@ const StudentProfiles = () => {
         "Junior MSL",
         "Medical Scientific Executive (Field Medical Support)"
       ]
+    },
+    {
+      id: 8,
+      name: "Dr. Rajesh Iyer",
+      age: 38,
+      category: "SENIOR MEDICAL AFFAIRS LEADERSHIP",
+      role: "Senior Medical Affairs Leader / Regional Medical Director",
+      avatar: "RI",
+      avatarColor: "from-blue-500 to-indigo-500",
+      education: "MBBS, MD (Pharmacology)",
+      experience: "10+ years leadership experience",
+      location: "Bangalore, India",
+      highlights: ["Professor of Pharmacology", "ICMR Research PI", "Multiple Publications"],
+      summary: "Senior medical affairs professional with over 10 years of leadership experience as a Professor of Pharmacology, bringing deep expertise in drug evaluation, clinical evidence interpretation, and medical strategy. Widely experienced in research leadership, scientific education, and evidence-based medical communication, with strong readiness for non-clinical senior leadership roles including Regional Medical Director or Medical Affairs Director.",
+      competencies: [
+        "Leadership in medical strategy development and scientific governance",
+        "Expert in evidence-based medicine, clinical data interpretation, and benefit–risk assessment",
+        "Oversight of scientific communication, medical education, and compliant engagement",
+        "Strong understanding of drug development, pharmacology, and lifecycle management",
+        "Cross-functional collaboration with clinical development, PV, regulatory, and commercial teams"
+      ],
+      researchLeadership: [
+        "Author of multiple peer-reviewed national and international publications",
+        "Principal Investigator / Co-Investigator on several ICMR-funded research projects",
+        "Research design and protocol development",
+        "Data analysis and interpretation",
+        "Scientific writing and publication oversight"
+      ],
+      education_training: [
+        "Over 10 years of teaching experience for MBBS and postgraduate (MD) students",
+        "Regular faculty for Continuing Medical Education (CME) programs and professional training",
+        "Experienced research guide and mentor for undergraduate and postgraduate students",
+        "Strong capability in stakeholder education, KOL engagement, and scientific exchange"
+      ],
+      idealFit: [
+        "Regional Medical Director",
+        "Medical Affairs Director",
+        "Senior Medical Advisor / Medical Lead",
+        "Medical Strategy & Scientific Affairs Head",
+        "Medical Governance / Medical Excellence Leadership"
+      ]
+    },
+    {
+      id: 9,
+      name: "Dr. Neha Deshmukh",
+      age: 42,
+      category: "SENIOR MEDICAL AFFAIRS LEADERSHIP",
+      role: "Senior Medical Education & Scientific Affairs Leader",
+      avatar: "ND",
+      avatarColor: "from-violet-500 to-purple-500",
+      education: "MBBS, MD (Human Anatomy)",
+      experience: "14 years progressive experience",
+      location: "Pune, India",
+      highlights: ["Professor of Anatomy", "CME/CPD Faculty", "Academic Leadership"],
+      summary: "Senior medical professional with 14 years of progressive experience as a Professor of Human Anatomy, combining deep expertise in medical education, research leadership, and scientific communication. Widely experienced in teaching across medical and paramedical disciplines, leading academic and research initiatives, and delivering Continuing Medical Education (CME) and Continuing Professional Development (CPD) programs.",
+      competencies: [
+        "Medical education strategy and curriculum development",
+        "Scientific and anatomical expertise supporting medical and clinical research",
+        "Evidence-based medicine and research methodology",
+        "Medical and scientific communication (written and oral)",
+        "Academic leadership and stakeholder engagement"
+      ],
+      researchLeadership: [
+        "Extensive involvement in research design, execution, and publication",
+        "Author/co-author of multiple peer-reviewed research publications",
+        "Experience guiding and mentoring undergraduate and postgraduate research projects",
+        "Strong capability in data interpretation, scientific writing, and evidence synthesis"
+      ],
+      education_training: [
+        "14 years of teaching experience across MBBS, postgraduate, and paramedical programs",
+        "Regular faculty and speaker for CME, CPD, workshops, and academic conferences",
+        "Proven ability to translate complex anatomical and scientific concepts into clear, practical learning",
+        "Strong engagement with healthcare professionals, educators, and academic leaders"
+      ],
+      idealFit: [
+        "Medical Education Director / Head of Medical Education",
+        "Scientific Affairs Lead / Director",
+        "Medical Affairs (Non-Clinical / Education-Focused)",
+        "Research Strategy & Academic Partnerships Lead",
+        "Medical Training & Professional Development Head"
+      ]
+    },
+    {
+      id: 10,
+      name: "Dr. Amit Kulkarni",
+      age: 35,
+      category: "SENIOR MEDICAL AFFAIRS LEADERSHIP",
+      role: "Senior Medical & Scientific Affairs Professional",
+      avatar: "AK",
+      avatarColor: "from-orange-500 to-red-500",
+      education: "MBBS (Grant Medical College, Mumbai), MD (Pharmacology & Therapeutics)",
+      experience: "Cross-domain leadership experience",
+      location: "Mumbai, India",
+      highlights: ["University Second Rank", "Research Publications", "Thought Leader"],
+      summary: "A seasoned medical doctor and pharmacologist with solid clinical grounding, academic excellence, and cross-domain leadership experience across medical strategy, pharmacology research, scientific communication, and education. Brings a strong research orientation, demonstrated thought leadership in pharmacology, and experience in both industry and academic roles.",
+      competencies: [
+        "Expertise in interpreting clinical and pharmacological evidence for strategic decision-making",
+        "Ability to translate complex scientific concepts into actionable medical and educational insights",
+        "Extensive track record including peer-reviewed research publications and high-visibility academic output",
+        "Capable of designing research frameworks, supervising research teams, and mentoring students",
+        "Experience delivering lectures and sessions for undergraduate and postgraduate learners",
+        "Skilled in developing scientific content for CME/CPD and professional audiences"
+      ],
+      communication: [
+        "Strong written and verbal communication skills, demonstrated in academic and professional forums",
+        "Active engagement as a public educator on medical career pathways and healthcare innovation",
+        "Strong communicator adept at engaging with KOLs, regulatory stakeholders, and academic institutions"
+      ],
+      idealFit: [
+        "Regional Medical Director",
+        "Head of Medical Affairs / Scientific Affairs",
+        "Director – Medical Strategy & Communications",
+        "Medical Education & Research Lead",
+        "Senior Medical Advisor / Thought Leader"
+      ]
+    },
+    {
+      id: 11,
+      name: "Dr. Priyanka Singh",
+      age: 36,
+      category: "SENIOR MEDICAL AFFAIRS LEADERSHIP",
+      role: "Senior Medical Safety & Scientific Affairs Professional",
+      avatar: "PS",
+      avatarColor: "from-green-500 to-teal-500",
+      education: "MBBS, MD (Pharmacology)",
+      experience: "Extensive safety & PV experience",
+      location: "Gurgaon, India",
+      highlights: ["Drug Safety Physician", "Medical Reviewer", "PV Expert"],
+      summary: "A seasoned Drug Safety Physician and Medical Reviewer with expertise in pharmacovigilance, clinical safety monitoring, and medical evaluation. The candidate brings strong clinical pharmacology knowledge and extensive experience in reviewing safety data, medical case evaluation, and pharmacovigilance decision support. Demonstrates capability to drive medical safety insights and support cross-functional teams in regulated environments.",
+      competencies: [
+        "Expert in medical review and assessment of adverse events and safety case data",
+        "Experienced in medical monitoring through clinical and post-marketing safety data streams",
+        "Ability to interpret complex clinical findings and make medically sound safety recommendations",
+        "Depth of knowledge in pharmacovigilance processes, safety reporting standards, and risk evaluation",
+        "Proficient in medical writing for safety documentation, narratives, and regulatory submissions"
+      ],
+      communication: [
+        "Strong written and verbal communication skills for internal and external scientific discussions",
+        "Skilled in presenting safety insights and recommendations to clinical, regulatory, and cross-functional stakeholders",
+        "Valuable experience as a Medical Advisor, providing clinical insight and expert evaluation",
+        "Ability to support medical strategy, safety governance, and lifecycle safety planning"
+      ],
+      idealFit: [
+        "Senior Medical Monitor",
+        "Medical Reviewer – Lead / Manager",
+        "Medical Safety Manager / Physician – Pharmacovigilance",
+        "Medical Affairs Lead – Safety and Scientific Oversight",
+        "Clinical Safety Strategist / Medical Advisor"
+      ]
     }
   ];
 
