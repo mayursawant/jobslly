@@ -577,14 +577,14 @@ const StudentProfiles = () => {
                           {/* Capabilities */}
                           {profile.capabilities && (
                             <div>
-                              <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                                <Award className="w-5 h-5 text-pink-400" />
+                              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                <Award className="w-5 h-5 text-cyan-600" />
                                 Medical Affairs Capabilities
                               </h3>
                               <ul className="space-y-2">
                                 {profile.capabilities.map((cap, idx) => (
-                                  <li key={idx} className="flex items-start gap-2 text-gray-300 text-sm">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-pink-400 mt-2 flex-shrink-0"></div>
+                                  <li key={idx} className="flex items-start gap-2 text-gray-700 text-sm">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-2 flex-shrink-0"></div>
                                     <span>{cap}</span>
                                   </li>
                                 ))}
