@@ -652,13 +652,13 @@ const StudentProfiles = () => {
                       </div>
                       
                       <div className="relative text-center">
-                        <div className="w-32 h-32 lg:w-40 lg:h-40 mx-auto bg-white rounded-full flex items-center justify-center mb-6 shadow-2xl ring-4 ring-white/30">
-                          <span className="text-4xl lg:text-5xl font-bold bg-gradient-to-br from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                        <div className="w-32 h-32 lg:w-40 lg:h-40 mx-auto bg-white rounded-full flex items-center justify-center mb-6 shadow-2xl ring-4 ring-white/30 avatar-pulse group-hover:scale-110 transition-transform duration-500">
+                          <span className="text-4xl lg:text-5xl font-bold bg-gradient-to-br from-teal-600 to-emerald-600 bg-clip-text text-transparent">
                             {profile.avatar}
                           </span>
                         </div>
                         
-                        <Badge className="bg-white/20 backdrop-blur-sm text-white border-white/30 text-xs px-3 py-1">
+                        <Badge className="bg-white/20 backdrop-blur-sm text-white border-white/30 text-xs px-3 py-1 hover:bg-white/30 transition-colors">
                           Profile #{profile.id}
                         </Badge>
                       </div>
