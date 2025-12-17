@@ -283,6 +283,8 @@ function App() {
               {/* Other pages - Support both with and without trailing slash */}
               <Route path="/contact-us" element={<ContactUs />} />
               <Route path="/contact-us/" element={<ContactUs />} />
+              <Route path="/student-profiles" element={<StudentProfiles />} />
+              <Route path="/student-profiles/" element={<StudentProfiles />} />
               <Route path="/sitemap" element={<Sitemap />} />
               <Route path="/sitemap/" element={<Sitemap />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
