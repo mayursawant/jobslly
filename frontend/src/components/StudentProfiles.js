@@ -417,6 +417,96 @@ const StudentProfiles = () => {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
+      {/* Animation Styles */}
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes slideInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes slideInRight {
+          from {
+            opacity: 0;
+            transform: translateX(50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes pulse-ring {
+          0% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.7);
+          }
+          70% {
+            transform: scale(1);
+            box-shadow: 0 0 0 10px rgba(20, 184, 166, 0);
+          }
+          100% {
+            transform: scale(0.95);
+            box-shadow: 0 0 0 0 rgba(20, 184, 166, 0);
+          }
+        }
+
+        .animate-fade-in-up {
+          animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .animate-slide-in-left {
+          animation: slideInLeft 0.8s ease-out forwards;
+        }
+
+        .animate-slide-in-right {
+          animation: slideInRight 0.8s ease-out forwards;
+        }
+
+        .profile-card {
+          opacity: 0;
+          animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .profile-card:nth-child(1) { animation-delay: 0.1s; }
+        .profile-card:nth-child(2) { animation-delay: 0.2s; }
+        .profile-card:nth-child(3) { animation-delay: 0.3s; }
+        .profile-card:nth-child(4) { animation-delay: 0.4s; }
+        .profile-card:nth-child(5) { animation-delay: 0.5s; }
+        .profile-card:nth-child(6) { animation-delay: 0.6s; }
+        .profile-card:nth-child(7) { animation-delay: 0.7s; }
+        .profile-card:nth-child(8) { animation-delay: 0.8s; }
+        .profile-card:nth-child(9) { animation-delay: 0.9s; }
+        .profile-card:nth-child(10) { animation-delay: 1.0s; }
+        .profile-card:nth-child(11) { animation-delay: 1.1s; }
+
+        .avatar-pulse {
+          animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+        }
+
+        .card-pattern {
+          background-image: 
+            radial-gradient(circle at 20% 50%, rgba(20, 184, 166, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+        }
+      `}</style>
+
       {/* Contact Modal */}
       <Dialog open={isContactModalOpen} onOpenChange={setIsContactModalOpen}>
         <DialogContent className="sm:max-w-md">
