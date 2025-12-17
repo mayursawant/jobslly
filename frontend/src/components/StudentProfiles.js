@@ -629,16 +629,16 @@ const StudentProfiles = () => {
                           )}
 
                           {/* Ideal Fit */}
-                          <div className="bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-xl p-6 border border-cyan-500/20">
-                            <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                              <Sparkles className="w-5 h-5 text-yellow-400" />
+                          <div className="bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl p-6 border-2 border-teal-200">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                              <Sparkles className="w-5 h-5 text-teal-600" />
                               Ideal Role Fit
                             </h3>
                             <div className="flex flex-wrap gap-2">
                               {profile.idealFit.map((role, idx) => (
                                 <Badge 
                                   key={idx}
-                                  className="bg-cyan-500/20 text-cyan-300 border-cyan-500/30"
+                                  className="bg-teal-100 text-teal-700 border-teal-300"
                                 >
                                   {role}
                                 </Badge>
