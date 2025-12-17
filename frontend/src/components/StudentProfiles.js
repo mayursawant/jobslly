@@ -652,7 +652,7 @@ const StudentProfiles = () => {
                       <div className="flex flex-col sm:flex-row gap-3">
                         <Button
                           onClick={() => toggleExpand(profile.id)}
-                          className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white"
+                          className="flex-1 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white"
                         >
                           {expandedProfiles[profile.id] ? (
                             <>
@@ -669,8 +669,8 @@ const StudentProfiles = () => {
                         
                         <Button
                           variant="outline"
-                          className="flex-1 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10"
-                          onClick={() => window.location.href = 'mailto:hr@jobslly.com?subject=Interest in ' + profile.name}
+                          className="flex-1 border-teal-600 text-teal-600 hover:bg-teal-50"
+                          onClick={() => setIsContactModalOpen(true)}
                         >
                           <Mail className="w-4 h-4 mr-2" />
                           Contact Recruiter
