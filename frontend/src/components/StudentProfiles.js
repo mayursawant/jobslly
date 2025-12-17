@@ -385,12 +385,12 @@ const StudentProfiles = () => {
       </div>
 
       {/* Profiles Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-gradient-to-br from-gray-50 to-teal-50">
         {filteredProfiles.length === 0 ? (
-          <Card className="bg-white/5 backdrop-blur-sm border-white/10 p-12 text-center">
-            <div className="text-gray-400">
-              <Search className="w-16 h-16 mx-auto mb-4 opacity-50" />
-              <p className="text-lg">No profiles found matching "{searchQuery}"</p>
+          <Card className="bg-white border-2 border-gray-200 p-12 text-center shadow-lg">
+            <div className="text-gray-600">
+              <Search className="w-16 h-16 mx-auto mb-4 text-teal-400" />
+              <p className="text-lg font-semibold">No profiles found matching "{searchQuery}"</p>
               <p className="text-sm mt-2">Try different keywords or clear your search</p>
             </div>
           </Card>
@@ -399,7 +399,7 @@ const StudentProfiles = () => {
             {filteredProfiles.map((profile, index) => (
               <Card 
                 key={profile.id}
-                className={`group bg-white/5 backdrop-blur-sm border-white/10 hover:bg-white/10 hover:border-cyan-400/50 transition-all duration-500 overflow-hidden ${
+                className={`group bg-white border-2 border-teal-100 hover:border-teal-400 hover:shadow-2xl transition-all duration-500 overflow-hidden ${
                   index % 2 === 0 ? 'lg:mr-12' : 'lg:ml-12'
                 }`}
               >
