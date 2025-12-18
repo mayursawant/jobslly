@@ -620,31 +620,31 @@ const Home = () => {
           </div>
 
           {/* Trust Stats with Animation and Icons */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto mt-20 pt-12 border-t border-teal-100">
-            <div className="text-center animate-slide-up group hover:scale-110 transition-transform duration-300" style={{animationDelay: '1.6s'}}>
-              <div className="text-4xl mb-2 group-hover:animate-bounce">💼</div>
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-2" data-testid="stats-jobs">
+          <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto mt-20 pt-12 border-t border-teal-100">
+            <div className="stat-card text-center group hover:scale-110 transition-transform duration-300 cursor-pointer">
+              <div className="text-4xl mb-2 float-animation">💼</div>
+              <div className="stat-number text-3xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-2" data-testid="stats-jobs" data-target="11000">
                 11K+
               </div>
               <div className="text-sm text-gray-600 font-medium">Job Vacancy</div>
             </div>
-            <div className="text-center animate-slide-up group hover:scale-110 transition-transform duration-300" style={{animationDelay: '1.8s'}}>
-              <div className="text-4xl mb-2 group-hover:animate-bounce">🏥</div>
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-cyan-600 bg-clip-text text-transparent mb-2" data-testid="stats-companies">
+            <div className="stat-card text-center group hover:scale-110 transition-transform duration-300 cursor-pointer">
+              <div className="text-4xl mb-2 float-animation">🏥</div>
+              <div className="stat-number text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-cyan-600 bg-clip-text text-transparent mb-2" data-testid="stats-companies" data-target="2000">
                 2,000+
               </div>
               <div className="text-sm text-gray-600 font-medium">Healthcare Companies</div>
             </div>
-            <div className="text-center animate-slide-up group hover:scale-110 transition-transform duration-300" style={{animationDelay: '2s'}}>
-              <div className="text-4xl mb-2 group-hover:animate-bounce">👨‍⚕️</div>
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent mb-2" data-testid="stats-professionals">
+            <div className="stat-card text-center group hover:scale-110 transition-transform duration-300 cursor-pointer">
+              <div className="text-4xl mb-2 float-animation">👨‍⚕️</div>
+              <div className="stat-number text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent mb-2" data-testid="stats-professionals" data-target="75000">
                 75K+
               </div>
               <div className="text-sm text-gray-600 font-medium">Active Professionals</div>
             </div>
-            <div className="text-center animate-slide-up group hover:scale-110 transition-transform duration-300" style={{animationDelay: '2.2s'}}>
-              <div className="text-4xl mb-2 group-hover:animate-bounce">⭐</div>
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-2" data-testid="stats-applications">
+            <div className="stat-card text-center group hover:scale-110 transition-transform duration-300 cursor-pointer">
+              <div className="text-4xl mb-2 float-animation">⭐</div>
+              <div className="stat-number text-3xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-2" data-testid="stats-applications" data-target="40000">
                 40K+
               </div>
               <div className="text-sm text-gray-600 font-medium">Talented Candidates</div>
