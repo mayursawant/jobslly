@@ -804,9 +804,9 @@ const Home = () => {
               <p className="text-lg text-gray-600">Explore the newest opportunities in healthcare</p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <div ref={jobsRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
               {featuredJobs.slice(0, 6).map((job, index) => (
-                <Card key={job.id} className="bg-white border border-gray-200 hover:border-teal-400 hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 hover:scale-105 group animate-slide-up h-full flex flex-col" style={{animationDelay: `${index * 0.1}s`}} data-testid={`featured-job-${job.id}`}>
+                <Card key={job.id} className="job-card bg-white border border-gray-200 hover:border-teal-400 hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 hover:scale-105 group h-full flex flex-col" data-testid={`featured-job-${job.id}`}>
                   <CardContent className="p-6 relative overflow-hidden flex flex-col h-full">
                     {/* Animated Background Gradient on Hover */}
                     <div className="absolute inset-0 bg-gradient-to-br from-teal-50 to-emerald-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
