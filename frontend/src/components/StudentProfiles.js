@@ -838,7 +838,7 @@ const StudentProfiles = () => {
                         </div>
                         
                         <Badge className="bg-white/20 backdrop-blur-sm text-white border-white/30 text-xs px-3 py-1 hover:bg-white/30 transition-colors">
-                          Profile #{profile.id}
+                          Profile #{index + 1}
                         </Badge>
                       </div>
                     </div>
