@@ -663,12 +663,12 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <div ref={specializationsRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {specializations.map((spec, index) => (
               <Link 
                 key={spec.name} 
                 to={`/jobs?category=${spec.name.toLowerCase()}`}
-                className="group block"
+                className="specialization-card group block"
                 data-testid={`specialization-${spec.name.toLowerCase()}`}
               >
                 <Card className="bg-white border border-teal-100 hover:border-teal-300 hover:shadow-xl transition-all duration-500 cursor-pointer h-full transform hover:scale-105 hover:-translate-y-2">
