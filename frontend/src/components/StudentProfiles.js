@@ -561,11 +561,24 @@ const StudentProfiles = () => {
     }));
   };
 
+  // Sort profiles: Senior first, then mid-level, then entry-level
+  const sortedProfiles = useMemo(() => {
+    const seniorIds = [8, 9, 10, 11, 12, 13]; // Senior leadership profiles
+    const midLevelIds = [14, 15]; // Mid-level (5-6 years)
+    const entryLevelIds = [1, 2, 3, 4, 5, 6, 7]; // Entry level (1-3 years)
+    
+    const senior = profiles.filter(p => seniorIds.includes(p.id));
+    const midLevel = profiles.filter(p => midLevelIds.includes(p.id));
+    const entryLevel = profiles.filter(p => entryLevelIds.includes(p.id));
+    
+    return [...senior, ...midLevel, ...entryLevel];
+  }, [profiles]);
+
   const filteredProfiles = useMemo(() => {
-    if (!searchQuery.trim()) return profiles;
+    if (!searchQuery.trim()) return sortedProfiles;
     
     const query = searchQuery.toLowerCase();
-    return profiles.filter(profile => 
+    return sortedProfiles.filter(profile => 
       profile.name.toLowerCase().includes(query) ||
       profile.role.toLowerCase().includes(query) ||
       profile.category.toLowerCase().includes(query) ||
@@ -573,7 +586,7 @@ const StudentProfiles = () => {
       profile.location.toLowerCase().includes(query) ||
       profile.highlights.some(h => h.toLowerCase().includes(query))
     );
-  }, [searchQuery, profiles]);
+  }, [searchQuery, sortedProfiles]);
 
   return (
     <div className="min-h-screen bg-white">
