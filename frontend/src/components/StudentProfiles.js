@@ -385,6 +385,172 @@ const StudentProfiles = () => {
         "Medical Affairs Lead – Safety and Scientific Oversight",
         "Clinical Safety Strategist / Medical Advisor"
       ]
+    },
+    {
+      id: 12,
+      name: "Dr. Anjali Nair",
+      age: 35,
+      category: "SENIOR MEDICAL AFFAIRS LEADERSHIP",
+      role: "Senior Pharmacovigilance & Patient Safety Professional",
+      avatar: "AN",
+      avatarColor: "from-pink-500 to-red-500",
+      education: "Bachelor of Dental Surgery (BDS)",
+      experience: "8+ years (4 years clinical + 4+ years PV)",
+      location: "Bangalore, India",
+      highlights: ["Patient Safety Physician", "ICSR Medical Review", "Clinical Practice Background"],
+      summary: "Senior pharmacovigilance and patient safety professional with a strong foundation in clinical dental practice (4 years) followed by 4+ years of dedicated experience in pharmacovigilance and drug safety. Brings a unique blend of hands-on patient care experience and corporate PV expertise, enabling strong clinical judgment, safety assessment, and regulatory compliance.",
+      competencies: [
+        "4 years of independent clinical dental practice, providing direct patient care and clinical decision-making",
+        "Strong understanding of real-world patient safety issues, adverse events, and risk management",
+        "Ability to apply clinical reasoning to safety case assessment and benefit–risk evaluation",
+        "Extensive experience as a Patient Safety Physician / Pharmacovigilance Officer",
+        "ICSR medical review and case assessment",
+        "Evaluation of adverse events, seriousness, expectedness, and causality",
+        "Safety narratives and medical documentation"
+      ],
+      pvExpertise: [
+        "Signal detection and safety evaluation activities",
+        "Aggregate safety reports (PSUR / PBRER – support level)",
+        "Risk management and safety governance processes",
+        "Strong understanding of global PV regulations and compliance expectations"
+      ],
+      communication: [
+        "Excellent medical writing and documentation skills",
+        "Ability to clearly articulate safety findings to cross-functional stakeholders",
+        "Effective collaboration with clinical, regulatory, medical affairs, and quality teams",
+        "High attention to detail and compliance in regulated environments"
+      ],
+      idealFit: [
+        "Senior Pharmacovigilance Scientist",
+        "Senior Medical Reviewer / Patient Safety Physician",
+        "Drug Safety Manager",
+        "PV Team Lead / Safety Lead",
+        "Medical Safety Manager (Post-Marketing / Lifecycle Safety)"
+      ]
+    },
+    {
+      id: 13,
+      name: "Rohan Kapoor",
+      age: 40,
+      category: "SENIOR MEDICAL AFFAIRS LEADERSHIP",
+      role: "Senior HEOR, Real-World Evidence & Market Access Leader",
+      avatar: "RK",
+      avatarColor: "from-indigo-500 to-blue-500",
+      education: "BPharm, MBA (Pharmaceutical Management - NIPER), GPAT Qualified",
+      experience: "16+ years",
+      location: "Mumbai, India",
+      highlights: ["HEOR Strategy", "RWE Expert", "Market Access Leadership"],
+      summary: "Senior healthcare strategy professional with 16+ years of extensive experience in Health Economics and Outcomes Research (HEOR), Real-World Evidence (RWE), and Market Access across pharmaceutical, biotech, and consulting environments. Combines deep analytical expertise with commercial insight, strong stakeholder engagement, and strategic leadership to drive evidence-based decision making and access outcomes.",
+      competencies: [
+        "Development of HEOR strategies aligned with product value propositions and market access objectives",
+        "Generation of real-world evidence to support clinical, payer, and health system decision making",
+        "Design and oversight of observational studies, outcomes research, and economic evaluation",
+        "Strategic planning for market access, reimbursement, and value communication",
+        "Experience with health technology assessments (HTA), local reimbursement environments, and payer analytics",
+        "Payer insight generation and value evidence translation into policy-relevant decision support"
+      ],
+      researchLeadership: [
+        "Expertise in systematic literature review, meta-analysis, and synthesis of clinical and economic data",
+        "Skilled in correlating global and regional evidence to local access frameworks",
+        "Leadership of cross-functional research teams and collaboration with internal and external stakeholders",
+        "Strategic leadership across HEOR, RWE, and market access initiatives to support product lifecycle value demonstration",
+        "Proven track record of developing evidence packages, value dossiers, and publications informing health policy and payer decisions"
+      ],
+      communication: [
+        "Strong communicator with experience presenting evidence at scientific forums, advisory boards, and payer engagements",
+        "Capable of distilling complex evidence into accessible insights for cross-functional leadership, external experts, and payers",
+        "Builds high-performing teams and fosters collaborative relationships with clinicians, health economists, statisticians, and policy experts"
+      ],
+      idealFit: [
+        "Director / Head of HEOR",
+        "Director / Head of Real-World Evidence (RWE)",
+        "Director / Head of Market Access",
+        "VP – Value & Evidence Strategy",
+        "Senior HEOR & Access Strategy Lead",
+        "Commercial Evidence & Policy Lead"
+      ]
+    },
+    {
+      id: 14,
+      name: "Vikram Reddy",
+      age: 30,
+      category: "PRECLINICAL DRUG DEVELOPMENT",
+      role: "Pharmacokinetics & Toxicokinetics (PK/TK) Scientist",
+      avatar: "VR",
+      avatarColor: "from-cyan-500 to-blue-500",
+      education: "BPharm, MPharm (Pharmacology - JSS University)",
+      experience: "6 years",
+      location: "Bangalore, India",
+      highlights: ["PK/PD Analysis", "WinNonlin/NONMEM", "GLP/GCP Compliance"],
+      summary: "Pharmacokinetics and toxicokinetics professional with 6 years of experience in preclinical drug development, specializing in PK/PD analysis, TK evaluation, and regulatory-compliant study execution. Demonstrated expertise in translating complex PK/TK datasets into clear, actionable insights that support informed decision-making across discovery, safety assessment, and translational research programs.",
+      competencies: [
+        "Preclinical PK and TK study design and execution",
+        "PK/PD analysis and exposure–response evaluation",
+        "Dose justification and safety assessment support",
+        "Interpretation of nonclinical data for translational decision-making",
+        "Hands-on expertise with WinNonlin, NONMEM, R, and Python",
+        "Independent management of PK calculations, interim analyses, and data validation",
+        "Data visualization and reporting for internal and regulatory stakeholders"
+      ],
+      regulatory: [
+        "Strong experience in GLP and GCP-compliant workflows",
+        "Preparation and review of study reports, datasets, and documentation",
+        "Familiarity with Veeva Vault and clinical documentation platforms"
+      ],
+      researchLeadership: [
+        "M.Pharm (Pharmacology) with published research in Cardiotoxicity, Glycemic control, and CNS pharmacology",
+        "Strong in-vivo experimental experience and translational research understanding",
+        "Solid grounding in experimental design, data analysis, and scientific writing"
+      ],
+      idealFit: [
+        "PK/PD Scientist / Associate Scientist",
+        "DMPK Scientist",
+        "Translational Pharmacology Scientist",
+        "Quantitative Pharmacology / Modeling & Simulation",
+        "Scientific Research & R&D Strategy Roles"
+      ]
+    },
+    {
+      id: 15,
+      name: "Priya Sharma",
+      age: 28,
+      category: "CLINICAL OPERATIONS",
+      role: "Clinical Data Manager | Clinical Data Management Specialist",
+      avatar: "PS",
+      avatarColor: "from-purple-500 to-pink-500",
+      education: "BSc & MSc in Biotechnology",
+      experience: "5 years",
+      location: "Hyderabad, India",
+      highlights: ["UAT Lead", "Medidata Rave", "CDISC Standards"],
+      summary: "Clinical Data Management professional with 5 years of experience supporting global clinical trials across all phases. Strong expertise in User Acceptance Testing (UAT), EDC platforms, data reconciliation, and CDISC standards, with a proven ability to deliver clean, compliant, and audit-ready clinical data.",
+      competencies: [
+        "End-to-end clinical data lifecycle management",
+        "CRF design, validation, and review",
+        "Edit check development and issue resolution",
+        "Query management and data cleaning",
+        "Lead role in UAT test case design and execution",
+        "Validation of CRFs, edit checks, and study workflows",
+        "Identification and resolution of critical pre-deployment issues"
+      ],
+      systems: [
+        "Medidata Rave",
+        "Oracle Clinical",
+        "Application of CDISC standards (CDASH / SDTM)",
+        "Preparation and review of Data Transfer Instructions (DTIs)",
+        "Data reconciliation and transfer management"
+      ],
+      communication: [
+        "Close collaboration with Clinical Operations, Data Programming, Biostatistics, Sponsors and CRO stakeholders",
+        "Strong experience in client-facing communication, issue tracking, and study deliverable alignment",
+        "Effective in translating protocol and regulatory requirements into operational data solutions"
+      ],
+      idealFit: [
+        "Clinical Data Manager",
+        "Clinical Data Management Specialist",
+        "Lead CDM (Study Level)",
+        "UAT Lead – Clinical Data",
+        "EDC / Data Standards Specialist"
+      ]
     }
   ];
 
