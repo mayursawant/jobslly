@@ -871,10 +871,10 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
+          <div ref={blogsRef} className="grid md:grid-cols-3 gap-6 mb-12">
             {featuredBlogs.length > 0 ? (
               featuredBlogs.map((blog, index) => (
-                <Card key={blog.id || index} className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 h-full">
+                <Card key={blog.id || index} className="blog-card bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 h-full">
                   {blog.featured_image && (
                     <div className="w-full h-48 overflow-hidden">
                       <img 
