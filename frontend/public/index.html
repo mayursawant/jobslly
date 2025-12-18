@@ -52,7 +52,20 @@
         </noscript>
         <!-- SEO Schema will be dynamically injected by the server based on page type -->
         <div id="root">
-            <!-- Static SEO content - visible to crawlers, will be replaced by React on load -->
+            <!-- Loading indicator - will be replaced by React immediately -->
+            <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #f0fdfa 0%, #fff 100%);">
+                <div style="text-align: center;">
+                    <div style="width: 50px; height: 50px; border: 4px solid #e5e7eb; border-top: 4px solid #14b8a6; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+                    <style>
+                        @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+                    </style>
+                    <p style="color: #14b8a6; font-size: 18px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">Loading Jobslly...</p>
+                </div>
+            </div>
+            <!-- Old static SEO content removed to prevent flash of unstyled content
             <div style="max-width: 1200px; margin: 0 auto; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; line-height: 1.6;">
                 
                 <!-- Header / Navigation -->
