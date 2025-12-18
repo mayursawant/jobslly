@@ -1100,6 +1100,42 @@ const StudentProfiles = () => {
                             </div>
                           )}
 
+                          {/* PV Expertise */}
+                          {profile.pvExpertise && (
+                            <div>
+                              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                <Award className="w-5 h-5 text-emerald-600" />
+                                Pharmacovigilance Expertise
+                              </h3>
+                              <ul className="space-y-2">
+                                {profile.pvExpertise.map((item, idx) => (
+                                  <li key={idx} className="flex items-start gap-2 text-gray-700 text-sm">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 flex-shrink-0"></div>
+                                    <span>{item}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* Regulatory */}
+                          {profile.regulatory && (
+                            <div>
+                              <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                                <Briefcase className="w-5 h-5 text-teal-600" />
+                                Regulatory & Quality Compliance
+                              </h3>
+                              <ul className="space-y-2">
+                                {profile.regulatory.map((item, idx) => (
+                                  <li key={idx} className="flex items-start gap-2 text-gray-700 text-sm">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mt-2 flex-shrink-0"></div>
+                                    <span>{item}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
                           {/* Ideal Fit */}
                           <div className="bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl p-6 border-2 border-teal-200">
                             <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
