@@ -775,9 +775,9 @@ const StudentProfiles = () => {
             </h1>
             
             <p className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto mb-8">
-              Discover highly qualified healthcare professionals ready to join your organization.
+              Discover 15 highly qualified healthcare professionals ready to join your organization.
               <br className="hidden sm:block" />
-              Clinical Research • Pharmacovigilance • Medical Affairs • HEOR
+              Senior Leadership • Clinical Research • Pharmacovigilance • Medical Affairs • HEOR • Clinical Operations
             </p>
 
             {/* Search Bar */}
