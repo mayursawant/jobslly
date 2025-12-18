@@ -2712,7 +2712,7 @@ if os.path.exists(frontend_build_path):
     async def serve_frontend(request: Request, full_path: str):
         """
         Serve React frontend for all non-API routes.
-        Injects dynamic meta tags for job/blog detail pages.
+        Pure client-side rendering - no server-side HTML injection.
         """
         # Skip API routes - they're handled by api_router
         if full_path.startswith('api/'):
@@ -2722,16 +2722,7 @@ if os.path.exists(frontend_build_path):
         index_path = f"{frontend_build_path}/index.html"
         
         if os.path.exists(index_path):
-            with open(index_path, 'r', encoding='utf-8') as f:
-                html_content = f.read()
-            
-            # Inject meta tags for job/blog pages
-            path = request.url.path
-            if path.startswith('/jobs/') or path.startswith('/blogs/'):
-                from meta_injector import inject_meta_tags
-                html_content = await inject_meta_tags(html_content, path)
-            
-            return HTMLResponse(content=html_content, status_code=200, media_type="text/html; charset=utf-8")
+            return FileResponse(index_path, media_type="text/html")
         else:
             raise HTTPException(status_code=404, detail="Frontend build not found")
 
