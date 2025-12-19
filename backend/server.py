@@ -2414,13 +2414,15 @@ async def get_job_seeker_stats(current_user: User = Depends(get_current_user)):
 async def get_robots_txt():
     """
     Generate robots.txt for search engine crawling
-    Simple and clean - allow all content
+    Allow all public content, disallow auth and private pages
     """
     robots_content = """User-agent: *
 Allow: /
+Disallow: /login/
+Disallow: /register/
+Disallow: /student-profiles/
 
 Sitemap: https://jobslly.com/sitemap.xml
-Crawl-delay: 0
 """
     
     return PlainTextResponse(content=robots_content)
