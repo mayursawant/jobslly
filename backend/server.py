@@ -307,6 +307,7 @@ class JobCreate(BaseModel):
     is_external: bool = False
     external_url: Optional[str] = None
     application_deadline: Optional[datetime] = None
+    expires_at: Optional[datetime] = None  # Job expiry date for auto-archiving
 
 class JobApplication(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
