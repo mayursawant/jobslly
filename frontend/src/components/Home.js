@@ -349,14 +349,14 @@ const Home = () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Column - Content */}
             <div className="space-y-8">
-              {/* Trust Badge with Animation */}
-              <div ref={trustBadgeRef} className="inline-flex items-center px-5 py-3 bg-gradient-to-r from-teal-100 to-emerald-100 rounded-full border border-teal-200 shadow-sm">
+              {/* Trust Badge */}
+              <div className="inline-flex items-center px-5 py-3 bg-gradient-to-r from-teal-100 to-emerald-100 rounded-full border border-teal-200 shadow-sm">
                 <div className="w-2 h-2 bg-teal-500 rounded-full mr-3 animate-pulse"></div>
                 <span className="text-teal-700 font-semibold text-sm">🏥 Trusted by 75,000+ Healthcare Professionals</span>
               </div>
 
-              {/* Main Headline with Staggered Animation */}
-              <div ref={headlineRef} className="space-y-4">
+              {/* Main Headline */}
+              <div className="space-y-4">
                 <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
                   Explore The Best
                 </h1>
@@ -374,8 +374,8 @@ const Home = () => {
                 AI-Powered Job Recommendations • Customised Search Filters • Dedicated Portal for Healthcare Professionals
               </p>
 
-              {/* Advanced Search Bar with Animation */}
-              <div ref={searchBarRef} className="max-w-2xl" data-testid="hero-search-section">
+              {/* Advanced Search Bar */}
+              <div className="max-w-2xl" data-testid="hero-search-section">
                 <form onSubmit={handleSearch} className="relative">
                   <div className="bg-white rounded-2xl shadow-xl border border-teal-100 p-2 hover:shadow-2xl transition-all duration-500">
                     <div className="flex flex-col md:flex-row gap-2">
