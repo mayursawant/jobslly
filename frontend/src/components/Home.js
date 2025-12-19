@@ -298,7 +298,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white" ref={heroRef}>
+    <div className="min-h-screen bg-white">
       {/* Hero Section with Search */}
       <section className="relative py-20 px-4 bg-gradient-to-br from-teal-50 via-white to-emerald-50 overflow-hidden">
         {/* ECG Heartbeat Animation */}
