@@ -141,9 +141,9 @@ const Footer = () => {
                 <div>
                   <div className="font-medium text-gray-200 mb-1">India:</div>
                   <div className="space-y-2 text-gray-300">
-                    <div><span className="font-medium text-emerald-400">Dehradun:</span> IT Park, Sahastradhara Rd</div>
-                    <div><span className="font-medium text-emerald-400">Hyderabad:</span> Below Hotel Kinara Grand, Ameerpet</div>
                     <div><span className="font-medium text-emerald-400">Delhi:</span> Green Park Metro Station Gate No.3</div>
+                    <div><span className="font-medium text-emerald-400">Hyderabad:</span> Below Hotel Kinara Grand, Ameerpet</div>
+                    <div><span className="font-medium text-emerald-400">Dehradun:</span> IT Park, Sahastradhara Rd</div>
                   </div>
                 </div>
               </div>
