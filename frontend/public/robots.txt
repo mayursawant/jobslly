@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /login/
+Disallow: /register/
+Disallow: /student-profiles/
 
 Sitemap: https://jobslly.com/sitemap.xml
