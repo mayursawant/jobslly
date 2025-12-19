@@ -98,7 +98,7 @@ const ContactUs = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">contact@academically.com</p>
+                <p className="text-gray-600">upskill@academically.com</p>
                 <p className="text-sm text-gray-500 mt-2">
                   We typically respond within 24 hours
                 </p>
@@ -113,7 +113,7 @@ const ContactUs = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">08071722349</p>
+                <p className="text-gray-600">8265903855</p>
                 <p className="text-sm text-gray-500 mt-2">
                   Mon-Fri: 9:00 AM - 6:00 PM IST
                 </p>
