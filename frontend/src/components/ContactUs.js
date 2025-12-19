@@ -136,12 +136,21 @@ const ContactUs = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-700 mb-1">India</p>
-                  <p className="text-gray-600 text-sm">
-                    Plot A2, IT Park, Sahastradhara Rd<br />
-                    Doon IT Park, Sidcul<br />
-                    Dehradun, Uttarakhand 248001
-                  </p>
+                  <p className="font-semibold text-gray-700 mb-2">India</p>
+                  <div className="space-y-3 text-gray-600 text-sm">
+                    <div>
+                      <p className="font-medium text-teal-600">Dehradun:</p>
+                      <p>IT Park, Sahastradhara Rd</p>
+                    </div>
+                    <div>
+                      <p className="font-medium text-teal-600">Hyderabad:</p>
+                      <p>Below Hotel Kinara Grand, Ameerpet</p>
+                    </div>
+                    <div>
+                      <p className="font-medium text-teal-600">Delhi:</p>
+                      <p>Green Park Metro Station Gate No.3</p>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
