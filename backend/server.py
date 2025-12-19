@@ -688,28 +688,50 @@ async def create_job(job_data: JobCreate, current_user: User = Depends(get_curre
 
 @api_router.get("/jobs", response_model=List[Job])
 async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True, category: str = None):
-    query = {"is_approved": True, "is_deleted": {"$ne": True}} if approved_only else {"is_deleted": {"$ne": True}}
-    
-    # Add category filter if provided (matches ANY category in the categories array)
-    if category:
-        query["categories"] = category
-    
-    # Sort: By created_at descending (newest first), then archived jobs at end
-    jobs = await db.jobs.find(query).sort([("created_at", -1), ("is_archived", 1)]).skip(skip).limit(limit).to_list(length=None)
-    
-    for job in jobs:
-        if isinstance(job.get('created_at'), str):
-            job['created_at'] = datetime.fromisoformat(job['created_at'])
-        if job.get('expires_at') and isinstance(job.get('expires_at'), str):
-            job['expires_at'] = datetime.fromisoformat(job['expires_at'])
+    try:
+        query = {"is_approved": True, "is_deleted": {"$ne": True}} if approved_only else {"is_deleted": {"$ne": True}}
         
-        # Convert integer salaries to strings for backward compatibility
-        if job.get('salary_min') is not None and isinstance(job.get('salary_min'), int):
-            job['salary_min'] = str(job['salary_min'])
-        if job.get('salary_max') is not None and isinstance(job.get('salary_max'), int):
-            job['salary_max'] = str(job['salary_max'])
-    
-    return [Job(**job) for job in jobs]
+        # Add category filter if provided (matches ANY category in the categories array)
+        if category:
+            query["categories"] = category
+        
+        # Sort: By created_at descending (newest first), then archived jobs at end
+        jobs = await db.jobs.find(query, {"_id": 0}).sort([("created_at", -1), ("is_archived", 1)]).skip(skip).limit(limit).to_list(length=None)
+        
+        print(f"[DEBUG] Found {len(jobs)} jobs from database")
+        
+        result_jobs = []
+        for job in jobs:
+            try:
+                # Handle datetime fields
+                if isinstance(job.get('created_at'), str):
+                    job['created_at'] = datetime.fromisoformat(job['created_at'])
+                if job.get('expires_at') and isinstance(job.get('expires_at'), str):
+                    job['expires_at'] = datetime.fromisoformat(job['expires_at'])
+                if job.get('application_deadline') and isinstance(job.get('application_deadline'), str):
+                    job['application_deadline'] = datetime.fromisoformat(job['application_deadline'])
+                
+                # Convert integer salaries to strings for backward compatibility
+                if job.get('salary_min') is not None and isinstance(job.get('salary_min'), int):
+                    job['salary_min'] = str(job['salary_min'])
+                if job.get('salary_max') is not None and isinstance(job.get('salary_max'), int):
+                    job['salary_max'] = str(job['salary_max'])
+                
+                # Create Job instance
+                job_instance = Job(**job)
+                result_jobs.append(job_instance)
+            except Exception as e:
+                print(f"[ERROR] Failed to serialize job {job.get('id', 'unknown')}: {e}")
+                print(f"[ERROR] Job fields: {list(job.keys())}")
+                continue
+        
+        print(f"[DEBUG] Successfully serialized {len(result_jobs)} jobs")
+        return result_jobs
+    except Exception as e:
+        print(f"[ERROR] get_jobs endpoint failed: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Failed to fetch jobs: {str(e)}")
 
 
 # Map URL slugs to database category values
