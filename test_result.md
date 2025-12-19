@@ -820,7 +820,7 @@ frontend:
 
 test_plan:
   current_focus:
-    - "GSAP Animations Testing Complete"
+    - "Jobslly Homepage Local Backend Connection Testing Complete"
   stuck_tasks: 
     - "Chatbot auto-open functionality"
   test_all: false
