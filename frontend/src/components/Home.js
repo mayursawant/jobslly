@@ -472,35 +472,35 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Trust Stats with Animation and Icons */}
-          <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto mt-20 pt-12 border-t border-teal-100">
-            <div className="stat-card text-center group hover:scale-110 transition-transform duration-300 cursor-pointer">
-              <div className="text-4xl mb-2 float-animation">💼</div>
-              <div className="stat-number text-3xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-2" data-testid="stats-jobs" data-target="11000">
-                11K+
+          {/* Trust Stats with Icons */}
+          <div className="grid grid-cols-4 gap-4 md:gap-8 max-w-5xl mx-auto mt-20 pt-12 border-t border-teal-100">
+            <div className="text-center group hover:scale-105 transition-transform duration-300">
+              <MdWork className="text-4xl md:text-5xl text-teal-600 mx-auto mb-2" />
+              <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-2" data-testid="stats-jobs">
+                {stats.jobs}
               </div>
-              <div className="text-sm text-gray-600 font-medium">Job Vacancy</div>
+              <div className="text-xs md:text-sm text-gray-600 font-medium">Job Vacancy</div>
             </div>
-            <div className="stat-card text-center group hover:scale-110 transition-transform duration-300 cursor-pointer">
-              <div className="text-4xl mb-2 float-animation">🏥</div>
-              <div className="stat-number text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-cyan-600 bg-clip-text text-transparent mb-2" data-testid="stats-companies" data-target="2000">
-                2,000+
+            <div className="text-center group hover:scale-105 transition-transform duration-300">
+              <MdBusiness className="text-4xl md:text-5xl text-emerald-600 mx-auto mb-2" />
+              <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-cyan-600 bg-clip-text text-transparent mb-2" data-testid="stats-companies">
+                {stats.companies}
               </div>
-              <div className="text-sm text-gray-600 font-medium">Healthcare Companies</div>
+              <div className="text-xs md:text-sm text-gray-600 font-medium">Healthcare Companies</div>
             </div>
-            <div className="stat-card text-center group hover:scale-110 transition-transform duration-300 cursor-pointer">
-              <div className="text-4xl mb-2 float-animation">👨‍⚕️</div>
-              <div className="stat-number text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent mb-2" data-testid="stats-professionals" data-target="75000">
-                75K+
+            <div className="text-center group hover:scale-105 transition-transform duration-300">
+              <MdPeople className="text-4xl md:text-5xl text-cyan-600 mx-auto mb-2" />
+              <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent mb-2" data-testid="stats-professionals">
+                {stats.professionals}
               </div>
-              <div className="text-sm text-gray-600 font-medium">Active Professionals</div>
+              <div className="text-xs md:text-sm text-gray-600 font-medium">Active Professionals</div>
             </div>
-            <div className="stat-card text-center group hover:scale-110 transition-transform duration-300 cursor-pointer">
-              <div className="text-4xl mb-2 float-animation">⭐</div>
-              <div className="stat-number text-3xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-2" data-testid="stats-applications" data-target="40000">
-                40K+
+            <div className="text-center group hover:scale-105 transition-transform duration-300">
+              <MdStar className="text-4xl md:text-5xl text-teal-600 mx-auto mb-2" />
+              <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-2" data-testid="stats-applications">
+                {stats.applications}
               </div>
-              <div className="text-sm text-gray-600 font-medium">Talented Candidates</div>
+              <div className="text-xs md:text-sm text-gray-600 font-medium">Talented Candidates</div>
             </div>
           </div>
         </div>
