@@ -139,16 +139,16 @@ const ContactUs = () => {
                   <p className="font-semibold text-gray-700 mb-2">India</p>
                   <div className="space-y-3 text-gray-600 text-sm">
                     <div>
-                      <p className="font-medium text-teal-600">Dehradun:</p>
-                      <p>IT Park, Sahastradhara Rd</p>
+                      <p className="font-medium text-teal-600">Delhi:</p>
+                      <p>Green Park Metro Station Gate No.3</p>
                     </div>
                     <div>
                       <p className="font-medium text-teal-600">Hyderabad:</p>
                       <p>Below Hotel Kinara Grand, Ameerpet</p>
                     </div>
                     <div>
-                      <p className="font-medium text-teal-600">Delhi:</p>
-                      <p>Green Park Metro Station Gate No.3</p>
+                      <p className="font-medium text-teal-600">Dehradun:</p>
+                      <p>IT Park, Sahastradhara Rd</p>
                     </div>
                   </div>
                 </div>
