@@ -1,0 +1,1 @@
+// Backup of Home.js with GSAP before removal
