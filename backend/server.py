@@ -2729,6 +2729,14 @@ if os.path.exists(frontend_build_path):
         else:
             raise HTTPException(status_code=404, detail="Frontend build not found")
 
+@app.on_event("startup")
+async def startup_event():
+    """Initialize background tasks on app startup"""
+    # Start job expiry scheduler
+    from job_scheduler import start_scheduler
+    start_scheduler()
+    print("✅ Job expiry scheduler started")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
