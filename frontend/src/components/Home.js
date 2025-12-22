@@ -544,7 +544,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Founder Section */}
+      {/* About Jobslly Section */}
       <section className="py-20 px-4 bg-white relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-teal-50/50 to-emerald-50/50"></div>
         <div className="max-w-7xl mx-auto relative">
@@ -561,40 +561,47 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Founder Content */}
+            {/* About Content */}
             <div className="space-y-8">
               <div className="space-y-4">
                 <div className="inline-flex items-center px-4 py-2 bg-teal-100 rounded-full">
-                  <span className="text-teal-700 font-semibold text-sm">🎓 Meet Our Founder</span>
+                  <span className="text-teal-700 font-semibold text-sm">🌍 Global Healthcare Job Portal</span>
                 </div>
                 <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
-                  Dr. Akram Ahmad
+                  About Jobslly.com
                 </h2>
                 <div className="text-xl text-teal-600 font-semibold">
-                  Founder & CEO, Jobslly.com
+                  Your Gateway to Global Healthcare Careers
                 </div>
               </div>
 
               <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
                 <p>
-                  Jobslly.com is the brainchild of <span className="font-semibold text-teal-700">Dr. Akram Ahmad</span>, who holds a PhD from the Faculty of Medicine and Health at the University of Sydney, Australia.
+                  <span className="font-semibold text-teal-700">Jobslly.com</span> is a specialized global job portal dedicated exclusively to healthcare professionals, created to connect doctors, pharmacists, nurses, and allied health workers with career opportunities worldwide.
                 </p>
                 <p>
-                  He is a self-motivated clinical pharmacist and committed lecturer with over <span className="font-semibold text-emerald-700">10 years of teaching and research experience</span> in various subjects of medicine at leading universities across Australia, Malaysia, and India.
+                  The platform is guided by our <span className="font-semibold text-teal-700">Founder & CEO, Dr. Akram Ahmad</span>, PhD (Medicine) from the Faculty of Medicine and Health, The University of Sydney, Australia, a globally recognised academic, healthcare leader, and international career mentor with over <span className="font-semibold text-emerald-700">14 years of experience</span> across India, Malaysia, and Australia.
                 </p>
                 <p>
-                  His vision is to bridge the gap between talented healthcare professionals and their dream careers through innovative technology and personalized support.
+                  Alongside Dr. Akram, Jobslly is supported and mentored by senior experts from leading pharma companies, global CROs, hospitals, and top universities, ensuring every opportunity shared is relevant, credible, and aligned with evolving global healthcare talent needs.
+                </p>
+                <p className="text-xl font-semibold text-teal-700">
+                  Our mission is simple: to become the go-to global destination for healthcare jobs, empowering professionals to build meaningful and successful careers across borders.
                 </p>
               </div>
 
               <div className="flex flex-wrap gap-4">
                 <div className="bg-teal-50 px-6 py-3 rounded-xl border border-teal-200">
-                  <div className="font-semibold text-teal-700">PhD in Medicine</div>
+                  <div className="font-semibold text-teal-700">PhD (Medicine)</div>
                   <div className="text-sm text-gray-600">University of Sydney</div>
                 </div>
                 <div className="bg-emerald-50 px-6 py-3 rounded-xl border border-emerald-200">
-                  <div className="font-semibold text-emerald-700">10+ Years</div>
-                  <div className="text-sm text-gray-600">Teaching & Research</div>
+                  <div className="font-semibold text-emerald-700">14+ Years</div>
+                  <div className="text-sm text-gray-600">Global Experience</div>
+                </div>
+                <div className="bg-cyan-50 px-6 py-3 rounded-xl border border-cyan-200">
+                  <div className="font-semibold text-cyan-700">Expert Network</div>
+                  <div className="text-sm text-gray-600">Leading Institutions</div>
                 </div>
               </div>
             </div>
