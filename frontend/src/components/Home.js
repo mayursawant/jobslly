@@ -548,21 +548,21 @@ const Home = () => {
       <section className="py-20 px-4 bg-white relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-teal-50/50 to-emerald-50/50"></div>
         <div className="max-w-7xl mx-auto relative">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-16 items-stretch">
             {/* Founder Image */}
-            <div className="relative">
+            <div className="relative h-full min-h-[600px]">
               <div className="absolute inset-0 bg-gradient-to-r from-teal-200 to-emerald-200 rounded-3xl transform rotate-2 animate-pulse"></div>
-              <div className="relative bg-white rounded-3xl shadow-2xl p-2 transform -rotate-1">
+              <div className="relative bg-white rounded-3xl shadow-2xl p-2 transform -rotate-1 h-full">
                 <img 
-                  src="https://customer-assets.emergentagent.com/job_jobslly-health/artifacts/ukxbykm5_Dr.-Akram-Ahmad_CEO-Founder_-Academically-Global_EP.jpg" 
+                  src="https://customer-assets.emergentagent.com/job_seo-job-portal-2/artifacts/jk3lamg8_image.png" 
                   alt="Dr. Akram Ahmad - Founder & CEO" 
-                  className="w-full h-auto rounded-3xl"
+                  className="w-full h-full rounded-3xl object-cover"
                 />
               </div>
             </div>
 
             {/* About Content */}
-            <div className="space-y-8">
+            <div className="space-y-8 flex flex-col justify-center h-full min-h-[600px]">
               <div className="space-y-4">
                 <div className="inline-flex items-center px-4 py-2 bg-teal-100 rounded-full">
                   <span className="text-teal-700 font-semibold text-sm">🌍 Global Healthcare Job Portal</span>
