@@ -81,7 +81,7 @@ const BlogPost = () => {
               "name": "Jobslly",
               "logo": {
                 "@type": "ImageObject",
-                "url": "https://seo-job-portal-2.preview.emergentagent.com/logo.png"
+                "url": "https://jobfix-complete.preview.emergentagent.com/logo.png"
               }
             },
             "datePublished": post.published_at,
