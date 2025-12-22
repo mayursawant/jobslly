@@ -544,53 +544,55 @@ const Home = () => {
         </div>
       </section>
 
-      {/* About Jobslly Section */}
+      {/* About Our Founder Section */}
       <section className="py-20 px-4 bg-white relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-teal-50/50 to-emerald-50/50"></div>
         <div className="max-w-7xl mx-auto relative">
           <div className="grid lg:grid-cols-2 gap-16 items-stretch">
             {/* Founder Image */}
-            <div className="relative h-full min-h-[600px]">
-              <div className="absolute inset-0 bg-gradient-to-r from-teal-200 to-emerald-200 rounded-3xl transform rotate-2 animate-pulse"></div>
-              <div className="relative bg-white rounded-3xl shadow-2xl p-2 transform -rotate-1 h-full">
-                <img 
-                  src="https://customer-assets.emergentagent.com/job_seo-job-portal-2/artifacts/jk3lamg8_image.png" 
-                  alt="Dr. Akram Ahmad - Founder & CEO" 
-                  className="w-full h-full rounded-3xl object-cover"
-                />
+            <div className="relative h-full flex items-center">
+              <div className="relative w-full">
+                <div className="absolute inset-0 bg-gradient-to-r from-teal-200 to-emerald-200 rounded-3xl transform rotate-2 animate-pulse"></div>
+                <div className="relative bg-white rounded-3xl shadow-2xl p-2 transform -rotate-1">
+                  <img 
+                    src="https://customer-assets.emergentagent.com/job_fb646410-577a-4c7b-95d3-6b0696e19504/artifacts/c98jpsr9_Screenshot_2025-12-22_174934-removebg-preview.png" 
+                    alt="Dr. Akram Ahmad - Founder & CEO" 
+                    className="w-full h-auto rounded-3xl object-contain bg-black"
+                  />
+                </div>
               </div>
             </div>
 
             {/* About Content */}
-            <div className="space-y-8 flex flex-col justify-center h-full min-h-[600px]">
+            <div className="space-y-6 flex flex-col justify-center h-full">
               <div className="space-y-4">
                 <div className="inline-flex items-center px-4 py-2 bg-teal-100 rounded-full">
-                  <span className="text-teal-700 font-semibold text-sm">🌍 Global Healthcare Job Portal</span>
+                  <span className="text-teal-700 font-semibold text-sm">🌍 A Visionary Leader in Global Healthcare Careers</span>
                 </div>
                 <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
-                  About Jobslly.com
+                  About Our Founder
                 </h2>
                 <div className="text-xl text-teal-600 font-semibold">
-                  Your Gateway to Global Healthcare Careers
+                  Dr. Akram Ahmad, PhD (Medicine)
                 </div>
               </div>
 
-              <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
+              <div className="space-y-5 text-base text-gray-700 leading-relaxed">
                 <p>
-                  <span className="font-semibold text-teal-700">Jobslly.com</span> is a specialized global job portal dedicated exclusively to healthcare professionals, created to connect doctors, pharmacists, nurses, and allied health workers with career opportunities worldwide.
+                  <span className="font-semibold text-teal-700">Dr. Akram Ahmad, PhD (Medicine)</span>, is a globally recognised academic, healthcare leader, and international career mentor dedicated to empowering healthcare professionals to build successful careers across borders.
                 </p>
                 <p>
-                  The platform is guided by our <span className="font-semibold text-teal-700">Founder & CEO, Dr. Akram Ahmad</span>, PhD (Medicine) from the Faculty of Medicine and Health, The University of Sydney, Australia, a globally recognised academic, healthcare leader, and international career mentor with over <span className="font-semibold text-emerald-700">14 years of experience</span> across India, Malaysia, and Australia.
+                  A graduate of the <span className="font-semibold text-emerald-700">Faculty of Medicine and Health, The University of Sydney, Australia</span>, Dr. Akram brings over <span className="font-semibold text-teal-700">14 years of international experience</span> spanning India, Malaysia, and Australia. His career bridges academia, healthcare systems, and the global pharmaceutical and clinical research ecosystem, giving him deep insight into evolving global healthcare talent needs.
                 </p>
                 <p>
-                  Alongside Dr. Akram, Jobslly is supported and mentored by senior experts from leading pharma companies, global CROs, hospitals, and top universities, ensuring every opportunity shared is relevant, credible, and aligned with evolving global healthcare talent needs.
+                  Throughout his journey, Dr. Akram has worked closely with doctors, pharmacists, nurses, and allied health professionals, guiding them toward meaningful global opportunities. His vision is supported by a strong network of senior leaders from leading pharmaceutical companies, global CROs, hospitals, and top universities, ensuring that every career pathway he enables is credible, relevant, and future-ready.
                 </p>
-                <p className="text-xl font-semibold text-teal-700">
-                  Our mission is simple: to become the go-to global destination for healthcare jobs, empowering professionals to build meaningful and successful careers across borders.
+                <p className="text-lg font-semibold text-teal-700 italic border-l-4 border-teal-500 pl-4 bg-teal-50 py-3 rounded-r-lg">
+                  "To create a trusted global ecosystem that connects healthcare professionals with the right opportunities, mentorship, and guidance to thrive internationally."
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-4 pt-2">
                 <div className="bg-teal-50 px-6 py-3 rounded-xl border border-teal-200">
                   <div className="font-semibold text-teal-700">PhD (Medicine)</div>
                   <div className="text-sm text-gray-600">University of Sydney</div>
