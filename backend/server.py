@@ -70,48 +70,7 @@ def regenerate_sitemap_async():
         print(f"❌ Failed to regenerate sitemap: {e}")
         logger.error(f"Failed to regenerate sitemap: {e}")
 
-# Meta Tag Injection Middleware for SEO
-class MetaTagInjectionMiddleware(BaseHTTPMiddleware):
-    """Inject dynamic meta tags into HTML responses for SEO"""
-    
-    async def dispatch(self, request: Request, call_next):
-        response = await call_next(request)
-        
-        # Debug logging
-        import logging
-        logging.info(f"[META MIDDLEWARE] Path: {request.url.path}, Status: {response.status_code}, Content-Type: {response.headers.get('content-type', 'none')}")
-        
-        # Only process HTML responses
-        if response.status_code == 200 and request.url.path != '/api/sitemap.xml':
-            content_type = response.headers.get('content-type', '')
-            
-            if 'text/html' in content_type:
-                # Read response body
-                body = b""
-                async for chunk in response.body_iterator:
-                    body += chunk
-                
-                html_content = body.decode('utf-8')
-                
-                # Inject meta tags if it's a detail page
-                path = request.url.path
-                if path.startswith('/jobs/') or path.startswith('/blogs/'):
-                    from meta_injector import inject_meta_tags
-                    html_content = await inject_meta_tags(html_content, path)
-                
-                # Return modified response with updated Content-Length
-                response_headers = dict(response.headers)
-                # Remove Content-Length header as it's recalculated by Starlette
-                response_headers.pop('content-length', None)
-                
-                return StarletteResponse(
-                    content=html_content,
-                    status_code=response.status_code,
-                    headers=response_headers,
-                    media_type=response.media_type
-                )
-        
-        return response
+# Meta Tag Injection Middleware removed - app now uses pure client-side rendering
 
 # Create the main app
 app = FastAPI(title="HealthCare Jobs API", version="1.0.0")
@@ -348,6 +307,7 @@ class JobCreate(BaseModel):
     is_external: bool = False
     external_url: Optional[str] = None
     application_deadline: Optional[datetime] = None
+    expires_at: Optional[datetime] = None  # Job expiry date for auto-archiving
 
 class JobApplication(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -728,28 +688,50 @@ async def create_job(job_data: JobCreate, current_user: User = Depends(get_curre
 
 @api_router.get("/jobs", response_model=List[Job])
 async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True, category: str = None):
-    query = {"is_approved": True, "is_deleted": {"$ne": True}} if approved_only else {"is_deleted": {"$ne": True}}
-    
-    # Add category filter if provided (matches ANY category in the categories array)
-    if category:
-        query["categories"] = category
-    
-    # Sort: By created_at descending (newest first), then archived jobs at end
-    jobs = await db.jobs.find(query).sort([("created_at", -1), ("is_archived", 1)]).skip(skip).limit(limit).to_list(length=None)
-    
-    for job in jobs:
-        if isinstance(job.get('created_at'), str):
-            job['created_at'] = datetime.fromisoformat(job['created_at'])
-        if job.get('expires_at') and isinstance(job.get('expires_at'), str):
-            job['expires_at'] = datetime.fromisoformat(job['expires_at'])
+    try:
+        query = {"is_approved": True, "is_deleted": {"$ne": True}} if approved_only else {"is_deleted": {"$ne": True}}
         
-        # Convert integer salaries to strings for backward compatibility
-        if job.get('salary_min') is not None and isinstance(job.get('salary_min'), int):
-            job['salary_min'] = str(job['salary_min'])
-        if job.get('salary_max') is not None and isinstance(job.get('salary_max'), int):
-            job['salary_max'] = str(job['salary_max'])
-    
-    return [Job(**job) for job in jobs]
+        # Add category filter if provided (matches ANY category in the categories array)
+        if category:
+            query["categories"] = category
+        
+        # Sort: By created_at descending (newest first), then archived jobs at end
+        jobs = await db.jobs.find(query, {"_id": 0}).sort([("created_at", -1), ("is_archived", 1)]).skip(skip).limit(limit).to_list(length=None)
+        
+        print(f"[DEBUG] Found {len(jobs)} jobs from database")
+        
+        result_jobs = []
+        for job in jobs:
+            try:
+                # Handle datetime fields
+                if isinstance(job.get('created_at'), str):
+                    job['created_at'] = datetime.fromisoformat(job['created_at'])
+                if job.get('expires_at') and isinstance(job.get('expires_at'), str):
+                    job['expires_at'] = datetime.fromisoformat(job['expires_at'])
+                if job.get('application_deadline') and isinstance(job.get('application_deadline'), str):
+                    job['application_deadline'] = datetime.fromisoformat(job['application_deadline'])
+                
+                # Convert integer salaries to strings for backward compatibility
+                if job.get('salary_min') is not None and isinstance(job.get('salary_min'), int):
+                    job['salary_min'] = str(job['salary_min'])
+                if job.get('salary_max') is not None and isinstance(job.get('salary_max'), int):
+                    job['salary_max'] = str(job['salary_max'])
+                
+                # Create Job instance
+                job_instance = Job(**job)
+                result_jobs.append(job_instance)
+            except Exception as e:
+                print(f"[ERROR] Failed to serialize job {job.get('id', 'unknown')}: {e}")
+                print(f"[ERROR] Job fields: {list(job.keys())}")
+                continue
+        
+        print(f"[DEBUG] Successfully serialized {len(result_jobs)} jobs")
+        return result_jobs
+    except Exception as e:
+        print(f"[ERROR] get_jobs endpoint failed: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Failed to fetch jobs: {str(e)}")
 
 
 # Map URL slugs to database category values
@@ -2455,13 +2437,15 @@ async def get_job_seeker_stats(current_user: User = Depends(get_current_user)):
 async def get_robots_txt():
     """
     Generate robots.txt for search engine crawling
-    Simple and clean - allow all content
+    Allow all public content, disallow auth and private pages
     """
     robots_content = """User-agent: *
 Allow: /
+Disallow: /login/
+Disallow: /register/
+Disallow: /student-profiles/
 
 Sitemap: https://jobslly.com/sitemap.xml
-Crawl-delay: 0
 """
     
     return PlainTextResponse(content=robots_content)
@@ -2718,9 +2702,6 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
 # Include the router
 app.include_router(api_router)
 
-# Add Meta Tag Injection Middleware for SEO
-app.add_middleware(MetaTagInjectionMiddleware)
-
 # Add WWW to non-WWW redirect middleware (must be added before CORS)
 app.add_middleware(WWWRedirectMiddleware)
 
@@ -2756,7 +2737,7 @@ if os.path.exists(frontend_build_path):
     async def serve_frontend(request: Request, full_path: str):
         """
         Serve React frontend for all non-API routes.
-        Injects dynamic meta tags for job/blog detail pages.
+        Pure client-side rendering - no server-side HTML injection.
         """
         # Skip API routes - they're handled by api_router
         if full_path.startswith('api/'):
@@ -2766,18 +2747,17 @@ if os.path.exists(frontend_build_path):
         index_path = f"{frontend_build_path}/index.html"
         
         if os.path.exists(index_path):
-            with open(index_path, 'r', encoding='utf-8') as f:
-                html_content = f.read()
-            
-            # Inject meta tags for job/blog pages
-            path = request.url.path
-            if path.startswith('/jobs/') or path.startswith('/blogs/'):
-                from meta_injector import inject_meta_tags
-                html_content = await inject_meta_tags(html_content, path)
-            
-            return HTMLResponse(content=html_content, status_code=200, media_type="text/html; charset=utf-8")
+            return FileResponse(index_path, media_type="text/html")
         else:
             raise HTTPException(status_code=404, detail="Frontend build not found")
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize background tasks on app startup"""
+    # Start job expiry scheduler
+    from job_scheduler import start_scheduler
+    start_scheduler()
+    print("✅ Job expiry scheduler started")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

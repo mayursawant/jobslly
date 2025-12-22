@@ -195,7 +195,7 @@ function App() {
                 "@type": "WebSite",
                 "name": "Jobslly",
                 "description": "Future of Healthcare Careers - AI-Powered Job Platform",
-                "url": "https://seo-job-portal-2.preview.emergentagent.com",
+                "url": "https://jobfix-complete.preview.emergentagent.com",
                 "potentialAction": {
                   "@type": "SearchAction",
                   "target": "https://jobslly.com/jobs?search={search_term_string}",
@@ -213,10 +213,10 @@ function App() {
               {JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "LocalBusiness",
-                "@id": "https://seo-job-portal-2.preview.emergentagent.com",
+                "@id": "https://jobfix-complete.preview.emergentagent.com",
                 "name": "Jobslly",
                 "description": "Healthcare job platform connecting medical professionals with opportunities",
-                "url": "https://seo-job-portal-2.preview.emergentagent.com",
+                "url": "https://jobfix-complete.preview.emergentagent.com",
                 "telephone": "+1-800-JOBSLLY",
                 "priceRange": "Free",
                 "openingHours": "Mo-Su 00:00-24:00",

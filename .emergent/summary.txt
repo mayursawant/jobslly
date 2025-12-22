@@ -1,849 +1,43 @@
 <analysis>**original_problem_statement:**
-The user's initial request was to verify a job sorting fix and add a visual badge for archived jobs.
+The user's initial high-level goal was to improve the job portal's SEO, which led to a series of complex technical challenges. After resolving a critical application outage caused by a failed server-side rendering (SSR) attempt, the user shifted priorities to feature development and UI enhancements.
 
-Over the course of the session, the scope expanded significantly to include:
-1.  Fixing a broken admin authentication flow.
-2.  Resolving a critical bug where jobs were sorting incorrectly on the opportunities page due to  fields being stored as strings instead of  objects.
-3.  A major SEO overhaul to change the URL structure for all job detail pages to a more descriptive format ().
-4.  Building dynamic, SEO-optimized category pages (e.g., , ) based on a user-provided CSV file, complete with dynamic metadata.
-5.  Fixing issues where jobs weren't appearing in the correct categories due to data mismatches (e.g., doctor vs doctors) and implementing title-based filtering for some categories.
-6.  Refining the UI of the new category pages to match the site's green theme and ensure the job card layout (especially salary display) was identical to the main opportunities page.
-7.  Regenerating the sitemap to include all the new category and job URLs.
-8.  A new critical issue where newly created jobs are not being saved to the database, despite the UI showing a save successful message.
+The key tasks addressed in this session were:
+1.  **System Recovery:** Fixing a completely broken preview environment by reverting a failed Next.js migration and stabilizing the frontend and backend services.
+2.  **New Feature Development:** Building a premium, recruiter-focused Student Profiles page from scratch with detailed, hardcoded profiles, expandable sections, and a contact modal.
+3.  **UI/UX Overhaul:** Refactoring the homepage to remove complex animations (GSAP), fix layout issues, update content and imagery, and align the visual theme with user requests.
+4.  **Architectural Cleanup:** Removing all server-side rendering (SSR) logic from the Python backend to simplify the architecture after it caused persistent issues.
+5.  **Critical Bug Fixes:**
+    *   Resolving a flash of unstyled content (FOUC) on page load.
+    *   Diagnosing and fixing a critical database connection issue where the application was connecting to a local, empty database instead of the production database, causing all data-driven features (jobs, blogs, login) to fail.
+6.  **Feature Implementation:** Adding an automatic job archiving system where jobs expire and are archived based on a new  date field.
+7.  **Content Updates:** Updating contact information, office addresses, and the  file as requested by the user.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application is a React/FastAPI job portal. The job sorting on the main opportunities page is now correct (newest first) after a data migration fixed the  field types in the database. A new, robust, and SEO-friendly URL structure has been implemented for all jobs, and slugs are now immutable on edit to prevent breaking links. Ten dynamic, SEO-optimized category pages have been successfully built and integrated, with backend logic to handle various filtering strategies (by category array or job title). The UI for these pages has been themed and aligned with the rest ofthe site. The sitemap is up-to-date with all the new URLs. However, the core functionality of creating new jobs is currently broken.
+The application is a full-stack job portal using React (Create-React-App) for the frontend and FastAPI for the backend, connected to a production MongoDB Atlas database. All major critical issues from the previous sessions, including the broken preview, database connection failures, and service crashes, have been resolved. The application is now stable and functional. The agent has successfully implemented a new Student Profiles page, an auto-archiving job feature (backend-only), and has performed a significant UI cleanup on the homepage. The last action was updating the About Us section on the homepage with a new image provided by the user.
 
 **Last working item**:
-The agent was investigating a critical bug reported by the user where newly created jobs were not appearing on the site.
-
--   Last item agent was working: The agent confirmed the user's report by attempting to query for jobs created on the current day (December 5th) and finding that they were not present in the MongoDB database, despite the admin panel showing a save successful message.
+-   Last item agent was working: The user requested to update the image in the About Jobslly section on the homepage and fix the vertical alignment between the new image and the adjacent text block. The agent has replaced the image URL in the code but has not yet addressed or verified the alignment fix.
 -   Status: 
 -   Agent Testing Done: N
--   Which testing method agent to use? manual testing by curl or python -c. The agent needs to call the job creation endpoint directly and immediately inspect the backend logs (==> /var/log/supervisor/backend.err.log <==
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [2287]
-Process SpawnProcess-2:
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
-    self.run()
-  File "/usr/local/lib/python3.11/multiprocessing/process.py", line 108, in run
-    self._target(*self._args, **self._kwargs)
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/_subprocess.py", line 76, in subprocess_started
-    target(sockets=sockets)
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 61, in run
-    return asyncio.run(self.serve(sockets=sockets))
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
-    return runner.run(main)
-           ^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
-    return self._loop.run_until_complete(task)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
-    return future.result()
-           ^^^^^^^^^^^^^^^
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 68, in serve
-    config.load()
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/config.py", line 467, in load
-    self.loaded_app = import_from_string(self.app)
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 21, in import_from_string
-    module = importlib.import_module(module_str)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/importlib/__init__.py", line 126, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
-  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
-  File "/app/backend/server.py", line 830, in <module>
-    skip: int = Query(0, ge=0),
-                ^^^^^
-NameError: name 'Query' is not defined
-INFO:     Stopping reloader process [2285]
-INFO:     Will watch for changes in these directories: ['/app/backend']
-INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [2515] using WatchFiles
-Process SpawnProcess-1:
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
-    self.run()
-  File "/usr/local/lib/python3.11/multiprocessing/process.py", line 108, in run
-    self._target(*self._args, **self._kwargs)
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/_subprocess.py", line 76, in subprocess_started
-    target(sockets=sockets)
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 61, in run
-    return asyncio.run(self.serve(sockets=sockets))
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
-    return runner.run(main)
-           ^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
-    return self._loop.run_until_complete(task)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
-    return future.result()
-           ^^^^^^^^^^^^^^^
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 68, in serve
-    config.load()
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/config.py", line 467, in load
-    self.loaded_app = import_from_string(self.app)
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 21, in import_from_string
-    module = importlib.import_module(module_str)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/importlib/__init__.py", line 126, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
-  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
-  File "/app/backend/server.py", line 830, in <module>
-    skip: int = Query(0, ge=0),
-                ^^^^^
-NameError: name 'Query' is not defined
-WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
-INFO:     Started server process [2582]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [2582]
-INFO:     Stopping reloader process [2515]
-INFO:     Will watch for changes in these directories: ['/app/backend']
-INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [2612] using WatchFiles
-INFO:     Started server process [2614]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'update_sitemap.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [2614]
-INFO:     Started server process [3215]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [3215]
-INFO:     Started server process [3356]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [3356]
-INFO:     Started server process [3369]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [3369]
-INFO:     Started server process [3421]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [3421]
-INFO:     Stopping reloader process [2612]
-INFO:     Will watch for changes in these directories: ['/app/backend']
-INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [3437] using WatchFiles
-INFO:     Started server process [3439]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [3439]
-INFO:     Started server process [3850]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [3850]
-INFO:     Started server process [3877]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [3877]
-INFO:     Started server process [3915]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [3915]
-INFO:     Stopping reloader process [3437]
-INFO:     Will watch for changes in these directories: ['/app/backend']
-INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [3964] using WatchFiles
-INFO:     Started server process [3966]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Will watch for changes in these directories: ['/app/backend']
-INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [28] using WatchFiles
-INFO:     Started server process [87]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Will watch for changes in these directories: ['/app/backend']
-INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [28] using WatchFiles
-INFO:     Started server process [82]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Will watch for changes in these directories: ['/app/backend']
-INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [34] using WatchFiles
-
-==> /var/log/supervisor/backend.out.log <==
-INFO:     10.64.128.154:60638 - "POST /api/admin/jobs HTTP/1.1" 200 OK
-🔄 Triggering sitemap regeneration...
-✓ Sitemap regeneration triggered (PID: 2198)
-INFO:     10.64.128.21:57166 - "POST /api/admin/jobs HTTP/1.1" 200 OK
-INFO:     10.64.128.144:34798 - "POST /api/auth/login HTTP/1.1" 200 OK
-🔄 Triggering sitemap regeneration...
-✓ Sitemap regeneration triggered (PID: 2220)
-INFO:     10.64.128.199:37074 - "POST /api/admin/jobs HTTP/1.1" 200 OK
-INFO:     10.64.128.5:58526 - "POST /api/auth/login HTTP/1.1" 200 OK
-🔄 Triggering sitemap regeneration...
-✓ Sitemap regeneration triggered (PID: 2242)
-INFO:     10.64.128.220:49018 - "POST /api/admin/jobs HTTP/1.1" 200 OK
-INFO:     10.64.128.154:34668 - "POST /api/auth/login HTTP/1.1" 200 OK
-🔄 Triggering sitemap regeneration...
-✓ Sitemap regeneration triggered (PID: 2304)
-INFO:     10.64.128.220:48736 - "POST /api/admin/jobs HTTP/1.1" 200 OK
-🔄 Triggering sitemap regeneration...
-✓ Sitemap regeneration triggered (PID: 2309)
-INFO:     10.64.128.21:39190 - "POST /api/admin/jobs HTTP/1.1" 200 OK
-INFO:     10.64.128.199:38702 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:49146 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:52126 - "GET /api/jobs/medical-coordinator-job-at-hexa-health-in-gurugram-haryana-33b02ebc HTTP/1.1" 200 OK
-INFO:     10.64.128.144:49776 - "GET /api/categories HTTP/1.1" 200 OK
-INFO:     10.64.128.5:49088 - "GET /api/categories/pharmacy?limit=5 HTTP/1.1" 200 OK
-INFO:     10.64.129.78:56272 - "GET /api/jobs/pharmacy HTTP/1.1" 404 Not Found
-INFO:     10.64.128.200:34162 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:44678 - "GET /api/categories/pharmacy?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:36422 - "GET /api/jobs/pharmacy HTTP/1.1" 404 Not Found
-INFO:     10.64.129.78:40912 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.129.77:53764 - "GET /api/categories/pharmacy?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.78:40912 - "GET /api/categories/pharmacy?skip=0&limit=20&location=Mumbai HTTP/1.1" 200 OK
-INFO:     10.64.128.199:36548 - "GET /api/jobs/clinical-research HTTP/1.1" 404 Not Found
-INFO:     10.64.128.144:58654 - "GET /api/categories/clinical-research?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.5:56174 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.21:32990 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.21:32990 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.128.21:33000 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.5:49574 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:53972 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.220:35752 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:35736 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:53972 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:53980 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:59296 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.128.200:59304 - "GET /api/jobs/medical-coordinator-job-at-hexa-health-in-gurugram-haryana-33b02ebc HTTP/1.1" 200 OK
-INFO:     10.64.128.199:56450 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.128.5:58484 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.128.199:36438 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.200:35602 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:36438 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:52012 - "GET /api/jobs/nursing HTTP/1.1" 404 Not Found
-INFO:     10.64.128.220:33546 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.200:52012 - "GET /api/categories/nursing?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:33546 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.5:35778 - "GET /api/jobs/pharmacy HTTP/1.1" 404 Not Found
-INFO:     10.64.128.199:40218 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.199:40218 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:48454 - "GET /api/categories/pharmacy?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.77:59542 - "GET /api/jobs/medical-lab-technician HTTP/1.1" 404 Not Found
-INFO:     10.64.128.220:43556 - "GET /api/auth/me HTTP/1.1" 401 Unauthorized
-INFO:     10.64.128.200:60652 - "GET /api/categories/medical-lab-technician?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:43556 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.5:36622 - "POST /api/auth/login HTTP/1.1" 200 OK
-INFO:     10.64.128.21:38956 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.21:38956 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.144:38796 - "GET /api/admin/stats HTTP/1.1" 200 OK
-INFO:     10.64.128.144:38798 - "GET /api/admin/jobs/all HTTP/1.1" 200 OK
-INFO:     10.64.128.154:51414 - "GET /api/admin/jobs/pending HTTP/1.1" 200 OK
-INFO:     10.64.128.154:51414 - "GET /api/admin/blog HTTP/1.1" 200 OK
-INFO:     10.64.128.220:58068 - "GET /api/categories HTTP/1.1" 200 OK
-INFO:     10.64.128.5:36012 - "GET /api/categories/doctor?limit=5 HTTP/1.1" 200 OK
-INFO:     10.64.128.21:51496 - "GET /api/categories/nursing?limit=5 HTTP/1.1" 200 OK
-INFO:     10.64.129.77:44586 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.128.154:49326 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:39956 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.76:49266 - "GET /api/jobs/nursing HTTP/1.1" 404 Not Found
-INFO:     10.64.128.199:50136 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:50140 - "GET /api/categories/nursing?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:43660 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.128.220:43660 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.199:52284 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:52300 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:58540 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.128.200:58532 - "GET /api/jobs/medical-coordinator-job-at-hexa-health-in-gurugram-haryana-33b02ebc HTTP/1.1" 200 OK
-INFO:     10.64.128.220:60132 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:60132 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.128.199:55346 - "GET /api/jobs/medical-coordinator-job-at-hexa-health-in-gurugram-haryana-33b02ebc HTTP/1.1" 200 OK
-INFO:     10.64.128.220:60132 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.21:60852 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.129.77:53444 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.129.78:50472 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.76:47700 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:56392 - "GET /api/categories HTTP/1.1" 200 OK
-INFO:     10.64.128.144:32918 - "GET /api/categories/pharmacovigilance?limit=5 HTTP/1.1" 200 OK
-INFO:     10.64.128.144:36364 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.129.78:60944 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.76:33362 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.129.76:47330 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.128.220:47310 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.199:48208 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:48176 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:40700 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:48208 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:59092 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.128.200:59092 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.199:45118 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:45104 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.5:40732 - "GET /api/jobs/medical-science-liaison HTTP/1.1" 404 Not Found
-INFO:     10.64.128.154:40440 - "GET /api/jobs/pharmacovigilance HTTP/1.1" 404 Not Found
-INFO:     10.64.128.199:33500 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.144:60622 - "GET /api/categories/pharmacovigilance?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:46512 - "GET /api/categories/medical-science-liaison?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.144:60618 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:46520 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:34014 - "GET /api/jobs/clinical-research HTTP/1.1" 404 Not Found
-INFO:     10.64.128.200:34014 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:44300 - "GET /api/categories/clinical-research?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:44668 - "GET /api/categories/medical-science-liaison?skip=20&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:37026 - "GET /api/categories/medical-science-liaison?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:47656 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.128.200:47658 - "GET /api/jobs/medical-science-liaison-human-genetics-job-at-haystack-analytics-in-mumbai-maharashtra-da1d4f46 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:47112 - "GET /api/categories/medical-science-liaison?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:35030 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.129.78:51162 - "GET /api/categories/medical-science-liaison?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.77:38662 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.129.77:38646 - "GET /api/jobs/medical-science-liaison-msl-job-at-bayer-zydus-pharma-in-mumbai-208cdc36 HTTP/1.1" 200 OK
-INFO:     10.64.129.77:38646 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:40616 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.129.77:48474 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.129.76:59604 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.129.76:59592 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.77:36158 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.129.77:36152 - "GET /api/jobs/medical-coordinator-job-at-hexa-health-in-gurugram-haryana-33b02ebc HTTP/1.1" 200 OK
-INFO:     10.64.129.76:59614 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.129.78:48270 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.129.77:53822 - "GET /api/jobs/medical-coordinator-job-at-hexa-health-in-gurugram-haryana-33b02ebc HTTP/1.1" 200 OK
-INFO:     10.64.129.76:47570 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.76:47668 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.129.77:38112 - "GET /api/jobs/head-of-medical-affairs-job-at-centrix-healthcare-in-mumbai-maharashtra-02ba1330 HTTP/1.1" 200 OK
-INFO:     10.64.129.77:38112 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:57118 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.199:58416 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:59208 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:59214 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:33414 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:38462 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:59214 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:59214 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.199:59660 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:46544 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.199:46544 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.129.78:35156 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.128.220:50778 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.200:50922 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:46544 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:43076 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.128.220:46178 - "GET /api/jobs/medical-coordinator-job-at-hexa-health-in-gurugram-haryana-33b02ebc HTTP/1.1" 200 OK
-INFO:     10.64.128.199:37628 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.154:42646 - "GET /api/jobs/medical-science-liaison HTTP/1.1" 404 Not Found
-INFO:     10.64.128.199:45580 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.220:54822 - "GET /api/categories/medical-science-liaison?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:45580 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:50332 - "GET /api/jobs/pharmacy HTTP/1.1" 404 Not Found
-INFO:     10.64.128.154:57870 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.144:34980 - "GET /api/categories/pharmacy?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:43926 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.128.199:46768 - "GET /api/jobs/medical-science-liaison-human-genetics-job-at-haystack-analytics-in-mumbai-maharashtra-da1d4f46 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:46768 - "GET /api/categories/medical-science-liaison?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.78:52830 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.128.21:35118 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.5:46214 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.5:37926 - "GET /api/jobs/medical-science-liaison HTTP/1.1" 404 Not Found
-INFO:     10.64.128.200:50304 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.200:50304 - "GET /api/categories/medical-science-liaison?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:48710 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:50986 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.200:44446 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:44434 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:50986 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:59480 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.129.76:54080 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.128.220:59480 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.200:44704 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:59480 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.139.122:50744 - "GET /api/auth/me HTTP/1.1" 401 Unauthorized
-INFO:     10.64.139.122:50744 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.139.121:60104 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.139.121:60114 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.130.144:60834 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.130.202:32848 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.130.218:36136 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.130.203:39510 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.131.50:57786 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.130.218:51842 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.130.202:46786 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.131.50:33390 - "GET /api/ai/enhance-job-description HTTP/1.1" 405 Method Not Allowed
-INFO:     10.64.139.121:44242 - "GET /api HTTP/1.1" 404 Not Found
-INFO:     10.64.130.202:33550 - "GET /api/jobs?limit=10 HTTP/1.1" 200 OK
-INFO:     10.64.131.25:40172 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.131.50:54364 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK) for any silent errors.
+-   Which testing method agent to use? screenshot tool. The agent needs to visually inspect the homepage to confirm that the height of the image container matches the height of the text container and that they are correctly aligned.
 -   User Testing Done: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1: (P0)** Newly created jobs are not being saved to the database.
-
+-   **Issue 1: (P0) Misalignment in Homepage About Us Section**
     -   **Issues Detail:**
         -   **Issue 1:**
-            -   **Attempted fixes:** The agent has only confirmed the existence of the bug by checking the database. No fixes have been attempted yet.
+            -   **Attempted fixes:** The agent successfully replaced the image URL in . The alignment issue remains unaddressed.
             -   **Next debug checklist:**
-                1.  Examine the backend logs for errors that occur during job creation: ==> /var/log/supervisor/backend.err.log <==
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [2287]
-Process SpawnProcess-2:
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
-    self.run()
-  File "/usr/local/lib/python3.11/multiprocessing/process.py", line 108, in run
-    self._target(*self._args, **self._kwargs)
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/_subprocess.py", line 76, in subprocess_started
-    target(sockets=sockets)
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 61, in run
-    return asyncio.run(self.serve(sockets=sockets))
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
-    return runner.run(main)
-           ^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
-    return self._loop.run_until_complete(task)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
-    return future.result()
-           ^^^^^^^^^^^^^^^
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 68, in serve
-    config.load()
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/config.py", line 467, in load
-    self.loaded_app = import_from_string(self.app)
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 21, in import_from_string
-    module = importlib.import_module(module_str)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/importlib/__init__.py", line 126, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
-  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
-  File "/app/backend/server.py", line 830, in <module>
-    skip: int = Query(0, ge=0),
-                ^^^^^
-NameError: name 'Query' is not defined
-INFO:     Stopping reloader process [2285]
-INFO:     Will watch for changes in these directories: ['/app/backend']
-INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [2515] using WatchFiles
-Process SpawnProcess-1:
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.11/multiprocessing/process.py", line 314, in _bootstrap
-    self.run()
-  File "/usr/local/lib/python3.11/multiprocessing/process.py", line 108, in run
-    self._target(*self._args, **self._kwargs)
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/_subprocess.py", line 76, in subprocess_started
-    target(sockets=sockets)
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 61, in run
-    return asyncio.run(self.serve(sockets=sockets))
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
-    return runner.run(main)
-           ^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
-    return self._loop.run_until_complete(task)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
-    return future.result()
-           ^^^^^^^^^^^^^^^
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/server.py", line 68, in serve
-    config.load()
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/config.py", line 467, in load
-    self.loaded_app = import_from_string(self.app)
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/.venv/lib/python3.11/site-packages/uvicorn/importer.py", line 21, in import_from_string
-    module = importlib.import_module(module_str)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.11/importlib/__init__.py", line 126, in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
-  File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 1147, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 690, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 940, in exec_module
-  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
-  File "/app/backend/server.py", line 830, in <module>
-    skip: int = Query(0, ge=0),
-                ^^^^^
-NameError: name 'Query' is not defined
-WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
-INFO:     Started server process [2582]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [2582]
-INFO:     Stopping reloader process [2515]
-INFO:     Will watch for changes in these directories: ['/app/backend']
-INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [2612] using WatchFiles
-INFO:     Started server process [2614]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'update_sitemap.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [2614]
-INFO:     Started server process [3215]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [3215]
-INFO:     Started server process [3356]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [3356]
-INFO:     Started server process [3369]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [3369]
-INFO:     Started server process [3421]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [3421]
-INFO:     Stopping reloader process [2612]
-INFO:     Will watch for changes in these directories: ['/app/backend']
-INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [3437] using WatchFiles
-INFO:     Started server process [3439]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [3439]
-INFO:     Started server process [3850]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [3850]
-INFO:     Started server process [3877]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [3877]
-INFO:     Started server process [3915]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [3915]
-INFO:     Stopping reloader process [3437]
-INFO:     Will watch for changes in these directories: ['/app/backend']
-INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [3964] using WatchFiles
-INFO:     Started server process [3966]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Will watch for changes in these directories: ['/app/backend']
-INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [28] using WatchFiles
-INFO:     Started server process [87]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Will watch for changes in these directories: ['/app/backend']
-INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [28] using WatchFiles
-INFO:     Started server process [82]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Will watch for changes in these directories: ['/app/backend']
-INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [34] using WatchFiles
-
-==> /var/log/supervisor/backend.out.log <==
-INFO:     10.64.128.154:60638 - "POST /api/admin/jobs HTTP/1.1" 200 OK
-🔄 Triggering sitemap regeneration...
-✓ Sitemap regeneration triggered (PID: 2198)
-INFO:     10.64.128.21:57166 - "POST /api/admin/jobs HTTP/1.1" 200 OK
-INFO:     10.64.128.144:34798 - "POST /api/auth/login HTTP/1.1" 200 OK
-🔄 Triggering sitemap regeneration...
-✓ Sitemap regeneration triggered (PID: 2220)
-INFO:     10.64.128.199:37074 - "POST /api/admin/jobs HTTP/1.1" 200 OK
-INFO:     10.64.128.5:58526 - "POST /api/auth/login HTTP/1.1" 200 OK
-🔄 Triggering sitemap regeneration...
-✓ Sitemap regeneration triggered (PID: 2242)
-INFO:     10.64.128.220:49018 - "POST /api/admin/jobs HTTP/1.1" 200 OK
-INFO:     10.64.128.154:34668 - "POST /api/auth/login HTTP/1.1" 200 OK
-🔄 Triggering sitemap regeneration...
-✓ Sitemap regeneration triggered (PID: 2304)
-INFO:     10.64.128.220:48736 - "POST /api/admin/jobs HTTP/1.1" 200 OK
-🔄 Triggering sitemap regeneration...
-✓ Sitemap regeneration triggered (PID: 2309)
-INFO:     10.64.128.21:39190 - "POST /api/admin/jobs HTTP/1.1" 200 OK
-INFO:     10.64.128.199:38702 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:49146 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:52126 - "GET /api/jobs/medical-coordinator-job-at-hexa-health-in-gurugram-haryana-33b02ebc HTTP/1.1" 200 OK
-INFO:     10.64.128.144:49776 - "GET /api/categories HTTP/1.1" 200 OK
-INFO:     10.64.128.5:49088 - "GET /api/categories/pharmacy?limit=5 HTTP/1.1" 200 OK
-INFO:     10.64.129.78:56272 - "GET /api/jobs/pharmacy HTTP/1.1" 404 Not Found
-INFO:     10.64.128.200:34162 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:44678 - "GET /api/categories/pharmacy?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:36422 - "GET /api/jobs/pharmacy HTTP/1.1" 404 Not Found
-INFO:     10.64.129.78:40912 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.129.77:53764 - "GET /api/categories/pharmacy?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.78:40912 - "GET /api/categories/pharmacy?skip=0&limit=20&location=Mumbai HTTP/1.1" 200 OK
-INFO:     10.64.128.199:36548 - "GET /api/jobs/clinical-research HTTP/1.1" 404 Not Found
-INFO:     10.64.128.144:58654 - "GET /api/categories/clinical-research?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.5:56174 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.21:32990 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.21:32990 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.128.21:33000 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.5:49574 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:53972 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.220:35752 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:35736 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:53972 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:53980 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:59296 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.128.200:59304 - "GET /api/jobs/medical-coordinator-job-at-hexa-health-in-gurugram-haryana-33b02ebc HTTP/1.1" 200 OK
-INFO:     10.64.128.199:56450 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.128.5:58484 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.128.199:36438 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.200:35602 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:36438 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:52012 - "GET /api/jobs/nursing HTTP/1.1" 404 Not Found
-INFO:     10.64.128.220:33546 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.200:52012 - "GET /api/categories/nursing?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:33546 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.5:35778 - "GET /api/jobs/pharmacy HTTP/1.1" 404 Not Found
-INFO:     10.64.128.199:40218 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.199:40218 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:48454 - "GET /api/categories/pharmacy?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.77:59542 - "GET /api/jobs/medical-lab-technician HTTP/1.1" 404 Not Found
-INFO:     10.64.128.220:43556 - "GET /api/auth/me HTTP/1.1" 401 Unauthorized
-INFO:     10.64.128.200:60652 - "GET /api/categories/medical-lab-technician?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:43556 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.5:36622 - "POST /api/auth/login HTTP/1.1" 200 OK
-INFO:     10.64.128.21:38956 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.21:38956 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.144:38796 - "GET /api/admin/stats HTTP/1.1" 200 OK
-INFO:     10.64.128.144:38798 - "GET /api/admin/jobs/all HTTP/1.1" 200 OK
-INFO:     10.64.128.154:51414 - "GET /api/admin/jobs/pending HTTP/1.1" 200 OK
-INFO:     10.64.128.154:51414 - "GET /api/admin/blog HTTP/1.1" 200 OK
-INFO:     10.64.128.220:58068 - "GET /api/categories HTTP/1.1" 200 OK
-INFO:     10.64.128.5:36012 - "GET /api/categories/doctor?limit=5 HTTP/1.1" 200 OK
-INFO:     10.64.128.21:51496 - "GET /api/categories/nursing?limit=5 HTTP/1.1" 200 OK
-INFO:     10.64.129.77:44586 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.128.154:49326 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:39956 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.76:49266 - "GET /api/jobs/nursing HTTP/1.1" 404 Not Found
-INFO:     10.64.128.199:50136 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:50140 - "GET /api/categories/nursing?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:43660 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.128.220:43660 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.199:52284 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:52300 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:58540 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.128.200:58532 - "GET /api/jobs/medical-coordinator-job-at-hexa-health-in-gurugram-haryana-33b02ebc HTTP/1.1" 200 OK
-INFO:     10.64.128.220:60132 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:60132 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.128.199:55346 - "GET /api/jobs/medical-coordinator-job-at-hexa-health-in-gurugram-haryana-33b02ebc HTTP/1.1" 200 OK
-INFO:     10.64.128.220:60132 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.21:60852 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.129.77:53444 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.129.78:50472 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.76:47700 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:56392 - "GET /api/categories HTTP/1.1" 200 OK
-INFO:     10.64.128.144:32918 - "GET /api/categories/pharmacovigilance?limit=5 HTTP/1.1" 200 OK
-INFO:     10.64.128.144:36364 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.129.78:60944 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.76:33362 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.129.76:47330 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.128.220:47310 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.199:48208 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:48176 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:40700 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:48208 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:59092 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.128.200:59092 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.199:45118 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:45104 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.5:40732 - "GET /api/jobs/medical-science-liaison HTTP/1.1" 404 Not Found
-INFO:     10.64.128.154:40440 - "GET /api/jobs/pharmacovigilance HTTP/1.1" 404 Not Found
-INFO:     10.64.128.199:33500 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.144:60622 - "GET /api/categories/pharmacovigilance?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:46512 - "GET /api/categories/medical-science-liaison?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.144:60618 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:46520 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:34014 - "GET /api/jobs/clinical-research HTTP/1.1" 404 Not Found
-INFO:     10.64.128.200:34014 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:44300 - "GET /api/categories/clinical-research?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:44668 - "GET /api/categories/medical-science-liaison?skip=20&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:37026 - "GET /api/categories/medical-science-liaison?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:47656 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.128.200:47658 - "GET /api/jobs/medical-science-liaison-human-genetics-job-at-haystack-analytics-in-mumbai-maharashtra-da1d4f46 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:47112 - "GET /api/categories/medical-science-liaison?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:35030 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.129.78:51162 - "GET /api/categories/medical-science-liaison?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.77:38662 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.129.77:38646 - "GET /api/jobs/medical-science-liaison-msl-job-at-bayer-zydus-pharma-in-mumbai-208cdc36 HTTP/1.1" 200 OK
-INFO:     10.64.129.77:38646 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:40616 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.129.77:48474 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.129.76:59604 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.129.76:59592 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.77:36158 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.129.77:36152 - "GET /api/jobs/medical-coordinator-job-at-hexa-health-in-gurugram-haryana-33b02ebc HTTP/1.1" 200 OK
-INFO:     10.64.129.76:59614 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.129.78:48270 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.129.77:53822 - "GET /api/jobs/medical-coordinator-job-at-hexa-health-in-gurugram-haryana-33b02ebc HTTP/1.1" 200 OK
-INFO:     10.64.129.76:47570 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.76:47668 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.129.77:38112 - "GET /api/jobs/head-of-medical-affairs-job-at-centrix-healthcare-in-mumbai-maharashtra-02ba1330 HTTP/1.1" 200 OK
-INFO:     10.64.129.77:38112 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:57118 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.199:58416 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:59208 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:59214 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:33414 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:38462 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:59214 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:59214 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.199:59660 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:46544 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.199:46544 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.129.78:35156 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.128.220:50778 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.200:50922 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:46544 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:43076 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.128.220:46178 - "GET /api/jobs/medical-coordinator-job-at-hexa-health-in-gurugram-haryana-33b02ebc HTTP/1.1" 200 OK
-INFO:     10.64.128.199:37628 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.154:42646 - "GET /api/jobs/medical-science-liaison HTTP/1.1" 404 Not Found
-INFO:     10.64.128.199:45580 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.220:54822 - "GET /api/categories/medical-science-liaison?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:45580 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:50332 - "GET /api/jobs/pharmacy HTTP/1.1" 404 Not Found
-INFO:     10.64.128.154:57870 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.144:34980 - "GET /api/categories/pharmacy?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:43926 - "GET /api/profile HTTP/1.1" 200 OK
-INFO:     10.64.128.199:46768 - "GET /api/jobs/medical-science-liaison-human-genetics-job-at-haystack-analytics-in-mumbai-maharashtra-da1d4f46 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:46768 - "GET /api/categories/medical-science-liaison?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.129.78:52830 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.128.21:35118 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.5:46214 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.5:37926 - "GET /api/jobs/medical-science-liaison HTTP/1.1" 404 Not Found
-INFO:     10.64.128.200:50304 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.200:50304 - "GET /api/categories/medical-science-liaison?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:48710 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:50986 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.200:44446 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.128.200:44434 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.128.199:50986 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:59480 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.129.76:54080 - "GET /api/jobs/doctor HTTP/1.1" 404 Not Found
-INFO:     10.64.128.220:59480 - "GET /api/auth/me HTTP/1.1" 200 OK
-INFO:     10.64.128.200:44704 - "GET /api/categories/doctor?skip=0&limit=20 HTTP/1.1" 200 OK
-INFO:     10.64.128.220:59480 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.139.122:50744 - "GET /api/auth/me HTTP/1.1" 401 Unauthorized
-INFO:     10.64.139.122:50744 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.139.121:60104 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.139.121:60114 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.130.144:60834 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.130.202:32848 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.130.218:36136 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.130.203:39510 - "GET /api/jobs?limit=6 HTTP/1.1" 200 OK
-INFO:     10.64.131.50:57786 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.130.218:51842 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK
-INFO:     10.64.130.202:46786 - "GET /api/blog?featured_only=true&limit=3 HTTP/1.1" 200 OK
-INFO:     10.64.131.50:33390 - "GET /api/ai/enhance-job-description HTTP/1.1" 405 Method Not Allowed
-INFO:     10.64.139.121:44242 - "GET /api HTTP/1.1" 404 Not Found
-INFO:     10.64.130.202:33550 - "GET /api/jobs?limit=10 HTTP/1.1" 200 OK
-INFO:     10.64.131.25:40172 - "GET /api/blog?limit=4 HTTP/1.1" 200 OK
-INFO:     10.64.131.50:54364 - "GET /api/jobs?skip=0&limit=50 HTTP/1.1" 200 OK.
-                2.  Review the job creation endpoints ( and ) in .
-                3.  Pay close attention to any  blocks that might be catching errors silently and returning a success response.
-                4.  The recent changes to the slug generation logic within these endpoints are a likely source of the problem.
-            -   **Why fix this issue and what will be achieved with the fix?** This is a critical failure of core application functionality. Fixing it is essential to allow admins to add new jobs to the platform.
+                1.  Review the JSX and CSS for the About Us section in .
+                2.  Apply flexbox or grid CSS properties to the parent container to ensure its children (image and text blocks) have equal height. A class like  on a flex container is a good approach.
+                3.  Ensure the image itself is styled with  and  with  to fill its container without distortion.
+                4.  Use the  to visually confirm the alignment and equal heights.
+            -   **Why fix this issue and what will be achieved with the fix?** To resolve the user's direct visual feedback and ensure the homepage has a professional and polished look.
             -   **Status:** 
             -   **Is recurring issue?** N
-            -   **Should Test frontend/backend/both after fix?** Both. A new job must be created via the admin panel and verified to appear correctly on both the Manage Jobs page and the public /jobs opportunities page.
+            -   **Should Test frontend/backend/both after fix?** Frontend.
             -   **Blocked on other issue:** None.
 
 **In progress Task List**:
@@ -851,73 +45,126 @@ None.
 
 **Upcoming and Future Tasks**
 **Upcoming Tasks:**
--   **Task 1 (P1): Add visual indicator for archived jobs on the public Opportunities page.**
-    -   While the backend sorting is correct, there is no visual badge (e.g., Archived, Closed) on the job cards in  to distinguish them from active jobs.
+-   **Task 1 (P1): Implement Frontend for Job Expiry Date**
+    -   **Description:** The backend now supports an  field and auto-archives jobs. However, there is no UI for administrators to set this date when creating or editing a job. This task involves adding a date picker to the job creation/editing form in the admin panel.
+    -   **File Reference:** The admin job form (likely located in a component for ). The backend endpoint is .
+    -   **Priority:** P1 - This is a missing part of a requested feature.
 
 **Future Tasks:**
--   **Task 2 (P2): Migrate frontend from Create-React-App to Next.js.**
-    -   This was a user request for better SEO. It was deferred due to high effort. The agent should discuss the cost/benefit with the user, as significant SEO improvements have already been made without Next.js.
+-   **Task 2 (P2): Fix 404 Error on Admin Dashboard**
+    -   **Description:** The frontend testing agent reported multiple times that navigating to  results in a 404 Not Found error. This page is critical for managing the application.
+    -   **File Reference:** Check the routing in  and the component associated with the admin route.
+    -   **Priority:** P2 - This is a likely regression that breaks core administrative functionality.
+-   **Task 3 (P2): Add Visual Indicator for Archived Jobs**
+    -   **Description:** This is a pending UI task from a previous session. It requires adding a visual badge or indicator on job cards to show when a job has been archived.
+    -   **Priority:** P2 - A nice-to-have feature that completes the job lifecycle visibility.
 
 **Completed work in this session**
--   **Admin Authentication (DONE):** Fixed the admin login by deleting the corrupted admin user and recreating it with a valid password hash.
--   **Job Sorting Fix (DONE):** Corrected the primary sorting issue on the  page by migrating all  fields in the  collection from  to  objects.
--   **SEO URL Overhaul (DONE):**
-    -   Implemented a new, descriptive URL structure for jobs: .
-    -   Ran a migration script () to update all 360+ existing job slugs.
-    -   Made job slugs immutable on edit to prevent breaking indexed URLs.
-    -   Handled edge cases like missing fields, special characters, and duplicate slugs.
--   **Dynamic Category Pages (DONE):**
-    -   Created 10 dynamic, SEO-optimized category pages (e.g., ) from a user-provided CSV.
-    -   Implemented backend endpoints to serve category metadata and job listings.
-    -   Added logic to handle mismatches between URL slugs () and database values ().
-    -   Implemented title-based filtering for specific categories (e.g., pharmacovigilance).
--   **UI/UX Refinements (DONE):**
-    -   Themed the new category pages with the site's green color scheme.
-    -   Standardized the job card layout on category pages to perfectly match the main  page, especially the salary display.
--   **Sitemap Update (DONE):** Regenerated  to include all new category page URLs and the updated SEO-friendly job URLs.
+-   **Critical System Recovery**: Stabilized the entire application by fixing supervisor configurations, restoring missing scripts, and correctly configuring environment variables for all services (frontend, backend, database).
+-   **Next.js Migration Reversal**: Removed all traces of a failed Next.js migration, restoring the project to a stable Create-React-App structure.
+-   **New Feature: Student Profiles Page**: Created, styled, and populated a new, responsive page at  with 15 candidate profiles, expandable sections, and a contact modal.
+-   **Homepage UI Overhaul**:
+    -   Removed the  library and simplified animations for better performance.
+    -   Replaced emojis with  for a more professional look.
+    -   Fixed the layout of the stats section to display correctly in a single row.
+    -   Updated the About Us section content and image as per user request.
+-   **Architecture Simplification**: Removed all server-side rendering (SSR) logic from the backend (), eliminating a major source of complexity and errors.
+-   **FOUC Bug Fix**: Solved the flash of unstyled content by cleaning up .
+-   **Database Connection Fix**: Diagnosed and fixed the critical issue preventing the app from connecting to the production database by correcting the  file.
+-   **Feature: Job Auto-Archiving (Backend)**: Implemented a background scheduler in FastAPI to automatically archive jobs based on a new  date.
+-   **Content Updates**: Updated , contact information (email/phone), and office addresses across the application.
+
+**Earlier issues found/mentioned but not fixed**
+-   **Issue 1: Admin Dashboard is Inaccessible (404 Error)**
+    -   **Debug checklist:**
+        1.  Verify the route for  exists in .
+        2.  Check the component being rendered for that route to ensure it's imported and functions correctly.
+        3.  Confirm if any API calls within the admin component are failing and causing a redirect or error boundary to trigger.
+    -   **Why to solve this issue and what will be achieved with this?** The admin dashboard is essential for managing jobs, users, and other application content. Fixing it will restore core administrative capabilities.
+    -   **Should Test frontend/backend/both after fix:** Frontend.
+    -   **Is recurring issue?** N
+
+**Known issue recurrence from previous fork**
+-   **Issue recurrence in previous fork**: The architectural mismatch between a CRA frontend and SSR backend was a major recurring issue.
+-   **Recurrence count**: This problem persisted for a long time.
+-   **Status**: . The agent resolved this not by fixing the mismatch but by entirely removing the SSR functionality from the backend, thus eliminating the root cause of the conflict. The application now functions as a standard Single Page Application (SPA).
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Data Migration:** Utilized one-off Python scripts to perform large-scale, automated fixes and updates to the MongoDB database (changing data types, reformatting slugs).
--   **SEO URL Strategy:** Implemented an SEO-friendly URL structure and made slugs immutable upon editing to preserve link equity.
--   **Dynamic Page Generation (Frontend):** Used React Router's dynamic segments () to create a single component () that can render unique pages for multiple categories.
--   **Conditional Backend Filtering:** The backend API was enhanced to support different query strategies for categories—some filter on an array field (), while others perform a regex search on the  field.
+-   **React (Create-React-App)**: The frontend is a standard SPA built with CRA.
+-   **FastAPI & MongoDB**: The backend provides a REST API and connects to a MongoDB Atlas database.
+-   **Supervisor**: This is the process control system for the container. **It is the source of truth for environment variables like **, overriding any  files.
+-   **Ingress Routing & Proxy**: Frontend API calls are made to relative paths (e.g., ). The  file handles this in the local dev environment, while the platform's ingress controller handles it in the deployed preview, routing requests to the backend service. This was a key learning.
 
 **key DB schema**
--   **jobs**:
-    -   : Type has been migrated from  to  (datetime object).
-    -   : Format has been migrated to .
+-   **jobs**: 
+-   **blogs**: 
+-   **users**: 
+
+**changes in tech stack**
+-   **Added**: 
+-   **Removed**: ,  (re-added later and kept)
 
 **All files of reference**
--   : Contains the core logic for job creation, sorting, and the new category endpoints. The bug is likely here.
--   : The new component for category pages.
--   : Contains the new route for category pages.
--   : Migration script used to fix the date sorting issue.
--   : Migration script used to implement the new URL structure.
+-   **/app/frontend/src/components/Home.js**: Last file edited for UI content and styling.
+-   **/app/frontend/src/components/StudentProfiles.js**: Newly created feature page.
+-   **/app/frontend/public/index.html**: Edited to fix the FOUC issue.
+-   **/app/backend/server.py**: Edited to remove SSR and add the job archiving scheduler.
+-   **/app/backend/job_scheduler.py**: New file for the background task.
+-   **/etc/supervisor/conf.d/supervisor.conf**: **Crucial file**. Edited to fix the production database connection. Any service-level environment issues likely originate here.
+-   **/app/frontend/.env**: Edited to use a relative path for the backend URL, which is critical for the preview to work.
 
-**Last 10 User Messages and any pending user messages**
-1.  **User:** Update sitemap. **Status: Completed.**
-2.  **User:** Only 4 jobs from Dec 4th are on the job opportunity page. **Status: Completed.** Agent investigated and confirmed all 5 jobs were present and displaying correctly.
-3.  **User:** Newly generated jobs show save successful but don't appear in manage jobs or on the opportunities page. **Status: IN PROGRESS.** This is the current highest-priority issue.
+**Areas that need refactoring**:
+-   The job auto-archiving feature is incomplete. The backend logic is present, but there is no frontend UI for admins to set the  date, making the feature unusable in practice.
+
+**key api endpoints**
+-   
+-   
+-   
+-   
+
+**Critical Info for New Agent**
+1.  **Environment Configuration is Key:** The most significant challenge in this session was debugging environment and configuration issues. Remember:
+    *   The  file () overrides  files for service environment variables like .
+    *   The frontend must use a relative path for API calls (i.e.,  in  should be empty). The platform's ingress routes  requests to the backend. Hardcoding external URLs caused persistent SSL and connectivity issues.
+2.  **Admin Dashboard is Broken:** The  route returns a 404. This is a high-priority regression that needs to be investigated.
+3.  **Job Archiving is Incomplete:** The backend logic for job archiving exists, but the frontend part (letting an admin set the expiry date) is missing. This task needs to be completed to make the feature functional.
+
+**documents and test_reports created in this job**
+-   /app/frontend/src/components/Home_backup.js
+
+**Last 10 User Messages and any pending HUMAN messages**
+-   User: update image in about jobslly.com section, make sure the allignment is correct of content and image, right now content height is more than image height , both height should be same, edit image as required
+-   User: update content in place of meet our the founder section in homepage
+-   User: keep this number as static on homepage and all four stats should in a line right now , its not allign in 1 line 2) also on homepage , only 1 blog can be seen , three should be displayed you can remove the gsap libary and make the homepage as it was previously also use react icons on homepage instead of the emoji used
+-   User: still the same , cant see in the preview still shows failed to load jobs and no blogs , not able to login
+-   User: still same db is not connected properly
+-   User: 1) database is not connected , it shows failed to load jobs , not able to see blogs and not able to login as well please fix this
+-   User: Delhi: Green Park Metro Station Gate No.3, Hyderabad: Below Hotel Kinara Grand, Ameerpet, Dehradun: IT Park, Sahastradhara Rd
+-   User: Connect with the production database first 2) robots.txt is not updated... 3) in address section update below address for India...
+-   User: Whenever jobslly is refreshed or reloaded We get different website basic then again it reloads to proper design Why there is brea in loading
+-   User: Remove html page source generation code of homepage and all pages Because website first loads in html then loads properly
 
 **Project Health Check:**
--   **Broken:** The core job creation functionality is non-operational. New jobs are not saved to the database.
--   **Mocked:** None.
+-   **Broken**: None
+-   **Mocked**: None
 
-**3rd Party Integrations**:
-None.
+**3rd Party Integrations**
+-   None.
 
 **Testing status**
--   **Testing agent used after significant changes:** NO
--   **Troubleshoot agent used after agent stuck in loop:** NO
--   **Test files created:** None.
--   **Known regressions:** The ability to create new jobs has been broken.
+-   Testing agent used after significant changes: YES
+-   Troubleshoot agent used after agent stuck in loop: YES
+-   Test files created: []
+-   Known regressions:
+    -   The  page is inaccessible (404 error).
 
 **Credentials to test flow:**
 -   **Admin Email:** 
 -   **Admin Password:** 
 
 **What agent forgot to execute**
--   The agent has not yet implemented the visual Archived badge on the public job listing page, which was part of the original set of tasks. This is now tracked as an upcoming task.</analysis>
+-   The agent implemented the backend for the auto-archiving job feature but did not create the corresponding frontend UI for admins to set the expiry date on a job.
+-   The agent did not investigate or fix the 404 error on the  page, which was reported by the testing agent multiple times.</analysis>

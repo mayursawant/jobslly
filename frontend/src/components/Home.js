@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, MapPin, Briefcase, Users, TrendingUp, Globe, ArrowRight, Star, CheckCircle, Heart, Stethoscope, UserPlus, Building2 } from 'lucide-react';
+import { MdWork, MdBusiness, MdPeople, MdStar } from 'react-icons/md';
 import { AuthContext } from '../App';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -237,7 +238,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [featuredJobs, setFeaturedJobs] = useState([]);
   const [featuredBlogs, setFeaturedBlogs] = useState([]);
-  const [stats, setStats] = useState({ jobs: 0, companies: 0, applications: 0, professionals: 0 });
+  const [stats] = useState({ jobs: '11K+', companies: '2,000+', applications: '40K+', professionals: '75K+' });
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
@@ -348,33 +349,33 @@ const Home = () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Column - Content */}
             <div className="space-y-8">
-              {/* Trust Badge with Animation */}
-              <div className="inline-flex items-center px-5 py-3 bg-gradient-to-r from-teal-100 to-emerald-100 rounded-full border border-teal-200 shadow-sm animate-fade-in-up">
+              {/* Trust Badge */}
+              <div className="inline-flex items-center px-5 py-3 bg-gradient-to-r from-teal-100 to-emerald-100 rounded-full border border-teal-200 shadow-sm">
                 <div className="w-2 h-2 bg-teal-500 rounded-full mr-3 animate-pulse"></div>
                 <span className="text-teal-700 font-semibold text-sm">🏥 Trusted by 75,000+ Healthcare Professionals</span>
               </div>
 
-              {/* Main Headline with Staggered Animation */}
+              {/* Main Headline */}
               <div className="space-y-4">
-                <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight animate-slide-up">
+                <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
                   Explore The Best
                 </h1>
-                <h1 className="text-5xl md:text-6xl font-bold leading-tight animate-slide-up" style={{animationDelay: '0.2s'}}>
+                <h1 className="text-5xl md:text-6xl font-bold leading-tight">
                   <span className="bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 bg-clip-text text-transparent">
                     Healthcare Jobs
                   </span>
                 </h1>
-                <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight animate-slide-up" style={{animationDelay: '0.4s'}}>
+                <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
                   In Your Dream Country
                 </h1>
               </div>
               
-              <p className="text-xl text-gray-600 max-w-2xl animate-slide-up" style={{animationDelay: '0.6s'}}>
+              <p className="text-xl text-gray-600 max-w-2xl">
                 AI-Powered Job Recommendations • Customised Search Filters • Dedicated Portal for Healthcare Professionals
               </p>
 
-              {/* Advanced Search Bar with Animation */}
-              <div className="max-w-2xl animate-slide-up" data-testid="hero-search-section" style={{animationDelay: '0.8s'}}>
+              {/* Advanced Search Bar */}
+              <div className="max-w-2xl" data-testid="hero-search-section">
                 <form onSubmit={handleSearch} className="relative">
                   <div className="bg-white rounded-2xl shadow-xl border border-teal-100 p-2 hover:shadow-2xl transition-all duration-500">
                     <div className="flex flex-col md:flex-row gap-2">
@@ -471,35 +472,35 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Trust Stats with Animation and Icons */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto mt-20 pt-12 border-t border-teal-100">
-            <div className="text-center animate-slide-up group hover:scale-110 transition-transform duration-300" style={{animationDelay: '1.6s'}}>
-              <div className="text-4xl mb-2 group-hover:animate-bounce">💼</div>
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-2" data-testid="stats-jobs">
-                11K+
+          {/* Trust Stats with Icons */}
+          <div className="grid grid-cols-4 gap-4 md:gap-8 max-w-5xl mx-auto mt-20 pt-12 border-t border-teal-100">
+            <div className="text-center group hover:scale-105 transition-transform duration-300">
+              <MdWork className="text-4xl md:text-5xl text-teal-600 mx-auto mb-2" />
+              <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-2" data-testid="stats-jobs">
+                {stats.jobs}
               </div>
-              <div className="text-sm text-gray-600 font-medium">Job Vacancy</div>
+              <div className="text-xs md:text-sm text-gray-600 font-medium">Job Vacancy</div>
             </div>
-            <div className="text-center animate-slide-up group hover:scale-110 transition-transform duration-300" style={{animationDelay: '1.8s'}}>
-              <div className="text-4xl mb-2 group-hover:animate-bounce">🏥</div>
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-cyan-600 bg-clip-text text-transparent mb-2" data-testid="stats-companies">
-                2,000+
+            <div className="text-center group hover:scale-105 transition-transform duration-300">
+              <MdBusiness className="text-4xl md:text-5xl text-emerald-600 mx-auto mb-2" />
+              <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-cyan-600 bg-clip-text text-transparent mb-2" data-testid="stats-companies">
+                {stats.companies}
               </div>
-              <div className="text-sm text-gray-600 font-medium">Healthcare Companies</div>
+              <div className="text-xs md:text-sm text-gray-600 font-medium">Healthcare Companies</div>
             </div>
-            <div className="text-center animate-slide-up group hover:scale-110 transition-transform duration-300" style={{animationDelay: '2s'}}>
-              <div className="text-4xl mb-2 group-hover:animate-bounce">👨‍⚕️</div>
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent mb-2" data-testid="stats-professionals">
-                75K+
+            <div className="text-center group hover:scale-105 transition-transform duration-300">
+              <MdPeople className="text-4xl md:text-5xl text-cyan-600 mx-auto mb-2" />
+              <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent mb-2" data-testid="stats-professionals">
+                {stats.professionals}
               </div>
-              <div className="text-sm text-gray-600 font-medium">Active Professionals</div>
+              <div className="text-xs md:text-sm text-gray-600 font-medium">Active Professionals</div>
             </div>
-            <div className="text-center animate-slide-up group hover:scale-110 transition-transform duration-300" style={{animationDelay: '2.2s'}}>
-              <div className="text-4xl mb-2 group-hover:animate-bounce">⭐</div>
-              <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-2" data-testid="stats-applications">
-                40K+
+            <div className="text-center group hover:scale-105 transition-transform duration-300">
+              <MdStar className="text-4xl md:text-5xl text-teal-600 mx-auto mb-2" />
+              <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-2" data-testid="stats-applications">
+                {stats.applications}
               </div>
-              <div className="text-sm text-gray-600 font-medium">Talented Candidates</div>
+              <div className="text-xs md:text-sm text-gray-600 font-medium">Talented Candidates</div>
             </div>
           </div>
         </div>
@@ -543,57 +544,66 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Founder Section */}
+      {/* About Our Founder Section */}
       <section className="py-20 px-4 bg-white relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-teal-50/50 to-emerald-50/50"></div>
         <div className="max-w-7xl mx-auto relative">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-16 items-stretch">
             {/* Founder Image */}
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-teal-200 to-emerald-200 rounded-3xl transform rotate-2 animate-pulse"></div>
-              <div className="relative bg-white rounded-3xl shadow-2xl p-2 transform -rotate-1">
-                <img 
-                  src="https://customer-assets.emergentagent.com/job_jobslly-health/artifacts/ukxbykm5_Dr.-Akram-Ahmad_CEO-Founder_-Academically-Global_EP.jpg" 
-                  alt="Dr. Akram Ahmad - Founder & CEO" 
-                  className="w-full h-auto rounded-3xl"
-                />
+            <div className="relative h-full flex items-center">
+              <div className="relative w-full">
+                <div className="absolute inset-0 bg-gradient-to-r from-teal-200 to-emerald-200 rounded-3xl transform rotate-2 animate-pulse"></div>
+                <div className="relative bg-white rounded-3xl shadow-2xl p-2 transform -rotate-1">
+                  <img 
+                    src="https://customer-assets.emergentagent.com/job_fb646410-577a-4c7b-95d3-6b0696e19504/artifacts/c98jpsr9_Screenshot_2025-12-22_174934-removebg-preview.png" 
+                    alt="Dr. Akram Ahmad - Founder & CEO" 
+                    className="w-full h-auto rounded-3xl object-contain bg-black"
+                  />
+                </div>
               </div>
             </div>
 
-            {/* Founder Content */}
-            <div className="space-y-8">
+            {/* About Content */}
+            <div className="space-y-6 flex flex-col justify-center h-full">
               <div className="space-y-4">
                 <div className="inline-flex items-center px-4 py-2 bg-teal-100 rounded-full">
-                  <span className="text-teal-700 font-semibold text-sm">🎓 Meet Our Founder</span>
+                  <span className="text-teal-700 font-semibold text-sm">🌍 A Visionary Leader in Global Healthcare Careers</span>
                 </div>
                 <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
-                  Dr. Akram Ahmad
+                  About Our Founder
                 </h2>
                 <div className="text-xl text-teal-600 font-semibold">
-                  Founder & CEO, Jobslly.com
+                  Dr. Akram Ahmad, PhD (Medicine)
                 </div>
               </div>
 
-              <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
+              <div className="space-y-5 text-base text-gray-700 leading-relaxed">
                 <p>
-                  Jobslly.com is the brainchild of <span className="font-semibold text-teal-700">Dr. Akram Ahmad</span>, who holds a PhD from the Faculty of Medicine and Health at the University of Sydney, Australia.
+                  <span className="font-semibold text-teal-700">Dr. Akram Ahmad, PhD (Medicine)</span>, is a globally recognised academic, healthcare leader, and international career mentor dedicated to empowering healthcare professionals to build successful careers across borders.
                 </p>
                 <p>
-                  He is a self-motivated clinical pharmacist and committed lecturer with over <span className="font-semibold text-emerald-700">10 years of teaching and research experience</span> in various subjects of medicine at leading universities across Australia, Malaysia, and India.
+                  A graduate of the <span className="font-semibold text-emerald-700">Faculty of Medicine and Health, The University of Sydney, Australia</span>, Dr. Akram brings over <span className="font-semibold text-teal-700">14 years of international experience</span> spanning India, Malaysia, and Australia. His career bridges academia, healthcare systems, and the global pharmaceutical and clinical research ecosystem, giving him deep insight into evolving global healthcare talent needs.
                 </p>
                 <p>
-                  His vision is to bridge the gap between talented healthcare professionals and their dream careers through innovative technology and personalized support.
+                  Throughout his journey, Dr. Akram has worked closely with doctors, pharmacists, nurses, and allied health professionals, guiding them toward meaningful global opportunities. His vision is supported by a strong network of senior leaders from leading pharmaceutical companies, global CROs, hospitals, and top universities, ensuring that every career pathway he enables is credible, relevant, and future-ready.
+                </p>
+                <p className="text-lg font-semibold text-teal-700 italic border-l-4 border-teal-500 pl-4 bg-teal-50 py-3 rounded-r-lg">
+                  "To create a trusted global ecosystem that connects healthcare professionals with the right opportunities, mentorship, and guidance to thrive internationally."
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-4 pt-2">
                 <div className="bg-teal-50 px-6 py-3 rounded-xl border border-teal-200">
-                  <div className="font-semibold text-teal-700">PhD in Medicine</div>
+                  <div className="font-semibold text-teal-700">PhD (Medicine)</div>
                   <div className="text-sm text-gray-600">University of Sydney</div>
                 </div>
                 <div className="bg-emerald-50 px-6 py-3 rounded-xl border border-emerald-200">
-                  <div className="font-semibold text-emerald-700">10+ Years</div>
-                  <div className="text-sm text-gray-600">Teaching & Research</div>
+                  <div className="font-semibold text-emerald-700">14+ Years</div>
+                  <div className="text-sm text-gray-600">Global Experience</div>
+                </div>
+                <div className="bg-cyan-50 px-6 py-3 rounded-xl border border-cyan-200">
+                  <div className="font-semibold text-cyan-700">Expert Network</div>
+                  <div className="text-sm text-gray-600">Leading Institutions</div>
                 </div>
               </div>
             </div>
@@ -658,7 +668,7 @@ const Home = () => {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
               {featuredJobs.slice(0, 6).map((job, index) => (
-                <Card key={job.id} className="bg-white border border-gray-200 hover:border-teal-400 hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 hover:scale-105 group animate-slide-up h-full flex flex-col" style={{animationDelay: `${index * 0.1}s`}} data-testid={`featured-job-${job.id}`}>
+                <Card key={job.id} className="bg-white border border-gray-200 hover:border-teal-400 hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 hover:scale-105 group h-full flex flex-col" data-testid={`featured-job-${job.id}`}>
                   <CardContent className="p-6 relative overflow-hidden flex flex-col h-full">
                     {/* Animated Background Gradient on Hover */}
                     <div className="absolute inset-0 bg-gradient-to-br from-teal-50 to-emerald-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -725,7 +735,7 @@ const Home = () => {
 
           <div className="grid md:grid-cols-3 gap-6 mb-12">
             {featuredBlogs.length > 0 ? (
-              featuredBlogs.map((blog, index) => (
+              featuredBlogs.slice(0, 3).map((blog, index) => (
                 <Card key={blog.id || index} className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 h-full">
                   {blog.featured_image && (
                     <div className="w-full h-48 overflow-hidden">
