@@ -135,18 +135,22 @@ const Footer = () => {
                 </div>
               </div>
               
-              {/* India Address */}
+              {/* India Addresses */}
               <div className="flex items-start space-x-3 text-sm">
                 <MapPin className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
                 <div>
                   <div className="font-medium text-gray-200 mb-1">India:</div>
-                  <span className="text-gray-300">Plot A2, IT Park, Sahastradhara Rd, Doon IT Park, Sidcul, Dehradun, Uttarakhand 248001</span>
+                  <div className="text-gray-300 space-y-1">
+                    <p><span className="font-medium">Delhi:</span> Green Park Metro Station Gate No.3</p>
+                    <p><span className="font-medium">Hyderabad:</span> Below Hotel Kinara Grand, Ameerpet</p>
+                    <p><span className="font-medium">Dehradun:</span> IT Park, Sahastradhara Rd</p>
+                  </div>
                 </div>
               </div>
               
               <div className="flex items-center space-x-3 text-sm">
                 <Phone className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span className="text-gray-300">08071722349</span>
+                <span className="text-gray-300">8265903855</span>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <Mail className="w-4 h-4 text-emerald-400 flex-shrink-0" />
