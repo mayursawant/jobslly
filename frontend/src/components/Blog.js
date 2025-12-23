@@ -13,32 +13,30 @@ const Blog = () => {
   const [posts, setPosts] = useState([]);
   const [featuredPosts, setFeaturedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    fetchBlogPosts();
-    fetchFeaturedPosts();
+    const fetchData = async () => {
+      try {
+        // Fetch both in parallel with timeout
+        const [postsRes, featuredRes] = await Promise.all([
+          axios.get(`${API}/blog?limit=12`, { timeout: 30000 }),
+          axios.get(`${API}/blog?featured_only=true&limit=4`, { timeout: 30000 })
+        ]);
+        setPosts(postsRes.data);
+        setFeaturedPosts(featuredRes.data);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch blog posts:', err);
+        setError('Failed to load articles. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
   }, []);
-
-  const fetchBlogPosts = async () => {
-    try {
-      const response = await axios.get(`${API}/blog?limit=12`);
-      setPosts(response.data);
-    } catch (error) {
-      console.error('Failed to fetch blog posts:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchFeaturedPosts = async () => {
-    try {
-      const response = await axios.get(`${API}/blog?featured_only=true&limit=3`);
-      setFeaturedPosts(response.data);
-    } catch (error) {
-      console.error('Failed to fetch featured posts:', error);
-    }
-  };
 
   const filteredPosts = posts.filter(post =>
     post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -50,8 +48,21 @@ const Blog = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading Health Hub...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()} className="bg-emerald-600 hover:bg-emerald-700">
+            Retry
+          </Button>
         </div>
       </div>
     );
