@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
@@ -10,7 +10,6 @@ import Home from './components/Home';
 import JobListing from './components/JobListing';
 import JobDetails from './components/JobDetails';
 import Dashboard from './components/Dashboard';
-import AdminPanel from './components/AdminPanel';
 import Login from './components/Login';
 import Register from './components/Register';
 // Removed: CMSLogin and JobSeekerLogin - consolidated to single Login
@@ -34,6 +33,19 @@ import CategoryPage from './components/CategoryPage';
 import StudentProfiles from './components/StudentProfiles';
 import { Toaster } from './components/ui/sonner';
 import { Helmet } from 'react-helmet';
+
+// Lazy load heavy components (AdminPanel includes 28MB Jodit editor)
+const AdminPanel = lazy(() => import('./components/AdminPanel'));
+
+// Loading fallback for lazy components
+const PageLoading = () => (
+  <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+      <p className="text-gray-600">Loading...</p>
+    </div>
+  </div>
+);
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
