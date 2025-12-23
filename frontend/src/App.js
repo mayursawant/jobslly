@@ -324,10 +324,18 @@ function App() {
                 user.role === 'job_seeker' ? <JobSeekerDashboard /> : <Dashboard />
               ) : <Navigate to="/login/" />} />
               <Route path="/admin" element={
-                user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/login/" />
+                user?.role === 'admin' ? (
+                  <Suspense fallback={<PageLoading />}>
+                    <AdminPanel />
+                  </Suspense>
+                ) : <Navigate to="/login/" />
               } />
               <Route path="/admin/" element={
-                user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/login/" />
+                user?.role === 'admin' ? (
+                  <Suspense fallback={<PageLoading />}>
+                    <AdminPanel />
+                  </Suspense>
+                ) : <Navigate to="/login/" />
               } />
               
               {/* 404 Catch-all Route - Must be last */}
