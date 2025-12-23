@@ -1051,12 +1051,14 @@ const AdminPanel = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Job Description *</label>
-                    <JoditEditor
-                      value={editingJob.description}
-                      config={jobDescConfig}
-                      onBlur={newContent => setEditingJob(prev => ({...prev, description: newContent}))}
-                      onChange={() => {}}
-                    />
+                    <Suspense fallback={<EditorLoading />}>
+                      <JoditEditor
+                        value={editingJob.description}
+                        config={jobDescConfig}
+                        onBlur={newContent => setEditingJob(prev => ({...prev, description: newContent}))}
+                        onChange={() => {}}
+                      />
+                    </Suspense>
                   </div>
 
                   <div className="flex items-center space-x-4">
@@ -1282,12 +1284,14 @@ const AdminPanel = () => {
                       <span>AI Enhance</span>
                     </button>
                   </div>
-                  <JoditEditor
-                    value={newJob.description}
-                    config={jobDescConfig}
-                    onBlur={newContent => setNewJob(prev => ({...prev, description: newContent}))}
-                    onChange={() => {}}
-                  />
+                  <Suspense fallback={<EditorLoading />}>
+                    <JoditEditor
+                      value={newJob.description}
+                      config={jobDescConfig}
+                      onBlur={newContent => setNewJob(prev => ({...prev, description: newContent}))}
+                      onChange={() => {}}
+                    />
+                  </Suspense>
                 </div>
                 <Button 
                   onClick={async () => {
@@ -1433,12 +1437,14 @@ const AdminPanel = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Article Content</label>
-                  <JoditEditor
-                    ref={editor}
-                    value={newBlog.content}
-                    config={config}
-                    onBlur={newContent => setNewBlog(prev => ({...prev, content: newContent}))}
-                  />
+                  <Suspense fallback={<EditorLoading />}>
+                    <JoditEditor
+                      ref={editor}
+                      value={newBlog.content}
+                      config={config}
+                      onBlur={newContent => setNewBlog(prev => ({...prev, content: newContent}))}
+                    />
+                  </Suspense>
                   <p className="text-xs text-gray-500 mt-2">💡 Use the toolbar to format your content with headings, bold, italic, lists, links, images, and more.</p>
                 </div>
 
