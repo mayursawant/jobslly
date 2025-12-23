@@ -19,10 +19,10 @@ const Blog = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch both in parallel with timeout
+        // Fetch both in parallel with extended timeout for slow connections
         const [postsRes, featuredRes] = await Promise.all([
-          axios.get(`${API}/blog?limit=12`, { timeout: 30000 }),
-          axios.get(`${API}/blog?featured_only=true&limit=4`, { timeout: 30000 })
+          axios.get(`${API}/blog?limit=12`, { timeout: 60000 }),
+          axios.get(`${API}/blog?featured_only=true&limit=4`, { timeout: 60000 })
         ]);
         setPosts(postsRes.data);
         setFeaturedPosts(featuredRes.data);
