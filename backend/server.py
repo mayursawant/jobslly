@@ -45,13 +45,18 @@ def sanitize_filename(filename):
 # MongoDB connection
 import ssl
 mongo_url = os.environ['MONGO_URL']
-# Configure SSL/TLS for MongoDB Atlas
+# Configure SSL/TLS for MongoDB Atlas with optimized settings
 client = AsyncIOMotorClient(
     mongo_url,
     tlsAllowInvalidCertificates=True,
-    serverSelectionTimeoutMS=30000,
-    connectTimeoutMS=30000,
-    socketTimeoutMS=30000
+    serverSelectionTimeoutMS=60000,
+    connectTimeoutMS=60000,
+    socketTimeoutMS=60000,
+    maxPoolSize=50,
+    minPoolSize=10,
+    maxIdleTimeMS=45000,
+    retryWrites=True,
+    retryReads=True
 )
 db = client[os.environ['DB_NAME']]
 
