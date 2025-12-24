@@ -1892,21 +1892,21 @@ async def regenerate_job_slug(job_id: str, current_user: User = Depends(get_curr
 @api_router.get("/blog", response_model=List[BlogPostSummary])
 async def get_blog_posts(featured_only: bool = False, limit: int = 10, skip: int = 0):
     """
-    Get blog posts for listing - returns lightweight summaries without full content.
+    Get blog posts for listing - returns lightweight summaries with compressed thumbnails.
     Full content and full-size images are only returned when viewing a single blog post by slug.
     """
     query = {"is_published": True}
     if featured_only:
         query["is_featured"] = True
     
-    # Exclude large fields: content and featured_image (base64 images are ~100-250KB each)
-    # This reduces response from ~3.8MB to ~15KB for 10 posts
+    # Include featured_image for thumbnail compression
     projection = {
         "_id": 0,
         "id": 1,
         "title": 1,
         "slug": 1,
         "excerpt": 1,
+        "featured_image": 1,
         "author_id": 1,
         "category": 1,
         "tags": 1,
@@ -1923,8 +1923,14 @@ async def get_blog_posts(featured_only: bool = False, limit: int = 10, skip: int
             post['created_at'] = datetime.fromisoformat(post['created_at'])
         if post.get('published_at') and isinstance(post.get('published_at'), str):
             post['published_at'] = datetime.fromisoformat(post['published_at'])
-        # Set featured_image to None - frontend will show placeholder
-        post['featured_image'] = None
+        
+        # Compress featured_image to thumbnail for faster loading
+        featured_img = post.get('featured_image', '')
+        if featured_img and featured_img.startswith('data:image'):
+            # Compress to 400px width, 60% quality - reduces ~200KB to ~15KB
+            post['featured_image'] = compress_base64_image(featured_img, max_width=400, quality=60)
+        elif not featured_img:
+            post['featured_image'] = None
     
     return [BlogPostSummary(**post) for post in posts]
 
