@@ -140,10 +140,17 @@ const Footer = () => {
                 <MapPin className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
                 <div>
                   <div className="font-medium text-gray-200 mb-1">India:</div>
+<<<<<<< HEAD
                   <div className="space-y-2 text-gray-300">
                     <div><span className="font-medium text-emerald-400">Delhi:</span> Green Park Metro Station Gate No.3</div>
                     <div><span className="font-medium text-emerald-400">Hyderabad:</span> Below Hotel Kinara Grand, Ameerpet</div>
                     <div><span className="font-medium text-emerald-400">Dehradun:</span> IT Park, Sahastradhara Rd</div>
+=======
+                  <div className="text-gray-300 space-y-1">
+                    <p><span className="font-medium">Delhi:</span> Green Park Metro Station Gate No.3</p>
+                    <p><span className="font-medium">Hyderabad:</span> Below Hotel Kinara Grand, Ameerpet</p>
+                    <p><span className="font-medium">Dehradun:</span> IT Park, Sahastradhara Rd</p>
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
                   </div>
                 </div>
               </div>

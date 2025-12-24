@@ -11,7 +11,11 @@ from datetime import datetime
 import time
 
 # Configuration
+<<<<<<< HEAD
 BASE_URL = "https://jobfix-complete.preview.emergentagent.com/api"
+=======
+BASE_URL = "https://recruiter-portal.preview.emergentagent.com/api"
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
 TEST_USER_EMAIL = f"testuser_{uuid.uuid4().hex[:8]}@example.com"
 TEST_EMPLOYER_EMAIL = f"testemployer_{uuid.uuid4().hex[:8]}@example.com"
 TEST_PASSWORD = "TestPassword123!"

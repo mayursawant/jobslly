@@ -6,7 +6,11 @@ Final Category Filtering Test - Comprehensive verification
 import requests
 import json
 
+<<<<<<< HEAD
 BASE_URL = "https://jobfix-complete.preview.emergentagent.com/api"
+=======
+BASE_URL = "https://recruiter-portal.preview.emergentagent.com/api"
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
 
 def final_category_test():
     print("🎯 FINAL CATEGORY FILTERING TEST")

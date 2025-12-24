@@ -892,7 +892,11 @@ CORS_ORIGINS="*"
 
 **Frontend (.env):**
 ```
+<<<<<<< HEAD
 REACT_APP_BACKEND_URL="https://jobfix-complete.preview.emergentagent.com"
+=======
+REACT_APP_BACKEND_URL="https://recruiter-portal.preview.emergentagent.com"
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
 WDS_SOCKET_PORT=443
 ```
 
@@ -924,7 +928,11 @@ WDS_SOCKET_PORT=443
 3. **Service Restart (if needed):**
    - New packages: `sudo supervisorctl restart all`
    - Code changes: Hot reload handles automatically
+<<<<<<< HEAD
 4. **Health Check:** `curl https://jobfix-complete.preview.emergentagent.com/api/health`
+=======
+4. **Health Check:** `curl https://recruiter-portal.preview.emergentagent.com/api/health`
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
 5. **Verification:** Test functionality in browser
 6. **Monitor:** Check supervisor logs for errors
 

@@ -1,6 +1,10 @@
 # Redirect www to non-www with 301 (permanent redirect)
 https://www.jobslly.com/* https://jobslly.com/:splat 301!
+<<<<<<< HEAD
 https://www.medical-careers-1.preview.emergentagent.com/* https://jobfix-complete.preview.emergentagent.com/:splat 301!
+=======
+https://www.medical-careers-1.preview.emergentagent.com/* https://recruiter-portal.preview.emergentagent.com/:splat 301!
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
 
 # Fallback for client-side routing (SPA)
 /*    /index.html   200

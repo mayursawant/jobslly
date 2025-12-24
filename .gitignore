@@ -313,6 +313,7 @@ frontend/node_modules/.cache/default-development/10.pack
 # Environment files
 *.env
 *.env.*
+<<<<<<< HEAD
 -e 
 # Environment files
 *.env
@@ -325,3 +326,5 @@ frontend/node_modules/.cache/default-development/10.pack
 # Environment files
 *.env
 *.env.*
+=======
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22

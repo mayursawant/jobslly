@@ -18,11 +18,56 @@ import uuid
 import json
 import xml.etree.ElementTree as ET
 import subprocess
+from io import BytesIO
+from PIL import Image
+import base64
 
 # Load environment variables
 from pathlib import Path
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Helper function to compress base64 images for thumbnails
+def compress_base64_image(base64_string: str, max_width: int = 400, quality: int = 60) -> str:
+    """
+    Compress a base64 image to create a smaller thumbnail.
+    Reduces image dimensions and quality for faster loading in listings.
+    """
+    try:
+        if not base64_string or not base64_string.startswith('data:image'):
+            return base64_string
+        
+        # Extract the base64 data and mime type
+        header, data = base64_string.split(',', 1)
+        mime_type = header.split(':')[1].split(';')[0]
+        
+        # Decode base64 to image
+        image_data = base64.b64decode(data)
+        image = Image.open(BytesIO(image_data))
+        
+        # Convert to RGB if necessary (for PNG with transparency)
+        if image.mode in ('RGBA', 'P'):
+            image = image.convert('RGB')
+        
+        # Calculate new dimensions maintaining aspect ratio
+        width, height = image.size
+        if width > max_width:
+            ratio = max_width / width
+            new_height = int(height * ratio)
+            image = image.resize((max_width, new_height), Image.Resampling.LANCZOS)
+        
+        # Save compressed image to buffer
+        buffer = BytesIO()
+        image.save(buffer, format='JPEG', quality=quality, optimize=True)
+        buffer.seek(0)
+        
+        # Encode back to base64
+        compressed_data = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        return f"data:image/jpeg;base64,{compressed_data}"
+    
+    except Exception as e:
+        logging.error(f"Failed to compress image: {e}")
+        return base64_string  # Return original if compression fails
 
 # Helper function to sanitize filenames
 def sanitize_filename(filename):
@@ -45,13 +90,18 @@ def sanitize_filename(filename):
 # MongoDB connection
 import ssl
 mongo_url = os.environ['MONGO_URL']
-# Configure SSL/TLS for MongoDB Atlas
+# Configure SSL/TLS for MongoDB Atlas with optimized settings
 client = AsyncIOMotorClient(
     mongo_url,
     tlsAllowInvalidCertificates=True,
-    serverSelectionTimeoutMS=30000,
-    connectTimeoutMS=30000,
-    socketTimeoutMS=30000
+    serverSelectionTimeoutMS=60000,
+    connectTimeoutMS=60000,
+    socketTimeoutMS=60000,
+    maxPoolSize=50,
+    minPoolSize=10,
+    maxIdleTimeMS=45000,
+    retryWrites=True,
+    retryReads=True
 )
 db = client[os.environ['DB_NAME']]
 
@@ -348,6 +398,21 @@ class BlogPost(BaseModel):
     faqs: List[FAQItem] = []
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: Optional[datetime] = None
+    published_at: Optional[datetime] = None
+
+# Lightweight model for blog listing (excludes large content and base64 images)
+class BlogPostSummary(BaseModel):
+    id: str
+    title: str
+    slug: str
+    excerpt: str
+    featured_image: Optional[str] = None  # Will contain URL or small thumbnail, not base64
+    author_id: str
+    category: str = "healthcare"
+    tags: List[str] = []
+    is_published: bool = False
+    is_featured: bool = False
+    created_at: datetime
     published_at: Optional[datetime] = None
 
 class BlogPostCreate(BaseModel):
@@ -1376,22 +1441,67 @@ async def create_blog_post(
     # Return the created blog post
     return BlogPost(**blog_data)
 
-@api_router.get("/admin/blog", response_model=List[BlogPost])
+@api_router.get("/admin/blog", response_model=List[BlogPostSummary])
 async def get_admin_blog_posts(current_user: User = Depends(get_current_user)):
+    """
+    Get blog posts for admin listing - returns lightweight summaries with compressed thumbnails.
+    Full content is loaded when editing individual post.
+    """
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Admin access required")
     
-    posts = await db.blog_posts.find().sort("created_at", -1).to_list(length=None)
+    # Include featured_image for thumbnail compression
+    projection = {
+        "_id": 0,
+        "id": 1,
+        "title": 1,
+        "slug": 1,
+        "excerpt": 1,
+        "featured_image": 1,
+        "author_id": 1,
+        "category": 1,
+        "tags": 1,
+        "is_published": 1,
+        "is_featured": 1,
+        "created_at": 1,
+        "published_at": 1
+    }
+    
+    posts = await db.blog_posts.find({}, projection).sort("created_at", -1).to_list(length=None)
     
     for post in posts:
         if isinstance(post.get('created_at'), str):
             post['created_at'] = datetime.fromisoformat(post['created_at'])
-        if post.get('updated_at') and isinstance(post.get('updated_at'), str):
-            post['updated_at'] = datetime.fromisoformat(post['updated_at'])
         if post.get('published_at') and isinstance(post.get('published_at'), str):
             post['published_at'] = datetime.fromisoformat(post['published_at'])
+        
+        # Compress featured_image to thumbnail
+        featured_img = post.get('featured_image', '')
+        if featured_img and featured_img.startswith('data:image'):
+            post['featured_image'] = compress_base64_image(featured_img, max_width=400, quality=60)
+        elif not featured_img:
+            post['featured_image'] = None
     
-    return [BlogPost(**post) for post in posts]
+    return [BlogPostSummary(**post) for post in posts]
+
+@api_router.get("/admin/blog/{post_id}", response_model=BlogPost)
+async def get_admin_blog_post(post_id: str, current_user: User = Depends(get_current_user)):
+    """Get single blog post with full content for editing"""
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    post = await db.blog_posts.find_one({"id": post_id}, {"_id": 0})
+    if not post:
+        raise HTTPException(status_code=404, detail="Blog post not found")
+    
+    if isinstance(post.get('created_at'), str):
+        post['created_at'] = datetime.fromisoformat(post['created_at'])
+    if post.get('updated_at') and isinstance(post.get('updated_at'), str):
+        post['updated_at'] = datetime.fromisoformat(post['updated_at'])
+    if post.get('published_at') and isinstance(post.get('published_at'), str):
+        post['published_at'] = datetime.fromisoformat(post['published_at'])
+    
+    return BlogPost(**post)
 
 @api_router.put("/admin/blog/{post_id}", response_model=BlogPost)
 async def update_blog_post(
@@ -1555,9 +1665,11 @@ async def delete_blog_post(post_id: str, current_user: User = Depends(get_curren
 @api_router.get("/admin/jobs/all", response_model=List[Job])
 async def get_all_jobs_admin(
     include_deleted: bool = False,
+    skip: int = 0,
+    limit: int = 50,
     current_user: User = Depends(get_current_user)
 ):
-    """Get all jobs for admin management (including soft-deleted if requested)"""
+    """Get all jobs for admin management with pagination"""
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -1565,7 +1677,8 @@ async def get_all_jobs_admin(
     if not include_deleted:
         query["is_deleted"] = {"$ne": True}
     
-    jobs = await db.jobs.find(query).sort("created_at", -1).to_list(length=None)
+    # Add pagination to prevent timeout on large datasets
+    jobs = await db.jobs.find(query).sort("created_at", -1).skip(skip).limit(limit).to_list(length=limit)
     
     for job in jobs:
         if isinstance(job.get('created_at'), str):
@@ -1765,23 +1878,50 @@ async def regenerate_job_slug(job_id: str, current_user: User = Depends(get_curr
 
 
 # Public Blog Routes
-@api_router.get("/blog", response_model=List[BlogPost])
+@api_router.get("/blog", response_model=List[BlogPostSummary])
 async def get_blog_posts(featured_only: bool = False, limit: int = 10, skip: int = 0):
+    """
+    Get blog posts for listing - returns lightweight summaries with compressed thumbnails.
+    Full content and full-size images are only returned when viewing a single blog post by slug.
+    """
     query = {"is_published": True}
     if featured_only:
         query["is_featured"] = True
     
-    posts = await db.blog_posts.find(query).sort("published_at", -1).skip(skip).limit(limit).to_list(length=None)
+    # Include featured_image for thumbnail compression
+    projection = {
+        "_id": 0,
+        "id": 1,
+        "title": 1,
+        "slug": 1,
+        "excerpt": 1,
+        "featured_image": 1,
+        "author_id": 1,
+        "category": 1,
+        "tags": 1,
+        "is_published": 1,
+        "is_featured": 1,
+        "created_at": 1,
+        "published_at": 1
+    }
+    
+    posts = await db.blog_posts.find(query, projection).sort("published_at", -1).skip(skip).limit(limit).to_list(length=None)
     
     for post in posts:
         if isinstance(post.get('created_at'), str):
             post['created_at'] = datetime.fromisoformat(post['created_at'])
-        if post.get('updated_at') and isinstance(post.get('updated_at'), str):
-            post['updated_at'] = datetime.fromisoformat(post['updated_at'])
         if post.get('published_at') and isinstance(post.get('published_at'), str):
             post['published_at'] = datetime.fromisoformat(post['published_at'])
+        
+        # Compress featured_image to thumbnail for faster loading
+        featured_img = post.get('featured_image', '')
+        if featured_img and featured_img.startswith('data:image'):
+            # Compress to 400px width, 60% quality - reduces ~200KB to ~15KB
+            post['featured_image'] = compress_base64_image(featured_img, max_width=400, quality=60)
+        elif not featured_img:
+            post['featured_image'] = None
     
-    return [BlogPost(**post) for post in posts]
+    return [BlogPostSummary(**post) for post in posts]
 
 @api_router.get("/blog/{slug}", response_model=BlogPost)
 async def get_blog_post_by_slug(slug: str):
@@ -2672,8 +2812,13 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
                     "title": f"{job['title']} - {job['company']} | Jobslly Healthcare Jobs",
                     "description": f"Apply for {job['title']} position at {job['company']} in {job['location']}. {job['description'][:150]}...",
                     "keywords": [job['title'], job['company'], job['location'], "healthcare jobs", "medical careers"],
+<<<<<<< HEAD
                     "og_image": f"https://jobfix-complete.preview.emergentagent.com/api/og-image/job/{job_id}",
                     "canonical": f"https://jobfix-complete.preview.emergentagent.com/jobs/{job_id}"
+=======
+                    "og_image": f"https://recruiter-portal.preview.emergentagent.com/api/og-image/job/{job_id}",
+                    "canonical": f"https://recruiter-portal.preview.emergentagent.com/jobs/{job_id}"
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
                 }
         
         elif page_type == "blog" and blog_slug:
@@ -2683,8 +2828,13 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
                     "title": post.get('seo_title') or f"{post['title']} | Jobslly Health Hub",
                     "description": post.get('seo_description') or post['excerpt'],
                     "keywords": post.get('seo_keywords', []) + [post['category'], "healthcare", "careers"],
+<<<<<<< HEAD
                     "og_image": post.get('featured_image') or f"https://jobfix-complete.preview.emergentagent.com/api/og-image/blog/{blog_slug}",
                     "canonical": f"https://jobfix-complete.preview.emergentagent.com/blog/{blog_slug}"
+=======
+                    "og_image": post.get('featured_image') or f"https://recruiter-portal.preview.emergentagent.com/api/og-image/blog/{blog_slug}",
+                    "canonical": f"https://recruiter-portal.preview.emergentagent.com/blog/{blog_slug}"
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
                 }
     
     except Exception as e:
@@ -2695,8 +2845,13 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
         "title": "Jobslly - Future of Healthcare Careers",
         "description": "Discover healthcare opportunities for doctors, nurses, pharmacists, dentists, and physiotherapists with AI-powered career matching.",
         "keywords": ["healthcare jobs", "medical careers", "doctor jobs", "nurse jobs"],
+<<<<<<< HEAD
         "og_image": "https://jobfix-complete.preview.emergentagent.com/og-image-default.jpg",
         "canonical": "https://jobfix-complete.preview.emergentagent.com"
+=======
+        "og_image": "https://recruiter-portal.preview.emergentagent.com/og-image-default.jpg",
+        "canonical": "https://recruiter-portal.preview.emergentagent.com"
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
     }
 
 # Include the router

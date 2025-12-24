@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useContext, useRef, useMemo, lazy, Suspense } from 'react';
 import { AuthContext } from '../App';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -9,7 +9,19 @@ import AIJobEnhancementModal from './AIJobEnhancementModal';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Wand2 } from 'lucide-react';
-import JoditEditor from 'jodit-react';
+
+// Lazy load JoditEditor - it's 28MB and only needed for editing
+const JoditEditor = lazy(() => import('jodit-react'));
+
+// Loading fallback for editor
+const EditorLoading = () => (
+  <div className="border rounded-lg p-4 min-h-[300px] flex items-center justify-center bg-gray-50">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mx-auto mb-2"></div>
+      <p className="text-sm text-gray-500">Loading editor...</p>
+    </div>
+  </div>
+);
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -42,6 +54,12 @@ const AdminPanel = () => {
   const [retryCount, setRetryCount] = useState(0);
   const [editingJob, setEditingJob] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  
+  // Pagination state for Manage Jobs
+  const [jobsSkip, setJobsSkip] = useState(0);
+  const [hasMoreJobs, setHasMoreJobs] = useState(true);
+  const [loadingMoreJobs, setLoadingMoreJobs] = useState(false);
+  const JOBS_PER_PAGE = 100;
   
   // Job Creation State
   const [newJob, setNewJob] = useState({
@@ -371,26 +389,51 @@ const AdminPanel = () => {
   };
 
   /**
-   * Fetch all jobs for management
+   * Fetch all jobs for management (with pagination)
    */
-  const fetchAllJobs = async () => {
+  const fetchAllJobs = async (loadMore = false) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No authentication token found');
       }
 
-      const response = await axios.get(`${API}/admin/jobs/all`, {
+      if (loadMore) {
+        setLoadingMoreJobs(true);
+      }
+
+      const skip = loadMore ? jobsSkip : 0;
+      const response = await axios.get(`${API}/admin/jobs/all?limit=${JOBS_PER_PAGE}&skip=${skip}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       
-      setAllJobs(response.data || []);
+      const newJobs = response.data || [];
+      
+      if (loadMore) {
+        setAllJobs(prev => [...prev, ...newJobs]);
+      } else {
+        setAllJobs(newJobs);
+      }
+      
+      // Check if there are more jobs to load
+      setHasMoreJobs(newJobs.length === JOBS_PER_PAGE);
+      setJobsSkip(skip + newJobs.length);
+      
     } catch (error) {
       console.error('Failed to fetch all jobs:', error);
       toast.error('Failed to load jobs');
+    } finally {
+      setLoadingMoreJobs(false);
     }
+  };
+
+  /**
+   * Load more jobs handler
+   */
+  const handleLoadMoreJobs = () => {
+    fetchAllJobs(true);
   };
 
   /**
@@ -916,6 +959,33 @@ const AdminPanel = () => {
                         </div>
                       </div>
                     ))}
+                    
+                    {/* Load More Button */}
+                    {hasMoreJobs && (
+                      <div className="flex justify-center pt-4">
+                        <Button
+                          onClick={handleLoadMoreJobs}
+                          disabled={loadingMoreJobs}
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white px-8"
+                          data-testid="load-more-jobs"
+                        >
+                          {loadingMoreJobs ? (
+                            <>
+                              <span className="animate-spin mr-2">⏳</span>
+                              Loading...
+                            </>
+                          ) : (
+                            `Load More Jobs (${stats.total_jobs ? stats.total_jobs - allJobs.length : '...'} remaining)`
+                          )}
+                        </Button>
+                      </div>
+                    )}
+                    
+                    {!hasMoreJobs && allJobs.length > 0 && (
+                      <div className="text-center pt-4 text-gray-500">
+                        ✓ All {allJobs.length} jobs loaded
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>
@@ -1039,12 +1109,14 @@ const AdminPanel = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Job Description *</label>
-                    <JoditEditor
-                      value={editingJob.description}
-                      config={jobDescConfig}
-                      onBlur={newContent => setEditingJob(prev => ({...prev, description: newContent}))}
-                      onChange={() => {}}
-                    />
+                    <Suspense fallback={<EditorLoading />}>
+                      <JoditEditor
+                        value={editingJob.description}
+                        config={jobDescConfig}
+                        onBlur={newContent => setEditingJob(prev => ({...prev, description: newContent}))}
+                        onChange={() => {}}
+                      />
+                    </Suspense>
                   </div>
 
                   <div className="flex items-center space-x-4">
@@ -1270,12 +1342,14 @@ const AdminPanel = () => {
                       <span>AI Enhance</span>
                     </button>
                   </div>
-                  <JoditEditor
-                    value={newJob.description}
-                    config={jobDescConfig}
-                    onBlur={newContent => setNewJob(prev => ({...prev, description: newContent}))}
-                    onChange={() => {}}
-                  />
+                  <Suspense fallback={<EditorLoading />}>
+                    <JoditEditor
+                      value={newJob.description}
+                      config={jobDescConfig}
+                      onBlur={newContent => setNewJob(prev => ({...prev, description: newContent}))}
+                      onChange={() => {}}
+                    />
+                  </Suspense>
                 </div>
                 <Button 
                   onClick={async () => {
@@ -1421,12 +1495,14 @@ const AdminPanel = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Article Content</label>
-                  <JoditEditor
-                    ref={editor}
-                    value={newBlog.content}
-                    config={config}
-                    onBlur={newContent => setNewBlog(prev => ({...prev, content: newContent}))}
-                  />
+                  <Suspense fallback={<EditorLoading />}>
+                    <JoditEditor
+                      ref={editor}
+                      value={newBlog.content}
+                      config={config}
+                      onBlur={newContent => setNewBlog(prev => ({...prev, content: newContent}))}
+                    />
+                  </Suspense>
                   <p className="text-xs text-gray-500 mt-2">💡 Use the toolbar to format your content with headings, bold, italic, lists, links, images, and more.</p>
                 </div>
 

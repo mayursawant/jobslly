@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
@@ -10,7 +10,6 @@ import Home from './components/Home';
 import JobListing from './components/JobListing';
 import JobDetails from './components/JobDetails';
 import Dashboard from './components/Dashboard';
-import AdminPanel from './components/AdminPanel';
 import Login from './components/Login';
 import Register from './components/Register';
 // Removed: CMSLogin and JobSeekerLogin - consolidated to single Login
@@ -34,6 +33,19 @@ import CategoryPage from './components/CategoryPage';
 import StudentProfiles from './components/StudentProfiles';
 import { Toaster } from './components/ui/sonner';
 import { Helmet } from 'react-helmet';
+
+// Lazy load heavy components (AdminPanel includes 28MB Jodit editor)
+const AdminPanel = lazy(() => import('./components/AdminPanel'));
+
+// Loading fallback for lazy components
+const PageLoading = () => (
+  <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+      <p className="text-gray-600">Loading...</p>
+    </div>
+  </div>
+);
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -152,21 +164,34 @@ function App() {
             <meta property="og:title" content="Jobslly - Future of Healthcare Careers" />
             <meta property="og:description" content="AI-powered healthcare job platform connecting medical professionals with leading institutions. Find your next career opportunity today." />
             <meta property="og:type" content="website" />
+<<<<<<< HEAD
             <meta property="og:url" content="https://jobfix-complete.preview.emergentagent.com/" />
             <meta property="og:image" content="https://jobfix-complete.preview.emergentagent.com/og-image.jpg" />
+=======
+            <meta property="og:url" content="https://recruiter-portal.preview.emergentagent.com/" />
+            <meta property="og:image" content="https://recruiter-portal.preview.emergentagent.com/og-image.jpg" />
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
             <meta property="og:site_name" content="Jobslly" />
             
             {/* Twitter */}
             <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:title" content="Jobslly - Future of Healthcare Careers" />
             <meta name="twitter:description" content="AI-powered healthcare job platform for medical professionals" />
+<<<<<<< HEAD
             <meta name="twitter:image" content="https://jobfix-complete.preview.emergentagent.com/og-image.jpg" />
+=======
+            <meta name="twitter:image" content="https://recruiter-portal.preview.emergentagent.com/og-image.jpg" />
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
             
             {/* Additional SEO Meta Tags */}
             <meta name="author" content="Jobslly" />
             <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
             <meta name="googlebot" content="index, follow" />
+<<<<<<< HEAD
             <link rel="canonical" href="https://jobfix-complete.preview.emergentagent.com/" />
+=======
+            <link rel="canonical" href="https://recruiter-portal.preview.emergentagent.com/" />
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
             
             {/* Favicon and App Icons */}
             <link rel="icon" href="/favicon.ico" />
@@ -179,8 +204,13 @@ function App() {
                 "@type": "Organization",
                 "name": "Jobslly",
                 "description": "AI-powered healthcare career platform",
+<<<<<<< HEAD
                 "url": "https://jobfix-complete.preview.emergentagent.com",
                 "logo": "https://jobfix-complete.preview.emergentagent.com/logo.png",
+=======
+                "url": "https://recruiter-portal.preview.emergentagent.com",
+                "logo": "https://recruiter-portal.preview.emergentagent.com/logo.png",
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
                 "sameAs": [
                   "https://linkedin.com/company/jobslly",
                   "https://twitter.com/jobslly"
@@ -195,10 +225,17 @@ function App() {
                 "@type": "WebSite",
                 "name": "Jobslly",
                 "description": "Future of Healthcare Careers - AI-Powered Job Platform",
+<<<<<<< HEAD
                 "url": "https://jobfix-complete.preview.emergentagent.com",
                 "potentialAction": {
                   "@type": "SearchAction",
                   "target": "https://jobfix-complete.preview.emergentagent.com/jobs?search={search_term_string}",
+=======
+                "url": "https://recruiter-portal.preview.emergentagent.com",
+                "potentialAction": {
+                  "@type": "SearchAction",
+                  "target": "https://recruiter-portal.preview.emergentagent.com/jobs?search={search_term_string}",
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
                   "query-input": "required name=search_term_string"
                 },
                 "publisher": {
@@ -213,10 +250,17 @@ function App() {
               {JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "LocalBusiness",
+<<<<<<< HEAD
                 "@id": "https://jobfix-complete.preview.emergentagent.com",
                 "name": "Jobslly",
                 "description": "Healthcare job platform connecting medical professionals with opportunities",
                 "url": "https://jobfix-complete.preview.emergentagent.com",
+=======
+                "@id": "https://recruiter-portal.preview.emergentagent.com",
+                "name": "Jobslly",
+                "description": "Healthcare job platform connecting medical professionals with opportunities",
+                "url": "https://recruiter-portal.preview.emergentagent.com",
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
                 "telephone": "+1-800-JOBSLLY",
                 "priceRange": "Free",
                 "openingHours": "Mo-Su 00:00-24:00",
@@ -312,10 +356,18 @@ function App() {
                 user.role === 'job_seeker' ? <JobSeekerDashboard /> : <Dashboard />
               ) : <Navigate to="/login/" />} />
               <Route path="/admin" element={
-                user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/login/" />
+                user?.role === 'admin' ? (
+                  <Suspense fallback={<PageLoading />}>
+                    <AdminPanel />
+                  </Suspense>
+                ) : <Navigate to="/login/" />
               } />
               <Route path="/admin/" element={
-                user?.role === 'admin' ? <AdminPanel /> : <Navigate to="/login/" />
+                user?.role === 'admin' ? (
+                  <Suspense fallback={<PageLoading />}>
+                    <AdminPanel />
+                  </Suspense>
+                ) : <Navigate to="/login/" />
               } />
               
               {/* 404 Catch-all Route - Must be last */}
