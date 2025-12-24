@@ -959,6 +959,33 @@ const AdminPanel = () => {
                         </div>
                       </div>
                     ))}
+                    
+                    {/* Load More Button */}
+                    {hasMoreJobs && (
+                      <div className="flex justify-center pt-4">
+                        <Button
+                          onClick={handleLoadMoreJobs}
+                          disabled={loadingMoreJobs}
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white px-8"
+                          data-testid="load-more-jobs"
+                        >
+                          {loadingMoreJobs ? (
+                            <>
+                              <span className="animate-spin mr-2">⏳</span>
+                              Loading...
+                            </>
+                          ) : (
+                            `Load More Jobs (${stats.total_jobs ? stats.total_jobs - allJobs.length : '...'} remaining)`
+                          )}
+                        </Button>
+                      </div>
+                    )}
+                    
+                    {!hasMoreJobs && allJobs.length > 0 && (
+                      <div className="text-center pt-4 text-gray-500">
+                        ✓ All {allJobs.length} jobs loaded
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>
