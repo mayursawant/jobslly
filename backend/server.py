@@ -395,6 +395,21 @@ class BlogPost(BaseModel):
     updated_at: Optional[datetime] = None
     published_at: Optional[datetime] = None
 
+# Lightweight model for blog listing (excludes large content and base64 images)
+class BlogPostSummary(BaseModel):
+    id: str
+    title: str
+    slug: str
+    excerpt: str
+    featured_image: Optional[str] = None  # Will contain URL or small thumbnail, not base64
+    author_id: str
+    category: str = "healthcare"
+    tags: List[str] = []
+    is_published: bool = False
+    is_featured: bool = False
+    created_at: datetime
+    published_at: Optional[datetime] = None
+
 class BlogPostCreate(BaseModel):
     title: str
     excerpt: str
