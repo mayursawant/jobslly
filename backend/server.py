@@ -1631,9 +1631,11 @@ async def delete_blog_post(post_id: str, current_user: User = Depends(get_curren
 @api_router.get("/admin/jobs/all", response_model=List[Job])
 async def get_all_jobs_admin(
     include_deleted: bool = False,
+    skip: int = 0,
+    limit: int = 50,
     current_user: User = Depends(get_current_user)
 ):
-    """Get all jobs for admin management (including soft-deleted if requested)"""
+    """Get all jobs for admin management with pagination"""
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -1641,7 +1643,8 @@ async def get_all_jobs_admin(
     if not include_deleted:
         query["is_deleted"] = {"$ne": True}
     
-    jobs = await db.jobs.find(query).sort("created_at", -1).to_list(length=None)
+    # Add pagination to prevent timeout on large datasets
+    jobs = await db.jobs.find(query).sort("created_at", -1).skip(skip).limit(limit).to_list(length=limit)
     
     for job in jobs:
         if isinstance(job.get('created_at'), str):
