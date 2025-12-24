@@ -1450,6 +1450,25 @@ async def get_admin_blog_posts(current_user: User = Depends(get_current_user)):
     
     return [BlogPostSummary(**post) for post in posts]
 
+@api_router.get("/admin/blog/{post_id}", response_model=BlogPost)
+async def get_admin_blog_post(post_id: str, current_user: User = Depends(get_current_user)):
+    """Get single blog post with full content for editing"""
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    post = await db.blog_posts.find_one({"id": post_id}, {"_id": 0})
+    if not post:
+        raise HTTPException(status_code=404, detail="Blog post not found")
+    
+    if isinstance(post.get('created_at'), str):
+        post['created_at'] = datetime.fromisoformat(post['created_at'])
+    if post.get('updated_at') and isinstance(post.get('updated_at'), str):
+        post['updated_at'] = datetime.fromisoformat(post['updated_at'])
+    if post.get('published_at') and isinstance(post.get('published_at'), str):
+        post['published_at'] = datetime.fromisoformat(post['published_at'])
+    
+    return BlogPost(**post)
+
 @api_router.put("/admin/blog/{post_id}", response_model=BlogPost)
 async def update_blog_post(
     post_id: str,
