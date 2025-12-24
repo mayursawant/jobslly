@@ -1426,11 +1426,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",  # Development
-<<<<<<< HEAD
-        "https://jobfix-complete.preview.emergentagent.com"  # Production
-=======
-        "https://recruiter-portal.preview.emergentagent.com"  # Production
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+        "https://jobslly.com"  # Production
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
@@ -2056,11 +2052,7 @@ EMERGENT_LLM_KEY="sk-emergent-<key>"
 CORS_ORIGINS="*"
 
 # Frontend (/app/frontend/.env)
-<<<<<<< HEAD
-REACT_APP_BACKEND_URL="https://jobfix-complete.preview.emergentagent.com"
-=======
-REACT_APP_BACKEND_URL="https://recruiter-portal.preview.emergentagent.com"
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+REACT_APP_BACKEND_URL="https://jobslly.com"
 WDS_SOCKET_PORT=443
 ```
 
@@ -2130,40 +2122,24 @@ cd /app/frontend && yarn install
 sudo supervisorctl restart all
 
 # 4. Verify deployment
-<<<<<<< HEAD
-curl https://jobfix-complete.preview.emergentagent.com/api/health
-=======
-curl https://recruiter-portal.preview.emergentagent.com/api/health
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+curl https://jobslly.com
 
 # 5. Check logs for errors
 sudo supervisorctl tail -f backend stderr
 sudo supervisorctl tail -f frontend stdout
 
 # 6. Test in browser
-<<<<<<< HEAD
-# Visit: https://jobfix-complete.preview.emergentagent.com
-=======
-# Visit: https://recruiter-portal.preview.emergentagent.com
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+# Visit: https://jobslly.com
 ```
 
 #### Health Checks
 ```bash
 # Backend health endpoint
-<<<<<<< HEAD
-curl https://jobfix-complete.preview.emergentagent.com/api/health
+curl https://jobslly.com/api/health
 # Expected: {"status":"healthy","timestamp":"..."}
 
 # Frontend accessibility
-curl -I https://jobfix-complete.preview.emergentagent.com
-=======
-curl https://recruiter-portal.preview.emergentagent.com/api/health
-# Expected: {"status":"healthy","timestamp":"..."}
-
-# Frontend accessibility
-curl -I https://recruiter-portal.preview.emergentagent.com
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+curl -I https://jobslly.com
 # Expected: HTTP/2 200
 
 # MongoDB connectivity
@@ -2171,11 +2147,7 @@ mongosh --eval "db.adminCommand('ping')"
 # Expected: { ok: 1 }
 
 # API documentation
-<<<<<<< HEAD
-# Visit: https://jobfix-complete.preview.emergentagent.com/docs
-=======
-# Visit: https://recruiter-portal.preview.emergentagent.com/docs
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+# Visit: https://jobslly.com/docs
 ```
 
 #### Troubleshooting Common Issues
@@ -2460,11 +2432,7 @@ spec:
         - containerPort: 80
         env:
         - name: REACT_APP_BACKEND_URL
-<<<<<<< HEAD
-          value: "https://jobfix-complete.preview.emergentagent.com"
-=======
-          value: "https://recruiter-portal.preview.emergentagent.com"
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+          value: "https://jobslly.com"
         resources:
           requests:
             memory: "128Mi"

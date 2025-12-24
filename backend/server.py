@@ -2812,13 +2812,8 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
                     "title": f"{job['title']} - {job['company']} | Jobslly Healthcare Jobs",
                     "description": f"Apply for {job['title']} position at {job['company']} in {job['location']}. {job['description'][:150]}...",
                     "keywords": [job['title'], job['company'], job['location'], "healthcare jobs", "medical careers"],
-<<<<<<< HEAD
-                    "og_image": f"https://jobfix-complete.preview.emergentagent.com/api/og-image/job/{job_id}",
-                    "canonical": f"https://jobfix-complete.preview.emergentagent.com/jobs/{job_id}"
-=======
-                    "og_image": f"https://recruiter-portal.preview.emergentagent.com/api/og-image/job/{job_id}",
-                    "canonical": f"https://recruiter-portal.preview.emergentagent.com/jobs/{job_id}"
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+                    "og_image": f"https://jobslly.com/api/og-image/job/{job_id}",
+                    "canonical": f"https://jobslly.com/jobs/{job_id}"
                 }
         
         elif page_type == "blog" and blog_slug:
@@ -2828,13 +2823,8 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
                     "title": post.get('seo_title') or f"{post['title']} | Jobslly Health Hub",
                     "description": post.get('seo_description') or post['excerpt'],
                     "keywords": post.get('seo_keywords', []) + [post['category'], "healthcare", "careers"],
-<<<<<<< HEAD
-                    "og_image": post.get('featured_image') or f"https://jobfix-complete.preview.emergentagent.com/api/og-image/blog/{blog_slug}",
-                    "canonical": f"https://jobfix-complete.preview.emergentagent.com/blog/{blog_slug}"
-=======
-                    "og_image": post.get('featured_image') or f"https://recruiter-portal.preview.emergentagent.com/api/og-image/blog/{blog_slug}",
-                    "canonical": f"https://recruiter-portal.preview.emergentagent.com/blog/{blog_slug}"
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+                    "og_image": post.get('featured_image') or f"https://jobslly.com/api/og-image/blog/{blog_slug}",
+                    "canonical": f"https://jobslly.com/blog/{blog_slug}"
                 }
     
     except Exception as e:
@@ -2845,13 +2835,8 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
         "title": "Jobslly - Future of Healthcare Careers",
         "description": "Discover healthcare opportunities for doctors, nurses, pharmacists, dentists, and physiotherapists with AI-powered career matching.",
         "keywords": ["healthcare jobs", "medical careers", "doctor jobs", "nurse jobs"],
-<<<<<<< HEAD
-        "og_image": "https://jobfix-complete.preview.emergentagent.com/og-image-default.jpg",
-        "canonical": "https://jobfix-complete.preview.emergentagent.com"
-=======
-        "og_image": "https://recruiter-portal.preview.emergentagent.com/og-image-default.jpg",
-        "canonical": "https://recruiter-portal.preview.emergentagent.com"
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+        "og_image": "https://jobslly.com/og-image-default.jpg",
+        "canonical": "https://jobslly.com"
     }
 
 # Include the router

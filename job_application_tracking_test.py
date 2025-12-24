@@ -10,12 +10,8 @@ import uuid
 from datetime import datetime
 import time
 
-# Configuration
-<<<<<<< HEAD
-BASE_URL = "https://jobfix-complete.preview.emergentagent.com/api"
-=======
-BASE_URL = "https://recruiter-portal.preview.emergentagent.com/api"
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+
+BASE_URL = "https://jobslly.com/api"
 
 class JobApplicationTrackingTester:
     def __init__(self):
