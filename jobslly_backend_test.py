@@ -11,6 +11,7 @@ from datetime import datetime
 import time
 
 # Configuration
+
 BASE_URL = "https://jobslly.com/api"
 
 class JobsllyBackendTester:

@@ -136,6 +136,7 @@ const ContactUs = () => {
                   </p>
                 </div>
                 <div>
+<<<<<<< HEAD
                   <p className="font-semibold text-gray-700 mb-2">India</p>
                   <div className="space-y-3 text-gray-600 text-sm">
                     <div>
@@ -150,6 +151,13 @@ const ContactUs = () => {
                       <p className="font-medium text-teal-600">Dehradun:</p>
                       <p>IT Park, Sahastradhara Rd</p>
                     </div>
+=======
+                  <p className="font-semibold text-gray-700 mb-1">India</p>
+                  <div className="text-gray-600 text-sm space-y-2">
+                    <p><span className="font-medium">Delhi:</span> Green Park Metro Station Gate No.3</p>
+                    <p><span className="font-medium">Hyderabad:</span> Below Hotel Kinara Grand, Ameerpet</p>
+                    <p><span className="font-medium">Dehradun:</span> IT Park, Sahastradhara Rd</p>
+>>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
                   </div>
                 </div>
               </CardContent>
