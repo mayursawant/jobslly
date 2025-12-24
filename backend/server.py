@@ -1462,19 +1462,20 @@ async def create_blog_post(
 @api_router.get("/admin/blog", response_model=List[BlogPostSummary])
 async def get_admin_blog_posts(current_user: User = Depends(get_current_user)):
     """
-    Get blog posts for admin listing - returns lightweight summaries.
+    Get blog posts for admin listing - returns lightweight summaries with compressed thumbnails.
     Full content is loaded when editing individual post.
     """
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Admin access required")
     
-    # Exclude large content and base64 images for listing
+    # Include featured_image for thumbnail compression
     projection = {
         "_id": 0,
         "id": 1,
         "title": 1,
         "slug": 1,
         "excerpt": 1,
+        "featured_image": 1,
         "author_id": 1,
         "category": 1,
         "tags": 1,
@@ -1491,7 +1492,13 @@ async def get_admin_blog_posts(current_user: User = Depends(get_current_user)):
             post['created_at'] = datetime.fromisoformat(post['created_at'])
         if post.get('published_at') and isinstance(post.get('published_at'), str):
             post['published_at'] = datetime.fromisoformat(post['published_at'])
-        post['featured_image'] = None  # Set to None for listing
+        
+        # Compress featured_image to thumbnail
+        featured_img = post.get('featured_image', '')
+        if featured_img and featured_img.startswith('data:image'):
+            post['featured_image'] = compress_base64_image(featured_img, max_width=400, quality=60)
+        elif not featured_img:
+            post['featured_image'] = None
     
     return [BlogPostSummary(**post) for post in posts]
 
