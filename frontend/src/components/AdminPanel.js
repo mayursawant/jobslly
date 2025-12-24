@@ -389,26 +389,51 @@ const AdminPanel = () => {
   };
 
   /**
-   * Fetch all jobs for management
+   * Fetch all jobs for management (with pagination)
    */
-  const fetchAllJobs = async () => {
+  const fetchAllJobs = async (loadMore = false) => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No authentication token found');
       }
 
-      const response = await axios.get(`${API}/admin/jobs/all?limit=100`, {
+      if (loadMore) {
+        setLoadingMoreJobs(true);
+      }
+
+      const skip = loadMore ? jobsSkip : 0;
+      const response = await axios.get(`${API}/admin/jobs/all?limit=${JOBS_PER_PAGE}&skip=${skip}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       
-      setAllJobs(response.data || []);
+      const newJobs = response.data || [];
+      
+      if (loadMore) {
+        setAllJobs(prev => [...prev, ...newJobs]);
+      } else {
+        setAllJobs(newJobs);
+      }
+      
+      // Check if there are more jobs to load
+      setHasMoreJobs(newJobs.length === JOBS_PER_PAGE);
+      setJobsSkip(skip + newJobs.length);
+      
     } catch (error) {
       console.error('Failed to fetch all jobs:', error);
       toast.error('Failed to load jobs');
+    } finally {
+      setLoadingMoreJobs(false);
     }
+  };
+
+  /**
+   * Load more jobs handler
+   */
+  const handleLoadMoreJobs = () => {
+    fetchAllJobs(true);
   };
 
   /**
