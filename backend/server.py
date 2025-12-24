@@ -27,6 +27,48 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+# Helper function to compress base64 images for thumbnails
+def compress_base64_image(base64_string: str, max_width: int = 400, quality: int = 60) -> str:
+    """
+    Compress a base64 image to create a smaller thumbnail.
+    Reduces image dimensions and quality for faster loading in listings.
+    """
+    try:
+        if not base64_string or not base64_string.startswith('data:image'):
+            return base64_string
+        
+        # Extract the base64 data and mime type
+        header, data = base64_string.split(',', 1)
+        mime_type = header.split(':')[1].split(';')[0]
+        
+        # Decode base64 to image
+        image_data = base64.b64decode(data)
+        image = Image.open(BytesIO(image_data))
+        
+        # Convert to RGB if necessary (for PNG with transparency)
+        if image.mode in ('RGBA', 'P'):
+            image = image.convert('RGB')
+        
+        # Calculate new dimensions maintaining aspect ratio
+        width, height = image.size
+        if width > max_width:
+            ratio = max_width / width
+            new_height = int(height * ratio)
+            image = image.resize((max_width, new_height), Image.Resampling.LANCZOS)
+        
+        # Save compressed image to buffer
+        buffer = BytesIO()
+        image.save(buffer, format='JPEG', quality=quality, optimize=True)
+        buffer.seek(0)
+        
+        # Encode back to base64
+        compressed_data = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        return f"data:image/jpeg;base64,{compressed_data}"
+    
+    except Exception as e:
+        logging.error(f"Failed to compress image: {e}")
+        return base64_string  # Return original if compression fails
+
 # Helper function to sanitize filenames
 def sanitize_filename(filename):
     """Remove/replace characters that cause issues in URLs"""
