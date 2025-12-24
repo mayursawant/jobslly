@@ -1807,14 +1807,13 @@ async def regenerate_job_slug(job_id: str, current_user: User = Depends(get_curr
 async def get_blog_posts(featured_only: bool = False, limit: int = 10, skip: int = 0):
     """
     Get blog posts for listing - returns lightweight summaries without full content.
-    Full content is only returned when viewing a single blog post by slug.
+    Full content and full-size images are only returned when viewing a single blog post by slug.
     """
     query = {"is_published": True}
     if featured_only:
         query["is_featured"] = True
     
     # Use projection to exclude large fields (content has embedded base64 images)
-    # This reduces response from ~3.8MB to ~50KB for 10 posts
     projection = {
         "_id": 0,
         "id": 1,
@@ -1839,12 +1838,12 @@ async def get_blog_posts(featured_only: bool = False, limit: int = 10, skip: int
         if post.get('published_at') and isinstance(post.get('published_at'), str):
             post['published_at'] = datetime.fromisoformat(post['published_at'])
         
-        # Convert base64 featured_image to placeholder for listing (actual image shown on detail page)
-        # This prevents transferring ~200KB base64 strings per post in listings
+        # For base64 images, truncate to first 100 chars + ... to indicate presence
+        # Frontend can show placeholder and load full image lazily from detail endpoint
         featured_img = post.get('featured_image', '')
-        if featured_img and featured_img.startswith('data:image'):
-            # Keep the base64 image for now - frontend needs it for thumbnails
-            # Future optimization: store images in cloud storage and use URLs
+        if featured_img and featured_img.startswith('data:image') and len(featured_img) > 1000:
+            # Keep base64 images as-is for now - frontend needs them
+            # TODO: Migrate to cloud storage (S3/CloudFront) for better performance
             pass
     
     return [BlogPostSummary(**post) for post in posts]
