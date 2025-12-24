@@ -18,6 +18,9 @@ import uuid
 import json
 import xml.etree.ElementTree as ET
 import subprocess
+from io import BytesIO
+from PIL import Image
+import base64
 
 # Load environment variables
 from pathlib import Path
