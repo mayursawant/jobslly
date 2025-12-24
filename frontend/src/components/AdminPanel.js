@@ -55,6 +55,12 @@ const AdminPanel = () => {
   const [editingJob, setEditingJob] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   
+  // Pagination state for Manage Jobs
+  const [jobsSkip, setJobsSkip] = useState(0);
+  const [hasMoreJobs, setHasMoreJobs] = useState(true);
+  const [loadingMoreJobs, setLoadingMoreJobs] = useState(false);
+  const JOBS_PER_PAGE = 100;
+  
   // Job Creation State
   const [newJob, setNewJob] = useState({
     title: '',
