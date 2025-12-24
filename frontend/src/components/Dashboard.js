@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import axios from 'axios';
 import { toast } from 'sonner';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 const API = `${BACKEND_URL}/api`;
 
 const Dashboard = () => {
@@ -20,12 +20,12 @@ const Dashboard = () => {
   const [applications, setApplications] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   // AI Features State
   const [aiText, setAiText] = useState('');
   const [aiResult, setAiResult] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
-  
+
   // Job Creation State (for employers)
   const [newJob, setNewJob] = useState({
     title: '',
@@ -111,7 +111,7 @@ const Dashboard = () => {
 
       await axios.post(`${API}/jobs`, jobData);
       toast.success('Job posted successfully! It will be reviewed by our team.');
-      
+
       // Reset form
       setNewJob({
         title: '',
@@ -124,7 +124,7 @@ const Dashboard = () => {
         requirements: [],
         benefits: []
       });
-      
+
       fetchUserData();
     } catch (error) {
       console.error('Job creation error:', error);
@@ -202,7 +202,7 @@ const Dashboard = () => {
                       </div>
                     </>
                   )}
-                  
+
                   {user?.role === 'employer' && (
                     <>
                       <div className="flex justify-between">
@@ -233,10 +233,10 @@ const Dashboard = () => {
                       </Button>
                     </>
                   )}
-                  
+
                   {user?.role === 'employer' && (
                     <>
-                      <Button 
+                      <Button
                         className="w-full btn-primary"
                         onClick={() => setActiveTab('post-job')}
                         data-testid="post-new-job"
@@ -259,8 +259,8 @@ const Dashboard = () => {
                   <p className="text-sm text-gray-600">
                     Get AI-powered help with your healthcare career
                   </p>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="w-full"
                     onClick={() => setActiveTab('ai-tools')}
                     data-testid="explore-ai-tools"
@@ -336,7 +336,7 @@ const Dashboard = () => {
                           <div className="text-sm text-gray-600">Get feedback on your resume</div>
                         </div>
                       </Button>
-                      
+
                       <Button
                         onClick={() => handleAIFeature('match')}
                         disabled={aiLoading || !aiText.trim()}
@@ -366,7 +366,7 @@ const Dashboard = () => {
                           <div className="text-sm text-gray-600">Improve your job posting</div>
                         </div>
                       </Button>
-                      
+
                       <Button
                         onClick={() => handleAIFeature('questions')}
                         disabled={aiLoading || !aiText.trim()}
@@ -419,37 +419,37 @@ const Dashboard = () => {
                       <Input
                         id="job-title"
                         value={newJob.title}
-                        onChange={(e) => setNewJob(prev => ({...prev, title: e.target.value}))}
+                        onChange={(e) => setNewJob(prev => ({ ...prev, title: e.target.value }))}
                         placeholder="e.g. Registered Nurse"
                         data-testid="job-title-input"
                       />
                     </div>
-                    
+
                     <div>
                       <Label htmlFor="company">Company</Label>
                       <Input
                         id="company"
                         value={newJob.company}
-                        onChange={(e) => setNewJob(prev => ({...prev, company: e.target.value}))}
+                        onChange={(e) => setNewJob(prev => ({ ...prev, company: e.target.value }))}
                         placeholder="e.g. General Hospital"
                         data-testid="job-company-input"
                       />
                     </div>
-                    
+
                     <div>
                       <Label htmlFor="location">Location</Label>
                       <Input
                         id="location"
                         value={newJob.location}
-                        onChange={(e) => setNewJob(prev => ({...prev, location: e.target.value}))}
+                        onChange={(e) => setNewJob(prev => ({ ...prev, location: e.target.value }))}
                         placeholder="e.g. New York, NY"
                         data-testid="job-location-input"
                       />
                     </div>
-                    
+
                     <div>
                       <Label htmlFor="job-type">Job Type</Label>
-                      <Select value={newJob.job_type} onValueChange={(value) => setNewJob(prev => ({...prev, job_type: value}))}>
+                      <Select value={newJob.job_type} onValueChange={(value) => setNewJob(prev => ({ ...prev, job_type: value }))}>
                         <SelectTrigger data-testid="job-type-select">
                           <SelectValue />
                         </SelectTrigger>
@@ -460,26 +460,26 @@ const Dashboard = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    
+
                     <div>
                       <Label htmlFor="salary-min">Minimum Salary</Label>
                       <Input
                         id="salary-min"
                         type="number"
                         value={newJob.salary_min}
-                        onChange={(e) => setNewJob(prev => ({...prev, salary_min: e.target.value}))}
+                        onChange={(e) => setNewJob(prev => ({ ...prev, salary_min: e.target.value }))}
                         placeholder="50000"
                         data-testid="job-salary-min-input"
                       />
                     </div>
-                    
+
                     <div>
                       <Label htmlFor="salary-max">Maximum Salary</Label>
                       <Input
                         id="salary-max"
                         type="number"
                         value={newJob.salary_max}
-                        onChange={(e) => setNewJob(prev => ({...prev, salary_max: e.target.value}))}
+                        onChange={(e) => setNewJob(prev => ({ ...prev, salary_max: e.target.value }))}
                         placeholder="80000"
                         data-testid="job-salary-max-input"
                       />
@@ -491,7 +491,7 @@ const Dashboard = () => {
                     <Textarea
                       id="description"
                       value={newJob.description}
-                      onChange={(e) => setNewJob(prev => ({...prev, description: e.target.value}))}
+                      onChange={(e) => setNewJob(prev => ({ ...prev, description: e.target.value }))}
                       placeholder="Detailed job description..."
                       rows={6}
                       data-testid="job-description-input"

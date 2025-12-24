@@ -9,7 +9,7 @@ import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 const API = `${BACKEND_URL}/api`;
 
 // Helper function to strip HTML tags from text
@@ -173,7 +173,7 @@ const InteractiveCourseSection = () => {
                     `}>
                       {/* Animated Background Gradient */}
                       <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                      
+
                       <div className="relative z-10">
                         <div className="text-6xl mb-4 transform transition-transform duration-300">
                           {category.icon}
@@ -252,7 +252,7 @@ const Home = () => {
     try {
       const response = await axios.get(`${API}/jobs?limit=6`);
       setFeaturedJobs(response.data);
-      
+
       // Enhanced stats for healthcare professionals
       setStats({
         jobs: response.data.length * 25,
@@ -323,14 +323,14 @@ const Home = () => {
             50% { opacity: 0.8; box-shadow: 0 0 20px rgba(20, 184, 166, 0.6); }
           }
         `}</style>
-        
+
         {/* Floating Animation Elements with Enhanced Animations */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {/* Pulsing Circles */}
           <div className="absolute top-20 left-10 w-20 h-20 bg-teal-200 rounded-full opacity-20 animate-bounce"></div>
-          <div className="absolute top-40 right-20 w-16 h-16 bg-emerald-200 rounded-full" style={{animation: 'pulse-glow 2s ease-in-out infinite'}}></div>
+          <div className="absolute top-40 right-20 w-16 h-16 bg-emerald-200 rounded-full" style={{ animation: 'pulse-glow 2s ease-in-out infinite' }}></div>
           <div className="absolute bottom-32 left-20 w-12 h-12 bg-cyan-200 rounded-full opacity-25 animate-ping"></div>
-          
+
           {/* ECG Wave Line */}
           <svg className="absolute bottom-10 left-0 w-full h-20 opacity-10" viewBox="0 0 1000 100">
             <path
@@ -340,7 +340,7 @@ const Home = () => {
               fill="none"
               strokeDasharray="1000"
               strokeDashoffset="1000"
-              style={{animation: 'ecg-line 3s linear infinite'}}
+              style={{ animation: 'ecg-line 3s linear infinite' }}
             />
           </svg>
         </div>
@@ -369,7 +369,7 @@ const Home = () => {
                   In Your Dream Country
                 </h1>
               </div>
-              
+
               <p className="text-xl text-gray-600 max-w-2xl">
                 AI-Powered Job Recommendations • Customised Search Filters • Dedicated Portal for Healthcare Professionals
               </p>
@@ -409,7 +409,7 @@ const Home = () => {
                       </Button>
                     </div>
                   </div>
-                  
+
                   {/* Quick suggestions */}
                   <div className="mt-3 text-sm text-gray-600">
                     <span className="mr-2">Popular Searches:</span>
@@ -418,18 +418,18 @@ const Home = () => {
                     <span className="text-teal-600 hover:text-teal-700 cursor-pointer hover:underline">Nurses</span>
                   </div>
                 </form>
-                
+
                 {/* Action Buttons with Staggered Animation */}
                 <div className="flex flex-wrap gap-4 mt-8">
                   {!isAuthenticated ? (
                     <>
                       <Link to="/register">
-                        <Button className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 animate-slide-up" data-testid="hero-get-started" style={{animationDelay: '1s'}}>
+                        <Button className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 animate-slide-up" data-testid="hero-get-started" style={{ animationDelay: '1s' }}>
                           🚀 Get Started Free
                         </Button>
                       </Link>
                       <Link to="/jobs">
-                        <Button variant="outline" className="border-2 border-teal-600 text-teal-600 hover:bg-teal-50 font-semibold px-8 py-4 rounded-xl transform hover:scale-105 transition-all duration-300 animate-slide-up" data-testid="hero-browse-jobs" style={{animationDelay: '1.2s'}}>
+                        <Button variant="outline" className="border-2 border-teal-600 text-teal-600 hover:bg-teal-50 font-semibold px-8 py-4 rounded-xl transform hover:scale-105 transition-all duration-300 animate-slide-up" data-testid="hero-browse-jobs" style={{ animationDelay: '1.2s' }}>
                           Browse 11K+ Jobs
                         </Button>
                       </Link>
@@ -453,13 +453,13 @@ const Home = () => {
             </div>
 
             {/* Right Column - Healthcare Professionals Image */}
-            <div className="relative animate-slide-up" style={{animationDelay: '1.4s'}}>
+            <div className="relative animate-slide-up" style={{ animationDelay: '1.4s' }}>
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-emerald-400 rounded-3xl transform rotate-3 animate-pulse"></div>
                 <div className="relative bg-white rounded-3xl shadow-2xl p-1 transform -rotate-1 hover:rotate-0 transition-transform duration-700">
-                  <img 
-                    src="https://customer-assets.emergentagent.com/job_a4ce02d4-d988-4bcc-bfe4-80f85b655205/artifacts/67arpex4_jobslly.jpg" 
-                    alt="Jobslly - Connect Healthcare Professionals with Opportunities" 
+                  <img
+                    src="https://customer-assets.emergentagent.com/job_a4ce02d4-d988-4bcc-bfe4-80f85b655205/artifacts/67arpex4_jobslly.jpg"
+                    alt="Jobslly - Connect Healthcare Professionals with Opportunities"
                     className="w-full h-auto rounded-3xl object-cover"
                   />
                   <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-sm rounded-2xl p-4 transform translate-y-2 hover:translate-y-0 transition-transform duration-300">
@@ -518,8 +518,8 @@ const Home = () => {
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {specializations.map((spec, index) => (
-              <Link 
-                key={spec.name} 
+              <Link
+                key={spec.name}
                 to={`/jobs?category=${spec.name.toLowerCase()}`}
                 className="group block"
                 data-testid={`specialization-${spec.name.toLowerCase()}`}
@@ -554,9 +554,9 @@ const Home = () => {
               <div className="relative w-full">
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-200 to-emerald-200 rounded-3xl transform rotate-2 animate-pulse"></div>
                 <div className="relative bg-white rounded-3xl shadow-2xl p-2 transform -rotate-1">
-                  <img 
-                    src="https://customer-assets.emergentagent.com/job_fb646410-577a-4c7b-95d3-6b0696e19504/artifacts/c98jpsr9_Screenshot_2025-12-22_174934-removebg-preview.png" 
-                    alt="Dr. Akram Ahmad - Founder & CEO" 
+                  <img
+                    src="https://customer-assets.emergentagent.com/job_fb646410-577a-4c7b-95d3-6b0696e19504/artifacts/c98jpsr9_Screenshot_2025-12-22_174934-removebg-preview.png"
+                    alt="Dr. Akram Ahmad - Founder & CEO"
                     className="w-full h-auto rounded-3xl object-contain bg-black"
                   />
                 </div>
@@ -678,14 +678,14 @@ const Home = () => {
                           {job.job_type.replace('_', ' ').toUpperCase()}
                         </Badge>
                       </div>
-                      
+
                       <h3 className="text-lg font-semibold mb-1 text-gray-900 hover:text-blue-600 transition-colors">{job.title}</h3>
                       <p className="text-blue-600 font-medium mb-1 text-sm">{job.company}</p>
                       <p className="text-gray-500 mb-3 flex items-center text-sm">
                         <MapPin className="h-3 w-3 mr-1" />
                         {job.location}
                       </p>
-                      
+
                       <p className="text-gray-600 mb-4 line-clamp-2 text-sm">
                         {stripHtml(job.description).substring(0, 100)}...
                       </p>
@@ -739,11 +739,11 @@ const Home = () => {
                 <Card key={blog.id || index} className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 h-full">
                   {blog.featured_image && (
                     <div className="w-full h-48 overflow-hidden">
-                      <img 
-                        src={blog.featured_image} 
+                      <img
+                        src={blog.featured_image}
                         alt={blog.title}
                         className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                        onError={(e) => {e.target.style.display='none'}}
+                        onError={(e) => { e.target.style.display = 'none' }}
                       />
                     </div>
                   )}

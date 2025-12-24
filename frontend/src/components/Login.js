@@ -15,7 +15,7 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -27,19 +27,19 @@ const Login = () => {
     try {
       await login(formData.email, formData.password);
       toast.success('Successfully logged in!');
-      
+
       // Get user data from localStorage or context to determine role
       const token = localStorage.getItem('token');
       if (token) {
         // Fetch user data to determine redirect
-        const API = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+        const API = process.env.REACT_APP_BACKEND_URL || '';
         const response = await fetch(`${API}/api/auth/me`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
         const userData = await response.json();
-        
+
         // Redirect based on role
         if (userData.role === 'admin') {
           navigate('/admin');
@@ -84,7 +84,7 @@ const Login = () => {
               Sign in to your healthcare career portal
             </p>
           </CardHeader>
-          
+
           <CardContent>
             {error && (
               <Alert className="mb-6 border-red-200 bg-red-50" data-testid="login-error">
@@ -149,8 +149,8 @@ const Login = () => {
             <div className="mt-6 text-center">
               <p className="text-gray-600">
                 Don't have an account?{' '}
-                <Link 
-                  to="/register" 
+                <Link
+                  to="/register"
                   className="text-teal-600 hover:text-teal-700 font-medium transition-colors"
                   data-testid="register-link"
                 >
@@ -185,7 +185,7 @@ const Login = () => {
                 Click any credential to auto-fill the form
               </p>
             </div> */}
-            
+
             {/* <div className="mt-4 text-center">
               <p className="text-gray-500 text-sm">
                 Need CMS access?{' '}

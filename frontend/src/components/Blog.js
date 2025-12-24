@@ -6,7 +6,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 const API = `${BACKEND_URL}/api`;
 
 const Blog = () => {
@@ -34,7 +34,7 @@ const Blog = () => {
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, []);
 
@@ -78,16 +78,16 @@ const Blog = () => {
           <div className="absolute top-32 right-20 w-16 h-16 bg-white/20 rounded-full animate-pulse"></div>
           <div className="absolute bottom-20 left-40 w-12 h-12 bg-white/15 rounded-full animate-ping"></div>
         </div>
-        
+
         <div className="max-w-7xl mx-auto text-center relative">
           <div className="inline-flex items-center px-4 py-2 mb-6 bg-white/20 rounded-full border border-white/30">
             <span className="text-white font-semibold text-sm">🧠 Healthcare Knowledge Hub</span>
           </div>
-          
+
           <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
             Health Hub
           </h1>
-          
+
           <p className="text-xl text-teal-100 mb-8 max-w-3xl mx-auto">
             Stay ahead with the latest healthcare insights, career guidance, and industry trends
           </p>
@@ -130,8 +130,8 @@ const Blog = () => {
                       <CardContent className="p-0 overflow-hidden rounded-lg">
                         {post.featured_image ? (
                           <div className="h-48 bg-gray-100 rounded-t-lg relative overflow-hidden">
-                            <img 
-                              src={post.featured_image} 
+                            <img
+                              src={post.featured_image}
                               alt={post.title}
                               className="w-full h-full object-contain"
                               onError={(e) => {
@@ -199,8 +199,8 @@ const Blog = () => {
                       <CardContent className="p-0 overflow-hidden rounded-lg">
                         {post.featured_image ? (
                           <div className="h-48 bg-gray-100 rounded-t-lg relative overflow-hidden">
-                            <img 
-                              src={post.featured_image} 
+                            <img
+                              src={post.featured_image}
                               alt={post.title}
                               className="w-full h-full object-contain"
                               onError={(e) => {
@@ -212,9 +212,9 @@ const Blog = () => {
                             <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-lg hidden items-center justify-center relative overflow-hidden">
                               <div className="absolute inset-0 bg-gradient-to-br from-teal-400/10 to-emerald-400/10"></div>
                               <span className="text-5xl opacity-60 relative z-10">
-                                {post.category === 'Healthcare Trends' ? '📈' : 
-                                 post.category === 'Career Development' ? '🚀' : 
-                                 post.category === 'Industry News' ? '📰' : '🏥'}
+                                {post.category === 'Healthcare Trends' ? '📈' :
+                                  post.category === 'Career Development' ? '🚀' :
+                                    post.category === 'Industry News' ? '📰' : '🏥'}
                               </span>
                             </div>
                           </div>
@@ -222,22 +222,21 @@ const Blog = () => {
                           <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-lg flex items-center justify-center relative overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-br from-teal-400/10 to-emerald-400/10"></div>
                             <span className="text-5xl opacity-60 relative z-10">
-                              {post.category === 'Healthcare Trends' ? '📈' : 
-                               post.category === 'Career Development' ? '🚀' : 
-                               post.category === 'Industry News' ? '📰' : '🏥'}
+                              {post.category === 'Healthcare Trends' ? '📈' :
+                                post.category === 'Career Development' ? '🚀' :
+                                  post.category === 'Industry News' ? '📰' : '🏥'}
                             </span>
                           </div>
                         )}
                         <div className="p-6">
                           <div className="flex items-center justify-between mb-4">
-                            <Badge 
-                              variant="outline" 
-                              className={`text-xs border ${
-                                post.category === 'Healthcare Trends' ? 'border-emerald-200 text-emerald-700 bg-emerald-50' :
-                                post.category === 'Career Development' ? 'border-blue-200 text-blue-700 bg-blue-50' :
-                                post.category === 'Industry News' ? 'border-purple-200 text-purple-700 bg-purple-50' :
-                                'border-teal-200 text-teal-700 bg-teal-50'
-                              }`}
+                            <Badge
+                              variant="outline"
+                              className={`text-xs border ${post.category === 'Healthcare Trends' ? 'border-emerald-200 text-emerald-700 bg-emerald-50' :
+                                  post.category === 'Career Development' ? 'border-blue-200 text-blue-700 bg-blue-50' :
+                                    post.category === 'Industry News' ? 'border-purple-200 text-purple-700 bg-purple-50' :
+                                      'border-teal-200 text-teal-700 bg-teal-50'
+                                }`}
                             >
                               {post.category}
                             </Badge>
@@ -249,7 +248,7 @@ const Blog = () => {
                             {post.title}
                           </h3>
                           <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
-                          
+
                           {post.tags.length > 0 && (
                             <div className="flex flex-wrap gap-1 mb-4">
                               {post.tags.slice(0, 3).map((tag, index) => (

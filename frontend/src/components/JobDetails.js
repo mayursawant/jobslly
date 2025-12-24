@@ -11,7 +11,7 @@ import LeadCollectionModal from './LeadCollectionModal';
 import axios from 'axios';
 import { toast } from 'sonner';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 const API = `${BACKEND_URL}/api`;
 
 // Helper function to check if salary value should show currency symbol
@@ -40,13 +40,13 @@ const JobDetails = () => {
   const [applying, setApplying] = useState(false);
   const [coverLetter, setCoverLetter] = useState('');
   const [hasApplied, setHasApplied] = useState(false);
-  
+
   // Modal states
   const [showLeadModal, setShowLeadModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showIncompleteProfileModal, setShowIncompleteProfileModal] = useState(false);
   const [showLoginPromptModal, setShowLoginPromptModal] = useState(false);
-  
+
   // User profile states
   const [userProfile, setUserProfile] = useState(null);
   const [profileCompletion, setProfileCompletion] = useState(0);
@@ -75,10 +75,10 @@ const JobDetails = () => {
       // Get token if user is logged in
       const token = localStorage.getItem('token');
       const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-      
+
       const response = await axios.get(`${API}/jobs/${jobId}`, { headers });
       setJob(response.data);
-      
+
       // Check if user has already applied
       if (token && response.data.has_applied !== undefined) {
         // For logged-in users, use backend response
@@ -108,7 +108,7 @@ const JobDetails = () => {
       const response = await axios.get(`${API}/profile`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      
+
       setUserProfile(response.data);
       // Always use profile_completion from backend for consistency
       const completion = response.data.profile_completion || 0;
@@ -133,7 +133,7 @@ const JobDetails = () => {
       setShowLeadModal(true);
       return;
     }
-    
+
     // Logged-in user flow - check profile completion
     if (profileCompletion === 100) {
       // Profile complete - proceed with application
@@ -165,7 +165,7 @@ const JobDetails = () => {
       }, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      
+
       setHasApplied(true);
       setCoverLetter('');
       setShowSuccessModal(true);
@@ -185,7 +185,7 @@ const JobDetails = () => {
     console.log('Job external URL:', job?.external_url);
     setShowLeadModal(false);
     setHasApplied(true); // Update state to show "Applied" status
-    
+
     if (job?.external_url) {
       // External job - redirect to external URL
       console.log('Redirecting to external URL:', job.external_url);
@@ -213,8 +213,8 @@ const JobDetails = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-100 py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           onClick={() => navigate('/jobs')}
           className="mb-6 flex items-center text-emerald-600 hover:text-emerald-700"
           data-testid="back-to-jobs"
@@ -243,7 +243,7 @@ const JobDetails = () => {
                     )}
                   </div>
                 </div>
-                
+
                 <CardTitle className="text-3xl text-gray-800 mb-2">{job.title}</CardTitle>
                 <div className="flex items-center space-x-4 text-gray-600">
                   <div className="flex items-center">
@@ -252,7 +252,7 @@ const JobDetails = () => {
                     </svg>
                     <span className="font-medium text-emerald-600">{job.company}</span>
                   </div>
-                  
+
                   <div className="flex items-center">
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -267,7 +267,7 @@ const JobDetails = () => {
                 <div>
                   <h3 className="text-xl font-semibold mb-3 text-gray-800">Job Description</h3>
                   <div className="prose prose-emerald max-w-none">
-                    <div 
+                    <div
                       className="text-gray-700 prose prose-sm max-w-none"
                       dangerouslySetInnerHTML={{ __html: job.description }}
                     />
@@ -321,7 +321,7 @@ const JobDetails = () => {
                         Submit your application and start your journey with {job.company}
                       </p>
                     </div>
-                    <Button 
+                    <Button
                       onClick={handleApplyClick}
                       className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 whitespace-nowrap"
                       disabled={applying}
@@ -368,7 +368,7 @@ const JobDetails = () => {
                       <h4 className="font-semibold text-gray-800 mb-2">Interested in this position?</h4>
                       <p className="text-gray-600 text-sm">Let us know you're interested and we'll help you apply!</p>
                     </div>
-                    <Button 
+                    <Button
                       onClick={handleApplyClick}
                       className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3"
                       data-testid="apply-now-button"
@@ -395,7 +395,7 @@ const JobDetails = () => {
                         data-testid="cover-letter-input"
                       />
                     </div>
-                    
+
                     <Button
                       onClick={handleApplyClick}
                       disabled={applying}
@@ -432,7 +432,7 @@ const JobDetails = () => {
                     {new Date(job.created_at).toLocaleDateString()}
                   </div>
                 </div>
-                
+
                 {job.expires_at && (
                   <div>
                     <div className="text-sm text-gray-500">Application Deadline</div>
@@ -441,16 +441,16 @@ const JobDetails = () => {
                     </div>
                   </div>
                 )}
-                
+
                 <Separator />
-                
+
                 <div>
                   <div className="text-sm text-gray-500">Job Type</div>
                   <div className="font-medium text-gray-800 capitalize">
                     {job.job_type.replace('_', ' ')}
                   </div>
                 </div>
-                
+
                 {job.salary_min && (
                   <div>
                     <div className="text-sm text-gray-500">Salary Range</div>
@@ -468,7 +468,7 @@ const JobDetails = () => {
         </div>
 
         {/* Lead Collection Modal */}
-        <LeadCollectionModal 
+        <LeadCollectionModal
           isOpen={showLeadModal}
           onClose={() => setShowLeadModal(false)}
           jobId={jobId}
@@ -489,7 +489,7 @@ const JobDetails = () => {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Application Submitted Successfully!</h3>
               <p className="text-gray-600 mb-6">Your application has been submitted and the employer will review it shortly.</p>
-              
+
               <div className="space-y-3">
                 <button
                   onClick={() => {
@@ -524,14 +524,14 @@ const JobDetails = () => {
               <p className="text-gray-600 mb-4">
                 Your profile is {profileCompletion}% complete. Please complete your profile to apply for this job.
               </p>
-              
+
               <div className="bg-gray-100 rounded-lg p-3 mb-6">
                 <div className="flex justify-between text-sm text-gray-600 mb-1">
                   <span>Profile Completion</span>
                   <span>{profileCompletion}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
+                  <div
                     className="bg-teal-600 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${profileCompletion}%` }}
                   ></div>
@@ -575,7 +575,7 @@ const JobDetails = () => {
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Account Required</h3>
               <p className="text-gray-600 mb-6">Please log in or create an account to apply for this job.</p>
-              
+
               <div className="space-y-3">
                 <button
                   onClick={() => navigate('/login')}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
@@ -27,11 +27,11 @@ const formatSalary = (value, currency) => {
 const CategoryPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  
+
   // Extract category from URL path
   const pathname = window.location.pathname;
   const category = pathname.split('/jobs/')[1]?.replace(/\/$/, '') || '';
-  
+
   const [categoryData, setCategoryData] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,7 +57,7 @@ const CategoryPage = () => {
         ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v))
       });
 
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/categories/${category}?${queryParams}`);
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL || ''}/api/categories/${category}?${queryParams}`);
       if (!response.ok) {
         throw new Error('Category not found');
       }
@@ -75,7 +75,7 @@ const CategoryPage = () => {
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));
     setCurrentPage(1);
-    
+
     // Update URL params
     const newParams = new URLSearchParams(searchParams);
     if (value) {
@@ -255,15 +255,15 @@ const CategoryPage = () => {
                             {new Date(job.created_at).toLocaleDateString()}
                           </span>
                         </div>
-                        
+
                         {/* Title */}
                         <h3 className="text-lg font-semibold mb-1 text-gray-900 hover:text-green-600 transition-colors">
                           {job.title}
                         </h3>
-                        
+
                         {/* Company */}
                         <p className="text-green-600 font-medium mb-2">{job.company}</p>
-                        
+
                         {/* Location */}
                         {job.location && (
                           <p className="text-gray-500 mb-3 flex items-center">

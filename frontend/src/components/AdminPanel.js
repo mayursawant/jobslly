@@ -23,7 +23,7 @@ const EditorLoading = () => (
   </div>
 );
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 const API = `${BACKEND_URL}/api`;
 
 // Helper function to check if salary value should show currency symbol
@@ -54,13 +54,13 @@ const AdminPanel = () => {
   const [retryCount, setRetryCount] = useState(0);
   const [editingJob, setEditingJob] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  
+
   // Pagination state for Manage Jobs
   const [jobsSkip, setJobsSkip] = useState(0);
   const [hasMoreJobs, setHasMoreJobs] = useState(true);
   const [loadingMoreJobs, setLoadingMoreJobs] = useState(false);
   const JOBS_PER_PAGE = 100;
-  
+
   // Job Creation State
   const [newJob, setNewJob] = useState({
     title: '',
@@ -99,7 +99,7 @@ const AdminPanel = () => {
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
-          
+
           // Resize if image is too large (max dimension 1200px)
           const maxDimension = 1200;
           if (width > maxDimension || height > maxDimension) {
@@ -111,13 +111,13 @@ const AdminPanel = () => {
               height = maxDimension;
             }
           }
-          
+
           canvas.width = width;
           canvas.height = height;
-          
+
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
-          
+
           // Try different quality levels to get under maxSizeKB
           let quality = 0.9;
           const tryCompress = () => {
@@ -135,7 +135,7 @@ const AdminPanel = () => {
               }
             }, 'image/jpeg', quality);
           };
-          
+
           tryCompress();
         };
         img.onerror = reject;
@@ -143,7 +143,7 @@ const AdminPanel = () => {
       reader.onerror = reject;
     });
   };
-  
+
   // Blog Creation State
   const [newBlog, setNewBlog] = useState({
     title: '',
@@ -159,7 +159,7 @@ const AdminPanel = () => {
     seo_keywords: [],
     faqs: []
   });
-  
+
   // Jodit Editor ref and config
   const editor = useRef(null);
   const config = useMemo(() => ({
@@ -229,10 +229,10 @@ const AdminPanel = () => {
       insertImageAsBase64URI: false
     }
   }), []);
-  
+
   // AI Enhancement State
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
-  
+
   // SEO State
   const [seoSettings, setSeoSettings] = useState({
     page_type: 'home',
@@ -264,11 +264,11 @@ const AdminPanel = () => {
   const fetchAdminData = async () => {
     console.log('🔄 Starting fetchAdminData...');
     setLoading(true);
-    
+
     try {
       const token = localStorage.getItem('token');
       console.log('🔑 Token found:', !!token);
-      
+
       if (!token) {
         throw new Error('No authentication token found. Please login again.');
       }
@@ -280,13 +280,13 @@ const AdminPanel = () => {
 
       console.log('📡 Making API calls to:', {
         stats: `${API}/admin/stats`,
-        jobs: `${API}/admin/jobs/pending`, 
+        jobs: `${API}/admin/jobs/pending`,
         blogs: `${API}/admin/blog`
       });
 
       // Make API calls individually for better error tracking
       let statsResponse, jobsResponse, blogResponse;
-      
+
       try {
         console.log('📊 Fetching stats...');
         statsResponse = await axios.get(`${API}/admin/stats`, { headers });
@@ -313,16 +313,16 @@ const AdminPanel = () => {
         console.error('❌ Blogs API failed:', error);
         throw new Error(`Blogs API failed: ${error.response?.status || 'Network error'}`);
       }
-      
+
       // Set data
       setStats(statsResponse.data || {});
       setPendingJobs(jobsResponse.data || []);
       setBlogPosts(blogResponse.data || []);
-      
+
       console.log('🎉 Admin data loaded successfully!');
       setError(null); // Clear any previous errors
       setRetryCount(0); // Reset retry count on success
-      
+
     } catch (error) {
       console.error('💥 Failed to fetch admin data:', error);
       console.error('📋 Error details:', {
@@ -332,9 +332,9 @@ const AdminPanel = () => {
         data: error.response?.data,
         url: error.config?.url
       });
-      
+
       let errorMessage = 'Failed to load admin dashboard data';
-      
+
       if (error.message.includes('No authentication token')) {
         errorMessage = '🔑 Authentication required. Please login again.';
       } else if (error.response?.status === 401) {
@@ -352,7 +352,7 @@ const AdminPanel = () => {
       } else {
         errorMessage = `❌ ${error.message}`;
       }
-      
+
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -373,7 +373,7 @@ const AdminPanel = () => {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       toast.success('Job approved successfully!');
       setPendingJobs(prev => prev.filter(job => job.id !== jobId));
       setStats(prev => ({
@@ -408,19 +408,19 @@ const AdminPanel = () => {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       const newJobs = response.data || [];
-      
+
       if (loadMore) {
         setAllJobs(prev => [...prev, ...newJobs]);
       } else {
         setAllJobs(newJobs);
       }
-      
+
       // Check if there are more jobs to load
       setHasMoreJobs(newJobs.length === JOBS_PER_PAGE);
       setJobsSkip(skip + newJobs.length);
-      
+
     } catch (error) {
       console.error('Failed to fetch all jobs:', error);
       toast.error('Failed to load jobs');
@@ -463,7 +463,7 @@ const AdminPanel = () => {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       toast.success('Job updated successfully!');
       setIsEditModalOpen(false);
       setEditingJob(null);
@@ -494,7 +494,7 @@ const AdminPanel = () => {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       toast.success('Job deleted successfully!');
       fetchAllJobs(); // Refresh the jobs list
     } catch (error) {
@@ -558,13 +558,13 @@ const AdminPanel = () => {
       featured_image: null, // Will be set when new image uploaded
       existing_image_url: blog.featured_image || null // Store existing image URL
     });
-    
+
     // Store the blog ID for updating
     setNewBlog(prev => ({ ...prev, id: blog.id }));
-    
+
     // Switch to create blog tab for editing
     document.querySelector('[data-testid="admin-tab-create-blog"]').click();
-    
+
     toast.info('Blog loaded for editing. Make your changes and save.');
   };
 
@@ -583,7 +583,7 @@ const AdminPanel = () => {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       // Remove from local state
       setBlogPosts(prev => prev.filter(blog => blog.id !== blogId));
       toast.success('Blog post deleted successfully!');
@@ -640,7 +640,7 @@ const AdminPanel = () => {
           </div>
           <h3 className="text-xl font-bold text-gray-900 mb-2">Dashboard Loading Error</h3>
           <p className="text-gray-600 mb-4">{error}</p>
-          
+
           <div className="space-y-3">
             {retryCount < 3 ? (
               <button
@@ -812,11 +812,11 @@ const AdminPanel = () => {
                             </Badge>
                           </div>
                         </div>
-                        
+
                         <div className="mb-4">
                           <p className="text-gray-700 line-clamp-3">{job.description}</p>
                         </div>
-                        
+
                         <div className="flex items-center justify-between">
                           <div className="text-sm text-gray-500">
                             Posted {new Date(job.created_at).toLocaleDateString()}
@@ -827,7 +827,7 @@ const AdminPanel = () => {
                               </span>
                             )}
                           </div>
-                          
+
                           <div className="flex space-x-2">
                             <Button
                               variant="outline"
@@ -899,11 +899,11 @@ const AdminPanel = () => {
                             )}
                           </div>
                         </div>
-                        
+
                         <div className="mb-4">
                           <p className="text-gray-700 line-clamp-2">{job.description}</p>
                         </div>
-                        
+
                         <div className="flex items-center justify-between">
                           <div className="text-sm text-gray-500">
                             Posted {new Date(job.created_at).toLocaleDateString()}
@@ -914,7 +914,7 @@ const AdminPanel = () => {
                               </span>
                             )}
                           </div>
-                          
+
                           <div className="flex space-x-2">
                             <Button
                               onClick={() => handleEditJob(job)}
@@ -959,7 +959,7 @@ const AdminPanel = () => {
                         </div>
                       </div>
                     ))}
-                    
+
                     {/* Load More Button */}
                     {hasMoreJobs && (
                       <div className="flex justify-center pt-4">
@@ -980,7 +980,7 @@ const AdminPanel = () => {
                         </Button>
                       </div>
                     )}
-                    
+
                     {!hasMoreJobs && allJobs.length > 0 && (
                       <div className="text-center pt-4 text-gray-500">
                         ✓ All {allJobs.length} jobs loaded
@@ -1004,7 +1004,7 @@ const AdminPanel = () => {
                     </svg>
                   </button>
                 </div>
-                
+
                 <div className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
@@ -1012,7 +1012,7 @@ const AdminPanel = () => {
                       <input
                         type="text"
                         value={editingJob.title}
-                        onChange={(e) => setEditingJob(prev => ({...prev, title: e.target.value}))}
+                        onChange={(e) => setEditingJob(prev => ({ ...prev, title: e.target.value }))}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
                         required
                       />
@@ -1022,7 +1022,7 @@ const AdminPanel = () => {
                       <input
                         type="text"
                         value={editingJob.company}
-                        onChange={(e) => setEditingJob(prev => ({...prev, company: e.target.value}))}
+                        onChange={(e) => setEditingJob(prev => ({ ...prev, company: e.target.value }))}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
                         required
                       />
@@ -1032,7 +1032,7 @@ const AdminPanel = () => {
                       <input
                         type="text"
                         value={editingJob.location}
-                        onChange={(e) => setEditingJob(prev => ({...prev, location: e.target.value}))}
+                        onChange={(e) => setEditingJob(prev => ({ ...prev, location: e.target.value }))}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
                         required
                       />
@@ -1048,9 +1048,9 @@ const AdminPanel = () => {
                               onChange={(e) => {
                                 const currentCategories = editingJob.categories || [];
                                 if (e.target.checked) {
-                                  setEditingJob(prev => ({...prev, categories: [...currentCategories, cat.value]}));
+                                  setEditingJob(prev => ({ ...prev, categories: [...currentCategories, cat.value] }));
                                 } else {
-                                  setEditingJob(prev => ({...prev, categories: currentCategories.filter(c => c !== cat.value)}));
+                                  setEditingJob(prev => ({ ...prev, categories: currentCategories.filter(c => c !== cat.value) }));
                                 }
                               }}
                               className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
@@ -1064,7 +1064,7 @@ const AdminPanel = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-2">Job Type</label>
                       <select
                         value={editingJob.job_type}
-                        onChange={(e) => setEditingJob(prev => ({...prev, job_type: e.target.value}))}
+                        onChange={(e) => setEditingJob(prev => ({ ...prev, job_type: e.target.value }))}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
                       >
                         <option value="full_time">Full Time</option>
@@ -1076,7 +1076,7 @@ const AdminPanel = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-2">Currency</label>
                       <select
                         value={editingJob.currency || 'INR'}
-                        onChange={(e) => setEditingJob(prev => ({...prev, currency: e.target.value}))}
+                        onChange={(e) => setEditingJob(prev => ({ ...prev, currency: e.target.value }))}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
                       >
                         <option value="INR">₹ INR (Indian Rupee)</option>
@@ -1088,7 +1088,7 @@ const AdminPanel = () => {
                       <input
                         type="text"
                         value={editingJob.salary_min || ''}
-                        onChange={(e) => setEditingJob(prev => ({...prev, salary_min: e.target.value}))}
+                        onChange={(e) => setEditingJob(prev => ({ ...prev, salary_min: e.target.value }))}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
                         placeholder="e.g., 50000, Negotiable, Competitive"
                       />
@@ -1099,7 +1099,7 @@ const AdminPanel = () => {
                       <input
                         type="text"
                         value={editingJob.salary_max || ''}
-                        onChange={(e) => setEditingJob(prev => ({...prev, salary_max: e.target.value}))}
+                        onChange={(e) => setEditingJob(prev => ({ ...prev, salary_max: e.target.value }))}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
                         placeholder="e.g., 100000, Based on experience"
                       />
@@ -1113,8 +1113,8 @@ const AdminPanel = () => {
                       <JoditEditor
                         value={editingJob.description}
                         config={jobDescConfig}
-                        onBlur={newContent => setEditingJob(prev => ({...prev, description: newContent}))}
-                        onChange={() => {}}
+                        onBlur={newContent => setEditingJob(prev => ({ ...prev, description: newContent }))}
+                        onChange={() => { }}
                       />
                     </Suspense>
                   </div>
@@ -1124,7 +1124,7 @@ const AdminPanel = () => {
                       <input
                         type="checkbox"
                         checked={editingJob.is_external}
-                        onChange={(e) => setEditingJob(prev => ({...prev, is_external: e.target.checked}))}
+                        onChange={(e) => setEditingJob(prev => ({ ...prev, is_external: e.target.checked }))}
                         className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500"
                       />
                       <span className="text-sm text-gray-700">External Job</span>
@@ -1134,7 +1134,7 @@ const AdminPanel = () => {
                         <input
                           type="url"
                           value={editingJob.external_url || ''}
-                          onChange={(e) => setEditingJob(prev => ({...prev, external_url: e.target.value}))}
+                          onChange={(e) => setEditingJob(prev => ({ ...prev, external_url: e.target.value }))}
                           className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500"
                           placeholder="https://company.com/apply"
                           pattern="https://.*"
@@ -1182,7 +1182,7 @@ const AdminPanel = () => {
                       onChange={(e) => {
                         // Only allow letters, spaces, and common job title characters
                         const value = e.target.value.replace(/[^a-zA-Z\s\-&.,()]/g, '');
-                        setNewJob(prev => ({...prev, title: value}));
+                        setNewJob(prev => ({ ...prev, title: value }));
                       }}
                       placeholder="e.g. Senior Healthcare Specialist"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
@@ -1197,7 +1197,7 @@ const AdminPanel = () => {
                       onChange={(e) => {
                         // Only allow letters, spaces, and common company name characters
                         const value = e.target.value.replace(/[^a-zA-Z\s\-&.,()]/g, '');
-                        setNewJob(prev => ({...prev, company: value}));
+                        setNewJob(prev => ({ ...prev, company: value }));
                       }}
                       placeholder="e.g. Healthcare Corp"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
@@ -1212,7 +1212,7 @@ const AdminPanel = () => {
                       onChange={(e) => {
                         // Only allow letters, spaces, and location characters
                         const value = e.target.value.replace(/[^a-zA-Z\s\-,./()]/g, '');
-                        setNewJob(prev => ({...prev, location: value}));
+                        setNewJob(prev => ({ ...prev, location: value }));
                       }}
                       placeholder="e.g. New York, NY"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
@@ -1223,7 +1223,7 @@ const AdminPanel = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Job Type</label>
                     <select
                       value={newJob.job_type}
-                      onChange={(e) => setNewJob(prev => ({...prev, job_type: e.target.value}))}
+                      onChange={(e) => setNewJob(prev => ({ ...prev, job_type: e.target.value }))}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                     >
                       <option value="full_time">Full Time</option>
@@ -1235,7 +1235,7 @@ const AdminPanel = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Currency</label>
                     <select
                       value={newJob.currency}
-                      onChange={(e) => setNewJob(prev => ({...prev, currency: e.target.value}))}
+                      onChange={(e) => setNewJob(prev => ({ ...prev, currency: e.target.value }))}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                     >
                       <option value="INR">₹ INR (Indian Rupee)</option>
@@ -1247,7 +1247,7 @@ const AdminPanel = () => {
                     <input
                       type="text"
                       value={newJob.salary_min}
-                      onChange={(e) => setNewJob(prev => ({...prev, salary_min: e.target.value}))}
+                      onChange={(e) => setNewJob(prev => ({ ...prev, salary_min: e.target.value }))}
                       placeholder="e.g., 75000, Negotiable, Competitive"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                     />
@@ -1258,7 +1258,7 @@ const AdminPanel = () => {
                     <input
                       type="text"
                       value={newJob.salary_max}
-                      onChange={(e) => setNewJob(prev => ({...prev, salary_max: e.target.value}))}
+                      onChange={(e) => setNewJob(prev => ({ ...prev, salary_max: e.target.value }))}
                       placeholder="e.g., 120000, Based on experience"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                     />
@@ -1277,9 +1277,9 @@ const AdminPanel = () => {
                           checked={newJob.categories.includes(cat.value)}
                           onChange={(e) => {
                             if (e.target.checked) {
-                              setNewJob(prev => ({...prev, categories: [...prev.categories, cat.value]}));
+                              setNewJob(prev => ({ ...prev, categories: [...prev.categories, cat.value] }));
                             } else {
-                              setNewJob(prev => ({...prev, categories: prev.categories.filter(c => c !== cat.value)}));
+                              setNewJob(prev => ({ ...prev, categories: prev.categories.filter(c => c !== cat.value) }));
                             }
                           }}
                           className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
@@ -1292,7 +1292,7 @@ const AdminPanel = () => {
                     💡 Select one or more categories that best describe this position
                   </p>
                 </div>
-                
+
                 {/* External Job Configuration */}
                 <div className="border-t pt-6 space-y-4">
                   <h3 className="text-lg font-semibold text-gray-800">🔗 External Job Configuration</h3>
@@ -1301,7 +1301,7 @@ const AdminPanel = () => {
                       type="checkbox"
                       id="is_external"
                       checked={newJob.is_external}
-                      onChange={(e) => setNewJob(prev => ({...prev, is_external: e.target.checked, external_url: e.target.checked ? prev.external_url : ''}))}
+                      onChange={(e) => setNewJob(prev => ({ ...prev, is_external: e.target.checked, external_url: e.target.checked ? prev.external_url : '' }))}
                       className="w-4 h-4 text-emerald-600 bg-gray-100 border-gray-300 rounded focus:ring-emerald-500 focus:ring-2"
                     />
                     <label htmlFor="is_external" className="text-sm font-medium text-gray-700">
@@ -1314,7 +1314,7 @@ const AdminPanel = () => {
                       <input
                         type="url"
                         value={newJob.external_url}
-                        onChange={(e) => setNewJob(prev => ({...prev, external_url: e.target.value}))}
+                        onChange={(e) => setNewJob(prev => ({ ...prev, external_url: e.target.value }))}
                         placeholder="https://example.com/jobs/apply-here"
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                         required={newJob.is_external}
@@ -1346,35 +1346,35 @@ const AdminPanel = () => {
                     <JoditEditor
                       value={newJob.description}
                       config={jobDescConfig}
-                      onBlur={newContent => setNewJob(prev => ({...prev, description: newContent}))}
-                      onChange={() => {}}
+                      onBlur={newContent => setNewJob(prev => ({ ...prev, description: newContent }))}
+                      onChange={() => { }}
                     />
                   </Suspense>
                 </div>
-                <Button 
+                <Button
                   onClick={async () => {
                     // Validation
                     const errors = [];
-                    
+
                     // Check required fields
                     if (!newJob.title.trim()) errors.push('Job title is required');
                     if (!newJob.company.trim()) errors.push('Company name is required');
                     if (!newJob.location.trim()) errors.push('Location is required');
                     if (!newJob.description.trim()) errors.push('Job description is required');
                     if (!newJob.categories || newJob.categories.length === 0) errors.push('At least one job category must be selected');
-                    
+
                     // Salary fields can now be text or numbers, so no strict validation needed
                     // Users can enter "Negotiable", "Competitive", or numeric values
-                    
+
                     // External job validation
                     if (newJob.is_external && !newJob.external_url.trim()) {
                       errors.push('External URL is required for external jobs');
                     }
-                    
+
                     if (newJob.is_external && newJob.external_url && !newJob.external_url.match(/^https:\/\/.+/)) {
                       errors.push('Invalid URL. It must start with https://');
                     }
-                    
+
                     if (errors.length > 0) {
                       toast.error(`Please fix the following errors:\n${errors.join('\n')}`);
                       return;
@@ -1385,7 +1385,7 @@ const AdminPanel = () => {
                         ...newJob
                       });
                       toast.success('Job posted successfully!');
-                      setNewJob({title: '', company: '', location: '', description: '', salary_min: '', salary_max: '', currency: 'INR', job_type: 'full_time', categories: [], requirements: [], benefits: [], is_external: false, external_url: ''});
+                      setNewJob({ title: '', company: '', location: '', description: '', salary_min: '', salary_max: '', currency: 'INR', job_type: 'full_time', categories: [], requirements: [], benefits: [], is_external: false, external_url: '' });
                       fetchAdminData();
                     } catch (error) {
                       toast.error('Failed to create job: ' + (error.response?.data?.message || error.message));
@@ -1441,16 +1441,16 @@ const AdminPanel = () => {
                           </div>
                         </div>
                         <div className="flex space-x-2">
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             variant="outline"
                             onClick={() => handleEditBlog(post)}
                           >
                             Edit
                           </Button>
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
+                          <Button
+                            size="sm"
+                            variant="outline"
                             className="text-red-600 border-red-300 hover:bg-red-50"
                             onClick={() => handleDeleteBlog(post.id)}
                           >
@@ -1478,7 +1478,7 @@ const AdminPanel = () => {
                   <input
                     type="text"
                     value={newBlog.title}
-                    onChange={(e) => setNewBlog(prev => ({...prev, title: e.target.value}))}
+                    onChange={(e) => setNewBlog(prev => ({ ...prev, title: e.target.value }))}
                     placeholder="e.g. Top 10 Healthcare Technology Trends in 2025"
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                   />
@@ -1487,7 +1487,7 @@ const AdminPanel = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Excerpt/Summary</label>
                   <textarea
                     value={newBlog.excerpt}
-                    onChange={(e) => setNewBlog(prev => ({...prev, excerpt: e.target.value}))}
+                    onChange={(e) => setNewBlog(prev => ({ ...prev, excerpt: e.target.value }))}
                     placeholder="Brief summary of the article content..."
                     rows={3}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
@@ -1500,7 +1500,7 @@ const AdminPanel = () => {
                       ref={editor}
                       value={newBlog.content}
                       config={config}
-                      onBlur={newContent => setNewBlog(prev => ({...prev, content: newContent}))}
+                      onBlur={newContent => setNewBlog(prev => ({ ...prev, content: newContent }))}
                     />
                   </Suspense>
                   <p className="text-xs text-gray-500 mt-2">💡 Use the toolbar to format your content with headings, bold, italic, lists, links, images, and more.</p>
@@ -1528,7 +1528,7 @@ const AdminPanel = () => {
                             const compressedFile = await compressImage(file, 800);
                             console.log(`Original size: ${(file.size / 1024).toFixed(2)}KB, Compressed: ${(compressedFile.size / 1024).toFixed(2)}KB`);
                             toast.success(`Image compressed: ${(compressedFile.size / 1024).toFixed(2)}KB`);
-                            setNewBlog(prev => ({...prev, featured_image: compressedFile}));
+                            setNewBlog(prev => ({ ...prev, featured_image: compressedFile }));
                           } catch (error) {
                             console.error('Image compression failed:', error);
                             toast.error('Failed to compress image. Please try a different image.');
@@ -1538,8 +1538,8 @@ const AdminPanel = () => {
                       className="hidden"
                       id="blog-image-upload"
                     />
-                    <label 
-                      htmlFor="blog-image-upload" 
+                    <label
+                      htmlFor="blog-image-upload"
                       className="cursor-pointer flex flex-col items-center space-y-2"
                     >
                       {newBlog.featured_image ? (
@@ -1557,9 +1557,9 @@ const AdminPanel = () => {
                       ) : newBlog.existing_image_url ? (
                         <div className="space-y-2">
                           <div className="w-20 h-20 bg-blue-100 rounded-lg overflow-hidden">
-                            <img 
-                              src={newBlog.existing_image_url} 
-                              alt="Current" 
+                            <img
+                              src={newBlog.existing_image_url}
+                              alt="Current"
                               className="w-full h-full object-cover"
                             />
                           </div>
@@ -1588,7 +1588,7 @@ const AdminPanel = () => {
                   {newBlog.featured_image && (
                     <button
                       type="button"
-                      onClick={() => setNewBlog(prev => ({...prev, featured_image: null}))}
+                      onClick={() => setNewBlog(prev => ({ ...prev, featured_image: null }))}
                       className="mt-2 text-sm text-red-600 hover:text-red-700"
                     >
                       Remove image
@@ -1600,7 +1600,7 @@ const AdminPanel = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
                     <select
                       value={newBlog.category}
-                      onChange={(e) => setNewBlog(prev => ({...prev, category: e.target.value}))}
+                      onChange={(e) => setNewBlog(prev => ({ ...prev, category: e.target.value }))}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                     >
                       <option value="healthcare">Healthcare</option>
@@ -1615,7 +1615,7 @@ const AdminPanel = () => {
                     <input
                       type="text"
                       value={newBlog.seo_title}
-                      onChange={(e) => setNewBlog(prev => ({...prev, seo_title: e.target.value}))}
+                      onChange={(e) => setNewBlog(prev => ({ ...prev, seo_title: e.target.value }))}
                       placeholder="SEO optimized title (optional)"
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                     />
@@ -1625,7 +1625,7 @@ const AdminPanel = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">SEO Description</label>
                   <textarea
                     value={newBlog.seo_description}
-                    onChange={(e) => setNewBlog(prev => ({...prev, seo_description: e.target.value}))}
+                    onChange={(e) => setNewBlog(prev => ({ ...prev, seo_description: e.target.value }))}
                     placeholder="Meta description for search engines (160 chars max)"
                     rows={2}
                     maxLength={160}
@@ -1633,7 +1633,7 @@ const AdminPanel = () => {
                   />
                   <p className="text-xs text-gray-500 mt-1">{newBlog.seo_description.length}/160 characters</p>
                 </div>
-                
+
                 {/* FAQ Section */}
                 <div className="border-t pt-6">
                   <div className="flex justify-between items-center mb-4">
@@ -1692,13 +1692,13 @@ const AdminPanel = () => {
                     <p className="text-sm text-gray-500 italic">No FAQs added yet. Click "+ Add FAQ" to add questions and answers.</p>
                   )}
                 </div>
-                
+
                 <div className="flex items-center space-x-6">
                   <label className="flex items-center">
                     <input
                       type="checkbox"
                       checked={newBlog.is_published}
-                      onChange={(e) => setNewBlog(prev => ({...prev, is_published: e.target.checked}))}
+                      onChange={(e) => setNewBlog(prev => ({ ...prev, is_published: e.target.checked }))}
                       className="mr-2"
                     />
                     Publish immediately
@@ -1707,13 +1707,13 @@ const AdminPanel = () => {
                     <input
                       type="checkbox"
                       checked={newBlog.is_featured}
-                      onChange={(e) => setNewBlog(prev => ({...prev, is_featured: e.target.checked}))}
+                      onChange={(e) => setNewBlog(prev => ({ ...prev, is_featured: e.target.checked }))}
                       className="mr-2"
                     />
                     Mark as featured
                   </label>
                 </div>
-                <Button 
+                <Button
                   onClick={async () => {
                     try {
                       // Validation
@@ -1743,10 +1743,10 @@ const AdminPanel = () => {
                       formData.append('seo_title', newBlog.seo_title);
                       formData.append('seo_description', newBlog.seo_description);
                       formData.append('faqs', JSON.stringify(newBlog.faqs));
-                      
+
                       // Check if we're editing or creating
                       const isEditing = newBlog.id;
-                      
+
                       // Add image only if a new one is selected
                       // When editing, if no new image is uploaded, the existing image will be preserved on backend
                       if (newBlog.featured_image) {
@@ -1764,29 +1764,29 @@ const AdminPanel = () => {
                           'Authorization': `Bearer ${token}`
                         }
                       });
-                      
+
                       toast.success(
-                        isEditing 
-                          ? 'Article updated successfully!' 
+                        isEditing
+                          ? 'Article updated successfully!'
                           : (newBlog.is_published ? 'Article published successfully!' : 'Article saved as draft!')
                       );
-                      
+
                       // Reset form
                       setNewBlog({
-                        title: '', 
-                        excerpt: '', 
-                        content: '', 
-                        category: 'healthcare', 
-                        tags: [], 
-                        is_published: false, 
-                        is_featured: false, 
-                        featured_image: null, 
-                        seo_title: '', 
-                        seo_description: '', 
+                        title: '',
+                        excerpt: '',
+                        content: '',
+                        category: 'healthcare',
+                        tags: [],
+                        is_published: false,
+                        is_featured: false,
+                        featured_image: null,
+                        seo_title: '',
+                        seo_description: '',
                         seo_keywords: [],
                         faqs: []
                       });
-                      
+
                       fetchAdminData();
                     } catch (error) {
                       console.error('Blog operation failed:', error);
@@ -1814,7 +1814,7 @@ const AdminPanel = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Page Type</label>
                   <select
                     value={seoSettings.page_type}
-                    onChange={(e) => setSeoSettings(prev => ({...prev, page_type: e.target.value}))}
+                    onChange={(e) => setSeoSettings(prev => ({ ...prev, page_type: e.target.value }))}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                   >
                     <option value="home">Homepage</option>
@@ -1828,7 +1828,7 @@ const AdminPanel = () => {
                   <input
                     type="text"
                     value={seoSettings.title}
-                    onChange={(e) => setSeoSettings(prev => ({...prev, title: e.target.value}))}
+                    onChange={(e) => setSeoSettings(prev => ({ ...prev, title: e.target.value }))}
                     placeholder="Jobslly - Future of Healthcare Careers"
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                   />
@@ -1837,7 +1837,7 @@ const AdminPanel = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Meta Description</label>
                   <textarea
                     value={seoSettings.description}
-                    onChange={(e) => setSeoSettings(prev => ({...prev, description: e.target.value}))}
+                    onChange={(e) => setSeoSettings(prev => ({ ...prev, description: e.target.value }))}
                     placeholder="Discover healthcare opportunities for doctors, nurses, pharmacists..."
                     rows={3}
                     maxLength={160}
@@ -1845,7 +1845,7 @@ const AdminPanel = () => {
                   />
                   <p className="text-xs text-gray-500 mt-1">{seoSettings.description.length}/160 characters</p>
                 </div>
-                <Button 
+                <Button
                   onClick={async () => {
                     try {
                       await axios.post(`${API}/admin/seo`, seoSettings);

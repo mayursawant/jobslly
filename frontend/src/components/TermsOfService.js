@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { MapPin, Phone, Mail, Calendar } from 'lucide-react';
 
 const TermsOfService = () => {
@@ -10,7 +10,7 @@ const TermsOfService = () => {
         <meta name="description" content="Terms and Conditions of Jobslly – A job portal connecting healthcare professionals with hospitals and recruiters. Review our user agreement and platform policies." />
         <meta name="robots" content="index, follow" />
       </Helmet>
-      
+
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-4xl mx-auto px-4">
           <div className="bg-white rounded-xl shadow-lg p-8 md:p-12">

@@ -4,9 +4,9 @@ import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import axios from 'axios';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 const API = `${BACKEND_URL}/api`;
 
 const BlogPost = () => {
@@ -116,17 +116,17 @@ const BlogPost = () => {
             <div className="absolute top-32 right-20 w-16 h-16 bg-white/20 rounded-full animate-pulse"></div>
             <div className="absolute bottom-20 left-40 w-12 h-12 bg-white/15 rounded-full animate-ping"></div>
           </div>
-          
+
           <div className="max-w-4xl mx-auto relative">
             {/* Back Button */}
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               onClick={() => navigate('/blogs')}
               className="mb-6 text-white hover:text-teal-100 hover:bg-white/10 border border-white/20"
             >
               ← Back to Health Hub
             </Button>
-            
+
             <div className="mb-6">
               <Badge className="bg-white/20 text-white border-white/30 mb-4">
                 {post.category}
@@ -135,7 +135,7 @@ const BlogPost = () => {
                 {post.title}
               </h1>
               <p className="text-xl text-teal-100 mb-6">{post.excerpt}</p>
-              
+
               <div className="flex flex-wrap items-center justify-between text-sm text-teal-100">
                 <div className="flex items-center space-x-4 mb-4 md:mb-0">
                   <div className="flex items-center space-x-2">
@@ -163,8 +163,8 @@ const BlogPost = () => {
 
             {post.featured_image && (
               <div className="bg-white/10 rounded-2xl mb-8 border border-white/20 backdrop-blur-sm overflow-hidden">
-                <img 
-                  src={post.featured_image} 
+                <img
+                  src={post.featured_image}
                   alt={post.title}
                   className="w-full h-auto max-h-96 object-contain rounded-2xl"
                   onError={(e) => {
@@ -187,7 +187,7 @@ const BlogPost = () => {
             {/* Article Content */}
             <Card className="bg-white shadow-xl border border-gray-100 mb-16 overflow-hidden">
               <CardContent className="p-8 md:p-12">
-                <div 
+                <div
                   className="blog-content"
                   dangerouslySetInnerHTML={{ __html: post.content }}
                 />
@@ -233,13 +233,13 @@ const BlogPost = () => {
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button 
+                  <Button
                     onClick={() => navigate('/jobs')}
                     className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white px-8 py-3 rounded-xl transform hover:scale-105 transition-all duration-300"
                   >
                     🔍 Browse Healthcare Jobs
                   </Button>
-                  <Button 
+                  <Button
                     onClick={() => navigate('/register')}
                     variant="outline"
                     className="border-teal-600 text-teal-600 hover:bg-teal-50 px-8 py-3 rounded-xl transform hover:scale-105 transition-all duration-300"
@@ -265,21 +265,20 @@ const BlogPost = () => {
                           <div className="absolute inset-0 bg-gradient-to-br from-teal-400/20 to-emerald-400/20"></div>
                           <div className="absolute bottom-4 right-4">
                             <div className="text-3xl filter drop-shadow-lg">
-                              {relatedPost.category === 'Healthcare Trends' ? '📈' : 
-                               relatedPost.category === 'Career Development' ? '🚀' : 
-                               relatedPost.category === 'Industry News' ? '📰' : '🏥'}
+                              {relatedPost.category === 'Healthcare Trends' ? '📈' :
+                                relatedPost.category === 'Career Development' ? '🚀' :
+                                  relatedPost.category === 'Industry News' ? '📰' : '🏥'}
                             </div>
                           </div>
                         </div>
                         <div className="p-6">
-                          <Badge 
-                            variant="outline" 
-                            className={`text-xs mb-3 border ${
-                              relatedPost.category === 'Healthcare Trends' ? 'border-emerald-200 text-emerald-700 bg-emerald-50' :
+                          <Badge
+                            variant="outline"
+                            className={`text-xs mb-3 border ${relatedPost.category === 'Healthcare Trends' ? 'border-emerald-200 text-emerald-700 bg-emerald-50' :
                               relatedPost.category === 'Career Development' ? 'border-blue-200 text-blue-700 bg-blue-50' :
-                              relatedPost.category === 'Industry News' ? 'border-purple-200 text-purple-700 bg-purple-50' :
-                              'border-teal-200 text-teal-700 bg-teal-50'
-                            }`}
+                                relatedPost.category === 'Industry News' ? 'border-purple-200 text-purple-700 bg-purple-50' :
+                                  'border-teal-200 text-teal-700 bg-teal-50'
+                              }`}
                           >
                             {relatedPost.category}
                           </Badge>
@@ -287,8 +286,8 @@ const BlogPost = () => {
                             {relatedPost.title}
                           </h4>
                           <p className="text-gray-600 text-sm line-clamp-3 mb-4">{relatedPost.excerpt}</p>
-                          <Button 
-                            size="sm" 
+                          <Button
+                            size="sm"
                             onClick={() => navigate(`/blog/${relatedPost.slug}`)}
                             className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-xl transform hover:scale-105 transition-all duration-300"
                           >

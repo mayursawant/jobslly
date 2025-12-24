@@ -6,7 +6,7 @@ import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'sonner';
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = `${process.env.REACT_APP_BACKEND_URL || ''}/api`;
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -37,7 +37,7 @@ const ContactUs = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validation
     if (!formData.name || !formData.email || !formData.phone || !formData.subject || !formData.message) {
       toast.error('Please fill in all required fields');
@@ -45,14 +45,14 @@ const ContactUs = () => {
     }
 
     setLoading(true);
-    
+
     try {
       const response = await axios.post(`${API}/contact-us`, formData);
-      
+
       if (response.data.success) {
         setSubmitted(true);
         toast.success('Message sent successfully!');
-        
+
         // Reset form
         setFormData({
           name: '',
@@ -136,7 +136,6 @@ const ContactUs = () => {
                   </p>
                 </div>
                 <div>
-<<<<<<< HEAD
                   <p className="font-semibold text-gray-700 mb-2">India</p>
                   <div className="space-y-3 text-gray-600 text-sm">
                     <div>
@@ -151,13 +150,6 @@ const ContactUs = () => {
                       <p className="font-medium text-teal-600">Dehradun:</p>
                       <p>IT Park, Sahastradhara Rd</p>
                     </div>
-=======
-                  <p className="font-semibold text-gray-700 mb-1">India</p>
-                  <div className="text-gray-600 text-sm space-y-2">
-                    <p><span className="font-medium">Delhi:</span> Green Park Metro Station Gate No.3</p>
-                    <p><span className="font-medium">Hyderabad:</span> Below Hotel Kinara Grand, Ameerpet</p>
-                    <p><span className="font-medium">Dehradun:</span> IT Park, Sahastradhara Rd</p>
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
                   </div>
                 </div>
               </CardContent>

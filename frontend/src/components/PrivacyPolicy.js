@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { MapPin, Phone, Mail, Calendar } from 'lucide-react';
 
 const PrivacyPolicy = () => {
@@ -10,7 +10,7 @@ const PrivacyPolicy = () => {
         <meta name="description" content="Privacy Policy for Jobslly – A job portal connecting healthcare professionals with top employers. Learn how we protect and manage your personal data." />
         <meta name="robots" content="index, follow" />
       </Helmet>
-      
+
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-4xl mx-auto px-4">
           <div className="bg-white rounded-xl shadow-lg p-8 md:p-12">
@@ -26,7 +26,7 @@ const PrivacyPolicy = () => {
 
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-blue-900 mb-4 border-b-2 border-gray-200 pb-2">1. Information We Collect</h2>
-              
+
               <h3 className="text-lg font-semibold text-gray-900 mb-3">A. Information You Provide</h3>
               <ul className="list-disc list-inside space-y-2 text-gray-700 mb-4">
                 <li>Full name, contact details, gender, and location</li>

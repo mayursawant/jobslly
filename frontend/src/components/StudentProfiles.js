@@ -4,7 +4,7 @@ import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Badge } from './ui/badge';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import {
   Dialog,
   DialogContent,
@@ -566,19 +566,19 @@ const StudentProfiles = () => {
     const seniorIds = [8, 9, 10, 11, 12, 13]; // Senior leadership profiles
     const midLevelIds = [14, 15]; // Mid-level (5-6 years)
     const entryLevelIds = [1, 2, 3, 4, 5, 6, 7]; // Entry level (1-3 years)
-    
+
     const senior = profiles.filter(p => seniorIds.includes(p.id));
     const midLevel = profiles.filter(p => midLevelIds.includes(p.id));
     const entryLevel = profiles.filter(p => entryLevelIds.includes(p.id));
-    
+
     return [...senior, ...midLevel, ...entryLevel];
   }, [profiles]);
 
   const filteredProfiles = useMemo(() => {
     if (!searchQuery.trim()) return sortedProfiles;
-    
+
     const query = searchQuery.toLowerCase();
-    return sortedProfiles.filter(profile => 
+    return sortedProfiles.filter(profile =>
       profile.name.toLowerCase().includes(query) ||
       profile.role.toLowerCase().includes(query) ||
       profile.category.toLowerCase().includes(query) ||
@@ -698,7 +698,7 @@ const StudentProfiles = () => {
               Get in touch with our recruitment team for detailed candidate information
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-6 py-4">
             {/* Phone */}
             <div className="flex items-start gap-4 p-4 bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl border border-teal-200">
@@ -707,8 +707,8 @@ const StudentProfiles = () => {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-600 mb-1">Phone Number</p>
-                <a 
-                  href="tel:8265903855" 
+                <a
+                  href="tel:8265903855"
                   className="text-lg font-bold text-teal-600 hover:text-teal-700 transition-colors"
                 >
                   8265903855
@@ -723,8 +723,8 @@ const StudentProfiles = () => {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-600 mb-1">Email Address</p>
-                <a 
-                  href="mailto:upskill@academically.com" 
+                <a
+                  href="mailto:upskill@academically.com"
                   className="text-lg font-bold text-emerald-600 hover:text-emerald-700 transition-colors break-all"
                 >
                   upskill@academically.com
@@ -766,14 +766,14 @@ const StudentProfiles = () => {
               <Sparkles className="w-4 h-4 text-teal-600" />
               <span className="text-sm font-medium text-teal-700">Premium Healthcare Talent</span>
             </div>
-            
+
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
               Exceptional Student
               <span className="block bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600 bg-clip-text text-transparent mt-2">
                 Profiles
               </span>
             </h1>
-            
+
             <p className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto mb-8">
               Discover 15 highly qualified healthcare professionals ready to join your organization.
               <br className="hidden sm:block" />
@@ -815,11 +815,10 @@ const StudentProfiles = () => {
         ) : (
           <div className="space-y-8">
             {filteredProfiles.map((profile, index) => (
-              <Card 
+              <Card
                 key={profile.id}
-                className={`profile-card group bg-white border-2 border-teal-100 hover:border-teal-400 hover:shadow-2xl transition-all duration-500 overflow-hidden card-pattern ${
-                  index % 2 === 0 ? 'lg:mr-12' : 'lg:ml-12'
-                }`}
+                className={`profile-card group bg-white border-2 border-teal-100 hover:border-teal-400 hover:shadow-2xl transition-all duration-500 overflow-hidden card-pattern ${index % 2 === 0 ? 'lg:mr-12' : 'lg:ml-12'
+                  }`}
               >
                 <CardContent className="p-0">
                   <div className={`flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}>
@@ -829,14 +828,14 @@ const StudentProfiles = () => {
                         <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full blur-3xl"></div>
                         <div className="absolute bottom-0 left-0 w-40 h-40 bg-black rounded-full blur-3xl"></div>
                       </div>
-                      
+
                       <div className="relative text-center">
                         <div className="w-32 h-32 lg:w-40 lg:h-40 mx-auto bg-white rounded-full flex items-center justify-center mb-6 shadow-2xl ring-4 ring-white/30 avatar-pulse group-hover:scale-110 transition-transform duration-500">
                           <span className="text-4xl lg:text-5xl font-bold bg-gradient-to-br from-teal-600 to-emerald-600 bg-clip-text text-transparent">
                             {profile.avatar}
                           </span>
                         </div>
-                        
+
                         <Badge className="bg-white/20 backdrop-blur-sm text-white border-white/30 text-xs px-3 py-1 hover:bg-white/30 transition-colors">
                           Profile #{index + 1}
                         </Badge>
@@ -850,11 +849,11 @@ const StudentProfiles = () => {
                         <Badge className="mb-3 bg-teal-100 text-teal-700 border-teal-300 text-xs">
                           {profile.category}
                         </Badge>
-                        
+
                         <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
                           {profile.name}
                         </h2>
-                        
+
                         <p className="text-base lg:text-lg text-gray-700 mb-4">
                           {profile.role}
                         </p>
@@ -882,7 +881,7 @@ const StudentProfiles = () => {
                         {/* Highlights */}
                         <div className="flex flex-wrap gap-2">
                           {profile.highlights.map((highlight, idx) => (
-                            <Badge 
+                            <Badge
                               key={idx}
                               className="bg-emerald-100 text-emerald-700 border-emerald-300 text-xs"
                             >
@@ -1144,7 +1143,7 @@ const StudentProfiles = () => {
                             </h3>
                             <div className="flex flex-wrap gap-2">
                               {profile.idealFit.map((role, idx) => (
-                                <Badge 
+                                <Badge
                                   key={idx}
                                   className="bg-teal-100 text-teal-700 border-teal-300"
                                 >
@@ -1174,7 +1173,7 @@ const StudentProfiles = () => {
                             </>
                           )}
                         </Button>
-                        
+
                         <Button
                           variant="outline"
                           className="flex-1 border-teal-600 text-teal-600 hover:bg-teal-50"

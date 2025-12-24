@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { MapPin, Phone, Mail, Calendar, Cookie } from 'lucide-react';
 
 const CookiePolicy = () => {
@@ -10,7 +10,7 @@ const CookiePolicy = () => {
         <meta name="description" content="Cookie Policy for Jobslly – Learn how we use cookies to enhance your experience on our healthcare job platform." />
         <meta name="robots" content="index, follow" />
       </Helmet>
-      
+
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-4xl mx-auto px-4">
           <div className="bg-white rounded-xl shadow-lg p-8 md:p-12">
@@ -34,7 +34,7 @@ const CookiePolicy = () => {
 
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-blue-900 mb-4 border-b-2 border-gray-200 pb-2">2. Types of Cookies We Use</h2>
-              
+
               <div className="space-y-6">
                 <div className="bg-blue-50 p-6 rounded-lg">
                   <h3 className="text-lg font-semibold text-blue-900 mb-3">A. Essential Cookies</h3>
@@ -98,7 +98,7 @@ const CookiePolicy = () => {
               <p className="text-gray-700 mb-4">
                 You can control or disable cookies through your browser settings. However, please note that blocking certain cookies may impact your ability to use some features on Jobslly.
               </p>
-              
+
               <div className="bg-yellow-50 p-6 rounded-lg mb-4">
                 <h3 className="text-lg font-semibold text-yellow-900 mb-3">Browser-specific cookie management:</h3>
                 <ul className="space-y-2 text-gray-700">

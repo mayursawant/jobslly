@@ -29,7 +29,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { toast } from 'sonner';
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 const API = `${BACKEND_URL}/api`;
 
 const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl, companyName, onSuccess }) => {
@@ -42,7 +42,7 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
     experience_years: '',
     message: ''
   });
-  
+
   // UI state
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -54,25 +54,25 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
    */
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!leadData.name.trim()) {
       newErrors.name = 'Full name is required';
     }
-    
+
     if (!leadData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(leadData.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
-    
+
     if (!leadData.current_position.trim()) {
       newErrors.current_position = 'Current position is required';
     }
-    
+
     if (!leadData.experience_years) {
       newErrors.experience_years = 'Experience level is required';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -87,7 +87,7 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
       ...prev,
       [field]: value
     }));
-    
+
     // Clear error for this field when user starts typing
     if (errors[field]) {
       setErrors(prev => ({
@@ -107,11 +107,11 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
     }
 
     setLoading(true);
-    
+
     try {
       // Submit lead data to backend
       const response = await axios.post(`${API}/jobs/${jobId}/apply-lead`, leadData);
-      
+
       // Save applied job ID to localStorage for session tracking
       const appliedJobs = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
       console.log('💾 Current applied jobs in localStorage:', appliedJobs);
@@ -122,12 +122,12 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
       } else {
         console.log('ℹ️ Job', jobId, 'already in localStorage');
       }
-      
+
       // toast.success('Thank you for your interest!');
-      
+
       // Close modal
       onClose();
-      
+
       // Call success callback which will handle the flow based on job type
       if (onSuccess) {
         onSuccess();
@@ -138,16 +138,16 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
             window.open(jobExternalUrl, '_blank');
           }, 1000);
         } else {
-          navigate('/register', { 
-            state: { 
-              jobId, 
+          navigate('/register', {
+            state: {
+              jobId,
               jobTitle,
-              leadData: leadData.email 
-            } 
+              leadData: leadData.email
+            }
           });
         }
       }
-      
+
     } catch (error) {
       console.error('Lead submission error:', error);
       const message = error.response?.data?.detail || 'Failed to submit. Please try again.';
@@ -182,7 +182,7 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
             Show Your Interest
           </DialogTitle>
           <DialogDescription className="text-gray-600">
-            Let us know you're interested in the <strong>{jobTitle}</strong> position at <strong>{companyName}</strong>. 
+            Let us know you're interested in the <strong>{jobTitle}</strong> position at <strong>{companyName}</strong>.
             We'll help you complete your application!
           </DialogDescription>
         </DialogHeader>
@@ -264,11 +264,11 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
             <Label htmlFor="lead-experience" className="text-sm font-medium text-gray-700">
               Years of Experience *
             </Label>
-            <Select 
-              value={leadData.experience_years} 
+            <Select
+              value={leadData.experience_years}
               onValueChange={(value) => handleInputChange('experience_years', value)}
             >
-              <SelectTrigger 
+              <SelectTrigger
                 className={`h-10 ${errors.experience_years ? 'border-red-300' : 'border-gray-200'}`}
                 data-testid="lead-experience-select"
               >
@@ -309,7 +309,7 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
           <Button variant="outline" onClick={handleClose} disabled={loading}>
             Cancel
           </Button>
-          <Button 
+          <Button
             onClick={handleSubmitLead}
             disabled={loading}
             className="bg-blue-600 hover:bg-blue-700 text-white"
@@ -332,8 +332,8 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
         {/* Privacy Notice */}
         <div className="text-xs text-gray-500 border-t pt-4">
           <p>
-            🔒 <strong>Privacy Protected:</strong> Your information is secure and will only be used to 
-            connect you with relevant job opportunities. We never share your data with third parties 
+            🔒 <strong>Privacy Protected:</strong> Your information is secure and will only be used to
+            connect you with relevant job opportunities. We never share your data with third parties
             without your consent.
           </p>
         </div>

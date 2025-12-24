@@ -25,15 +25,15 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { 
-  User, 
-  Briefcase, 
-  Target, 
-  TrendingUp, 
-  Calendar, 
-  MapPin, 
-  Phone, 
-  Mail, 
+import {
+  User,
+  Briefcase,
+  Target,
+  TrendingUp,
+  Calendar,
+  MapPin,
+  Phone,
+  Mail,
   Star,
   Award,
   Clock,
@@ -47,7 +47,7 @@ import {
 import axios from 'axios';
 import { toast } from 'sonner';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 const API = `${BACKEND_URL}/api`;
 
 const JobSeekerDashboard = () => {
@@ -59,7 +59,7 @@ const JobSeekerDashboard = () => {
     recent_applications: [],
     recent_leads: []
   });
-  
+
   // Profile data state
   const [profile, setProfile] = useState({
     country_code: '+91', // Default to India
@@ -336,13 +336,13 @@ const JobSeekerDashboard = () => {
       if (!token) {
         throw new Error('No authentication token found');
       }
-      
+
       const response = await axios.get(`${API}/job-seeker/dashboard`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       setDashboardData(response.data || {
         applications_count: 0,
         leads_count: 0,
@@ -369,18 +369,18 @@ const JobSeekerDashboard = () => {
       if (!token) {
         throw new Error('No authentication token found');
       }
-      
+
       console.log('📋 Fetching applications...');
       const response = await axios.get(`${API}/job-seeker/applications`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       console.log('✅ Applications response:', response.data);
       console.log('📊 Total applications:', response.data.total_applications);
       console.log('📝 Applications array:', response.data.applications);
-      
+
       const appsData = response.data.applications || [];
       setApplications(appsData);
       console.log('🔄 State updated with applications. Array length:', appsData.length);
@@ -405,13 +405,13 @@ const JobSeekerDashboard = () => {
       if (!token) {
         return;
       }
-      
+
       const response = await axios.get(`${API}/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       if (response.data) {
         setProfile(prev => ({ ...prev, ...response.data }));
       }
@@ -433,14 +433,14 @@ const JobSeekerDashboard = () => {
     try {
       // Validate required fields
       const errors = [];
-      
+
       if (!profile.phone) errors.push('Phone number is required');
       if (!profile.specialization) errors.push('Healthcare specialization is required');
       if (profile.specialization === 'other' && !profile.custom_specialization) {
         errors.push('Please specify your specialization');
       }
       if (profile.experience_years < 0) errors.push('Years of experience must be 0 or greater');
-      
+
       if (errors.length > 0) {
         toast.error(`Please fix the following: ${errors.join(', ')}`);
         return;
@@ -460,23 +460,23 @@ const JobSeekerDashboard = () => {
       if (!token) {
         throw new Error('No authentication token found');
       }
-      
+
       const response = await axios.put(`${API}/profile`, profileData, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       // Update local state with response
       if (response.data) {
         setProfile(response.data);
       }
-      
+
       toast.success('Profile updated successfully! 🎉');
-      
+
       // Refresh dashboard data to update completion percentage from backend
       fetchDashboardData();
-      
+
     } catch (error) {
       console.error('Failed to update profile:', error);
       const errorMessage = error.response?.data?.detail || 'Failed to update profile. Please try again.';
@@ -531,11 +531,11 @@ const JobSeekerDashboard = () => {
             {/* Floating Animation Elements */}
             <div className="absolute top-4 right-4 w-20 h-20 bg-white/10 rounded-full opacity-20 animate-pulse"></div>
             <div className="absolute bottom-4 left-4 w-12 h-12 bg-white/10 rounded-full opacity-30 animate-bounce"></div>
-            
+
             <div className="relative z-10 flex justify-between items-center">
               <div>
                 <h1 className="text-4xl font-bold mb-2">
-                  Welcome back, {user?.full_name || user?.email?.split('@')[0]}! 
+                  Welcome back, {user?.full_name || user?.email?.split('@')[0]}!
                   <span className="wave inline-block ml-2">👋</span>
                 </h1>
                 <p className="text-teal-100 text-lg">
@@ -599,12 +599,12 @@ const JobSeekerDashboard = () => {
                       <div className="relative w-24 h-24 mx-auto mb-4">
                         <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
                           <circle cx="50" cy="50" r="40" stroke="rgb(229 231 235)" strokeWidth="8" fill="none" />
-                          <circle 
-                            cx="50" 
-                            cy="50" 
-                            r="40" 
-                            stroke="rgb(20 184 166)" 
-                            strokeWidth="8" 
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="40"
+                            stroke="rgb(20 184 166)"
+                            strokeWidth="8"
                             fill="none"
                             strokeDasharray={`${2.51 * dashboardData.profile_completion} 251`}
                             strokeLinecap="round"
@@ -616,7 +616,7 @@ const JobSeekerDashboard = () => {
                       </div>
                       <p className="text-sm text-gray-600">Professional Profile</p>
                     </div>
-                    
+
                     {dashboardData.profile_completion < 100 && (
                       <div className="bg-white p-4 rounded-lg border border-teal-100">
                         <div className="flex items-start space-x-3">
@@ -654,8 +654,8 @@ const JobSeekerDashboard = () => {
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </Button>
                     </Link>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       className="w-full justify-between border-purple-200 hover:bg-purple-50 group"
                       onClick={switchToProfileTab}
                     >
@@ -718,84 +718,83 @@ const JobSeekerDashboard = () => {
                     {applications.map((app) => {
                       console.log('🎯 Rendering application card:', app.job_title, app);
                       return (
-                      <Card key={app.id} className="border border-gray-200 hover:border-teal-300 hover:shadow-md transition-all duration-300">
-                        <CardContent className="p-6">
-                          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                            {/* Job Info */}
-                            <div className="flex-1">
-                              <div className="flex items-start gap-3 mb-3">
-                                <div className="w-12 h-12 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                  <Building className="w-6 h-6 text-teal-600" />
-                                </div>
-                                <div>
-                                  <h3 className="text-lg font-bold text-gray-900 mb-1">
-                                    {app.job_title}
-                                  </h3>
-                                  <p className="text-gray-600 flex items-center text-sm">
-                                    <Building className="w-4 h-4 mr-1" />
-                                    {app.company}
-                                  </p>
-                                </div>
-                              </div>
-                              
-                              {/* Job Details */}
-                              <div className="flex flex-wrap gap-3 text-sm text-gray-600">
-                                {app.location && (
-                                  <div className="flex items-center">
-                                    <MapPin className="w-4 h-4 mr-1 text-gray-400" />
-                                    {app.location}
+                        <Card key={app.id} className="border border-gray-200 hover:border-teal-300 hover:shadow-md transition-all duration-300">
+                          <CardContent className="p-6">
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                              {/* Job Info */}
+                              <div className="flex-1">
+                                <div className="flex items-start gap-3 mb-3">
+                                  <div className="w-12 h-12 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <Building className="w-6 h-6 text-teal-600" />
                                   </div>
-                                )}
-                                {app.job_type && (
-                                  <Badge variant="outline" className="text-xs">
-                                    {app.job_type.replace('_', ' ').toUpperCase()}
-                                  </Badge>
-                                )}
-                                {app.category && (
-                                  <Badge className="bg-teal-50 text-teal-700 border-teal-200 text-xs">
-                                    {app.category}
-                                  </Badge>
-                                )}
-                              </div>
-                            </div>
-                            
-                            {/* Application Status & Actions */}
-                            <div className="flex flex-col items-end gap-3">
-                              <div className="text-right">
-                                <div className="flex items-center text-sm text-gray-500 mb-1">
-                                  <Clock className="w-4 h-4 mr-1" />
-                                  Applied on {new Date(app.applied_at).toLocaleDateString('en-US', { 
-                                    month: 'short', 
-                                    day: 'numeric', 
-                                    year: 'numeric' 
-                                  })}
+                                  <div>
+                                    <h3 className="text-lg font-bold text-gray-900 mb-1">
+                                      {app.job_title}
+                                    </h3>
+                                    <p className="text-gray-600 flex items-center text-sm">
+                                      <Building className="w-4 h-4 mr-1" />
+                                      {app.company}
+                                    </p>
+                                  </div>
                                 </div>
-                                <Badge 
-                                  className={`${
-                                    app.status === 'pending' ? 'bg-yellow-100 text-yellow-700 border-yellow-200' :
-                                    app.status === 'reviewed' ? 'bg-blue-100 text-blue-700 border-blue-200' :
-                                    app.status === 'accepted' ? 'bg-green-100 text-green-700 border-green-200' :
-                                    'bg-gray-100 text-gray-700 border-gray-200'
-                                  }`}
-                                >
-                                  {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
-                                </Badge>
+
+                                {/* Job Details */}
+                                <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                                  {app.location && (
+                                    <div className="flex items-center">
+                                      <MapPin className="w-4 h-4 mr-1 text-gray-400" />
+                                      {app.location}
+                                    </div>
+                                  )}
+                                  {app.job_type && (
+                                    <Badge variant="outline" className="text-xs">
+                                      {app.job_type.replace('_', ' ').toUpperCase()}
+                                    </Badge>
+                                  )}
+                                  {app.category && (
+                                    <Badge className="bg-teal-50 text-teal-700 border-teal-200 text-xs">
+                                      {app.category}
+                                    </Badge>
+                                  )}
+                                </div>
                               </div>
-                              
-                              <Link to={`/jobs/${app.job_id}`}>
-                                <Button 
-                                  size="sm" 
-                                  variant="outline"
-                                  className="border-teal-300 text-teal-700 hover:bg-teal-50"
-                                >
-                                  View Job
-                                  <ArrowRight className="w-4 h-4 ml-1" />
-                                </Button>
-                              </Link>
+
+                              {/* Application Status & Actions */}
+                              <div className="flex flex-col items-end gap-3">
+                                <div className="text-right">
+                                  <div className="flex items-center text-sm text-gray-500 mb-1">
+                                    <Clock className="w-4 h-4 mr-1" />
+                                    Applied on {new Date(app.applied_at).toLocaleDateString('en-US', {
+                                      month: 'short',
+                                      day: 'numeric',
+                                      year: 'numeric'
+                                    })}
+                                  </div>
+                                  <Badge
+                                    className={`${app.status === 'pending' ? 'bg-yellow-100 text-yellow-700 border-yellow-200' :
+                                        app.status === 'reviewed' ? 'bg-blue-100 text-blue-700 border-blue-200' :
+                                          app.status === 'accepted' ? 'bg-green-100 text-green-700 border-green-200' :
+                                            'bg-gray-100 text-gray-700 border-gray-200'
+                                      }`}
+                                  >
+                                    {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                                  </Badge>
+                                </div>
+
+                                <Link to={`/jobs/${app.job_id}`}>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="border-teal-300 text-teal-700 hover:bg-teal-50"
+                                  >
+                                    View Job
+                                    <ArrowRight className="w-4 h-4 ml-1" />
+                                  </Button>
+                                </Link>
+                              </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                          </CardContent>
+                        </Card>
                       );
                     })}
                   </div>
@@ -818,7 +817,7 @@ const JobSeekerDashboard = () => {
                   <div className="space-y-2">
                     <Label htmlFor="phone">Phone Number</Label>
                     <div className="flex space-x-2">
-                      <Select value={profile.country_code || '+91'} onValueChange={(value) => setProfile(prev => ({...prev, country_code: value}))}>
+                      <Select value={profile.country_code || '+91'} onValueChange={(value) => setProfile(prev => ({ ...prev, country_code: value }))}>
                         <SelectTrigger className="w-32">
                           <SelectValue placeholder="Code" />
                         </SelectTrigger>
@@ -837,18 +836,18 @@ const JobSeekerDashboard = () => {
                         id="phone"
                         className="flex-1"
                         value={profile.phone || ''}
-                        onChange={(e) => setProfile(prev => ({...prev, phone: e.target.value}))}
+                        onChange={(e) => setProfile(prev => ({ ...prev, phone: e.target.value }))}
                         placeholder="123-456-7890"
                       />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="specialization">Healthcare Specialization</Label>
-                    <Select 
-                      value={profile.specialization || ''} 
+                    <Select
+                      value={profile.specialization || ''}
                       onValueChange={(value) => setProfile(prev => ({
-                        ...prev, 
+                        ...prev,
                         specialization: value,
                         custom_specialization: value !== 'other' ? '' : prev.custom_specialization
                       }))}
@@ -865,11 +864,11 @@ const JobSeekerDashboard = () => {
                         <SelectItem value="other">Other (Please specify)</SelectItem>
                       </SelectContent>
                     </Select>
-                    
+
                     {profile.specialization === 'other' && (
                       <Input
                         value={profile.custom_specialization || ''}
-                        onChange={(e) => setProfile(prev => ({...prev, custom_specialization: e.target.value}))}
+                        onChange={(e) => setProfile(prev => ({ ...prev, custom_specialization: e.target.value }))}
                         placeholder="Please specify your specialization"
                         className="mt-2"
                       />
@@ -886,7 +885,7 @@ const JobSeekerDashboard = () => {
                       value={profile.experience_years || 0}
                       onChange={(e) => {
                         const value = Math.max(0, parseInt(e.target.value) || 0);
-                        setProfile(prev => ({...prev, experience_years: value}));
+                        setProfile(prev => ({ ...prev, experience_years: value }));
                       }}
                       placeholder="5"
                     />
@@ -897,7 +896,7 @@ const JobSeekerDashboard = () => {
                     <Input
                       id="linkedin"
                       value={profile.linkedin_url || ''}
-                      onChange={(e) => setProfile(prev => ({...prev, linkedin_url: e.target.value}))}
+                      onChange={(e) => setProfile(prev => ({ ...prev, linkedin_url: e.target.value }))}
                       placeholder="https://linkedin.com/in/yourprofile"
                     />
                   </div>
@@ -908,7 +907,7 @@ const JobSeekerDashboard = () => {
                   <Textarea
                     id="address"
                     value={profile.address || ''}
-                    onChange={(e) => setProfile(prev => ({...prev, address: e.target.value}))}
+                    onChange={(e) => setProfile(prev => ({ ...prev, address: e.target.value }))}
                     placeholder="City, State, Country"
                     rows={2}
                   />
@@ -953,8 +952,8 @@ const JobSeekerDashboard = () => {
                   </div>
                 </div>
 
-                <Button 
-                  onClick={updateProfile} 
+                <Button
+                  onClick={updateProfile}
                   disabled={saving}
                   className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white disabled:opacity-50"
                 >

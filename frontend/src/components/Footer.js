@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Globe, 
-  Facebook, 
-  Linkedin, 
-  Instagram, 
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Globe,
+  Facebook,
+  Linkedin,
+  Instagram,
   Youtube,
   Calendar,
   BookOpen,
@@ -19,7 +19,7 @@ import {
 // Custom X (Twitter) Icon Component
 const XIcon = ({ className }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
   </svg>
 );
 
@@ -37,7 +37,7 @@ const Footer = () => {
     // Fetch recent blog posts for footer
     const fetchRecentBlogs = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/blog?limit=4`);
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL || ''}/api/blog?limit=4`);
         if (response.ok) {
           const blogs = await response.json();
           setRecentBlogs(blogs);
@@ -71,33 +71,33 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { 
-      name: 'Facebook', 
-      icon: Facebook, 
+    {
+      name: 'Facebook',
+      icon: Facebook,
       url: 'https://www.facebook.com/academically.australia',
       color: 'hover:text-blue-600'
     },
-    { 
-      name: 'X', 
-      icon: XIcon, 
+    {
+      name: 'X',
+      icon: XIcon,
       url: 'https://x.com/AcademicallyAus',
       color: 'hover:text-gray-400'
     },
-    { 
-      name: 'LinkedIn', 
-      icon: Linkedin, 
+    {
+      name: 'LinkedIn',
+      icon: Linkedin,
       url: 'https://in.linkedin.com/company/academicallyglobal',
       color: 'hover:text-blue-700'
     },
-    { 
-      name: 'Instagram', 
-      icon: Instagram, 
+    {
+      name: 'Instagram',
+      icon: Instagram,
       url: 'https://www.instagram.com/academically.global/?igsh=dnJnaWR2ZW9raTV4#',
       color: 'hover:text-pink-600'
     },
-    { 
-      name: 'YouTube', 
-      icon: Youtube, 
+    {
+      name: 'YouTube',
+      icon: Youtube,
       url: 'https://www.youtube.com/@DrAkramAhmad',
       color: 'hover:text-red-600'
     }
@@ -108,23 +108,23 @@ const Footer = () => {
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          
+
           {/* Company Information */}
           <div className="space-y-4">
             <div className="mb-6">
-              <img 
-                src="/jobslly-logo.png" 
-                alt="Jobslly Logo" 
+              <img
+                src="/jobslly-logo.png"
+                alt="Jobslly Logo"
                 className="h-16 w-auto object-contain"
               />
               <p className="text-sm text-gray-400 mt-2">by Academically Global</p>
             </div>
-            
+
             <p className="text-gray-300 text-sm leading-relaxed">
-              Connecting healthcare professionals worldwide with their dream careers. 
+              Connecting healthcare professionals worldwide with their dream careers.
               Find opportunities in medicine, nursing, pharmacy, and allied health across the globe.
             </p>
-            
+
             <div className="space-y-3">
               {/* Australia Address */}
               <div className="flex items-start space-x-3 text-sm">
@@ -134,27 +134,20 @@ const Footer = () => {
                   <span className="text-gray-300">Suite 207A/30 Campbell St, Blacktown NSW 2148</span>
                 </div>
               </div>
-              
+
               {/* India Addresses */}
               <div className="flex items-start space-x-3 text-sm">
                 <MapPin className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
                 <div>
                   <div className="font-medium text-gray-200 mb-1">India:</div>
-<<<<<<< HEAD
                   <div className="space-y-2 text-gray-300">
                     <div><span className="font-medium text-emerald-400">Delhi:</span> Green Park Metro Station Gate No.3</div>
                     <div><span className="font-medium text-emerald-400">Hyderabad:</span> Below Hotel Kinara Grand, Ameerpet</div>
                     <div><span className="font-medium text-emerald-400">Dehradun:</span> IT Park, Sahastradhara Rd</div>
-=======
-                  <div className="text-gray-300 space-y-1">
-                    <p><span className="font-medium">Delhi:</span> Green Park Metro Station Gate No.3</p>
-                    <p><span className="font-medium">Hyderabad:</span> Below Hotel Kinara Grand, Ameerpet</p>
-                    <p><span className="font-medium">Dehradun:</span> IT Park, Sahastradhara Rd</p>
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex items-center space-x-3 text-sm">
                 <Phone className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                 <span className="text-gray-300">8265903855</span>
@@ -165,7 +158,7 @@ const Footer = () => {
               </div>
               {/* Website link removed as per user request */}
             </div>
-            
+
             {/* Social Media Links */}
             <div className="pt-4">
               <p className="text-sm font-medium text-gray-300 mb-3">Follow Us</p>
@@ -212,7 +205,7 @@ const Footer = () => {
                 </li>
               ))}
             </ul>
-            
+
             <div className="mt-4 pt-4 border-t border-gray-700">
               <Link
                 to="/jobs"
@@ -258,7 +251,7 @@ const Footer = () => {
                 </div>
               )}
             </div>
-            
+
             <div className="mt-4 pt-4 border-t border-gray-700">
               <Link
                 to="/blogs"

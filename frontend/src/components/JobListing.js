@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import axios from 'axios';
 import { toast } from 'sonner';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 const API = `${BACKEND_URL}/api`;
 
 // Helper function to strip HTML tags from text
@@ -71,15 +71,15 @@ const JobListing = () => {
 
       const currentSkip = isInitial ? 0 : skip;
       const limit = 50; // Load 50 jobs at a time
-      
+
       // Build query params
       let url = `${API}/jobs?skip=${currentSkip}&limit=${limit}`;
-      
+
       // Add category filter to API call if not "all"
       if (category !== 'all') {
         url += `&category=${category}`;
       }
-      
+
       const response = await axios.get(url);
       const newJobs = response.data;
 
@@ -110,16 +110,16 @@ const JobListing = () => {
 
   const filteredJobs = jobs.filter(job => {
     const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         job.location.toLowerCase().includes(searchTerm.toLowerCase());
-    
+      job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      job.location.toLowerCase().includes(searchTerm.toLowerCase());
+
     const matchesType = jobType === 'all' || job.job_type === jobType;
-    
+
     // Updated to work with categories array (matches if category is in the array)
-    const matchesCategory = category === 'all' || 
-                           (job.categories && Array.isArray(job.categories) && job.categories.includes(category)) ||
-                           (job.category && job.category.toLowerCase() === category); // Backward compatibility
-    
+    const matchesCategory = category === 'all' ||
+      (job.categories && Array.isArray(job.categories) && job.categories.includes(category)) ||
+      (job.category && job.category.toLowerCase() === category); // Backward compatibility
+
     return matchesSearch && matchesType && matchesCategory;
   });
 
@@ -127,7 +127,7 @@ const JobListing = () => {
     // ALWAYS keep archived jobs at the bottom, regardless of sort
     if (a.is_archived && !b.is_archived) return 1;
     if (!a.is_archived && b.is_archived) return -1;
-    
+
     // If both archived or both not archived, sort by selected criteria
     switch (sortBy) {
       case 'salary_high':
@@ -180,7 +180,7 @@ const JobListing = () => {
                 className="h-12"
                 data-testid="job-search-input"
               />
-              
+
               {/* Category Box Filters */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">Filter by Category:</label>
@@ -189,11 +189,10 @@ const JobListing = () => {
                     <button
                       key={cat.value}
                       onClick={() => setCategory(cat.value)}
-                      className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-                        category === cat.value
+                      className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${category === cat.value
                           ? 'bg-teal-600 text-white shadow-md transform scale-105'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
-                      }`}
+                        }`}
                       data-testid={`category-filter-${cat.value}`}
                     >
                       {cat.label}
@@ -242,7 +241,7 @@ const JobListing = () => {
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">No jobs found</h3>
             <p className="text-gray-600 mb-6">Try adjusting your search criteria or filters</p>
-            <Button onClick={() => {setSearchTerm(''); setJobType('all'); setCategory('all');}} variant="outline">
+            <Button onClick={() => { setSearchTerm(''); setJobType('all'); setCategory('all'); }} variant="outline">
               Clear Filters
             </Button>
           </div>
@@ -275,7 +274,7 @@ const JobListing = () => {
                           {new Date(job.created_at).toLocaleDateString()}
                         </span>
                       </div>
-                      
+
                       <h3 className="text-lg font-semibold mb-1 text-gray-900 hover:text-blue-600 transition-colors">{job.title}</h3>
                       <p className="text-blue-600 font-medium mb-2">{job.company}</p>
                       <p className="text-gray-500 mb-3 flex items-center">
@@ -285,7 +284,7 @@ const JobListing = () => {
                         </svg>
                         {job.location}
                       </p>
-                      
+
                       <p className="text-gray-600 mb-3 line-clamp-2">
                         {stripHtml(job.description).substring(0, 200)}...
                       </p>
@@ -323,9 +322,9 @@ const JobListing = () => {
         {/* Load More */}
         {hasMore && sortedJobs.length > 0 && (
           <div className="text-center mt-12">
-            <Button 
-              onClick={handleLoadMore} 
-              variant="outline" 
+            <Button
+              onClick={handleLoadMore}
+              variant="outline"
               size="lg"
               disabled={loadingMore}
             >
