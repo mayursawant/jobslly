@@ -1414,22 +1414,41 @@ async def create_blog_post(
     # Return the created blog post
     return BlogPost(**blog_data)
 
-@api_router.get("/admin/blog", response_model=List[BlogPost])
+@api_router.get("/admin/blog", response_model=List[BlogPostSummary])
 async def get_admin_blog_posts(current_user: User = Depends(get_current_user)):
+    """
+    Get blog posts for admin listing - returns lightweight summaries.
+    Full content is loaded when editing individual post.
+    """
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Admin access required")
     
-    posts = await db.blog_posts.find().sort("created_at", -1).to_list(length=None)
+    # Use projection to exclude large content field for listing
+    projection = {
+        "_id": 0,
+        "id": 1,
+        "title": 1,
+        "slug": 1,
+        "excerpt": 1,
+        "featured_image": 1,
+        "author_id": 1,
+        "category": 1,
+        "tags": 1,
+        "is_published": 1,
+        "is_featured": 1,
+        "created_at": 1,
+        "published_at": 1
+    }
+    
+    posts = await db.blog_posts.find({}, projection).sort("created_at", -1).to_list(length=None)
     
     for post in posts:
         if isinstance(post.get('created_at'), str):
             post['created_at'] = datetime.fromisoformat(post['created_at'])
-        if post.get('updated_at') and isinstance(post.get('updated_at'), str):
-            post['updated_at'] = datetime.fromisoformat(post['updated_at'])
         if post.get('published_at') and isinstance(post.get('published_at'), str):
             post['published_at'] = datetime.fromisoformat(post['published_at'])
     
-    return [BlogPost(**post) for post in posts]
+    return [BlogPostSummary(**post) for post in posts]
 
 @api_router.put("/admin/blog/{post_id}", response_model=BlogPost)
 async def update_blog_post(
