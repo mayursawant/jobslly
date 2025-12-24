@@ -1851,14 +1851,14 @@ async def get_blog_posts(featured_only: bool = False, limit: int = 10, skip: int
     if featured_only:
         query["is_featured"] = True
     
-    # Use projection to exclude large fields (content has embedded base64 images)
+    # Exclude large fields: content and featured_image (base64 images are ~100-250KB each)
+    # This reduces response from ~3.8MB to ~15KB for 10 posts
     projection = {
         "_id": 0,
         "id": 1,
         "title": 1,
         "slug": 1,
         "excerpt": 1,
-        "featured_image": 1,
         "author_id": 1,
         "category": 1,
         "tags": 1,
@@ -1875,14 +1875,8 @@ async def get_blog_posts(featured_only: bool = False, limit: int = 10, skip: int
             post['created_at'] = datetime.fromisoformat(post['created_at'])
         if post.get('published_at') and isinstance(post.get('published_at'), str):
             post['published_at'] = datetime.fromisoformat(post['published_at'])
-        
-        # For base64 images, truncate to first 100 chars + ... to indicate presence
-        # Frontend can show placeholder and load full image lazily from detail endpoint
-        featured_img = post.get('featured_image', '')
-        if featured_img and featured_img.startswith('data:image') and len(featured_img) > 1000:
-            # Keep base64 images as-is for now - frontend needs them
-            # TODO: Migrate to cloud storage (S3/CloudFront) for better performance
-            pass
+        # Set featured_image to None - frontend will show placeholder
+        post['featured_image'] = None
     
     return [BlogPostSummary(**post) for post in posts]
 
