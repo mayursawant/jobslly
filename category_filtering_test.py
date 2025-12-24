@@ -12,11 +12,7 @@ import json
 from datetime import datetime
 
 # Configuration
-<<<<<<< HEAD
-BASE_URL = "https://jobfix-complete.preview.emergentagent.com/api"
-=======
-BASE_URL = "https://recruiter-portal.preview.emergentagent.com/api"
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+BASE_URL = "https://jobslly.com/api"
 
 class CategoryFilteringTester:
     def __init__(self):

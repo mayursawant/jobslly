@@ -2,11 +2,7 @@
 import requests
 import json
 
-<<<<<<< HEAD
-BACKEND_URL = "https://jobfix-complete.preview.emergentagent.com"
-=======
-BACKEND_URL = "https://recruiter-portal.preview.emergentagent.com"
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+BACKEND_URL = "https://jobslly.com"
 ADMIN_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJleHAiOjE3NTk2OTUxMzF9.ql52oQJcPSQwvzU1AOpsviKSMmWXF-kWHPSuBjiYuGQ"
 
 def create_blog_post(blog_data):

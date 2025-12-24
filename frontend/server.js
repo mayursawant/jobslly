@@ -8,11 +8,7 @@ const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-<<<<<<< HEAD
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://jobfix-complete.preview.emergentagent.com/api';
-=======
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://recruiter-portal.preview.emergentagent.com/api';
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://jobslly.com/api';
 
 // Serve uploaded images from public/uploads (these are not part of the build)
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));

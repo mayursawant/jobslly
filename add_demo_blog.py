@@ -4,11 +4,7 @@ import json
 from datetime import datetime
 
 # Get the backend URL from environment
-<<<<<<< HEAD
-BACKEND_URL = "https://jobfix-complete.preview.emergentagent.com"
-=======
-BACKEND_URL = "https://recruiter-portal.preview.emergentagent.com"
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+BACKEND_URL = "https://jobslly.com"
 
 # Admin credentials - will need to login to get token
 def get_admin_token():

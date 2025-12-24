@@ -126,11 +126,7 @@ Static content includes key terms:
 
 ### 1. HTML Source Check
 ```bash
-<<<<<<< HEAD
-curl -s "https://jobfix-complete.preview.emergentagent.com/" | grep -c "Explore The Best"
-=======
-curl -s "https://recruiter-portal.preview.emergentagent.com/" | grep -c "Explore The Best"
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+curl -s "https://jobslly.com/" | grep -c "Explore The Best"
 # Output: 1 ✓
 ```
 
@@ -230,11 +226,7 @@ Expected improvements:
 ## Deployment
 
 Changes deployed to preview environment:
-<<<<<<< HEAD
-- URL: https://jobfix-complete.preview.emergentagent.com/
-=======
-- URL: https://recruiter-portal.preview.emergentagent.com/
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
+- URL: https://jobslly.com/
 - Status: ✅ Live and verified
 - React functionality: ✅ Working correctly
 
