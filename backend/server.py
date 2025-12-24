@@ -1423,14 +1423,13 @@ async def get_admin_blog_posts(current_user: User = Depends(get_current_user)):
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Admin access required")
     
-    # Use projection to exclude large content field for listing
+    # Exclude large content and base64 images for listing
     projection = {
         "_id": 0,
         "id": 1,
         "title": 1,
         "slug": 1,
         "excerpt": 1,
-        "featured_image": 1,
         "author_id": 1,
         "category": 1,
         "tags": 1,
@@ -1447,6 +1446,7 @@ async def get_admin_blog_posts(current_user: User = Depends(get_current_user)):
             post['created_at'] = datetime.fromisoformat(post['created_at'])
         if post.get('published_at') and isinstance(post.get('published_at'), str):
             post['published_at'] = datetime.fromisoformat(post['published_at'])
+        post['featured_image'] = None  # Set to None for listing
     
     return [BlogPostSummary(**post) for post in posts]
 
