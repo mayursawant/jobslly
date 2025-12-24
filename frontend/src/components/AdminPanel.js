@@ -392,7 +392,7 @@ const AdminPanel = () => {
         throw new Error('No authentication token found');
       }
 
-      const response = await axios.get(`${API}/admin/jobs/all`, {
+      const response = await axios.get(`${API}/admin/jobs/all?limit=100`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
