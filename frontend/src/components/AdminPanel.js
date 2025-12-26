@@ -23,8 +23,9 @@ const EditorLoading = () => (
   </div>
 );
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
-const API = `${BACKEND_URL}/api`;
+import { BACKEND_URL, API_BASE } from '../config/api';
+
+const API = API_BASE;
 
 // Helper function to check if salary value should show currency symbol
 const shouldShowCurrency = (value) => {
@@ -75,7 +76,8 @@ const AdminPanel = () => {
     requirements: [],
     benefits: [],
     is_external: false,
-    external_url: ''
+    external_url: '',
+    application_deadline: ''
   });
 
   const jobCategories = [
@@ -253,7 +255,7 @@ const AdminPanel = () => {
    */
   const retryFetchData = () => {
     if (retryCount < 3) {
-      console.log(`🔄 Retrying admin data fetch... Attempt ${retryCount + 1}/3`);
+
       setError(null);
       setRetryCount(prev => prev + 1);
     } else {
@@ -262,12 +264,12 @@ const AdminPanel = () => {
   };
 
   const fetchAdminData = async () => {
-    console.log('🔄 Starting fetchAdminData...');
+
     setLoading(true);
 
     try {
       const token = localStorage.getItem('token');
-      console.log('🔑 Token found:', !!token);
+
 
       if (!token) {
         throw new Error('No authentication token found. Please login again.');
@@ -278,37 +280,33 @@ const AdminPanel = () => {
         'Content-Type': 'application/json'
       };
 
-      console.log('📡 Making API calls to:', {
-        stats: `${API}/admin/stats`,
-        jobs: `${API}/admin/jobs/pending`,
-        blogs: `${API}/admin/blog`
-      });
+
 
       // Make API calls individually for better error tracking
       let statsResponse, jobsResponse, blogResponse;
 
       try {
-        console.log('📊 Fetching stats...');
+
         statsResponse = await axios.get(`${API}/admin/stats`, { headers });
-        console.log('✅ Stats loaded:', statsResponse.data);
+
       } catch (error) {
         console.error('❌ Stats API failed:', error);
         throw new Error(`Stats API failed: ${error.response?.status || 'Network error'}`);
       }
 
       try {
-        console.log('💼 Fetching pending jobs...');
+
         jobsResponse = await axios.get(`${API}/admin/jobs/pending`, { headers });
-        console.log('✅ Jobs loaded:', jobsResponse.data.length, 'jobs');
+
       } catch (error) {
         console.error('❌ Jobs API failed:', error);
         throw new Error(`Jobs API failed: ${error.response?.status || 'Network error'}`);
       }
 
       try {
-        console.log('📝 Fetching blogs...');
+
         blogResponse = await axios.get(`${API}/admin/blog`, { headers });
-        console.log('✅ Blogs loaded:', blogResponse.data.length, 'blogs');
+
       } catch (error) {
         console.error('❌ Blogs API failed:', error);
         throw new Error(`Blogs API failed: ${error.response?.status || 'Network error'}`);
@@ -319,7 +317,7 @@ const AdminPanel = () => {
       setPendingJobs(jobsResponse.data || []);
       setBlogPosts(blogResponse.data || []);
 
-      console.log('🎉 Admin data loaded successfully!');
+
       setError(null); // Clear any previous errors
       setRetryCount(0); // Reset retry count on success
 
@@ -357,7 +355,7 @@ const AdminPanel = () => {
       toast.error(errorMessage);
     } finally {
       setLoading(false);
-      console.log('✅ fetchAdminData completed');
+
     }
   };
 
@@ -439,13 +437,33 @@ const AdminPanel = () => {
   /**
    * Handle job editing
    */
+  /**
+   * Handle job editing
+   */
   const handleEditJob = async (job) => {
-    setEditingJob({
-      ...job,
-      requirements: job.requirements || [],
-      benefits: job.benefits || []
-    });
-    setIsEditModalOpen(true);
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      toast.info('Loading job details...');
+
+      // Fetch full job details including requirements and benefits
+      const response = await axios.get(`${API}/admin/jobs/${job.id}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const fullJob = response.data;
+
+      setEditingJob({
+        ...fullJob,
+        requirements: fullJob.requirements || [],
+        benefits: fullJob.benefits || []
+      });
+      setIsEditModalOpen(true);
+    } catch (error) {
+      console.error('Failed to load job details:', error);
+      toast.error('Failed to load job details');
+    }
   };
 
   /**
@@ -541,31 +559,51 @@ const AdminPanel = () => {
   };
 
   /**
-   * Handle blog editing
+   * Handle blog editing - fetches full blog data including content and FAQs
    */
-  const handleEditBlog = (blog) => {
-    // Populate the blog form with existing data
-    setNewBlog({
-      title: blog.title,
-      excerpt: blog.excerpt || '',
-      content: blog.content,
-      category: blog.category || 'healthcare',
-      is_published: blog.is_published || false,
-      is_featured: blog.is_featured || false,
-      seo_title: blog.seo_title || '',
-      seo_description: blog.seo_description || '',
-      faqs: blog.faqs || [],
-      featured_image: null, // Will be set when new image uploaded
-      existing_image_url: blog.featured_image || null // Store existing image URL
-    });
+  const handleEditBlog = async (blog) => {
+    try {
+      // Fetch full blog data including content and FAQs from the API
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Authentication required');
+        return;
+      }
 
-    // Store the blog ID for updating
-    setNewBlog(prev => ({ ...prev, id: blog.id }));
+      toast.info('Loading blog content...');
 
-    // Switch to create blog tab for editing
-    document.querySelector('[data-testid="admin-tab-create-blog"]').click();
+      const response = await axios.get(`${API}/admin/blog/${blog.id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
 
-    toast.info('Blog loaded for editing. Make your changes and save.');
+      const fullBlog = response.data;
+
+      // Populate the blog form with complete data
+      setNewBlog({
+        id: fullBlog.id,
+        title: fullBlog.title || '',
+        excerpt: fullBlog.excerpt || '',
+        content: fullBlog.content || '',
+        category: fullBlog.category || 'healthcare',
+        is_published: fullBlog.is_published || false,
+        is_featured: fullBlog.is_featured || false,
+        seo_title: fullBlog.seo_title || '',
+        seo_description: fullBlog.seo_description || '',
+        faqs: fullBlog.faqs || [],
+        featured_image: null, // Will be set when new image uploaded
+        existing_image_url: fullBlog.featured_image || null // Store existing image URL
+      });
+
+      // Switch to create blog tab for editing
+      document.querySelector('[data-testid="admin-tab-create-blog"]').click();
+
+      toast.success('Blog loaded for editing. Make your changes and save.');
+    } catch (error) {
+      console.error('Failed to load blog for editing:', error);
+      toast.error('Failed to load blog content: ' + (error.response?.data?.detail || error.message));
+    }
   };
 
   /**
@@ -1293,6 +1331,20 @@ const AdminPanel = () => {
                   </p>
                 </div>
 
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Application Deadline (Optional)</label>
+                  <input
+                    type="date"
+                    value={newJob.application_deadline}
+                    onChange={(e) => setNewJob(prev => ({ ...prev, application_deadline: e.target.value }))}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    📅 Job will be automatically archived after this date
+                  </p>
+                </div>
+
                 {/* External Job Configuration */}
                 <div className="border-t pt-6 space-y-4">
                   <h3 className="text-lg font-semibold text-gray-800">🔗 External Job Configuration</h3>
@@ -1385,7 +1437,7 @@ const AdminPanel = () => {
                         ...newJob
                       });
                       toast.success('Job posted successfully!');
-                      setNewJob({ title: '', company: '', location: '', description: '', salary_min: '', salary_max: '', currency: 'INR', job_type: 'full_time', categories: [], requirements: [], benefits: [], is_external: false, external_url: '' });
+                      setNewJob({ title: '', company: '', location: '', description: '', salary_min: '', salary_max: '', currency: 'INR', job_type: 'full_time', categories: [], requirements: [], benefits: [], is_external: false, external_url: '', application_deadline: '' });
                       fetchAdminData();
                     } catch (error) {
                       toast.error('Failed to create job: ' + (error.response?.data?.message || error.message));

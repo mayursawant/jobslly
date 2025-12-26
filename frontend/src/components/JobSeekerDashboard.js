@@ -47,8 +47,9 @@ import {
 import axios from 'axios';
 import { toast } from 'sonner';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
-const API = `${BACKEND_URL}/api`;
+import { API_BASE } from '../config/api';
+
+const API = API_BASE;
 
 const JobSeekerDashboard = () => {
   // Dashboard data state
@@ -331,7 +332,6 @@ const JobSeekerDashboard = () => {
    */
   const fetchDashboardData = async () => {
     try {
-      // FIX: Use 'token' instead of 'access_token' to match authentication storage
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No authentication token found');
@@ -370,28 +370,25 @@ const JobSeekerDashboard = () => {
         throw new Error('No authentication token found');
       }
 
-      console.log('📋 Fetching applications...');
+
       const response = await axios.get(`${API}/job-seeker/applications`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
-      console.log('✅ Applications response:', response.data);
-      console.log('📊 Total applications:', response.data.total_applications);
-      console.log('📝 Applications array:', response.data.applications);
+
 
       const appsData = response.data.applications || [];
       setApplications(appsData);
-      console.log('🔄 State updated with applications. Array length:', appsData.length);
-      console.log('🔄 First application:', appsData[0]);
+
     } catch (error) {
       console.error('❌ Failed to fetch applications:', error);
       console.error('Error details:', error.response?.data);
       toast.error('Failed to load applications');
     } finally {
       setApplicationsLoading(false);
-      console.log('⏱️ Loading state set to false');
+
     }
   };
 
@@ -400,7 +397,6 @@ const JobSeekerDashboard = () => {
    */
   const fetchProfile = async () => {
     try {
-      // FIX: Use 'token' instead of 'access_token'
       const token = localStorage.getItem('token');
       if (!token) {
         return;
@@ -455,7 +451,6 @@ const JobSeekerDashboard = () => {
         final_specialization: profile.specialization === 'other' ? profile.custom_specialization : profile.specialization
       };
 
-      // FIX: Use 'token' instead of 'access_token'
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No authentication token found');
@@ -689,11 +684,7 @@ const JobSeekerDashboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {(() => {
-                  console.log('🎨 Rendering applications tab. applicationsLoading:', applicationsLoading, 'applications.length:', applications.length);
-                  console.log('🎨 Applications state:', applications);
-                  return null;
-                })()}
+
                 {applicationsLoading ? (
                   <div className="text-center py-12">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
@@ -715,88 +706,85 @@ const JobSeekerDashboard = () => {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {applications.map((app) => {
-                      console.log('🎯 Rendering application card:', app.job_title, app);
-                      return (
-                        <Card key={app.id} className="border border-gray-200 hover:border-teal-300 hover:shadow-md transition-all duration-300">
-                          <CardContent className="p-6">
-                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                              {/* Job Info */}
-                              <div className="flex-1">
-                                <div className="flex items-start gap-3 mb-3">
-                                  <div className="w-12 h-12 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <Building className="w-6 h-6 text-teal-600" />
-                                  </div>
-                                  <div>
-                                    <h3 className="text-lg font-bold text-gray-900 mb-1">
-                                      {app.job_title}
-                                    </h3>
-                                    <p className="text-gray-600 flex items-center text-sm">
-                                      <Building className="w-4 h-4 mr-1" />
-                                      {app.company}
-                                    </p>
-                                  </div>
+                    {applications.map((app) => (
+                      <Card key={app.id} className="border border-gray-200 hover:border-teal-300 hover:shadow-md transition-all duration-300">
+                        <CardContent className="p-6">
+                          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            {/* Job Info */}
+                            <div className="flex-1">
+                              <div className="flex items-start gap-3 mb-3">
+                                <div className="w-12 h-12 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                  <Building className="w-6 h-6 text-teal-600" />
                                 </div>
-
-                                {/* Job Details */}
-                                <div className="flex flex-wrap gap-3 text-sm text-gray-600">
-                                  {app.location && (
-                                    <div className="flex items-center">
-                                      <MapPin className="w-4 h-4 mr-1 text-gray-400" />
-                                      {app.location}
-                                    </div>
-                                  )}
-                                  {app.job_type && (
-                                    <Badge variant="outline" className="text-xs">
-                                      {app.job_type.replace('_', ' ').toUpperCase()}
-                                    </Badge>
-                                  )}
-                                  {app.category && (
-                                    <Badge className="bg-teal-50 text-teal-700 border-teal-200 text-xs">
-                                      {app.category}
-                                    </Badge>
-                                  )}
+                                <div>
+                                  <h3 className="text-lg font-bold text-gray-900 mb-1">
+                                    {app.job_title}
+                                  </h3>
+                                  <p className="text-gray-600 flex items-center text-sm">
+                                    <Building className="w-4 h-4 mr-1" />
+                                    {app.company}
+                                  </p>
                                 </div>
                               </div>
 
-                              {/* Application Status & Actions */}
-                              <div className="flex flex-col items-end gap-3">
-                                <div className="text-right">
-                                  <div className="flex items-center text-sm text-gray-500 mb-1">
-                                    <Clock className="w-4 h-4 mr-1" />
-                                    Applied on {new Date(app.applied_at).toLocaleDateString('en-US', {
-                                      month: 'short',
-                                      day: 'numeric',
-                                      year: 'numeric'
-                                    })}
+                              {/* Job Details */}
+                              <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                                {app.location && (
+                                  <div className="flex items-center">
+                                    <MapPin className="w-4 h-4 mr-1 text-gray-400" />
+                                    {app.location}
                                   </div>
-                                  <Badge
-                                    className={`${app.status === 'pending' ? 'bg-yellow-100 text-yellow-700 border-yellow-200' :
-                                        app.status === 'reviewed' ? 'bg-blue-100 text-blue-700 border-blue-200' :
-                                          app.status === 'accepted' ? 'bg-green-100 text-green-700 border-green-200' :
-                                            'bg-gray-100 text-gray-700 border-gray-200'
-                                      }`}
-                                  >
-                                    {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                                )}
+                                {app.job_type && (
+                                  <Badge variant="outline" className="text-xs">
+                                    {app.job_type.replace('_', ' ').toUpperCase()}
                                   </Badge>
-                                </div>
-
-                                <Link to={`/jobs/${app.job_id}`}>
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="border-teal-300 text-teal-700 hover:bg-teal-50"
-                                  >
-                                    View Job
-                                    <ArrowRight className="w-4 h-4 ml-1" />
-                                  </Button>
-                                </Link>
+                                )}
+                                {app.category && (
+                                  <Badge className="bg-teal-50 text-teal-700 border-teal-200 text-xs">
+                                    {app.category}
+                                  </Badge>
+                                )}
                               </div>
                             </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
+
+                            {/* Application Status & Actions */}
+                            <div className="flex flex-col items-end gap-3">
+                              <div className="text-right">
+                                <div className="flex items-center text-sm text-gray-500 mb-1">
+                                  <Clock className="w-4 h-4 mr-1" />
+                                  Applied on {new Date(app.applied_at).toLocaleDateString('en-US', {
+                                    month: 'short',
+                                    day: 'numeric',
+                                    year: 'numeric'
+                                  })}
+                                </div>
+                                <Badge
+                                  className={`${app.status === 'pending' ? 'bg-yellow-100 text-yellow-700 border-yellow-200' :
+                                    app.status === 'reviewed' ? 'bg-blue-100 text-blue-700 border-blue-200' :
+                                      app.status === 'accepted' ? 'bg-green-100 text-green-700 border-green-200' :
+                                        'bg-gray-100 text-gray-700 border-gray-200'
+                                    }`}
+                                >
+                                  {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                                </Badge>
+                              </div>
+
+                              <Link to={`/jobs/${app.job_id}`}>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="border-teal-300 text-teal-700 hover:bg-teal-50"
+                                >
+                                  View Job
+                                  <ArrowRight className="w-4 h-4 ml-1" />
+                                </Button>
+                              </Link>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
                 )}
               </CardContent>

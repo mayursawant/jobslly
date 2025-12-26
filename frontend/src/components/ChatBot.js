@@ -6,8 +6,9 @@ import { Badge } from './ui/badge';
 import axios from 'axios';
 import { toast } from 'sonner';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { API_BASE } from '../config/api';
+
+const API = API_BASE;
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,7 +34,7 @@ const ChatBot = () => {
 
   const sendMessage = async (e) => {
     e.preventDefault();
-    
+
     if (!inputMessage.trim()) return;
 
     const userMessage = {
@@ -106,7 +107,7 @@ const ChatBot = () => {
             </svg>
           )}
         </Button>
-        
+
         {/* Notification Badge */}
         {!isOpen && (
           <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1">
@@ -124,7 +125,7 @@ const ChatBot = () => {
                 <div className="flex items-center space-x-2">
                   <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                     </svg>
                   </div>
                   <div>
@@ -132,7 +133,7 @@ const ChatBot = () => {
                     <p className="text-xs opacity-90">Healthcare Jobs Expert</p>
                   </div>
                 </div>
-                
+
                 <Button
                   variant="ghost"
                   size="sm"
@@ -162,19 +163,19 @@ const ChatBot = () => {
                     </div>
                   </div>
                 ))}
-                
+
                 {isTyping && (
                   <div className="flex justify-start">
                     <div className="chat-bubble bot">
                       <div className="flex space-x-1">
                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                       </div>
                     </div>
                   </div>
                 )}
-                
+
                 <div ref={messagesEndRef} />
               </div>
 
@@ -222,7 +223,7 @@ const ChatBot = () => {
                     </svg>
                   </Button>
                 </form>
-                
+
                 <div className="mt-2 text-xs text-gray-500 text-center">
                   AI assistant • Powered by healthcare expertise
                 </div>

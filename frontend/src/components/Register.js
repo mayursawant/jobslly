@@ -4,7 +4,6 @@ import { AuthContext } from '../App';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Card, CardHeader, CardContent, CardTitle } from './ui/card';
 import { Alert, AlertDescription } from './ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { toast } from 'sonner';
@@ -19,7 +18,7 @@ const Register = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
+
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -36,7 +35,7 @@ const Register = () => {
 
     try {
       await register(formData);
-      toast.success('Account created successfully! Welcome to HealthCare Jobs!');
+      toast.success('Account created successfully!');
       navigate('/dashboard');
     } catch (error) {
       const message = error.response?.data?.detail || 'Registration failed. Please try again.';
@@ -48,167 +47,131 @@ const Register = () => {
   };
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleRoleChange = (value) => {
-    setFormData({
-      ...formData,
-      role: value
-    });
+    setFormData({ ...formData, role: value });
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-      <div className="w-full max-w-md">
-        <Card className="bg-white shadow-lg border border-gray-200" data-testid="register-form">
-          <CardHeader className="text-center pb-6">
-            <CardTitle className="text-2xl font-bold text-gray-900 mb-2">
-              Create Your Account
-            </CardTitle>
-            <p className="text-gray-600">
-              Join India's largest healthcare community
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Create your account
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Join the healthcare community today
+          </p>
+        </div>
+
+        {error && (
+          <Alert className="mb-4 bg-red-50 border-red-200 text-red-600">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="full_name">Full Name</Label>
+              <Input
+                id="full_name"
+                name="full_name"
+                type="text"
+                required
+                value={formData.full_name}
+                onChange={handleChange}
+                placeholder="John Doe"
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="email">Email address</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="john@example.com"
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input
+                id="phone"
+                name="phone"
+                type="tel"
+                required
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="+91 98765 43210"
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                required
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="******"
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="role">I am a...</Label>
+              <Select value={formData.role} onValueChange={handleRoleChange}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Select your role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="job_seeker">Healthcare Professional</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+            >
+              {loading ? (
+                <span className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Creating Account...
+                </span>
+              ) : (
+                'Create Account'
+              )}
+            </Button>
+          </div>
+
+          <div className="text-center mt-4">
+            <p className="text-sm text-gray-600">
+              Already have an account?{' '}
+              <Link to="/login" className="font-medium text-emerald-600 hover:text-emerald-500">
+                Sign in
+              </Link>
             </p>
-          </CardHeader>
-          
-          <CardContent>
-            {error && (
-              <Alert className="mb-4 border-red-200 bg-red-50" data-testid="register-error">
-                <AlertDescription className="text-red-700">
-                  {error}
-                </AlertDescription>
-              </Alert>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-1">
-                <Label htmlFor="full_name" className="text-sm font-medium text-gray-900">
-                  Full Name
-                </Label>
-                <Input
-                  id="full_name"
-                  name="full_name"
-                  type="text"
-                  value={formData.full_name}
-                  onChange={handleChange}
-                  required
-                  className="h-11"
-                  placeholder="Enter your full name"
-                  data-testid="fullname-input"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <Label htmlFor="email" className="text-sm font-medium text-gray-900">
-                  Email Address
-                </Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="h-11"
-                  placeholder="Enter your email"
-                  data-testid="email-input"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <Label htmlFor="phone" className="text-sm font-medium text-gray-900">
-                  Phone Number
-                </Label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                  className="h-11"
-                  placeholder="Enter your phone number"
-                  data-testid="phone-input"
-                  pattern="[0-9]{10,15}"
-                  title="Please enter a valid phone number (10-15 digits)"
-                />
-                <p className="text-xs text-gray-500">Enter 10-15 digit phone number</p>
-              </div>
-
-              <div className="space-y-1">
-                <Label htmlFor="password" className="text-sm font-medium text-gray-900">
-                  Password
-                </Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="h-11"
-                  placeholder="Create a password"
-                  data-testid="password-input"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <Label htmlFor="role" className="text-sm font-medium text-gray-900">
-                  I am a...
-                </Label>
-                <Select value={formData.role} onValueChange={handleRoleChange}>
-                  <SelectTrigger className="h-11" data-testid="role-select">
-                    <SelectValue placeholder="Select your role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="job_seeker" data-testid="role-job-seeker">
-                      Healthcare Professional
-                    </SelectItem>
-                    {/* <SelectItem value="employer" data-testid="role-employer">
-                      Healthcare Employer
-                    </SelectItem> */}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white h-11 mt-6"
-                data-testid="register-submit-btn"
-              >
-                {loading ? (
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Creating Account...
-                  </div>
-                ) : (
-                  'Create Free Account'
-                )}
-              </Button>
-            </form>
-
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
-                Already have an account?{' '}
-                <Link 
-                  to="/login" 
-                  className="text-blue-600 hover:text-blue-700 font-medium"
-                  data-testid="login-link"
-                >
-                  Sign in
-                </Link>
-              </p>
-            </div>
-
-            <div className="mt-6 text-xs text-gray-500 text-center">
-              By creating an account, you agree to our Terms of Service and Privacy Policy
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        </form>
       </div>
     </div>
   );

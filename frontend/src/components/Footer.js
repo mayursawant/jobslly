@@ -16,6 +16,8 @@ import {
   Heart
 } from 'lucide-react';
 
+import { API_BASE } from '../config/api';
+
 // Custom X (Twitter) Icon Component
 const XIcon = ({ className }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 24 24">
@@ -37,7 +39,7 @@ const Footer = () => {
     // Fetch recent blog posts for footer
     const fetchRecentBlogs = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL || ''}/api/blog?limit=4`);
+        const response = await fetch(`${API_BASE}/blog?limit=4`);
         if (response.ok) {
           const blogs = await response.json();
           setRecentBlogs(blogs);

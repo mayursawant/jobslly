@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
-import { Badge } from './ui/badge';
 import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'sonner';
 
-const API = `${process.env.REACT_APP_BACKEND_URL || ''}/api`;
+import { API_BASE } from '../config/api';
+
+const API = API_BASE;
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +19,19 @@ const ContactUs = () => {
   });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      // Calculate mouse position relative to center of screen
+      const x = (e.clientX - window.innerWidth / 2) / 50;
+      const y = (e.clientY - window.innerHeight / 2) / 50;
+      setMousePos({ x, y });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   const subjectOptions = [
     'General Inquiry',
@@ -71,9 +85,39 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-emerald-50">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-teal-50 via-white to-emerald-50">
+      {/* Parallax Background Elements */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Floating Orb 1 */}
+        <div
+          className="absolute top-20 left-10 w-64 h-64 bg-teal-200/20 rounded-full blur-3xl"
+          style={{ transform: `translate(${mousePos.x * -2}px, ${mousePos.y * -2}px)` }}
+        />
+        {/* Floating Orb 2 */}
+        <div
+          className="absolute bottom-40 right-10 w-80 h-80 bg-emerald-200/20 rounded-full blur-3xl"
+          style={{ transform: `translate(${mousePos.x * 2}px, ${mousePos.y * 2}px)` }}
+        />
+        {/* Floating Orb 3 */}
+        <div
+          className="absolute top-1/2 left-1/2 w-96 h-96 bg-blue-100/20 rounded-full blur-3xl"
+          style={{ transform: `translate(${mousePos.x}px, ${mousePos.y}px)` }}
+        />
+
+        {/* Floating Icons */}
+        <div className="absolute top-32 right-1/4 opacity-10 text-4xl" style={{ transform: `translate(${mousePos.x * -1}px, ${mousePos.y * -1}px)` }}>
+          ✉️
+        </div>
+        <div className="absolute bottom-1/4 left-1/4 opacity-10 text-4xl" style={{ transform: `translate(${mousePos.x * 1.5}px, ${mousePos.y * 1.5}px)` }}>
+          📞
+        </div>
+        <div className="absolute top-1/4 left-10 opacity-10 text-4xl" style={{ transform: `translate(${mousePos.x * -0.5}px, ${mousePos.y * -0.5}px)` }}>
+          📍
+        </div>
+      </div>
+
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-16">
+      <div className="relative z-10 bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-16 shadow-lg transform transition-transform duration-100" style={{ transform: `translateY(${mousePos.y * 0.1}px)` }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -86,11 +130,11 @@ const ContactUs = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid md:grid-cols-3 gap-8">
           {/* Contact Information */}
-          <div className="md:col-span-1 space-y-6">
-            <Card className="border-teal-200">
+          <div className="md:col-span-1 space-y-6" style={{ transform: `translate(${mousePos.x * 0.2}px, ${mousePos.y * 0.2}px)` }}>
+            <Card className="border-teal-200 shadow-md hover:shadow-xl transition-shadow duration-300 bg-white/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center text-teal-700">
                   <Mail className="w-5 h-5 mr-2" />
@@ -105,7 +149,7 @@ const ContactUs = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-teal-200">
+            <Card className="border-teal-200 shadow-md hover:shadow-xl transition-shadow duration-300 bg-white/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center text-teal-700">
                   <Phone className="w-5 h-5 mr-2" />
@@ -120,7 +164,7 @@ const ContactUs = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-teal-200">
+            <Card className="border-teal-200 shadow-md hover:shadow-xl transition-shadow duration-300 bg-white/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center text-teal-700">
                   <MapPin className="w-5 h-5 mr-2" />
@@ -157,8 +201,8 @@ const ContactUs = () => {
           </div>
 
           {/* Contact Form */}
-          <div className="md:col-span-2">
-            <Card className="border-teal-200 shadow-xl">
+          <div className="md:col-span-2" style={{ transform: `translate(${mousePos.x * 0.1}px, ${mousePos.y * 0.1}px)` }}>
+            <Card className="border-teal-200 shadow-xl bg-white/90 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-2xl text-gray-800">
                   Send Us a Message
@@ -167,7 +211,7 @@ const ContactUs = () => {
               <CardContent>
                 {submitted ? (
                   <div className="text-center py-12">
-                    <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                    <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4 animate-bounce" />
                     <h3 className="text-2xl font-bold text-gray-800 mb-2">
                       Message Sent Successfully!
                     </h3>
@@ -195,7 +239,7 @@ const ContactUs = () => {
                         onChange={handleChange}
                         placeholder="John Doe"
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-300 focus:shadow-md"
                       />
                     </div>
 
@@ -211,7 +255,7 @@ const ContactUs = () => {
                         onChange={handleChange}
                         placeholder="john@example.com"
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-300 focus:shadow-md"
                       />
                     </div>
 
@@ -227,7 +271,7 @@ const ContactUs = () => {
                         onChange={handleChange}
                         placeholder="+1 (555) 123-4567"
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-300 focus:shadow-md"
                       />
                     </div>
 
@@ -241,7 +285,7 @@ const ContactUs = () => {
                         value={formData.subject}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-300 focus:shadow-md"
                       >
                         <option value="">Select a subject</option>
                         {subjectOptions.map(option => (
@@ -264,7 +308,7 @@ const ContactUs = () => {
                         placeholder="Tell us how we can help you..."
                         required
                         rows={6}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-300 focus:shadow-md"
                       />
                     </div>
 
@@ -272,7 +316,7 @@ const ContactUs = () => {
                     <Button
                       type="submit"
                       disabled={loading}
-                      className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white py-3 text-lg font-semibold"
+                      className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                     >
                       {loading ? (
                         <>

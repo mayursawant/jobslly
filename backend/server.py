@@ -1,7 +1,8 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File, Form, Header, Request, Query
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File, Form, Header, Request, Query, BackgroundTasks
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.responses import Response, PlainTextResponse, RedirectResponse, HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.gzip import GZipMiddleware
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -10,6 +11,8 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import hashlib
 from pydantic import BaseModel, Field, EmailStr
 from typing import List, Optional, Dict, Any
+import pymongo
+import asyncio
 from datetime import datetime, timedelta, timezone
 import os
 import logging
@@ -122,8 +125,25 @@ def regenerate_sitemap_async():
 
 # Meta Tag Injection Middleware removed - app now uses pure client-side rendering
 
+# Helper function for background thumbnail updates
+async def update_thumbnails_bg(posts_to_update: List[Dict]):
+    """Update thumbnails in background to not block response"""
+    if not posts_to_update:
+        return
+        
+    for item in posts_to_update:
+        try:
+            await db.blog_posts.update_one(
+                {"id": item['id']},
+                {"$set": {"featured_image_thumbnail": item['thumbnail']}}
+            )
+        except Exception as e:
+            logging.error(f"Failed to cache thumbnail for {item['id']}: {e}")
+
 # Create the main app
 app = FastAPI(title="HealthCare Jobs API", version="1.0.0")
+
+
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
@@ -447,11 +467,18 @@ class Token(BaseModel):
 
 # Helper functions
 def hash_password(password: str) -> str:
-    # Use SHA256 for simplicity in MVP
-    return hashlib.sha256(password.encode()).hexdigest()
+    # Use bcrypt for secure password hashing
+    import bcrypt
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return hashlib.sha256(plain_password.encode()).hexdigest() == hashed_password
+    import bcrypt
+    try:
+        return bcrypt.checkpw(plain_password.encode(), hashed_password.encode())
+    except Exception:
+        # Fallback for legacy SHA256 passwords (migration support)
+        import hashlib
+        return hashlib.sha256(plain_password.encode()).hexdigest() == hashed_password
 
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
@@ -751,17 +778,138 @@ async def create_job(job_data: JobCreate, current_user: User = Depends(get_curre
     
     return job
 
+
+@api_router.get("/jobs/search")
+async def search_jobs(
+    q: Optional[str] = Query(None, description="Search term for title, company, or location"),
+    category: Optional[str] = Query(None, description="Category filter"),
+    job_type: Optional[str] = Query(None, description="Job type filter"),
+    location: Optional[str] = Query(None, description="Location filter"),
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100)
+):
+    """
+    Search jobs with server-side filtering and pagination.
+    Returns jobs list, total count, and metadata.
+    """
+    try:
+        # Build query
+        query = {
+            "is_approved": True,
+            "is_deleted": {"$ne": True}
+        }
+        
+        # Text search
+        if q:
+            # Case-insensitive regex search across multiple fields
+            regex = {"$regex": q, "$options": "i"}
+            query["$or"] = [
+                {"title": regex},
+                {"company": regex},
+                {"location": regex},
+                {"description": regex}
+            ]
+            
+        # Category filter
+        if category and category != 'all':
+            # Handle mapped categories similar to get_category_jobs
+            if category in TITLE_BASED_CATEGORIES:
+                title_keywords = TITLE_BASED_CATEGORIES[category]
+                title_regex = "|".join(title_keywords)
+                # If we already have a text search, implies AND logic
+                if "title" in query:
+                     # Complex AND with existing regex not straightforward in simple query dict
+                     # For simplicity, we'll use $and if needed, but here we just override or merge
+                     # Let's verify if title is already set by 'q' search.
+                     # If 'q' is present, it uses $or. We need to add this as an AND condition.
+                     pass # MongoDB handles top-level keys as implicit AND.
+                     # But we need to check conflicts. 
+                     # Actually, TITLE_BASED_CATEGORIES logic puts a regex on 'title'.
+                     # If 'q' also puts requirements, we might need $and.
+                     query["title"] = {"$regex": title_regex, "$options": "i"} 
+            else:
+                # Standard array check
+                # Check DB mapping or direct value
+                db_cats = CATEGORY_DB_MAPPING.get(category, [category])
+                query["categories"] = {"$in": db_cats}
+
+        # Job Type filter
+        if job_type and job_type != 'all':
+            query["job_type"] = job_type
+            
+        # Location filter (direct)
+        if location:
+            query["location"] = {"$regex": location, "$options": "i"}
+
+        # Get total count
+        total_count = await db.jobs.count_documents(query)
+        
+        # Get data
+        # Sort by created_at desc, archived last
+        cursor = db.jobs.find(query).sort([("created_at", -1), ("is_archived", 1)]).skip(skip).limit(limit)
+        jobs = await cursor.to_list(length=None)
+        
+        # Serialize
+        result_jobs = []
+        for job in jobs:
+            try:
+                # Handle dates and serialization same as get_jobs
+                if isinstance(job.get('created_at'), str):
+                    job['created_at'] = datetime.fromisoformat(job['created_at'])
+                if job.get('expires_at') and isinstance(job.get('expires_at'), str):
+                    job['expires_at'] = datetime.fromisoformat(job['expires_at'])
+                if job.get('application_deadline') and isinstance(job.get('application_deadline'), str):
+                    job['application_deadline'] = datetime.fromisoformat(job['application_deadline'])
+                    
+                if job.get('salary_min') is not None and isinstance(job.get('salary_min'), int):
+                    job['salary_min'] = str(job['salary_min'])
+                if job.get('salary_max') is not None and isinstance(job.get('salary_max'), int):
+                    job['salary_max'] = str(job['salary_max'])
+                    
+                result_jobs.append(Job(**job))
+            except Exception as e:
+                print(f"[ERROR] Serialization error for job {job.get('id')}: {e}")
+                continue
+
+        return {
+            "jobs": result_jobs,
+            "total": total_count,
+            "skip": skip,
+            "limit": limit,
+            "page": (skip // limit) + 1,
+            "total_pages": (total_count + limit - 1) // limit,
+            "has_more": (skip + limit) < total_count
+        }
+
+    except Exception as e:
+        print(f"[ERROR] search_jobs failed: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @api_router.get("/jobs", response_model=List[Job])
-async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True, category: str = None):
+async def get_jobs(skip: int = 0, limit: int = 20, approved_only: bool = True, category: str = None, summary: bool = False):
     try:
         query = {"is_approved": True, "is_deleted": {"$ne": True}} if approved_only else {"is_deleted": {"$ne": True}}
         
         # Add category filter if provided (matches ANY category in the categories array)
         if category:
             query["categories"] = category
+
+        # Projection for summary mode
+        projection = {"_id": 0}
+        if summary:
+            # Exclude heavy fields
+            projection.update({
+                # "description": 0,  # Required by Job model & Frontend
+                # "requirements": 0, # Required by Job model & Frontend
+                "benefits": 0,
+                "content": 0 # Just in case
+            })
         
         # Sort: By created_at descending (newest first), then archived jobs at end
-        jobs = await db.jobs.find(query, {"_id": 0}).sort([("created_at", -1), ("is_archived", 1)]).skip(skip).limit(limit).to_list(length=None)
+        jobs = await db.jobs.find(query, projection).sort([("created_at", -1), ("is_archived", 1)]).skip(skip).limit(limit).to_list(length=None)
         
         print(f"[DEBUG] Found {len(jobs)} jobs from database")
         
@@ -1257,11 +1405,19 @@ async def chat_with_bot(request: AIRequest):
 
 # Admin Routes
 @api_router.get("/admin/jobs/pending", response_model=List[Job])
-async def get_pending_jobs(current_user: User = Depends(get_current_user)):
+async def get_pending_jobs(limit: int = 100, current_user: User = Depends(get_current_user)):
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Admin access required")
     
-    jobs = await db.jobs.find({"is_approved": False}).to_list(length=None)
+    # Optimize: Exclude heavy fields
+    # Note: cannot use $substr in find(), so we just exclude heavy arrays
+    projection = {
+        "requirements": 0,
+        "benefits": 0,
+        "content": 0
+    }
+    
+    jobs = await db.jobs.find({"is_approved": False}, projection).sort("created_at", -1).limit(limit).to_list(length=limit)
     
     for job in jobs:
         if isinstance(job.get('created_at'), str):
@@ -1442,45 +1598,80 @@ async def create_blog_post(
     return BlogPost(**blog_data)
 
 @api_router.get("/admin/blog", response_model=List[BlogPostSummary])
-async def get_admin_blog_posts(current_user: User = Depends(get_current_user)):
+async def get_admin_blog_posts(background_tasks: BackgroundTasks, current_user: User = Depends(get_current_user)):
     """
     Get blog posts for admin listing - returns lightweight summaries with compressed thumbnails.
-    Full content is loaded when editing individual post.
     """
     if current_user.role != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Admin access required")
     
-    # Include featured_image for thumbnail compression
-    projection = {
-        "_id": 0,
-        "id": 1,
-        "title": 1,
-        "slug": 1,
-        "excerpt": 1,
-        "featured_image": 1,
-        "author_id": 1,
-        "category": 1,
-        "tags": 1,
-        "is_published": 1,
-        "is_featured": 1,
-        "created_at": 1,
-        "published_at": 1
-    }
+    # Project specific fields + conditional fetching of heavy image
+    pipeline = [
+        {"$sort": {"created_at": -1}},
+        {"$project": {
+            "_id": 0,
+            "id": 1,
+            "title": 1,
+            "slug": 1,
+            "excerpt": 1,
+            "author_id": 1,
+            "category": 1,
+            "tags": 1,
+            "is_published": 1,
+            "is_featured": 1,
+            "created_at": 1,
+            "published_at": 1,
+            "featured_image_thumbnail": 1,
+            "featured_image": {
+                "$cond": {
+                    "if": { 
+                        "$and": [
+                            {"$ne": ["$featured_image_thumbnail", None]}, 
+                            {"$ne": ["$featured_image_thumbnail", ""]}
+                        ]
+                    },
+                    "then": "$$REMOVE",
+                    "else": "$featured_image"
+                }
+            }
+        }}
+    ]
     
-    posts = await db.blog_posts.find({}, projection).sort("created_at", -1).to_list(length=None)
+    posts = await db.blog_posts.aggregate(pipeline).to_list(length=None)
+    posts_to_update = []
     
-    for post in posts:
+    # helper for parallel processing
+    async def process_post_image(post):
         if isinstance(post.get('created_at'), str):
             post['created_at'] = datetime.fromisoformat(post['created_at'])
         if post.get('published_at') and isinstance(post.get('published_at'), str):
             post['published_at'] = datetime.fromisoformat(post['published_at'])
-        
-        # Compress featured_image to thumbnail
-        featured_img = post.get('featured_image', '')
-        if featured_img and featured_img.startswith('data:image'):
-            post['featured_image'] = compress_base64_image(featured_img, max_width=400, quality=60)
-        elif not featured_img:
+            
+        # Thumbnail logic
+        if post.get('featured_image_thumbnail'):
+            post['featured_image'] = post['featured_image_thumbnail']
+        elif post.get('featured_image') and post['featured_image'].startswith('data:image'):
+            # Offload compression to thread pool
+            try:
+                compressed = await asyncio.to_thread(compress_base64_image, post['featured_image'], max_width=400, quality=60)
+                post['featured_image'] = compressed
+                return {'id': post['id'], 'thumbnail': compressed}
+            except Exception as e:
+                logging.error(f"Error compressing image for post {post.get('id')}: {e}")
+        elif not post.get('featured_image'):
             post['featured_image'] = None
+        
+        post.pop('featured_image_thumbnail', None)
+        return None
+
+    # Process all posts in parallel
+    if posts:
+        results = await asyncio.gather(*[process_post_image(post) for post in posts])
+        posts_to_update = [r for r in results if r is not None]
+
+    # Offload cache update to background task
+    if posts_to_update:
+        background_tasks.add_task(update_thumbnails_bg, posts_to_update)
     
     return [BlogPostSummary(**post) for post in posts]
 
@@ -1677,8 +1868,16 @@ async def get_all_jobs_admin(
     if not include_deleted:
         query["is_deleted"] = {"$ne": True}
     
+    # Optimize: Exclude heavy fields (valid find projection)
+    # Note: cannot use $substr in find(), and cannot mix 0/1 except for _id
+    projection = {
+        "requirements": 0,
+        "benefits": 0,
+        "content": 0
+    }
+
     # Add pagination to prevent timeout on large datasets
-    jobs = await db.jobs.find(query).sort("created_at", -1).skip(skip).limit(limit).to_list(length=limit)
+    jobs = await db.jobs.find(query, projection).sort("created_at", -1).skip(skip).limit(limit).to_list(length=limit)
     
     for job in jobs:
         if isinstance(job.get('created_at'), str):
@@ -1878,50 +2077,125 @@ async def regenerate_job_slug(job_id: str, current_user: User = Depends(get_curr
 
 
 # Public Blog Routes
-@api_router.get("/blog", response_model=List[BlogPostSummary])
-async def get_blog_posts(featured_only: bool = False, limit: int = 10, skip: int = 0):
+# Public Blog Routes
+@api_router.get("/blog")
+async def get_blog_posts(
+    background_tasks: BackgroundTasks,
+    featured_only: bool = False,
+    category: Optional[str] = None,
+    tag: Optional[str] = None,
+    q: Optional[str] = None,
+    limit: int = 10,
+    skip: int = 0,
+    page: int = 1
+):
     """
-    Get blog posts for listing - returns lightweight summaries with compressed thumbnails.
-    Full content and full-size images are only returned when viewing a single blog post by slug.
+    Get blog posts with server-side filtering, search, and pagination.
+    Returns: { "posts": List[BlogPostSummary], "total": int, "page": int, "total_pages": int }
     """
     query = {"is_published": True}
+    
     if featured_only:
         query["is_featured"] = True
+        
+    if category and category != 'all':
+        query["category"] = category
+        
+    if tag:
+        query["tags"] = tag
+        
+    if q:
+        query["$or"] = [
+            {"title": {"$regex": q, "$options": "i"}},
+            {"excerpt": {"$regex": q, "$options": "i"}},
+            {"tags": {"$regex": q, "$options": "i"}}
+        ]
+
+    # Calculate total count for pagination
+    total_count = await db.blog_posts.count_documents(query)
+    total_pages = (total_count + limit - 1) // limit
+
+    # Aggregation Pipeline for efficient fetching
+    pipeline = [
+        {"$match": query},
+        {"$sort": {"published_at": -1}},
+        {"$skip": skip},
+        {"$limit": limit},
+        {"$project": {
+            "_id": 0,
+            "id": 1,
+            "title": 1,
+            "slug": 1,
+            "excerpt": 1,
+            "author_id": 1,
+            "category": 1,
+            "tags": 1,
+            "is_published": 1,
+            "is_featured": 1,
+            "created_at": 1,
+            "published_at": 1,
+            "featured_image_thumbnail": 1,
+            # conditionally fetch featured_image only if thumbnail is missing
+            "featured_image": {
+                "$cond": {
+                    "if": { 
+                        "$and": [
+                            {"$ne": ["$featured_image_thumbnail", None]}, 
+                            {"$ne": ["$featured_image_thumbnail", ""]}
+                        ]
+                    },
+                    "then": "$$REMOVE",
+                    "else": "$featured_image"
+                }
+            }
+        }}
+    ]
     
-    # Include featured_image for thumbnail compression
-    projection = {
-        "_id": 0,
-        "id": 1,
-        "title": 1,
-        "slug": 1,
-        "excerpt": 1,
-        "featured_image": 1,
-        "author_id": 1,
-        "category": 1,
-        "tags": 1,
-        "is_published": 1,
-        "is_featured": 1,
-        "created_at": 1,
-        "published_at": 1
-    }
+    posts = await db.blog_posts.aggregate(pipeline).to_list(length=None)
     
-    posts = await db.blog_posts.find(query, projection).sort("published_at", -1).skip(skip).limit(limit).to_list(length=None)
+    posts_to_update = []
     
-    for post in posts:
+    # helper for parallel processing
+    async def process_post_image(post):
         if isinstance(post.get('created_at'), str):
             post['created_at'] = datetime.fromisoformat(post['created_at'])
         if post.get('published_at') and isinstance(post.get('published_at'), str):
             post['published_at'] = datetime.fromisoformat(post['published_at'])
         
-        # Compress featured_image to thumbnail for faster loading
-        featured_img = post.get('featured_image', '')
-        if featured_img and featured_img.startswith('data:image'):
-            # Compress to 400px width, 60% quality - reduces ~200KB to ~15KB
-            post['featured_image'] = compress_base64_image(featured_img, max_width=400, quality=60)
-        elif not featured_img:
+        # Thumbnail logic
+        if post.get('featured_image_thumbnail'):
+            # Use existing thumbnail (featured_image was removed from projection)
+            post['featured_image'] = post['featured_image_thumbnail']
+        elif post.get('featured_image') and post['featured_image'].startswith('data:image'):
+            # Offload compression to thread pool
+            try:
+                compressed = await asyncio.to_thread(compress_base64_image, post['featured_image'], max_width=400, quality=60)
+                post['featured_image'] = compressed
+                return {'id': post['id'], 'thumbnail': compressed}
+            except Exception as e:
+                logging.error(f"Error compressing image for post {post.get('id')}: {e}")
+                
+        elif not post.get('featured_image'):
             post['featured_image'] = None
-    
-    return [BlogPostSummary(**post) for post in posts]
+        
+        post.pop('featured_image_thumbnail', None)
+        return None
+
+    # Process all posts in parallel
+    if posts:
+        results = await asyncio.gather(*[process_post_image(post) for post in posts])
+        posts_to_update = [r for r in results if r is not None]
+
+    # Offload cache update to background task
+    if posts_to_update:
+        background_tasks.add_task(update_thumbnails_bg, posts_to_update)
+
+    return {
+        "posts": [BlogPostSummary(**post) for post in posts],
+        "total": total_count,
+        "page": page,
+        "total_pages": total_pages
+    }
 
 @api_router.get("/blog/{slug}", response_model=BlogPost)
 async def get_blog_post_by_slug(slug: str):
@@ -2310,6 +2584,12 @@ async def apply_with_lead_collection(job_id: str, lead_data: JobLeadCreate):
     
     await db.job_leads.insert_one(lead_dict)
     
+    # Update job application count (Fix for 0 count issue)
+    await db.jobs.update_one(
+        {"id": actual_job_id},
+        {"$inc": {"application_count": 1}}
+    )
+    
     return {
         "success": True,
         "message": "Application submitted successfully! We'll contact you soon.",
@@ -2573,7 +2853,7 @@ async def get_job_seeker_stats(current_user: User = Depends(get_current_user)):
     }
 
 # SEO Routes - Robots.txt
-@api_router.get("/robots.txt", response_class=PlainTextResponse)
+@app.get("/robots.txt", response_class=PlainTextResponse)
 async def get_robots_txt():
     """
     Generate robots.txt for search engine crawling
@@ -2589,6 +2869,10 @@ Sitemap: https://jobslly.com/sitemap.xml
 """
     
     return PlainTextResponse(content=robots_content)
+
+    return PlainTextResponse(content=robots_content)
+
+
 
 
 # Migration endpoint to generate slugs for existing jobs (admin only)
@@ -2631,6 +2915,75 @@ async def migrate_job_slugs(current_user: User = Depends(get_current_user)):
     except Exception as e:
         print(f"❌ Error migrating slugs: {e}")
         raise HTTPException(status_code=500, detail=f"Migration failed: {str(e)}")
+
+
+# Background Task for Auto-Archiving Jobs
+async def archive_expired_jobs():
+    """
+    Background task to automatically archive jobs whose application deadline has passed.
+    Run frequency: Every 12 hours.
+    """
+    while True:
+        try:
+            now = datetime.now(timezone.utc)
+            result = await db.jobs.update_many(
+                {
+                    "is_archived": False,
+                    "application_deadline": {"$lt": now}
+                },
+                {"$set": {"is_archived": True}}
+            )
+            if result.modified_count > 0:
+                print(f"Auto-Archiver: Archived {result.modified_count} expired jobs.")
+            
+        except Exception as e:
+            print(f"Error in auto-archive task: {e}")
+        
+        # Wait for 12 hours
+        await asyncio.sleep(12 * 60 * 60)
+
+@app.on_event("startup")
+async def startup_db_client():
+    try:
+        # Create Indexes for Performance
+        print("Creating database indexes...")
+        
+        # Jobs Collection Indexes
+        # 1. Default sort index
+        await db.jobs.create_index([("created_at", -1), ("is_archived", 1)])
+        
+        # 2. Filtering index (approved/deleted)
+        await db.jobs.create_index([("is_approved", 1), ("is_deleted", 1)])
+        
+        # 3. Slug lookup for details page
+        # Existing index is sparse=True, so we must match it to avoid conflicts
+        await db.jobs.create_index("slug", unique=True, sparse=True)
+        
+        # 4. Filter indexes
+        await db.jobs.create_index("categories")
+        await db.jobs.create_index("job_type")
+        
+        # 5. Deadline Index for Auto-Archiving
+        await db.jobs.create_index("application_deadline")
+        
+        # 6. Text Search Index
+        # Check if text index exists before creating to avoid conflicts
+        indexes = await db.jobs.index_information()
+        if "title_text_company_text_location_text" not in indexes:
+             await db.jobs.create_index(
+                [("title", "text"), ("company", "text"), ("location", "text"), ("description", "text")],
+                name="search_index"
+            )
+        
+        print("Database indexes created successfully.")
+        
+        # Start background tasks
+        asyncio.create_task(archive_expired_jobs())
+        
+    except Exception as e:
+        print(f"Error creating indexes or background tasks: {e}")
+        # Don't crash the server on index errors, just log it
+        # raise HTTPException(status_code=500, detail=f"Migration failed: {str(e)}")
 
 
 # Contact Form Submission
@@ -2758,45 +3111,7 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
     
     return Response(content=xml_formatted, media_type="application/xml")
 
-# Dynamic Sitemap.xml at /sitemap.xml - Generated on-demand
-@app.get("/sitemap.xml", response_class=Response)
-async def get_sitemap_root():
-    """
-    Serve dynamic sitemap.xml - regenerates on every request for true real-time updates
-    For performance, you can add caching with TTL if needed
-    """
-    import asyncio
-    
-    # Regenerate sitemap file
-    subprocess.run(['python3', '/app/backend/update_sitemap.py'], check=False)
-    
-    # Read and serve the generated sitemap
-    try:
-        with open('/app/frontend/public/sitemap.xml', 'r') as f:
-            xml_content = f.read()
-        return Response(content=xml_content, media_type="application/xml")
-    except FileNotFoundError:
-        # Fallback: generate inline if file doesn't exist
-        urlset = ET.Element("urlset")
-        urlset.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
-        
-        base_url = 'https://jobslly.com'
-        static_pages = [
-            ('/', '1.0', 'daily'),
-            ('/jobs/', '0.9', 'daily'),
-            ('/blogs/', '0.8', 'daily'),
-        ]
-        
-        for path, priority, changefreq in static_pages:
-            url_elem = ET.SubElement(urlset, "url")
-            ET.SubElement(url_elem, "loc").text = f"{base_url}{path}"
-            ET.SubElement(url_elem, "lastmod").text = datetime.now(timezone.utc).strftime('%Y-%m-%d')
-            ET.SubElement(url_elem, "changefreq").text = changefreq
-            ET.SubElement(url_elem, "priority").text = priority
-        
-        xml_str = ET.tostring(urlset, encoding='unicode', method='xml')
-        xml_formatted = f'<?xml version="1.0" encoding="UTF-8"?>\n{xml_str}'
-        return Response(content=xml_formatted, media_type="application/xml")
+
 
 # SEO Meta Tags API for dynamic pages
 @app.get("/api/seo/meta/{page_type}")
@@ -2839,8 +3154,232 @@ async def get_seo_meta(page_type: str, job_id: str = None, blog_slug: str = None
         "canonical": "https://jobslly.com"
     }
 
+@app.get("/sitemap.xml", response_class=Response)
+async def get_sitemap_xml():
+    """
+    Generate dynamic sitemap.xml for the entire site
+    """
+    urlset = ET.Element("urlset")
+    urlset.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
+    
+    base_url = 'https://jobslly.com'
+    
+    # 1. Static Pages
+    static_pages = [
+        ('/', '1.0', 'daily'),
+        ('/jobs/', '0.9', 'daily'),
+        ('/blogs/', '0.8', 'daily'),
+        ('/login/', '0.7', 'weekly'),
+        ('/register/', '0.7', 'weekly'),
+        ('/dashboard/', '0.6', 'weekly'),
+        ('/contact-us/', '0.7', 'weekly'),
+        ('/privacy-policy/', '0.5', 'monthly'),
+        ('/terms-of-service/', '0.5', 'monthly'),
+        ('/cookies/', '0.5', 'monthly'),
+        ('/sitemap/', '0.5', 'monthly'),
+        ('/student-profiles/', '0.6', 'weekly'),
+        # Job Categories
+        ('/jobs/doctor/', '0.8', 'daily'),
+        ('/jobs/nursing/', '0.8', 'daily'),
+        ('/jobs/pharmacy/', '0.8', 'daily'),
+        ('/jobs/dentist/', '0.8', 'daily'),
+        ('/jobs/physiotherapy/', '0.8', 'daily'),
+        ('/jobs/medical-lab-technician/', '0.8', 'daily'),
+        ('/jobs/medical-science-liaison/', '0.8', 'daily'),
+        ('/jobs/pharmacovigilance/', '0.8', 'daily'),
+        ('/jobs/clinical-research/', '0.8', 'daily'),
+        ('/jobs/non-clinical-jobs/', '0.8', 'daily'),
+    ]
+    
+    for path, priority, changefreq in static_pages:
+        url_elem = ET.SubElement(urlset, "url")
+        ET.SubElement(url_elem, "loc").text = f"{base_url}{path}"
+        ET.SubElement(url_elem, "lastmod").text = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+        ET.SubElement(url_elem, "changefreq").text = changefreq
+        ET.SubElement(url_elem, "priority").text = priority
+        
+    # 2. Dynamic Jobs (Approved, Not Deleted, Not Expired)
+    try:
+        current_time = datetime.now(timezone.utc)
+        query = {
+            "is_approved": True, 
+            "is_deleted": {"$ne": True},
+            "is_archived": {"$ne": True}, # Exclude archived jobs
+            "$or": [
+                {"expires_at": None},
+                {"expires_at": {"$gt": current_time}}
+            ]
+        }
+        
+        # Get ALL approved jobs (removed limit as per user request)
+        # Note: For extremely large datasets (100k+), we would need sitemap index files
+        projection = {"slug": 1, "updated_at": 1, "created_at": 1, "id": 1}
+        jobs = await db.jobs.find(query, projection).sort("created_at", -1).to_list(length=None)
+        
+        for job in jobs:
+            url_elem = ET.SubElement(urlset, "url")
+            job_slug = job.get('slug', job['id'])
+            ET.SubElement(url_elem, "loc").text = f"{base_url}/jobs/{job_slug}"
+            
+            # Use updated_at if available, else created_at, else today
+            lastmod = job.get('updated_at', job.get('created_at', datetime.now(timezone.utc)))
+            if isinstance(lastmod, str):
+                try:
+                    lastmod = datetime.fromisoformat(lastmod.replace('Z', '+00:00'))
+                except:
+                    lastmod = datetime.now(timezone.utc)
+            
+            ET.SubElement(url_elem, "lastmod").text = lastmod.strftime('%Y-%m-%d')
+            ET.SubElement(url_elem, "changefreq").text = "daily"
+            ET.SubElement(url_elem, "priority").text = "0.8"
+            
+    except Exception as e:
+        print(f"Error adding jobs to sitemap: {e}")
+        
+    # 3. Blog Posts
+    try:
+        query = {
+            "is_published": True,
+            "published_at": {"$ne": None}
+        }
+        projection = {"slug": 1, "published_at": 1, "updated_at": 1}
+        posts = await db.blog_posts.find(query, projection).sort("published_at", -1).to_list(length=None)
+        
+        for post in posts:
+            url_elem = ET.SubElement(urlset, "url")
+            ET.SubElement(url_elem, "loc").text = f"{base_url}/blogs/{post['slug']}"
+            
+            lastmod = post.get('updated_at', post.get('published_at'))
+            if isinstance(lastmod, str):
+                try:
+                    lastmod = datetime.fromisoformat(lastmod.replace('Z', '+00:00'))
+                except:
+                    lastmod = datetime.now(timezone.utc)
+            
+            ET.SubElement(url_elem, "lastmod").text = lastmod.strftime('%Y-%m-%d')
+            ET.SubElement(url_elem, "changefreq").text = "daily"
+            ET.SubElement(url_elem, "priority").text = "0.8"
+            
+    except Exception as e:
+        print(f"Error adding blog posts to sitemap: {e}")
+
+    # Generate XML string
+    sitemap_xml = ET.tostring(urlset, encoding="unicode", method="xml")
+    
+    # Add XML declaration
+    return Response(content=f'<?xml version="1.0" encoding="UTF-8"?>\n{sitemap_xml}', media_type="application/xml")
+
 # Include the router
 app.include_router(api_router)
+
+@app.get("/sitemap-debug.xml", response_class=Response)
+async def get_sitemap_xml():
+    """
+    Generate dynamic sitemap.xml for the entire site
+    """
+    urlset = ET.Element("urlset")
+    urlset.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
+    
+    base_url = 'https://jobslly.com'
+    
+    # 1. Static Pages
+    static_pages = [
+        ('/', '1.0', 'daily'),
+        ('/jobs/', '0.9', 'daily'),
+        ('/blogs/', '0.8', 'daily'),
+        ('/login/', '0.7', 'weekly'),
+        ('/register/', '0.7', 'weekly'),
+        ('/dashboard/', '0.6', 'weekly'),
+        ('/contact-us/', '0.7', 'weekly'),
+        ('/privacy-policy/', '0.5', 'monthly'),
+        ('/terms-of-service/', '0.5', 'monthly'),
+        ('/cookies/', '0.5', 'monthly'),
+        ('/sitemap/', '0.5', 'monthly'),
+        ('/student-profiles/', '0.6', 'weekly'),
+        # Job Categories
+        ('/jobs/doctor/', '0.8', 'daily'),
+        ('/jobs/nursing/', '0.8', 'daily'),
+        ('/jobs/pharmacy/', '0.8', 'daily'),
+        ('/jobs/dentist/', '0.8', 'daily'),
+        ('/jobs/physiotherapy/', '0.8', 'daily'),
+        ('/jobs/medical-lab-technician/', '0.8', 'daily'),
+        ('/jobs/medical-science-liaison/', '0.8', 'daily'),
+        ('/jobs/pharmacovigilance/', '0.8', 'daily'),
+        ('/jobs/clinical-research/', '0.8', 'daily'),
+        ('/jobs/non-clinical-jobs/', '0.8', 'daily'),
+    ]
+    
+    print(f"Generating sitemap with {len(static_pages)} static pages")
+    for path, priority, changefreq in static_pages:
+        try:
+            print(f"Adding static page: {path}")
+            url_elem = ET.SubElement(urlset, "url")
+            ET.SubElement(url_elem, "loc").text = f"{base_url}{path}"
+            ET.SubElement(url_elem, "lastmod").text = datetime.now(timezone.utc).strftime('%Y-%m-%d')
+            ET.SubElement(url_elem, "changefreq").text = changefreq
+            ET.SubElement(url_elem, "priority").text = priority
+        except Exception as e:
+            print(f"Error adding {path}: {str(e)}")
+        
+    # 2. Dynamic Jobs (Approved, Not Deleted, Not Expired)
+    try:
+        current_time = datetime.now(timezone.utc)
+        query = {
+            "is_approved": True, 
+            "is_deleted": {"$ne": True},
+            "is_archived": {"$ne": True}, # Exclude archived jobs
+            "$or": [
+                {"expires_at": None},
+                {"expires_at": {"$gt": current_time}}
+            ]
+        }
+        
+        # Get ALL approved jobs (removed limit as per user request)
+        # Note: For extremely large datasets (100k+), we would need sitemap index files
+        projection = {"slug": 1, "updated_at": 1, "created_at": 1, "id": 1}
+        jobs = await db.jobs.find(query, projection).sort("created_at", -1).to_list(length=None)
+        
+        for job in jobs:
+            url_elem = ET.SubElement(urlset, "url")
+            job_slug = job.get('slug', job['id'])
+            ET.SubElement(url_elem, "loc").text = f"{base_url}/jobs/{job_slug}"
+            
+            lastmod = job.get('updated_at') or job.get('created_at', datetime.now(timezone.utc))
+            if isinstance(lastmod, str):
+                try:
+                    lastmod = datetime.fromisoformat(lastmod)
+                except:
+                    lastmod = datetime.now(timezone.utc)
+                    
+            ET.SubElement(url_elem, "lastmod").text = lastmod.strftime('%Y-%m-%d')
+            ET.SubElement(url_elem, "changefreq").text = "daily"
+            ET.SubElement(url_elem, "priority").text = "0.8"
+    except Exception as e:
+        print(f"Error adding jobs to sitemap: {e}")
+        
+    # 3. Dynamic Blog Posts
+    try:
+        posts = await db.blog_posts.find({"is_published": True}).sort("published_at", -1).to_list(length=None)
+        
+        for post in posts:
+            url_elem = ET.SubElement(urlset, "url")
+            ET.SubElement(url_elem, "loc").text = f"{base_url}/blogs/{post.get('slug', post['id'])}"
+            
+            lastmod = post.get('updated_at') or post.get('published_at') or post.get('created_at', datetime.now(timezone.utc))
+            if isinstance(lastmod, str):
+                try:
+                    lastmod = datetime.fromisoformat(lastmod)
+                except:
+                    lastmod = datetime.now(timezone.utc)
+
+            ET.SubElement(url_elem, "lastmod").text = lastmod.strftime('%Y-%m-%d')
+            ET.SubElement(url_elem, "changefreq").text = "weekly"
+            ET.SubElement(url_elem, "priority").text = "0.7"
+    except Exception as e:
+        print(f"Error adding blogs to sitemap: {e}")
+        
+    xml_str = ET.tostring(urlset, encoding='utf-8', method='xml')
+    return Response(content=xml_str, media_type="application/xml")
 
 # Add WWW to non-WWW redirect middleware (must be added before CORS)
 app.add_middleware(WWWRedirectMiddleware)
@@ -2898,7 +3437,21 @@ async def startup_event():
     from job_scheduler import start_scheduler
     start_scheduler()
     print("✅ Job expiry scheduler started")
+    
+    # Create indexes strictly required for performance
+    try:
+        await db.jobs.create_index("created_at")
+        print("✅ Created 'created_at' index")
+    except Exception as e:
+        print(f"⚠️ Index creation warning: {e}")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
+
+def regenerate_sitemap_async():
+    """
+    Legacy function: dynamic sitemap endpoints (/sitemap.xml) are now used.
+    This stub prevents NameErrors.
+    """
+    print("Sitemap is dynamic and up-to-date. No static generation needed.")

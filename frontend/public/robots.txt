@@ -3,8 +3,5 @@ Allow: /
 Disallow: /login/
 Disallow: /register/
 Disallow: /student-profiles/
-<<<<<<< HEAD
 
-=======
->>>>>>> 18205a79d433f9212aec02345d7b85fa1662ec22
 Sitemap: https://jobslly.com/sitemap.xml

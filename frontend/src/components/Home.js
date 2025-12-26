@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, MapPin, Briefcase, Users, TrendingUp, Globe, ArrowRight, Star, CheckCircle, Heart, Stethoscope, UserPlus, Building2 } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { MdWork, MdBusiness, MdPeople, MdStar } from 'react-icons/md';
 import { AuthContext } from '../App';
 import { Button } from './ui/button';
@@ -8,9 +8,9 @@ import { Input } from './ui/input';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import axios from 'axios';
+import { API_BASE } from '../config/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
-const API = `${BACKEND_URL}/api`;
+const API = API_BASE;
 
 // Helper function to strip HTML tags from text
 const stripHtml = (html) => {
@@ -250,7 +250,7 @@ const Home = () => {
 
   const fetchFeaturedJobs = async () => {
     try {
-      const response = await axios.get(`${API}/jobs?limit=6`);
+      const response = await axios.get(`${API}/jobs?limit=6&summary=true`);
       setFeaturedJobs(response.data);
 
       // Enhanced stats for healthcare professionals
@@ -270,13 +270,16 @@ const Home = () => {
   const fetchFeaturedBlogs = async () => {
     try {
       const response = await axios.get(`${API}/blog?featured_only=true&limit=3`);
-      setFeaturedBlogs(response.data);
+      // Handle new response format { posts: [], total: ... } or fallback
+      const blogData = response.data.posts ? response.data.posts : response.data;
+      setFeaturedBlogs(Array.isArray(blogData) ? blogData : []);
     } catch (error) {
       console.error('Error fetching featured blogs:', error);
       // If no featured blogs, fetch latest blogs as fallback
       try {
         const fallbackResponse = await axios.get(`${API}/blog?limit=3`);
-        setFeaturedBlogs(fallbackResponse.data);
+        const fallbackData = fallbackResponse.data.posts ? fallbackResponse.data.posts : fallbackResponse.data;
+        setFeaturedBlogs(Array.isArray(fallbackData) ? fallbackData : []);
       } catch (fallbackError) {
         console.error('Error fetching fallback blogs:', fallbackError);
       }
@@ -755,7 +758,7 @@ const Home = () => {
                       {blog.title}
                     </h3>
                     <p className="text-gray-600 mb-4 text-sm line-clamp-3">
-                      {blog.seo_description || stripHtml(blog.content).substring(0, 150) + '...'}
+                      {blog.excerpt || blog.seo_description || (blog.content ? stripHtml(blog.content).substring(0, 150) + '...' : 'Read more about this topic...')}
                     </p>
                     <div className="flex justify-between items-center">
                       <span className="text-xs text-gray-500">{blog.read_time || '5 min read'}</span>

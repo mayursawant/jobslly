@@ -11,8 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import axios from 'axios';
 import { toast } from 'sonner';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
-const API = `${BACKEND_URL}/api`;
+import { API_BASE } from '../config/api';
+
+const API = API_BASE;
 
 const Dashboard = () => {
   const { user, isEmployer, isAdmin } = useContext(AuthContext);

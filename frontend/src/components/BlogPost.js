@@ -6,8 +6,9 @@ import { Button } from './ui/button';
 import axios from 'axios';
 import { Helmet } from 'react-helmet-async';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
-const API = `${BACKEND_URL}/api`;
+import { API_BASE } from '../config/api';
+
+const API = API_BASE;
 
 const BlogPost = () => {
   const { slug } = useParams();

@@ -4,8 +4,9 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { API_BASE } from '../config/api';
+
+const API = API_BASE;
 
 const LeadChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,13 +19,13 @@ const LeadChatbot = () => {
 
   const welcomeMessages = [
     "Need help finding healthcare jobs? 🔍",
-    "Looking for career guidance? 💼", 
+    "Looking for career guidance? 💼",
     "Want to advance your healthcare career? 🚀"
   ];
 
   const quickReplies = [
     "Find jobs for doctors",
-    "Nurse opportunities", 
+    "Nurse opportunities",
     "Pharmacist positions",
     "Career advice",
     "Salary guidance"
@@ -32,14 +33,14 @@ const LeadChatbot = () => {
 
   useEffect(() => {
     // Auto-open chatbot after 5 seconds - ALWAYS on fresh page load
-    console.log('Setting up chatbot auto-open timer...');
+
     const timer = setTimeout(() => {
-      console.log('Auto-opening chatbot now!');
+
       setIsOpen(true);
     }, 5000);
-    
+
     return () => {
-      console.log('Clearing chatbot timer');
+
       clearTimeout(timer);
     };
   }, []); // Empty dependency array ensures this runs once on mount
@@ -63,20 +64,20 @@ const LeadChatbot = () => {
   const addBotMessage = (message) => {
     setIsTyping(true);
     setTimeout(() => {
-      setMessages(prev => [...prev, { 
-        text: message, 
-        type: 'bot', 
-        timestamp: new Date() 
+      setMessages(prev => [...prev, {
+        text: message,
+        type: 'bot',
+        timestamp: new Date()
       }]);
       setIsTyping(false);
     }, 800 + Math.random() * 600);
   };
 
   const addUserMessage = (message) => {
-    setMessages(prev => [...prev, { 
-      text: message, 
-      type: 'user', 
-      timestamp: new Date() 
+    setMessages(prev => [...prev, {
+      text: message,
+      type: 'user',
+      timestamp: new Date()
     }]);
   };
 
@@ -86,7 +87,7 @@ const LeadChatbot = () => {
       const response = await axios.post(`${API}/ai/job-posting-assistant`, {
         question: `User says: "${userMessage}". Respond as a helpful healthcare career chatbot with short, friendly answers (max 2 sentences). Focus on job search, career advice, or healthcare opportunities.`
       });
-      
+
       return response.data.answer || "I'm here to help with healthcare career questions! Ask me about jobs, career advice, or opportunities.";
     } catch (error) {
       console.error('AI response error:', error);
@@ -96,7 +97,7 @@ const LeadChatbot = () => {
 
   const getDefaultResponse = (message) => {
     const lowerMessage = message.toLowerCase();
-    
+
     if (lowerMessage.includes('job') || lowerMessage.includes('position')) {
       return "Great! We have 11K+ healthcare jobs available. What type of role are you looking for? 🏥";
     }
@@ -118,7 +119,7 @@ const LeadChatbot = () => {
     if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
       return "Hello! I'm excited to help you with your healthcare career. What can I assist you with today? 😊";
     }
-    
+
     return "That's interesting! I'm here to help with healthcare careers, job searches, and professional advice. What would you like to know? 🤔";
   };
 
@@ -128,7 +129,7 @@ const LeadChatbot = () => {
     const userMessage = currentInput.trim();
     addUserMessage(userMessage);
     setCurrentInput('');
-    
+
     // Get AI response
     setIsTyping(true);
     try {
@@ -159,16 +160,16 @@ const LeadChatbot = () => {
 
   if (!isOpen) {
     return (
-      <div className="fixed bottom-6 right-6" style={{zIndex: 9999}}>
+      <div className="fixed bottom-6 right-6" style={{ zIndex: 9999 }}>
         <div className="relative">
           <Button
             onClick={() => setIsOpen(true)}
             className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-full w-16 h-16 shadow-2xl animate-medical-pulse hover:scale-110 transition-all duration-300"
-            style={{position: 'relative', zIndex: 10000}}
+            style={{ position: 'relative', zIndex: 10000 }}
           >
             <MessageCircle className="w-6 h-6" />
           </Button>
-          
+
           {/* Floating message bubble */}
           <div className="absolute -top-14 -left-32 bg-white text-gray-800 text-sm px-4 py-3 rounded-2xl shadow-xl border border-gray-100 opacity-95 animate-bounce max-w-xs">
             {welcomeMessages[Math.floor(Date.now() / 3000) % welcomeMessages.length]}
@@ -180,7 +181,7 @@ const LeadChatbot = () => {
   }
 
   return (
-    <div className="fixed bottom-6 right-6" style={{zIndex: 9999}}>
+    <div className="fixed bottom-6 right-6" style={{ zIndex: 9999 }}>
       <div className="bg-white rounded-2xl shadow-2xl border border-teal-100 w-80 h-[500px] flex flex-col animate-slide-up">
         {/* Header */}
         <div className="bg-gradient-to-r from-teal-600 to-emerald-600 text-white p-4 rounded-t-2xl flex justify-between items-center">
@@ -215,11 +216,10 @@ const LeadChatbot = () => {
                   <Bot className="w-4 h-4 text-teal-600" />
                 </div>
               )}
-              <div className={`max-w-[70%] px-4 py-3 rounded-2xl text-sm ${
-                msg.type === 'user' 
-                  ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-br-md' 
-                  : 'bg-gray-100 text-gray-800 rounded-bl-md'
-              } animate-slide-up shadow-sm`}>
+              <div className={`max-w-[70%] px-4 py-3 rounded-2xl text-sm ${msg.type === 'user'
+                ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-br-md'
+                : 'bg-gray-100 text-gray-800 rounded-bl-md'
+                } animate-slide-up shadow-sm`}>
                 {msg.text}
               </div>
               {msg.type === 'user' && (
@@ -229,7 +229,7 @@ const LeadChatbot = () => {
               )}
             </div>
           ))}
-          
+
           {isTyping && (
             <div className="flex items-end space-x-2 justify-start">
               <div className="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center">
@@ -238,8 +238,8 @@ const LeadChatbot = () => {
               <div className="bg-gray-100 text-gray-800 px-4 py-3 rounded-2xl rounded-bl-md text-sm animate-pulse shadow-sm">
                 <div className="flex space-x-1">
                   <div className="w-2 h-2 bg-teal-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-teal-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                  <div className="w-2 h-2 bg-teal-400 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                  <div className="w-2 h-2 bg-teal-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="w-2 h-2 bg-teal-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
                 </div>
               </div>
             </div>
@@ -260,7 +260,7 @@ const LeadChatbot = () => {
               ))}
             </div>
           )}
-          
+
           <div ref={messagesEndRef} />
         </div>
 
@@ -283,7 +283,7 @@ const LeadChatbot = () => {
               <Send className="w-4 h-4" />
             </Button>
           </div>
-          
+
           {/* Quick Actions */}
           <div className="flex justify-center space-x-2 mt-3">
             <Button

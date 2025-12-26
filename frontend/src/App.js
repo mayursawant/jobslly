@@ -35,8 +35,6 @@ import { Toaster } from './components/ui/sonner';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 // Lazy load heavy components (AdminPanel includes 28MB Jodit editor)
-const AdminPanel = lazy(() => import('./components/AdminPanel'));
-
 // Loading fallback for lazy components
 const PageLoading = () => (
   <div className="min-h-screen flex items-center justify-center bg-white">
@@ -47,8 +45,11 @@ const PageLoading = () => (
   </div>
 );
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
-const API = `${BACKEND_URL}/api`;
+const AdminPanel = lazy(() => import('./components/AdminPanel'));
+
+import { BACKEND_URL, API_BASE } from './config/api';
+
+const API = API_BASE;
 
 // Auth Context
 export const AuthContext = React.createContext();
@@ -264,89 +265,57 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
 
-                {/* Jobs - Support both with and without trailing slash */}
+                {/* Jobs */}
                 <Route path="/jobs" element={<JobListing />} />
-                <Route path="/jobs/" element={<JobListing />} />
 
                 {/* Category Pages */}
                 <Route path="/jobs/doctor" element={<CategoryPage />} />
-                <Route path="/jobs/doctor/" element={<CategoryPage />} />
                 <Route path="/jobs/nursing" element={<CategoryPage />} />
-                <Route path="/jobs/nursing/" element={<CategoryPage />} />
                 <Route path="/jobs/pharmacy" element={<CategoryPage />} />
-                <Route path="/jobs/pharmacy/" element={<CategoryPage />} />
                 <Route path="/jobs/dentist" element={<CategoryPage />} />
-                <Route path="/jobs/dentist/" element={<CategoryPage />} />
                 <Route path="/jobs/physiotherapy" element={<CategoryPage />} />
-                <Route path="/jobs/physiotherapy/" element={<CategoryPage />} />
                 <Route path="/jobs/medical-lab-technician" element={<CategoryPage />} />
-                <Route path="/jobs/medical-lab-technician/" element={<CategoryPage />} />
                 <Route path="/jobs/medical-science-liaison" element={<CategoryPage />} />
-                <Route path="/jobs/medical-science-liaison/" element={<CategoryPage />} />
                 <Route path="/jobs/pharmacovigilance" element={<CategoryPage />} />
-                <Route path="/jobs/pharmacovigilance/" element={<CategoryPage />} />
                 <Route path="/jobs/clinical-research" element={<CategoryPage />} />
-                <Route path="/jobs/clinical-research/" element={<CategoryPage />} />
                 <Route path="/jobs/non-clinical-jobs" element={<CategoryPage />} />
-                <Route path="/jobs/non-clinical-jobs/" element={<CategoryPage />} />
 
-                {/* Job Details - This catches all other /jobs/... routes */}
+                {/* Job Details */}
                 <Route path="/jobs/:jobId" element={<JobDetails />} />
-                <Route path="/jobs/:jobId/" element={<JobDetails />} />
 
-                {/* Blogs - Support both with and without trailing slash */}
+                {/* Blogs */}
                 <Route path="/blogs" element={<Blog />} />
-                <Route path="/blogs/" element={<Blog />} />
                 <Route path="/blogs/:slug" element={<BlogPost />} />
-                <Route path="/blogs/:slug/" element={<BlogPost />} />
 
-                {/* Other pages - Support both with and without trailing slash */}
+                {/* Other pages */}
                 <Route path="/contact-us" element={<ContactUs />} />
-                <Route path="/contact-us/" element={<ContactUs />} />
                 <Route path="/student-profiles" element={<StudentProfiles />} />
-                <Route path="/student-profiles/" element={<StudentProfiles />} />
                 <Route path="/sitemap" element={<Sitemap />} />
-                <Route path="/sitemap/" element={<Sitemap />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                <Route path="/privacy-policy/" element={<PrivacyPolicy />} />
                 <Route path="/terms-of-service" element={<TermsOfService />} />
-                <Route path="/terms-of-service/" element={<TermsOfService />} />
                 <Route path="/cookies" element={<CookiePolicy />} />
-                <Route path="/cookies/" element={<CookiePolicy />} />
 
-                {/* Auth routes - Support both with and without trailing slash */}
-                <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard/" />} />
-                <Route path="/login/" element={!user ? <Login /> : <Navigate to="/dashboard/" />} />
-                <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard/" />} />
-                <Route path="/register/" element={!user ? <Register /> : <Navigate to="/dashboard/" />} />
+                {/* Auth routes */}
+                <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
+                <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
 
-                {/* Redirect old routes to new unified login */}
-                <Route path="/job-seeker-login" element={<Navigate to="/login/" replace />} />
-                <Route path="/cms-login" element={<Navigate to="/login/" replace />} />
+                {/* Redirect old routes */}
+                <Route path="/job-seeker-login" element={<Navigate to="/login" replace />} />
+                <Route path="/cms-login" element={<Navigate to="/login" replace />} />
 
                 {/* Protected Routes */}
                 <Route path="/dashboard" element={user ? (
                   user.role === 'job_seeker' ? <JobSeekerDashboard /> : <Dashboard />
-                ) : <Navigate to="/login/" />} />
-                <Route path="/dashboard/" element={user ? (
-                  user.role === 'job_seeker' ? <JobSeekerDashboard /> : <Dashboard />
-                ) : <Navigate to="/login/" />} />
+                ) : <Navigate to="/login" />} />
                 <Route path="/admin" element={
                   user?.role === 'admin' ? (
                     <Suspense fallback={<PageLoading />}>
                       <AdminPanel />
                     </Suspense>
-                  ) : <Navigate to="/login/" />
-                } />
-                <Route path="/admin/" element={
-                  user?.role === 'admin' ? (
-                    <Suspense fallback={<PageLoading />}>
-                      <AdminPanel />
-                    </Suspense>
-                  ) : <Navigate to="/login/" />
+                  ) : <Navigate to="/login" />
                 } />
 
-                {/* 404 Catch-all Route - Must be last */}
+                {/* 404 Catch-all Route */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>

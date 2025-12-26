@@ -1,68 +1,123 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
-const API = `${BACKEND_URL}/api`;
+import { API_BASE } from '../config/api';
+
+const API = API_BASE;
 
 const Blog = () => {
   const [posts, setPosts] = useState([]);
   const [featuredPosts, setFeaturedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Search and Filter State
   const [searchTerm, setSearchTerm] = useState('');
+  const [category, setCategory] = useState('all');
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalPosts, setTotalPosts] = useState(0);
+  const POSTS_PER_PAGE = 9;
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch both in parallel with extended timeout for slow connections
-        const [postsRes, featuredRes] = await Promise.all([
-          axios.get(`${API}/blog?limit=12`, { timeout: 60000 }),
-          axios.get(`${API}/blog?featured_only=true&limit=4`, { timeout: 60000 })
-        ]);
-        setPosts(postsRes.data);
-        setFeaturedPosts(featuredRes.data);
-        setError(null);
-      } catch (err) {
-        console.error('Failed to fetch blog posts:', err);
-        setError('Failed to load articles. Please try again.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    fetchFeaturedPosts();
   }, []);
 
-  const filteredPosts = posts.filter(post =>
-    post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  useEffect(() => {
+    // Debounce search to avoid excessive API calls
+    const timer = setTimeout(() => {
+      fetchPosts();
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchTerm, category, currentPage]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading Health Hub...</p>
-        </div>
-      </div>
-    );
-  }
+  const fetchFeaturedPosts = async () => {
+    try {
+      const response = await axios.get(`${API}/blog?featured_only=true&limit=3`);
+      const data = response.data.posts ? response.data.posts : response.data;
+      setFeaturedPosts(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Failed to fetch featured posts:', err);
+    }
+  };
 
-  if (error) {
+  const fetchPosts = async () => {
+    try {
+      setLoading(true);
+      const skip = (currentPage - 1) * POSTS_PER_PAGE;
+
+      const params = {
+        limit: POSTS_PER_PAGE,
+        skip,
+        page: currentPage
+      };
+
+      if (searchTerm) params.q = searchTerm;
+      if (category !== 'all') params.category = category;
+
+      const response = await axios.get(`${API}/blog`, { params });
+
+      // Handle response - supporting new format
+      const { posts: newPosts, total, total_pages } = response.data;
+
+      setPosts(newPosts || []);
+      setTotalPosts(total || 0);
+      setTotalPages(total_pages || 1);
+      setError(null);
+
+      // Scroll to top of posts section
+      if (currentPage > 1) {
+        window.scrollTo({ top: 400, behavior: 'smooth' });
+      }
+
+    } catch (err) {
+      console.error('Failed to fetch blog posts:', err);
+      setError('Failed to load articles. Please refresh the page.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
+  const handleCategoryChange = (newCategory) => {
+    setCategory(newCategory);
+    setCurrentPage(1); // Reset to page 1 on filter change
+    setSearchTerm(''); // Optional: clear search on category change
+  };
+
+  const categories = [
+    'all', 'Healthcare Trends', 'Career Development', 'Industry News', 'Medical Licensing'
+  ];
+
+  if (loading && posts.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center">
-          <p className="text-red-600 mb-4">{error}</p>
-          <Button onClick={() => window.location.reload()} className="bg-emerald-600 hover:bg-emerald-700">
-            Retry
-          </Button>
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-emerald-50">
+        <section className="relative py-20 px-4 bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-600">
+          <div className="max-w-7xl mx-auto text-center">
+            <div className="h-10 w-64 bg-white/20 rounded mx-auto mb-4 animate-pulse"></div>
+            <div className="h-6 w-96 bg-white/20 rounded mx-auto animate-pulse"></div>
+          </div>
+        </section>
+        <div className="py-16 px-4 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="bg-white rounded-lg border border-gray-200 h-96 animate-pulse"></div>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -99,7 +154,7 @@ const Blog = () => {
                 type="text"
                 placeholder="🔍 Search articles, trends, or topics..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
                 className="h-14 pl-12 pr-4 bg-white/95 border-0 text-gray-900 placeholder-gray-500 rounded-2xl shadow-lg focus:ring-0 focus:outline-none"
                 data-testid="blog-search-input"
               />
@@ -110,6 +165,22 @@ const Blog = () => {
               </div>
             </div>
           </div>
+
+          {/* Category Filters */}
+          <div className="flex flex-wrap justify-center gap-2 mt-6">
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => handleCategoryChange(cat)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${category === cat
+                    ? 'bg-white text-teal-700 shadow-md transform scale-105'
+                    : 'bg-white/10 text-white hover:bg-white/20'
+                  }`}
+              >
+                {cat === 'all' ? 'All' : cat}
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -117,7 +188,7 @@ const Blog = () => {
         <div className="max-w-7xl mx-auto">
 
           {/* Featured Posts */}
-          {featuredPosts.length > 0 && (
+          {!searchTerm && category === 'all' && currentPage === 1 && featuredPosts.length > 0 && (
             <section className="mb-20">
               <div className="text-center mb-12">
                 <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Articles</h2>
@@ -135,7 +206,6 @@ const Blog = () => {
                               alt={post.title}
                               className="w-full h-full object-contain"
                               onError={(e) => {
-                                // Fallback to placeholder if image fails to load
                                 e.target.style.display = 'none';
                                 e.target.nextSibling.style.display = 'flex';
                               }}
@@ -156,14 +226,10 @@ const Blog = () => {
                           <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-teal-700 transition-colors line-clamp-2 leading-tight">
                             {post.title}
                           </h3>
-                          <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
-                          <div className="flex justify-between items-center">
+                          <div className="flex justify-between items-center mt-auto">
                             <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
                               📅 {new Date(post.published_at).toLocaleDateString()}
                             </span>
-                            <Button size="sm" className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-xl px-4 py-2 transform hover:scale-105 transition-all duration-300">
-                              Read Article →
-                            </Button>
                           </div>
                         </div>
                       </CardContent>
@@ -177,97 +243,133 @@ const Blog = () => {
           {/* All Posts */}
           <section>
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">Latest Healthcare Insights</h2>
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                {searchTerm ? `Search Results for "${searchTerm}"` :
+                  category !== 'all' ? `${category} Articles` : 'Latest Healthcare Insights'}
+              </h2>
               <div className="w-20 h-1 bg-gradient-to-r from-emerald-500 to-cyan-500 mx-auto rounded-full"></div>
             </div>
-            {filteredPosts.length === 0 ? (
+
+            {loading ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="bg-white rounded-lg border border-gray-200 h-80 animate-pulse"></div>
+                ))}
+              </div>
+            ) : posts.length === 0 ? (
               <div className="text-center py-20 bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl border border-teal-100">
-                <div className="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
+                <div className="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <span className="text-3xl">📝</span>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">No articles found</h3>
-                <p className="text-gray-600 mb-8 max-w-md mx-auto">We couldn't find any articles matching your search. Try different keywords or browse our featured content.</p>
-                <Button onClick={() => setSearchTerm('')} className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white px-6 py-3 rounded-xl">
-                  🔄 Clear Search & Browse All
+                <p className="text-gray-600 mb-8 max-w-md mx-auto">We couldn't find any articles matching your search. Try different keywords.</p>
+                <Button onClick={() => { setSearchTerm(''); setCategory('all'); }} className="bg-gradient-to-r from-teal-600 to-emerald-600 text-white px-6 py-3 rounded-xl">
+                  🔄 Clear Search
                 </Button>
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredPosts.map((post, index) => (
-                  <Link key={post.id} to={`/blogs/${post.slug}`} className="block">
-                    <Card className="group bg-white border border-gray-200 hover:border-teal-300 hover:shadow-xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-1 h-full">
-                      <CardContent className="p-0 overflow-hidden rounded-lg">
-                        {post.featured_image ? (
-                          <div className="h-48 bg-gray-100 rounded-t-lg relative overflow-hidden">
-                            <img
-                              src={post.featured_image}
-                              alt={post.title}
-                              className="w-full h-full object-contain"
-                              onError={(e) => {
-                                // Fallback to placeholder if image fails to load
-                                e.target.style.display = 'none';
-                                e.target.nextSibling.style.display = 'flex';
-                              }}
-                            />
-                            <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-lg hidden items-center justify-center relative overflow-hidden">
-                              <div className="absolute inset-0 bg-gradient-to-br from-teal-400/10 to-emerald-400/10"></div>
-                              <span className="text-5xl opacity-60 relative z-10">
-                                {post.category === 'Healthcare Trends' ? '📈' :
-                                  post.category === 'Career Development' ? '🚀' :
-                                    post.category === 'Industry News' ? '📰' : '🏥'}
-                              </span>
+              <>
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                  {posts.map((post, index) => (
+                    <Link key={post.id} to={`/blogs/${post.slug}`} className="block">
+                      <Card className="group bg-white border border-gray-200 hover:border-teal-300 hover:shadow-xl transition-all duration-500 cursor-pointer transform hover:scale-105 hover:-translate-y-1 h-full flex flex-col">
+                        <CardContent className="p-0 overflow-hidden rounded-lg flex-1 flex flex-col">
+                          {post.featured_image ? (
+                            <div className="h-48 bg-gray-100 rounded-t-lg relative overflow-hidden">
+                              <img
+                                src={post.featured_image}
+                                alt={post.title}
+                                className="w-full h-full object-contain"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                  e.target.nextSibling.style.display = 'flex';
+                                }}
+                              />
+                              <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-lg hidden items-center justify-center">
+                                <span className="text-4xl opacity-40">📰</span>
+                              </div>
                             </div>
-                          </div>
-                        ) : (
-                          <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-lg flex items-center justify-center relative overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-br from-teal-400/10 to-emerald-400/10"></div>
-                            <span className="text-5xl opacity-60 relative z-10">
-                              {post.category === 'Healthcare Trends' ? '📈' :
-                                post.category === 'Career Development' ? '🚀' :
-                                  post.category === 'Industry News' ? '📰' : '🏥'}
-                            </span>
-                          </div>
-                        )}
-                        <div className="p-6">
-                          <div className="flex items-center justify-between mb-4">
-                            <Badge
-                              variant="outline"
-                              className={`text-xs border ${post.category === 'Healthcare Trends' ? 'border-emerald-200 text-emerald-700 bg-emerald-50' :
-                                  post.category === 'Career Development' ? 'border-blue-200 text-blue-700 bg-blue-50' :
-                                    post.category === 'Industry News' ? 'border-purple-200 text-purple-700 bg-purple-50' :
-                                      'border-teal-200 text-teal-700 bg-teal-50'
-                                }`}
-                            >
-                              {post.category}
-                            </Badge>
-                            <span className="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
-                              📅 {new Date(post.published_at).toLocaleDateString()}
-                            </span>
-                          </div>
-                          <h3 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-teal-700 transition-colors line-clamp-2 leading-tight">
-                            {post.title}
-                          </h3>
-                          <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
-
-                          {post.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mb-4">
-                              {post.tags.slice(0, 3).map((tag, index) => (
-                                <Badge key={index} variant="secondary" className="text-xs bg-teal-50 text-teal-600 border-teal-200">
-                                  #{tag}
-                                </Badge>
-                              ))}
+                          ) : (
+                            <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 rounded-t-lg flex items-center justify-center">
+                              <span className="text-4xl opacity-40">📰</span>
                             </div>
                           )}
+                          <div className="p-6 flex-1 flex flex-col">
+                            <div className="flex items-center justify-between mb-4">
+                              <Badge variant="outline" className="text-xs bg-teal-50 text-teal-700 border-teal-200">
+                                {post.category}
+                              </Badge>
+                              <span className="text-xs text-gray-500">
+                                {new Date(post.published_at).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <h3 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-teal-700 transition-colors line-clamp-2">
+                              {post.title}
+                            </h3>
+                            <p className="text-gray-600 mb-4 line-clamp-3 text-sm flex-1">{post.excerpt}</p>
 
-                          <Button size="sm" className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-xl transform hover:scale-105 transition-all duration-300">
-                            📖 Read Full Article →
+                            <Button size="sm" className="w-full mt-auto bg-white border border-teal-600 text-teal-600 hover:bg-teal-50">
+                              Read Full Article →
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center items-center gap-2 mt-8">
+                    <Button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      variant="outline"
+                      size="icon"
+                      className="w-10 h-10"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+
+                    {/* Page Numbers */}
+                    <div className="flex gap-2">
+                      {[...Array(Math.min(5, totalPages))].map((_, idx) => {
+                        let pageNum;
+                        if (totalPages <= 5) {
+                          pageNum = idx + 1;
+                        } else if (currentPage <= 3) {
+                          pageNum = idx + 1;
+                        } else if (currentPage >= totalPages - 2) {
+                          pageNum = totalPages - 4 + idx;
+                        } else {
+                          pageNum = currentPage - 2 + idx;
+                        }
+
+                        return (
+                          <Button
+                            key={pageNum}
+                            onClick={() => handlePageChange(pageNum)}
+                            variant={currentPage === pageNum ? "default" : "outline"}
+                            className={`w-10 h-10 ${currentPage === pageNum ? "bg-teal-600 text-white" : ""}`}
+                          >
+                            {pageNum}
                           </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
+                        );
+                      })}
+                    </div>
+
+                    <Button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      variant="outline"
+                      size="icon"
+                      className="w-10 h-10"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </section>
 
@@ -293,9 +395,6 @@ const Blog = () => {
                     🚀 Subscribe Free
                   </Button>
                 </div>
-                <p className="text-xs text-teal-100 mt-4 opacity-80">
-                  No spam. Unsubscribe anytime. Join the healthcare community.
-                </p>
               </CardContent>
             </Card>
           </section>

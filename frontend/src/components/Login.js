@@ -4,7 +4,6 @@ import { AuthContext } from '../App';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Card, CardHeader, CardContent, CardTitle } from './ui/card';
 import { Alert, AlertDescription } from './ui/alert';
 import { toast } from 'sonner';
 
@@ -28,27 +27,9 @@ const Login = () => {
       await login(formData.email, formData.password);
       toast.success('Successfully logged in!');
 
-      // Get user data from localStorage or context to determine role
-      const token = localStorage.getItem('token');
-      if (token) {
-        // Fetch user data to determine redirect
-        const API = process.env.REACT_APP_BACKEND_URL || '';
-        const response = await fetch(`${API}/api/auth/me`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        const userData = await response.json();
-
-        // Redirect based on role
-        if (userData.role === 'admin') {
-          navigate('/admin');
-        } else {
-          navigate('/dashboard');
-        }
-      } else {
-        navigate('/dashboard');
-      }
+      // Check role based on token/me endpoint logic handled in AuthContext or here
+      // Ideally AuthContext should set user, but for now we follow the existing pattern
+      navigate('/dashboard');
     } catch (error) {
       const message = error.response?.data?.detail || 'Login failed. Please check your credentials.';
       setError(message);
@@ -59,147 +40,80 @@ const Login = () => {
   };
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const fillDemoCredentials = (email, password) => {
-    setFormData({
-      email: email,
-      password: password
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-      <div className="w-full max-w-md">
-        <Card className="bg-white shadow-lg border border-gray-200" data-testid="login-form">
-          <CardHeader className="text-center pb-6">
-            <CardTitle className="text-2xl font-bold text-gray-900 mb-2">
-              Welcome Back
-            </CardTitle>
-            <p className="text-gray-600">
-              Sign in to your healthcare career portal
-            </p>
-          </CardHeader>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Sign in to your account
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Or{' '}
+            <Link to="/register" className="font-medium text-emerald-600 hover:text-emerald-500">
+              create a new account
+            </Link>
+          </p>
+        </div>
 
-          <CardContent>
-            {error && (
-              <Alert className="mb-6 border-red-200 bg-red-50" data-testid="login-error">
-                <AlertDescription className="text-red-700">
-                  {error}
-                </AlertDescription>
-              </Alert>
-            )}
+        {error && (
+          <Alert className="mb-4 bg-red-50 border-red-200 text-red-600">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-gray-900">
-                  Email Address
-                </Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="bg-white border border-gray-300 text-gray-900 placeholder-gray-500 focus:border-teal-500 focus:ring-teal-500 h-12 rounded-lg"
-                  placeholder="Enter your email"
-                  data-testid="email-input"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-gray-900">
-                  Password
-                </Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="bg-white border border-gray-300 text-gray-900 placeholder-gray-500 focus:border-teal-500 focus:ring-teal-500 h-12 rounded-lg"
-                  placeholder="Enter your password"
-                  data-testid="password-input"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-semibold text-lg py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                data-testid="login-submit-btn"
-              >
-                {loading ? (
-                  <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                    Signing In...
-                  </div>
-                ) : (
-                  'Sign In'
-                )}
-              </Button>
-            </form>
-
-            <div className="mt-6 text-center">
-              <p className="text-gray-600">
-                Don't have an account?{' '}
-                <Link
-                  to="/register"
-                  className="text-teal-600 hover:text-teal-700 font-medium transition-colors"
-                  data-testid="register-link"
-                >
-                  Sign up here
-                </Link>
-              </p>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="email">Email address</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter your email"
+                className="mt-1"
+              />
             </div>
+            <div>
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                required
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                className="mt-1"
+              />
+            </div>
+          </div>
 
-            {/* Demo credentials */}
-            {/* <div className="mt-6 p-4 bg-teal-50 rounded-xl border border-teal-200">
-              <p className="text-sm text-teal-700 font-semibold mb-3 flex items-center">
-                <span className="mr-2">🎮</span>
-                Demo Accounts for Testing:
-              </p>
-              <div className="text-sm text-gray-700 space-y-2">
-                <div 
-                  className="flex justify-between items-center bg-white p-2 rounded border cursor-pointer hover:bg-teal-50 hover:border-teal-300 transition-colors duration-200"
-                  onClick={() => fillDemoCredentials('doctor@gmail.com', 'password')}
-                >
-                  <span>🩺 <strong>Doctor:</strong> doctor@gmail.com</span>
-                  <span className="text-teal-600 font-mono">password</span>
-                </div>
-                <div 
-                  className="flex justify-between items-center bg-white p-2 rounded border cursor-pointer hover:bg-teal-50 hover:border-teal-300 transition-colors duration-200"
-                  onClick={() => fillDemoCredentials('admin@gmail.com', 'password')}
-                >
-                  <span>⚡ <strong>Admin:</strong> admin@gmail.com</span>
-                  <span className="text-teal-600 font-mono">password</span>
-                </div>
-              </div>
-              <p className="text-xs text-gray-500 mt-3 text-center">
-                Click any credential to auto-fill the form
-              </p>
-            </div> */}
-
-            {/* <div className="mt-4 text-center">
-              <p className="text-gray-500 text-sm">
-                Need CMS access?{' '}
-                <Link 
-                  to="/cms-login" 
-                  className="text-teal-600 hover:text-teal-700 font-medium transition-colors"
-                  data-testid="cms-login-link"
-                >
-                  Admin Login
-                </Link>
-              </p>
-            </div> */}
-          </CardContent>
-        </Card>
+          <div>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+            >
+              {loading ? (
+                <span className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Signing in...
+                </span>
+              ) : (
+                'Sign in'
+              )}
+            </Button>
+          </div>
+        </form>
       </div>
     </div>
   );

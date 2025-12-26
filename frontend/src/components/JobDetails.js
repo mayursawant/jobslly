@@ -10,9 +10,9 @@ import { Label } from './ui/label';
 import LeadCollectionModal from './LeadCollectionModal';
 import axios from 'axios';
 import { toast } from 'sonner';
+import { API_BASE } from '../config/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
-const API = `${BACKEND_URL}/api`;
+const API = API_BASE;
 
 // Helper function to check if salary value should show currency symbol
 const shouldShowCurrency = (value) => {
@@ -63,10 +63,7 @@ const JobDetails = () => {
 
   const checkLocalStorageApplied = () => {
     const appliedJobs = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
-    console.log('🔍 Checking localStorage for job', jobId);
-    console.log('📋 Applied jobs in localStorage:', appliedJobs);
     const isApplied = appliedJobs.includes(jobId);
-    console.log('✓ Has applied:', isApplied);
     setHasApplied(isApplied);
   };
 
@@ -101,7 +98,6 @@ const JobDetails = () => {
    */
   const fetchUserProfile = async () => {
     try {
-      // FIX: Use 'token' instead of 'access_token'
       const token = localStorage.getItem('token');
       if (!token) return;
 
@@ -158,7 +154,6 @@ const JobDetails = () => {
     // Internal job - submit application
     setApplying(true);
     try {
-      // FIX: Use 'token' instead of 'access_token'
       const token = localStorage.getItem('token');
       await axios.post(`${API}/jobs/${jobId}/apply`, {
         cover_letter: coverLetter
@@ -181,18 +176,12 @@ const JobDetails = () => {
    * Handle lead collection success for non-logged-in users
    */
   const handleLeadCollectionSuccess = () => {
-    console.log('Lead collection success callback triggered');
-    console.log('Job external URL:', job?.external_url);
     setShowLeadModal(false);
-    setHasApplied(true); // Update state to show "Applied" status
+    setHasApplied(true);
 
     if (job?.external_url) {
-      // External job - redirect to external URL
-      console.log('Redirecting to external URL:', job.external_url);
       window.open(job.external_url, '_blank');
     } else {
-      // Internal job - show login prompt
-      console.log('Showing login prompt modal for internal job');
       setShowLoginPromptModal(true);
     }
   };

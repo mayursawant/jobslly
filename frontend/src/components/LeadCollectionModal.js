@@ -28,9 +28,9 @@ import { Textarea } from './ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { API_BASE } from '../config/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
-const API = `${BACKEND_URL}/api`;
+const API = API_BASE;
 
 const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl, companyName, onSuccess }) => {
   // Lead form state
@@ -114,13 +114,13 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
 
       // Save applied job ID to localStorage for session tracking
       const appliedJobs = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
-      console.log('💾 Current applied jobs in localStorage:', appliedJobs);
+
       if (!appliedJobs.includes(jobId)) {
         appliedJobs.push(jobId);
         localStorage.setItem('appliedJobs', JSON.stringify(appliedJobs));
-        console.log('✅ Saved job', jobId, 'to localStorage. Updated list:', appliedJobs);
+
       } else {
-        console.log('ℹ️ Job', jobId, 'already in localStorage');
+
       }
 
       // toast.success('Thank you for your interest!');
@@ -175,7 +175,7 @@ const LeadCollectionModal = ({ isOpen, onClose, jobId, jobTitle, jobExternalUrl,
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="bg-white sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center text-lg font-semibold text-gray-800">
             <span className="mr-2">🚀</span>

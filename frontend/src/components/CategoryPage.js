@@ -6,6 +6,7 @@ import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Select } from './ui/select';
 import { MapPin, Briefcase, DollarSign, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { API_BASE } from '../config/api';
 
 // Helper function to check if salary value should show currency symbol
 const shouldShowCurrency = (value) => {
@@ -57,7 +58,7 @@ const CategoryPage = () => {
         ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v))
       });
 
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL || ''}/api/categories/${category}?${queryParams}`);
+      const response = await fetch(`${API_BASE}/categories/${category}?${queryParams}`);
       if (!response.ok) {
         throw new Error('Category not found');
       }
