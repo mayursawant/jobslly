@@ -33,6 +33,8 @@ import CategoryPage from './components/CategoryPage';
 import StudentProfiles from './components/StudentProfiles';
 import { Toaster } from './components/ui/sonner';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { AnimatedSignIn } from './components/ui/sign-in';
+import { AnimatedSignUp } from './components/ui/sign-up';
 
 // Lazy load heavy components (AdminPanel includes 28MB Jodit editor)
 // Loading fallback for lazy components
@@ -296,8 +298,8 @@ function App() {
                 <Route path="/cookies" element={<CookiePolicy />} />
 
                 {/* Auth routes */}
-                <Route path="/login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
-                <Route path="/register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
+                <Route path="/login" element={!user ? <AnimatedSignIn /> : <Navigate to="/dashboard" />} />
+                <Route path="/register" element={!user ? <AnimatedSignUp /> : <Navigate to="/dashboard" />} />
 
                 {/* Redirect old routes */}
                 <Route path="/job-seeker-login" element={<Navigate to="/login" replace />} />

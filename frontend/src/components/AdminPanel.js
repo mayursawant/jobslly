@@ -23,6 +23,48 @@ const EditorLoading = () => (
   </div>
 );
 
+// Error Boundary for Jodit Editor
+class JoditErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Jodit Editor crashed:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="border rounded-lg p-4 bg-red-50 text-red-600 flex flex-col items-center justify-center min-h-[300px]">
+          <p className="font-semibold mb-2">Editor failed to load</p>
+          <Button
+            variant="outline"
+            onClick={() => this.setState({ hasError: false })}
+            className="bg-white"
+          >
+            Retry Editor
+          </Button>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+// Wrapper for Jodit that includes Error Boundary
+const SafeJoditEditor = (props) => (
+  <JoditErrorBoundary>
+    <JoditEditor {...props} />
+  </JoditErrorBoundary>
+);
+
 import { BACKEND_URL, API_BASE } from '../config/api';
 
 const API = API_BASE;
@@ -1148,7 +1190,7 @@ const AdminPanel = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Job Description *</label>
                     <Suspense fallback={<EditorLoading />}>
-                      <JoditEditor
+                      <SafeJoditEditor
                         value={editingJob.description}
                         config={jobDescConfig}
                         onBlur={newContent => setEditingJob(prev => ({ ...prev, description: newContent }))}
@@ -1395,7 +1437,7 @@ const AdminPanel = () => {
                     </button>
                   </div>
                   <Suspense fallback={<EditorLoading />}>
-                    <JoditEditor
+                    <SafeJoditEditor
                       value={newJob.description}
                       config={jobDescConfig}
                       onBlur={newContent => setNewJob(prev => ({ ...prev, description: newContent }))}
@@ -1433,9 +1475,15 @@ const AdminPanel = () => {
                     }
 
                     try {
-                      await axios.post(`${API}/admin/jobs`, {
-                        ...newJob
-                      });
+                      const jobPayload = {
+                        ...newJob,
+                        application_deadline: newJob.application_deadline || null,
+                        salary_min: newJob.salary_min || null,
+                        salary_max: newJob.salary_max || null,
+                        external_url: newJob.external_url || null,
+                      };
+
+                      await axios.post(`${API}/admin/jobs`, jobPayload);
                       toast.success('Job posted successfully!');
                       setNewJob({ title: '', company: '', location: '', description: '', salary_min: '', salary_max: '', currency: 'INR', job_type: 'full_time', categories: [], requirements: [], benefits: [], is_external: false, external_url: '', application_deadline: '' });
                       fetchAdminData();
@@ -1548,7 +1596,7 @@ const AdminPanel = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Article Content</label>
                   <Suspense fallback={<EditorLoading />}>
-                    <JoditEditor
+                    <SafeJoditEditor
                       ref={editor}
                       value={newBlog.content}
                       config={config}

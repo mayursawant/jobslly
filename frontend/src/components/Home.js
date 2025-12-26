@@ -95,7 +95,7 @@ const InteractiveCourseSection = () => {
   };
 
   return (
-    <section className="py-20 px-4 bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 overflow-hidden">
+    <section className="py-12 px-4 bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 overflow-hidden">
       <style>{`
         @keyframes breathing {
           0%, 100% { transform: scale(1); }
@@ -126,7 +126,7 @@ const InteractiveCourseSection = () => {
 
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-6">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Ready to Advance Your Healthcare Career?
           </h2>
@@ -303,7 +303,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section with Search */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-teal-50 via-white to-emerald-50 overflow-hidden">
+      <section className="relative py-12 px-4 bg-gradient-to-br from-teal-50 via-white to-emerald-50 overflow-hidden">
         {/* ECG Heartbeat Animation */}
         <style>{`
           @keyframes heartbeat {
@@ -456,14 +456,16 @@ const Home = () => {
             </div>
 
             {/* Right Column - Healthcare Professionals Image */}
-            <div className="relative animate-slide-up" style={{ animationDelay: '1.4s' }}>
+            <div className="relative animate-slide-up" style={{ animationDelay: '0.1s' }}>
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-emerald-400 rounded-3xl transform rotate-3 animate-pulse"></div>
                 <div className="relative bg-white rounded-3xl shadow-2xl p-1 transform -rotate-1 hover:rotate-0 transition-transform duration-700">
                   <img
-                    src="https://customer-assets.emergentagent.com/job_a4ce02d4-d988-4bcc-bfe4-80f85b655205/artifacts/67arpex4_jobslly.jpg"
+                    src="/hero-image.webp"
                     alt="Jobslly - Connect Healthcare Professionals with Opportunities"
                     className="w-full h-auto rounded-3xl object-cover"
+                    loading="eager"
+                    fetchPriority="high"
                   />
                   <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-sm rounded-2xl p-4 transform translate-y-2 hover:translate-y-0 transition-transform duration-300">
                     <p className="text-sm font-semibold text-gray-900">Join Healthcare Professionals</p>
@@ -476,7 +478,7 @@ const Home = () => {
           </div>
 
           {/* Trust Stats with Icons */}
-          <div className="grid grid-cols-4 gap-4 md:gap-8 max-w-5xl mx-auto mt-20 pt-12 border-t border-teal-100">
+          <div className="grid grid-cols-4 gap-4 md:gap-8 max-w-5xl mx-auto mt-10 pt-8 border-t border-teal-100">
             <div className="text-center group hover:scale-105 transition-transform duration-300">
               <MdWork className="text-4xl md:text-5xl text-teal-600 mx-auto mb-2" />
               <div className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent mb-2" data-testid="stats-jobs">
@@ -510,10 +512,10 @@ const Home = () => {
       </section>
 
       {/* Job Categories */}
-      <section className="py-20 px-4 bg-gradient-to-br from-gray-50 to-teal-50">
+      <section className="py-12 px-4 bg-gradient-to-br from-gray-50 to-teal-50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Browse Jobs by Category</h2>
+          <div className="text-center mb-8">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Browse Jobs by Category</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Explore diverse choices. Make informed decisions.
             </p>
@@ -548,7 +550,7 @@ const Home = () => {
       </section>
 
       {/* About Our Founder Section */}
-      <section className="py-20 px-4 bg-white relative overflow-hidden">
+      <section className="py-12 px-4 bg-white relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-teal-50/50 to-emerald-50/50"></div>
         <div className="max-w-7xl mx-auto relative">
           <div className="grid lg:grid-cols-2 gap-16 items-stretch">
@@ -615,61 +617,78 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-8 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Choose Jobslly?</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Advanced technology and personalized support for your healthcare career growth
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center" data-testid="feature-matching">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🤖</span>
-              </div>
-              <h3 className="text-lg font-semibold mb-2 text-gray-900">Smart Matching</h3>
-              <p className="text-gray-600 text-sm">AI-powered job matching based on your skills and preferences</p>
-            </div>
-
-            <div className="text-center" data-testid="feature-resume">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">📋</span>
-              </div>
-              <h3 className="text-lg font-semibold mb-2 text-gray-900">Resume Builder</h3>
-              <p className="text-gray-600 text-sm">Professional resume templates designed for healthcare professionals</p>
-            </div>
-
-            <div className="text-center" data-testid="feature-interview">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">💬</span>
-              </div>
-              <h3 className="text-lg font-semibold mb-2 text-gray-900">Interview Prep</h3>
-              <p className="text-gray-600 text-sm">Practice with healthcare-specific interview questions and tips</p>
-            </div>
-
-            <div className="text-center" data-testid="feature-assistant">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🧠</span>
-              </div>
-              <h3 className="text-lg font-semibold mb-2 text-gray-900">Career Guidance</h3>
-              <p className="text-gray-600 text-sm">24/7 AI assistant to help guide your healthcare career path</p>
-            </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: "🤖",
+                title: "Smart Matching",
+                desc: "AI-powered job matching based on your skills and preferences",
+                color: "bg-blue-100 text-blue-600",
+                delay: "0ms"
+              },
+              {
+                icon: "📋",
+                title: "Resume Builder",
+                desc: "Professional resume templates designed for healthcare professionals",
+                color: "bg-emerald-100 text-emerald-600",
+                delay: "100ms"
+              },
+              {
+                icon: "💬",
+                title: "Interview Prep",
+                desc: "Practice with healthcare-specific interview questions and tips",
+                color: "bg-purple-100 text-purple-600",
+                delay: "200ms"
+              },
+              {
+                icon: "🧠",
+                title: "Career Guidance",
+                desc: "24/7 AI assistant to help guide your healthcare career path",
+                color: "bg-orange-100 text-orange-600",
+                delay: "300ms"
+              }
+            ].map((feature, index) => (
+              <Card
+                key={index}
+                className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-transparent hover:border-emerald-200 bg-white"
+                style={{ animationDelay: feature.delay }}
+              >
+                <CardContent className="p-8 text-center flex flex-col items-center h-full">
+                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 text-3xl shadow-sm group-hover:scale-110 transition-transform duration-300 ${feature.color}`}>
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 text-gray-900 group-hover:text-emerald-700 transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    {feature.desc}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Featured Jobs Section */}
       {featuredJobs.length > 0 && (
-        <section className="py-16 px-4 bg-gray-50" data-testid="featured-jobs-section">
+        <section className="py-8 px-4 bg-gray-50" data-testid="featured-jobs-section">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-12">
+            <div className="text-center mb-8">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Latest Jobs</h2>
               <p className="text-lg text-gray-600">Explore the newest opportunities in healthcare</p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {featuredJobs.slice(0, 6).map((job, index) => (
                 <Card key={job.id} className="bg-white border border-gray-200 hover:border-teal-400 hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 hover:scale-105 group h-full flex flex-col" data-testid={`featured-job-${job.id}`}>
                   <CardContent className="p-6 relative overflow-hidden flex flex-col h-full">
@@ -727,16 +746,16 @@ const Home = () => {
       )}
 
       {/* Health Hub Section */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-8 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Health Hub</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Stay updated with the latest healthcare insights, career tips, and industry trends
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
             {featuredBlogs.length > 0 ? (
               featuredBlogs.slice(0, 3).map((blog, index) => (
                 <Card key={blog.id || index} className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 h-full">
